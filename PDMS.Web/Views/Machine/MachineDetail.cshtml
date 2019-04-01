@@ -1,0 +1,1044 @@
+﻿
+@model PDMS.Model.ViewModels.MachineDetailVM
+<section class="content-header portal-content-header">
+    <h1>机台专案配置管理</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="col-md-12 search-field col-lg-12">
+                @using (Html.BeginForm("DownloadBomExcel", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" id="bt_query" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal">查询</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">新增</button>
+                    @*<button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>*@
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>PIS专案名称</th>
+                        <th>MES专案名称</th>
+                        <th>MES专案类型</th>
+                        <th>是否启用</th>
+                        <th>创建人员</th>
+                        <th>创建日期</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>PIS专案名称</th>
+                        <th>MES专案名称</th>
+                        <th>MES专案类型</th>
+                        <th>是否启用</th>
+                        <th>创建人员</th>
+                        <th>创建日期</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_add_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">专案信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_Warehouse_add" class="form-horizontal clearfix">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_DataSource_Type">数据来源</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_DataSource_Type" name="DataSourceType">
+                                        <option></option>
+                                        @foreach (var item in Model.MachineDataSources)
+                                        {
+                                            <option value=@item>@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="div_Plant_Organization_UID" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="div_BG_Organization_UID" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optypes">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_optypes" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="div_FunPlant_Organization_UID" class="form-group col-xs-12 col-md-6 col-lg-6" style="display:none">
+                                <label class="col-sm-5 control-label" for="js_select_funplan">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_funplan" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+
+                            <div id="div_input_customer" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_customer">@T("QA.Client")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_customer" name="Customer"></select>
+                                </div>
+                            </div>
+                            <div id="div_input_Project" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_project" name="Project"></select>
+                                </div>
+                            </div>
+                            <div id="div_input_Product_Phase" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                                </div>
+                            </div>
+                            <div id="div_input_Part_Types" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_part_types">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_part_types" name="Part_Types"></select>
+                                </div>
+                            </div>
+
+                            <div id="div_MES_Customer_Name" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_MES_Customer_Name">MES专案名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_MES_Customer_Name" name="MES_Customer_Name"
+                                           required data-msg-required="Please enter MES_Customer_Name"
+                                           data-rule-maxlength="255" data-msg-maxlength="Please enter no more than {0} characters in MES_Customer_Name.">
+                                </div>
+                            </div>
+
+                            <div id="div_PIS_Customer_Name" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PIS_Customer_Name">PIS专案名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_PIS_Customer_Name" name="PIS_Customer_Name">
+                                </div>
+                            </div>
+                            <div id="div_Is_Enable" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Is_Enable">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_Is_Enable" name="Is_Enable">
+                                        <option value="true">是</option>
+                                        <option value="false">否</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="Machine_Customer_UID" name="Machine_Customer_UID" value=0 />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        站点信息
+                        <button class="fa btn btn-primary btn-primary" id="js_btn_add_sub_func">增加站点</button>
+                        <button class="fa btn btn-primary btn-primary" id="js_btn_del_sub_func">删除站点</button>
+                    </h4>
+                    <div class="row" id="div_sub_ware">
+                        <div class="col-xs-12">
+                            <table id="js_sub_func_table" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="table-col-seq">序号</th>
+                                        <th>MES站点</th>
+                                        <th id="th_PIS_StationName">PIS站点</th>
+                                        <th>是否启用</th>
+                                        @*<th>创建者</th>
+                                            <th>创建时间</th>
+                                            <th>修改者</th>
+                                            <th>修改时间</th>*@
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_search">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_search" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optypes_search">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_optypes_search" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplan_search">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_funplan_search" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_warehouse_id_search">仓库代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_warehouse_id_search" name="Fixture_Warehouse_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_name_zh_search">仓库名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_name_zh_search" name="Fixture_Warehouse_Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Is_Enable_search">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_Is_Enable_search" name="Is_Enable">
+                                        <option></option>
+                                        <option value="true">是</option>
+                                        <option value="false">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select2_DataSource_Type">数据来源</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select2_DataSource_Type" name="DataSourceType">
+                                        <option></option>
+                                        @foreach (var item in Model.MachineDataSources)
+                                        {
+                                            <option value=@item>@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+
+        $('#js_btn_clear').click(function () {
+            $('#js_search_modal').find('select').val('');
+            PDMS.Utility.Criteria.Clear();
+        });
+
+        $(function () {
+            var WarehouseSetting = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryWarehouses: '@Url.Action("QueryMachine_CustomerInfo", "Machine")',
+                    //获取功能厂
+                    queryFunplantByop: '@Url.Action("QueryFunplantByop", "FixturePart")',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据UID获取专案及其站点信息
+                    queryWarehouseByuid: '@Url.Action("QueryMachine_CustomerByuid", "Machine")',
+                    //添加修改专案和站点信息
+                    addOrEditWarehouseInfo: '@Url.Action("AddOrEditCustomerAndStationInfo", "Machine")',
+                    //删除站点信息
+                    deleteWarehouseStorage: '@Url.Action("DeleteStation", "Machine")',
+                    //删除专案信息
+                    deleteWarehouse: '@Url.Action("DeleteCustomer", "Machine")',
+                    //获取客户
+                    GetCustomerSource: '@Url.Action("GetCustomerSource", "EventReportManager")',
+                    //获取专案
+                    GetProjectSource: '@Url.Action("GetProjectSource", "EventReportManager")',
+                    //获取生产阶段
+                    GetProductPhaseSource: '@Url.Action("GetProductPhaseSource", "EventReportManager")',
+                    //获取部件类型
+                    GetPartTypesSource: '@Url.Action("GetPartTypesSource", "EventReportManager")',
+                };
+                var subDatatable = null;
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Machine_Customer_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },{
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonAddSub = '<button type="button" class="btn btn-primary btn-xs js-grid-addsub" data-id="' + rowData.Machine_Customer_UID + '">编辑</button>';
+                            var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Machine_Customer_UID + '">删除</button>'
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '{1}' +
+                                        '</div>';
+                            result = result.replace('{0}', buttonAddSub);
+                            //result = result.replace('{1}', '');
+                            result = result.replace('{1}', buttonDelete);
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }
+                    , {
+                        data: "Plant_Organization",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BG_Organization",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Organization",
+                        className: "min-col-xs"
+                    }, {
+                        data: "PIS_Customer_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "MES_Customer_Name",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "DataSourceType",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Is_Enable",
+                        render: function (data, type, full, meta) {
+                            return data ? "是" : "否";
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "Createder",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(new Date(rowData.Created_Date).format("yyyy-MM-dd hh:mm:ss"));
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modifieder",
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell:
+                        function (td, cellData, rowData, row, col) {
+                            $(td).html(new Date(rowData.Modified_Date).format("yyyy-MM-dd hh:mm:ss"));
+                        },
+                        className: "min-col-xs"
+                    }];
+
+                var subColumns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="Machine_Station_UID" class="js-checkbox-item" value="' + rowData.Machine_Station_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center",
+                    defaultContent: ' ',
+                }, {
+                    className: "table-col-seq",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }, {
+                    data: "MES_Station_Name",
+                    className: "min-col-lg",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text"  name="MES_Station_Name" class="form-control input-sm" style="width:180px"  value="' + data + '">';
+                    }
+                }, {
+                    data: "PIS_Station_Name",
+                    className: "min-col-lg",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text"  name="PIS_Station_Name" class="form-control input-sm " style="width:180px"  value="' + data + '">';
+                    }
+
+                }, {
+                    data: "Is_Enable",
+                    render: function (data, type, full, meta) {
+                        var html = '<select name="Is_Enable" class="form-control input-sm js-select-subfunc-isshow">' +
+                               '<option value="true"  ' + (data ? 'selected' : '') + '>是</option>' +
+                               '<option value="false" ' + (!data ? 'selected' : '') + '>否</option>' +
+                           '</select>'
+                        return html;
+                        return html;
+                    },
+                    className: "min-col-lg"
+                }
+                //, {
+                //    data: "Createder",
+                //    className: "min-col-lg hidden",
+
+                //},  {
+                //    data: null,
+                //    createdCell: function (td, cellData, rowData, row, col) {
+                //        $(td).html(new Date(rowData.Created_Date).format("yyyy-MM-dd hh:mm:ss"));
+                //    },
+                //    className: "min-col-xs hidden"
+                //}, {
+                //    data: "Modifieder",
+                //    className: "min-col-lg hidden",
+                //}, {
+                //    data: null,
+                //    createdCell:
+                //    function (td, cellData, rowData, row, col) {
+                //        $(td).html(new Date(rowData.Modified_Date).format("yyyy-MM-dd hh:mm:ss"));
+                //    },
+                //    className: "min-col-xs hidden"
+                //}
+                ];
+                //#endregion 定义字段列
+                Date.prototype.format = function(format) {
+                    var date = {
+                        "M+": this.getMonth() + 1,
+                        "d+": this.getDate(),
+                        "h+": this.getHours(),
+                        "m+": this.getMinutes(),
+                        "s+": this.getSeconds(),
+                        "q+": Math.floor((this.getMonth() + 3) / 3),
+                        "S+": this.getMilliseconds()
+                    };
+                    if (/(y+)/i.test(format)) {
+                        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                    }
+                    for (var k in date) {
+                        if (new RegExp("(" + k + ")").test(format)) {
+                            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                                   ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                        }
+                    }
+                    return format;
+                }
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryWarehouses = function (firstLoad, buildCriteria) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryWarehouses,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryWarehouses(true, false);
+                    },
+                    queryWarehouses: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryWarehouses(false, buildCriteria);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_sub_func_table').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: subColumns,
+                            });
+                        }
+                        return subDatatable;
+                    },
+                    SetSubDatatable: function (datatable) {
+                        subDatatable = datatable;
+                    },
+                    DestroySubTable: function () {
+                        if (subDatatable != null) {
+                            subDatatable.destroy();
+                        }
+                    },
+                    SubColumns: subColumns
+                }
+            })();
+            debugger;
+            WarehouseSetting.Init();
+
+            GetCustomer();
+
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                if ($('#js_form_Warehouse_add ul.validate-error').find('li').text().length > 0)
+                    return false;
+                if ($('#js_add_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                    PDMS.Utility.MessageBox.info('请选择BG');
+                    return false;
+                }
+
+                if ($('#js_add_modal').find('select[name=MES_Customer_Name]').val() == "") {
+                    PDMS.Utility.MessageBox.info('请填写MES站点名称');
+                    return false;
+                }
+
+                if($("#js_select_DataSource_Type").val()=="BadDetail")
+                {
+                    if ($('#js_add_modal').find('select[name=BU_D_Name]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择客户');
+                        return false;
+                    }
+
+                    if ($('#js_add_modal').find('select[name=Project]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择专案');
+                        return false;
+                    }
+                    if ($('#js_add_modal').find('select[name=Product_Phase]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择生产阶段');
+                        return false;
+                    }
+
+                    if ($('#js_add_modal').find('select[name=Part_Types]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择部件类型');
+                        return false;
+                    }
+                }else
+                {
+                    if ($('#js_add_modal').find('input[name=PIS_Customer_Name]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写PIS站点名称');
+                        return false;
+                    }
+                }
+                $("#js_select_DataSource_Type").removeAttr("disabled");
+                var dataTable = WarehouseSetting.GetSubDatatable();
+                var submitJson = $('#js_form_Warehouse_add').serializeObject();
+                var Machine_Customer_UID = 0;
+                if ($('#js_add_modal').find('input[name=Machine_Customer_UID]').val() != '')
+                    Machine_Customer_UID = $('#js_add_modal').find('input[name=Machine_Customer_UID]').val();
+                submitJson.Machine_Customer_UID = Machine_Customer_UID;
+                var Storages = [];
+                dataTable .rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    debugger;
+                    var sub = {};
+                    var row = $('#js_sub_func_table>tbody>tr').eq(rowIdx);
+
+                    var Machine_Station_UID= row.find('.js-checkbox-item').val();
+                    debugger;
+                    if(Machine_Station_UID=="undefined"||Machine_Station_UID==undefined||Machine_Station_UID=="")
+                    {
+                        Machine_Station_UID=0;
+                    }
+                    sub["Machine_Station_UID"] = Machine_Station_UID;
+
+                    var MES_Station_Name = $.trim(row.find('input[name=MES_Station_Name]').val());
+                    if (MES_Station_Name == "") {
+                        PDMS.Utility.MessageBox.info(" 第" + (rowIdx + 1)+"行,MES站点名称不能为空");
+                        return false;
+                    }
+                    if (MES_Station_Name.length > 255) {
+                        PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+" 行,MES站点名称长度不能超过255");                      
+                        return false;
+                    }
+                    sub["MES_Station_Name"] = MES_Station_Name;
+
+                    var PIS_Station_Name = $.trim(row.find('input[name=PIS_Station_Name]').val());
+                    if (PIS_Station_Name == "") {
+                        PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+"行,PIS站点名称不能为空");
+                        return false;
+                    }
+                    if (PIS_Station_Name.length > 255) {
+                        PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+"行,PIS站点名称长度不能超过255");
+                        return false;
+                    }
+                    sub["PIS_Station_Name"] = PIS_Station_Name;
+
+                    var Is_Enable = $.trim(row.find('select[name=Is_Enable]').val());
+                    sub["Is_Enable"] = Is_Enable;
+                    Storages.push(sub);
+                });
+                debugger;
+                submitJson.Storages = Storages;
+                $.post(WarehouseSetting.urls.addOrEditWarehouseInfo, { jsonStorages: JSON.stringify(submitJson) }, function (data) {
+                    if (data == 'SUCCESS') {
+                        PDMS.Utility.MessageBox.info("保存成功!");
+                        WarehouseSetting.queryWarehouses(false);
+                        $('#js_add_modal').modal('hide');
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            })
+            //新增保存----end
+            $("#js_s_input_customer").change(function ff() {
+                GetProject();
+            });
+            $("#js_s_input_project").change(function ff() {
+                GetProductPhase();
+            });
+            $("#js_s_input_Product_Phase").change(function ff() {
+                GetPartTypes();
+            });
+            //增加储位按钮----START
+            $('#js_btn_add_sub_func').on('click', function () {
+                
+                debugger;
+                if( $("#js_select_DataSource_Type").val()==""|| $("#js_select_DataSource_Type").val()==null)
+                {
+                    PDMS.Utility.MessageBox.info("请选择数据源");
+                    return false;
+                }
+
+                var dataTable = WarehouseSetting.GetSubDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    for (var i = 2; i < 4; i++) {
+                        if ($.trim($(dataTable.cell(rowIdx, i).node()).find('input').val()) === "") {
+                            PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                            allowAdd = false;
+                            return;
+                        }
+                    }
+                });
+                
+                debugger;
+                if (allowAdd) {
+                    var row = dataTable.row.add({
+                        "Machine_Station_UID": 0,
+                        "MES_Station_Name": "",
+                        "PIS_Station_Name": "",
+                        "Is_Enable": "",
+                        //"Createder": "",
+                        //"Created_Date": "",
+                        //"Modifieder": "",
+                        //"Modified_Date": ""
+                    }).draw();
+                    $(row.node()).find('input').removeAttr("readonly");
+                }
+            });
+            //增加储位按钮----END
+
+            //删除储位按钮----START
+            $('#js_btn_del_sub_func').on('click', function () {
+                var dataTable = WarehouseSetting.GetSubDatatable();
+                var $checkedItems = $('#js_sub_func_table .js-checkbox-item:checked');
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    debugger;
+                    $.map($checkedItems, function (checkbox) {
+                        debugger;
+                        var Machine_Station_UID = $(checkbox).val();
+                        if (Machine_Station_UID > 0) {
+                            debugger;
+                            $.get(WarehouseSetting.urls.deleteWarehouseStorage
+                                , { Machine_Station_UID: Machine_Station_UID } , function (data) {
+                                    if (data != "SUCCESS") {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    } else {
+                                        dataTable.row($(checkbox).parents('tr')).remove().draw();
+                                    }
+                                });
+
+                        } else {
+                            dataTable.row($(checkbox).parents('tr')).remove().draw();
+                        }
+
+                    });
+
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+            });
+            //删除储位按钮----END
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    WarehouseSetting.queryWarehouses(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            function getFunplants(opuid,funplantuid) {
+                $('#js_select_funplan').html('<option></option>');
+                var url = WarehouseSetting.urls.queryFunplantByop;
+                $.post(url, { opuid: opuid }, function (data) {
+                    $('#js_select_funplan').html('<option></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplan').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                    }
+                    $('#js_select_funplan').val(funplantuid);
+                })
+            };
+
+            //新增界面BG变更---start
+            $('#js_select_factory_add').change(function () {
+                url = WarehouseSetting.urls.getCurrentOPType;
+                $('#js_select_optypes').html('<option></option>');
+
+                var  oporgid=  $(this).val();
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optypes').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optypes').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optypes').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+
+                    });
+                }
+
+                getFunplants($(this).val());
+            })
+
+
+            $('#js_select_optypes').change(function () {
+                getFunplants($(this).val());
+            })
+            //新增界面BG变更---end
+
+            //查询界面BG变更---start
+            $('#js_select_optypes_search').change(function () {
+                var url = WarehouseSetting.urls.queryFunplantByop,
+                    opuid = $(this).val();
+                $.post(url, { opuid: opuid }, function (data) {
+                    $('#js_select_funplan_search').html('<option></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplan_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                    }
+                })
+            })
+            //查询界面BG变更---end
+            //删除仓库信息----START
+            $('body').on('click', '.js-grid-delete', function () {
+                var Machine_Customer_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var url = WarehouseSetting.urls.deleteWarehouse;
+                    $.post(url, { Machine_Customer_UID: Machine_Customer_UID }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info('删除成功');
+                            WarehouseSetting.queryWarehouses();
+                        }
+                    });
+                });
+            });
+            //删除仓库信息----END
+
+
+            //新增
+            $('#btn_add').click(function () {
+                HiddenDiv();
+                $("#js_select_DataSource_Type").removeAttr("disabled");
+                $('#js_add_modal').find('input').val('');
+                $('#js_add_modal').modal('show', $(this));
+                var dataTable = WarehouseSetting.GetSubDatatable();
+                $('#js_select_factory_add').trigger('change');
+                dataTable.clear().draw();
+            })
+
+            //隐藏编辑框时清空值
+
+            //隐藏新增框时清空值
+            $('#js_add_modal').on('hidden.bs.modal', function (e) {
+                $('#js_add_modal h4').show();
+                $('#div_sub_ware').show();
+                $('#js_add_modal').find('input').val('');
+                $('#js_add_modal').find('select').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //储位管理--start
+            $('body').on('click', '.js-grid-addsub', function () {
+                debugger;
+                $('#isEdit').val(true);
+                $('#js_add_modal').modal('show', $(this));
+                var machine_Station_UID = $(this).attr('data-id'),
+                    url = WarehouseSetting.urls.queryWarehouseByuid;
+                $('#js_add_modal').find('input[name=Machine_Customer_UID]').val(machine_Station_UID);
+                $("#js_select_DataSource_Type").attr("disabled","disabled");
+                $.post(url, { Machine_Customer_UID: machine_Station_UID }, function (data) {
+                    debugger;
+                    $('#js_add_modal').find('select[name=DataSourceType]').val(data.DataSourceType);
+                    $('#js_select_DataSource_Type').trigger('change');
+                    if(data.DataSourceType=="BadDetail")
+                    {
+                        $("#div_input_customer").hide();
+                        $("#div_input_Project").hide();
+                        $("#div_input_Product_Phase").hide();
+                        $("#div_input_Part_Types").hide();
+                        $("#s_input_PIS_Customer_Name").attr("readonly","readonly");
+
+                        $("#th_PIS_StationName").text("绑定序号");
+                    }else
+                    {
+                        $("#th_PIS_StationName").text("PIS站点");
+                    }
+                    $('#js_add_modal').find('select[name=Plant_Organization_UID]').val(data.Plant_Organization_UID);
+                    $('#js_select_factory_add').trigger('change');
+                    $('#js_add_modal').find('select[name=BG_Organization_UID]').val(data.BG_Organization_UID);
+                    getFunplants(data.BG_Organization_UID, data.FunPlant_Organization_UID);
+
+                    $('#js_add_modal').find('input[name=MES_Customer_Name]').val(data.MES_Customer_Name);
+                    $('#js_add_modal').find('input[name=PIS_Customer_Name]').val(data.PIS_Customer_Name);
+                    $("#js_select_Is_Enable").get(0).value = data.Is_Enable;
+                    debugger;
+                    var subTable = $('#js_sub_func_table').DataTable({
+                        columns: WarehouseSetting.SubColumns,
+                        ordering: false,
+                        data: data.Storages,
+                        destroy: true
+                    });
+
+                    WarehouseSetting.SetSubDatatable(subTable);
+                });
+            });
+
+            function HiddenDiv()
+            {
+                $("#div_input_customer").hide();
+                $("#div_input_Project").hide();
+                $("#div_input_Product_Phase").hide();
+                $("#div_input_Part_Types").hide();
+                $("#div_Plant_Organization_UID").hide();
+                $("#div_BG_Organization_UID").hide();
+                $("#div_FunPlant_Organization_UID").hide();
+                $("#div_MES_Customer_Name").hide();
+                $("#div_PIS_Customer_Name").hide();
+                $("#div_Is_Enable").hide();
+            };
+
+
+            $("#js_select_DataSource_Type").change(function()
+            {
+                if($("#js_select_DataSource_Type").val()=="BadDetail")
+                {
+                    if(!$('#isEdit').val())
+                    {
+                        $("#div_input_customer").show();
+                        $("#div_input_Project").show();
+                        $("#div_input_Product_Phase").show();
+                        $("#div_input_Part_Types").show();
+                        $("#div_Plant_Organization_UID").show();
+                        $("#div_BG_Organization_UID").show();
+                        $("#div_FunPlant_Organization_UID").show();
+                        $("#div_FunPlant_Organization_UID").show();
+                        $("#div_MES_Customer_Name").show();
+                        $("#div_PIS_Customer_Name").show();
+                        $("#div_Is_Enable").show();
+                        $("#s_input_PIS_Customer_Name").attr("readonly","readonly");
+                        $("#th_PIS_StationName").text("绑定序号");
+                    }
+                }else
+                {
+                    $("#div_input_customer").hide();
+                    $("#div_input_Project").hide();
+                    $("#div_input_Product_Phase").hide();
+                    $("#div_input_Part_Types").hide();
+                    $("#div_Plant_Organization_UID").show();
+                    $("#div_BG_Organization_UID").show();
+                    $("#div_FunPlant_Organization_UID").show();
+                    $("#div_FunPlant_Organization_UID").show();
+                    $("#div_MES_Customer_Name").show();
+                    $("#div_PIS_Customer_Name").show();
+                    $("#div_Is_Enable").show();
+                    $("#s_input_PIS_Customer_Name").removeAttr("readonly");
+                    $("#th_PIS_StationName").text("PIS站点");
+                }
+            });
+
+
+
+            //不良明细_确定_FlowCharMaster
+            function GetCustomer() {
+                $("#js_s_input_customer").empty();
+                $.post(WarehouseSetting.urls.GetCustomerSource, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_customer"));
+                        });
+                        GetProject();
+                    }
+                });
+            }
+
+            function GetProject() {
+                $("#js_s_input_project").empty();
+                var temp = $("#js_s_input_customer").val();
+                $.post(WarehouseSetting.urls.GetProjectSource, { "CustomerName": temp }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_project"));
+                        });
+                        GetProductPhase();
+                    }
+                });
+            }
+
+            function GetProductPhase() {
+                $("#js_s_input_Product_Phase").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                $.post(WarehouseSetting.urls.GetProductPhaseSource, { "CustomerName": tempCustomer, "ProjectName": tempProject }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_Product_Phase"));
+                        });
+                        GetPartTypes();
+                    }
+                });
+            }
+
+            function GetPartTypes() {
+                $("#js_s_input_part_types").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                $.post(WarehouseSetting.urls.GetPartTypesSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_part_types"));
+                        });
+                    }
+                });
+            }
+
+        })
+    </script>
+}

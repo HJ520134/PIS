@@ -1,0 +1,1023 @@
+﻿
+@model PDMS.Model.ViewModels.Fixture_DefectCodeVM
+
+@{
+    ViewBag.OEE_AddMachine = T("OEE.AddMachineInfo").Text;
+    ViewBag.OEE_UpdateMachine = T("OEE.UpdateMachineInfo").Text;
+}
+<!-- Main content -->
+@*<section class="content-header portal-content-header">
+        <h1>@T("OEE.HomeMachineMaintence")</h1>
+    </section>*@
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <div class="col-md-12 search-field col-lg-12">
+            <a href="~/ExcelTemplate/OEE_MachineSetting.xlsx" class="fa fa-download btn btn-primary" target="_blank"> @T("Common.TeampleDownload")</a>
+            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_oee_Machine"> @T("Common.AddNew")</a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_OEE_Machine_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("OEE.Line")</th>
+                        <th>@T("ME.Process_Station")</th>
+                        <th>@T("OEE.MachineETM_Num")</th>
+                        <th>@T("OEE.MachineName")</th>
+                        <th>@T("Common.Published")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("OEE.Line")</th>
+                        <th>@T("ME.Process_Station")</th>
+                        <th>@T("OEE.MachineETM_Num")</th>
+                        <th>@T("OEE.MachineName")</th>
+                        <th>@T("Common.Published")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div>
+    </div>
+
+</section>
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">@T("QA.Plantarea")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">@T("QA.OPType")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">@T("QA.Functionfactory")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Project_UID_query">@T("QA.Project")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Project_UID_query" name="Project_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_LineID_query">@T("OEE.Line")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_LineID_query" name="LineID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_stationID_query">@T("ME.Process_Station")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_stationID_query" name="StationID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_EQP_EMTSerialNum">@T("OEE.MachineETM_Num")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="EQP_EMTSerialNum" class="form-control input-sm" id="js_select_EQP_EMTSerialNum" placeholder="@T("OEE.MachineETM_Num")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_MachineNo">@T("OEE.MachineName")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MachineNo" class="form-control input-sm" id="js_select_MachineNo" placeholder="@T("OEE.MachineName")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_select_enable_flag">@T("Common.Published")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_select_enable_flag" name="query_Is_Enable">
+                                            <option value="-1">全部</option>
+                                            <option value="0">禁用</option>
+                                            <option value="1">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--新增/编辑-->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain OEE__Machine</h4>
+                </div>
+                @using (Html.BeginForm("AddOEE_Machine", "OEE", FormMethod.Post, new { id = "js_form_OEE_Machine_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <form id="js_edit_form_query" data-need-validate="true">
+                                <input type="hidden" name="OEE_MachineInfo_UID" id="js_hidden_OEE_MachineInfo_UID" value="0" />
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_EQP_EMTSerialNum">@T("OEE.MachineETM_Num")</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" name="EQP_EMTSerialNum" class="form-control input-sm" id="js_edit_EQP_EMTSerialNum" placeholder="@T("OEE.MachineETM_Num")">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_factory_query">@T("QA.Plantarea")</label>
+                                        <div class="col-sm-8">
+                                            <select class="selectpicker form-control input-sm" id="js_edit_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                                @*<option></option>*@
+                                                @foreach (var item in Model.Plants)
+                                                {
+                                                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_optype_query">@T("QA.OPType")</label>
+                                        <div class="col-sm-8">
+                                            <input type="hidden" name="BG_Organization_UID" class="form-control input-sm" id="js_edit_optype_query">
+                                            <input type="text" name="BG_Organization_Name" class="form-control input-sm" disabled="disabled" id="js_edit_optype_queryName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_funplant_query">@T("QA.Functionfactory")</label>
+                                        <div class="col-sm-8">
+                                            <input type="hidden" name="FunPlant_Organization_UID" class="form-control input-sm" id="js_edit_funplant_query">
+                                            <input type="text" name="FunPlant_Organization_Name" class="form-control input-sm" disabled="disabled" id="js_edit_funplant_queryName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_Project_UID_query">@T("QA.Project")</label>
+                                        <div class="col-sm-8">
+                                            <input type="hidden" name="Project_UID" class="form-control input-sm" id="js_edit_Project_UID_query">
+                                            <input type="text" name="Project_Name" class="form-control input-sm" disabled="disabled" id="js_edit_Project_UID_queryName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_LineID_query">@T("OEE.Line")</label>
+                                        <div class="col-sm-8">
+                                            <select class="selectpicker form-control input-sm" id="js_edit_LineID_query" name="LineID" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_stationID_query">@T("ME.Process_Station")</label>
+                                        <div class="col-sm-8">
+                                            <select class="selectpicker form-control input-sm" id="js_edit_stationID_query" name="StationID" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_MachineNo">@T("OEE.MachineName")</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" name="MachineNo" class="form-control input-sm" id="js_edit_MachineNo" placeholder="@T("OEE.MachineName")">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="js_edit_Is_Enable">@T("Common.Published")</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control input-sm" id="js_edit_Is_Enable" name="Is_Enable">
+                                                <option value="false">禁用</option>
+                                                <option value="true">启用</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_Machine"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_Machine"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("OEE.MachineBaseInfoImport")</h4>
+                </div>
+                @using (Html.BeginForm("ImportOEE_Machine", "OEE", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">@T("QA.SelecttheExcelfile")</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="@T("FlowChart.SelectDoc")"
+                                       required data-msg-required="@T("QA.PleaseselectExcelfile")" accept=".xls,.xlsx" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+
+        $(function () {
+            var OEE_MachineMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        QueryOEE_MachineInfo: '@Url.Action("QueryOEE_MachineInfo", "OEE")',
+                        AddOEE_Machine: '@Url.Action("AddOEE_Machine", "OEE")',
+                        ExportOEE_MachineByQuery: '@Url.Action("ExportOEE_MachineByQuery", "OEE")',
+                        ExportOEE_Machine: '@Url.Action("ExportOEE_Machine", "OEE")',
+                        DeleteOEE_Machine: '@Url.Action("DeleteOEE_Machine", "OEE")',
+                        GetOEE_MachineInfoByEMT: '@Url.Action("GetOEE_MachineInfoByEMT", "OEE")',
+                        GetOEE_MachineInfoByUID: '@Url.Action("GetOEE_MachineInfoByUID", "OEE")',
+                        UpdateOEE_Machine: '@Url.Action("UpdateOEE_Machine", "OEE")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                        getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                        //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                        getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                        //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                        getLineDTOs: '@Url.Action("GetLineDTOs", "OEE")',
+                        //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                        getStationDTOs: '@Url.Action("GetStationDTOs", "OEE")',
+                    };
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.OEE_MachineInfo_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">';
+
+                            var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.OEE_MachineInfo_UID + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.OEE_MachineInfo_UID + '">删除</button>' +
+                                        '</div>';
+                            var resultHtml = hiddenHtml + buttonHtml;
+                            $(td).html(resultHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Plant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BG_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Project_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Line_Name",
+                        className: "min-col-xs"
+                    },
+                     {
+                         data: "Station_Name",
+                         className: "min-col-xs"
+                     },
+                      {
+                          data: "EQP_EMTSerialNum",
+                          className: "min-col-xs"
+                      },
+                       {
+                           data: "MachineNo",
+                           className: "min-col-xs"
+                       },
+                    {
+                        data: "Is_Enable",
+                        render: function (data, type, full, meta) {
+                            return data ? "启用" : "禁用";
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modify_Name",
+                        className: "min-col-lg"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(new Date(rowData.Modify_Date).Format("yyyy-MM-dd hh:mm"));
+                        },
+                        className: "min-col-xs"
+                    }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _OEE_MachineMaintenance = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_OEE_Machine_datatable",
+                        remoteUrl: urls.QueryOEE_MachineInfo,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _OEE_MachineMaintenance(true);
+                    },
+                    OEE_MachineMaintenance: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _OEE_MachineMaintenance(false);
+                    }
+                }
+
+            })();
+            OEE_MachineMaintenance.Init();
+
+            $('#js_edit_EQP_EMTSerialNum').change(function () {
+                var PlantUID = $('#js_edit_factory_query option:selected').val();
+                var EMT = $('#js_edit_EQP_EMTSerialNum').val();
+                url = OEE_MachineMaintenance.urls.GetOEE_MachineInfoByEMT;
+                if (PlantUID != 0) {
+                    $.get(url, { PlantUID: PlantUID, EMT: EMT }, function (data) {
+                        if (data != null) {
+                            $("#js_edit_optype_query").val(data.BG_Organization_UID);
+                            $("#js_edit_optype_queryName").val(data.OP);
+                            $("#js_edit_funplant_query").val(data.FunPlant_Organization_UID);
+                            $("#js_edit_funplant_queryName").val(data.FuncPlant);
+                            $("#js_edit_Project_UID_query").val(data.Project_UID);
+                            $("#js_edit_Project_UID_queryName").val(data.Project);
+                            $("#js_edit_Project_UID_query").trigger('change');
+                        }
+                    });
+                }
+            })
+            //查询界面厂区是OP类型变化
+            $('#js_edit_factory_query').change(function () {
+                var PlantUID = $('#js_edit_factory_query option:selected').val();
+                var EMT = $('#js_edit_EQP_EMTSerialNum').val();
+                url = OEE_MachineMaintenance.urls.GetOEE_MachineInfoByEMT;
+                if (PlantUID != 0) {
+                    $.get(url, { PlantUID: PlantUID, EMT: EMT }, function (data) {
+                        if (data != null) {
+                            $("#js_edit_optype_query").val(data.BG_Organization_UID);
+                            $("#js_edit_optype_queryName").val(data.OP);
+                            $("#js_edit_funplant_query").val(data.FunPlant_Organization_UID);
+                            $("#js_edit_funplant_queryName").val(data.FuncPlant);
+                            $("#js_edit_Project_UID_query").val(data.Project_UID);
+                            $("#js_edit_Project_UID_queryName").val(data.Project);
+                            $("#js_edit_Project_UID_query").trigger('change');
+                        }
+                    });
+                }
+            })
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = OEE_MachineMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_LineID_query').empty();
+                $('#js_select_LineID_query').html('<option></option>');
+                $('#js_select_stationID_query').empty();
+                $('#js_select_stationID_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+            //OP类型变更
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+            })
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = OEE_MachineMaintenance.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+                debugger;
+                $('#js_select_Project_UID_query').empty();
+                $('#js_select_Project_UID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_UID_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+            }
+            //根据专案获取线别
+            $('#js_select_Project_UID_query').change(function () {
+                $('#js_select_LineID_query').empty();
+                $('#js_select_LineID_query').html('<option></option>');
+                $('#js_select_LineID_query').empty();
+                $('#js_select_LineID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getLineDTOs;
+                var customerId = $('#js_select_Project_UID_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_LineID_query').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+            })
+
+            //根据线获取站点
+            $('#js_select_LineID_query').change(function () {
+                $('#js_select_stationID_query').empty();
+                $('#js_select_stationID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getStationDTOs;
+                var LineId = $('#js_select_LineID_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_stationID_query').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+            })
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    OEE_MachineMaintenance.OEE_MachineMaintenance(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_OEE_Machine_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = OEE_MachineMaintenance.urls.ExportOEE_MachineByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = OEE_MachineMaintenance.urls.ExportOEE_Machine;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+            $('#js_form_OEE_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //清空
+            $('#js_btn_clear').click(function () {
+                //清楚下拉选项的值
+                $("#js_search_modal").find("option:selected").attr("selected", false);;
+                $("#js_search_modal").selectpicker('refresh');
+                PDMS.Utility.Criteria.Clear();//清楚文本框的值
+            });
+
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+                if (button.hasClass('js-grid-edit')) {
+                    //编辑
+                    title.text("@ViewBag.OEE_UpdateMachine");
+                    $("#js_hidden_edit_id").val(0);
+                    $('#js_btn_save_new_Machine').hide();
+                    $('#js_btn_save_edit_Machine').show();
+                    var uid = button.attr("data-id");
+                    //调api 获取异常信息，填充到编辑画面
+                    $.get(OEE_MachineMaintenance.urls.GetOEE_MachineInfoByUID, { uid: uid }, function (data) {
+                        $('#js_hidden_OEE_MachineInfo_UID').val(uid);
+                        $('#js_edit_factory_query').val(data.Plant_Organization_UID);
+                        $('#js_edit_optype_query').val(data.BG_Organization_UID);
+                        $('#js_edit_funplant_query').val(data.FunPlant_Organization_UID);
+                        $('#js_edit_Project_UID_query').val(data.Project_UID);
+                        $('#js_edit_optype_queryName').val(data.BG_Organization_Name);
+                        $('#js_edit_funplant_queryName').val(data.FunPlant_Organization_Name);
+                        $('#js_edit_Project_UID_queryName').val(data.Project_Name);
+                        $('#js_edit_Project_UID_query').trigger('change');
+                        $('#js_edit_LineID_query').val(data.LineID);
+                        $('#js_edit_LineID_query').trigger('change');
+                        $('#js_edit_stationID_query').val(data.StationID);
+                        $('#js_edit_EQP_EMTSerialNum').val(data.EQP_EMTSerialNum);
+                        $('#js_edit_MachineNo').val(data.MachineNo);
+                        $('#js_edit_Is_Enable').val(data.Is_Enable.toString());
+                    });
+                } else if (button.attr('id') == 'js_btn_add_oee_Machine') {
+                    //新增
+                    title.text("@ViewBag.OEE_AddMachine");
+                    $('#js_btn_save_new_Machine').show();
+                    $('#js_btn_save_edit_Machine').hide();
+
+                }
+            })
+
+            //修改界面
+            //$('#js_edit_factory_query').change(function () {
+            //    GeteditOPTypes();
+            //})
+            function GeteditOPTypes() {
+                var oporgid = $('#js_edit_factory_query option:selected').val();
+                url = OEE_MachineMaintenance.urls.getCurrentOPType;
+                $('#js_edit_optype_query').empty();
+                $('#js_edit_optype_query').html('<option></option>');
+                $('#js_edit_funplant_query').empty();
+                $('#js_edit_funplant_query').html('<option></option>');
+                $('#js_edit_LineID_query').empty();
+                $('#js_edit_LineID_query').html('<option></option>');
+                $('#js_edit_stationID_query').empty();
+                $('#js_edit_stationID_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_edit_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_edit_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+            //OP类型变更
+            $('#js_edit_optype_query').change(function () {
+                refresheditFuncPlantSelect();
+                refresheditProjectSelect();
+            })
+            //加载功能厂
+            function refresheditFuncPlantSelect() {
+                $('#js_edit_funplant_query').empty();
+                $('#js_edit_funplant_query').html('<option></option>');
+                var url = OEE_MachineMaintenance.urls.getFunPlantByOPTypes;
+                var optypeUid = $('#js_edit_optype_query option:selected').val();
+                $.post(url, { Optype: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_edit_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                //$('#js_select_funplant_query').selectpicker('refresh');
+            }
+            //加载专案
+            function refresheditProjectSelect() {
+                debugger;
+                $('#js_edit_Project_UID_query').empty();
+                $('#js_edit_Project_UID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getCustomerDTOs;
+                var optypeUid = $('#js_edit_optype_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_edit_Project_UID_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+                //$('#js_select_project_query').selectpicker('refresh');
+            }
+            //根据专案获取线别
+            $('#js_edit_Project_UID_query').change(function () {
+                $('#js_edit_LineID_query').empty();
+                $('#js_edit_LineID_query').html('<option></option>');
+                $('#js_edit_LineID_query').empty();
+                $('#js_edit_LineID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getLineDTOs;
+                var customerId = $('#js_edit_Project_UID_query').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_edit_LineID_query').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+            })
+            //根据线获取站点
+            $('#js_edit_LineID_query').change(function () {
+                $('#js_edit_stationID_query').empty();
+                $('#js_edit_stationID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = OEE_MachineMaintenance.urls.getStationDTOs;
+                var LineId = $('#js_edit_LineID_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_edit_stationID_query').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+            })
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //删除
+            $('body').on('click', '.js-grid-delete', function () {
+                var uid = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm(
+                    "删除确认"
+                    , function () {
+                        var url = OEE_MachineMaintenance.urls.DeleteOEE_Machine;
+                        $.post(url, { OEE_MachineInfo_UID: uid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("删除成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else if (data == 'HAVEREFERENCE') {
+                                PDMS.Utility.MessageBox.error("异常已在使用，不可删除!");
+                            } else {
+                                PDMS.Utility.MessageBox.error("Error:" + data);
+                            }
+                        });
+                    });
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+            })
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                var url = OEE_MachineMaintenance.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+
+                if ($('#js_select_optype_query option:selected').text() != "") {
+                    $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    })
+                }
+            })
+            //修改按钮
+            $("#js_btn_save_edit_Machine").click('click', function () {
+
+                //验证栏位
+                if ($('#js_edit_factory_query option:selected').val() == "" || $('#js_edit_factory_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+                if ($('#js_edit_optype_query').val() == "" || $('#js_edit_optype_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置BG");
+                    return false;
+                }
+                if ($('#js_edit_funplant_query').val() == "" || $('#js_edit_funplant_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置功能厂");
+                    return false;
+                }
+                if ($('#js_edit_Project_UID_query').val() == "" || $('#js_edit_Project_UID_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置专案");
+                    return false;
+                }
+                if ($('#js_edit_LineID_query option:selected').val() == "" || $('#js_edit_LineID_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择Line");
+                    return false;
+                }
+                if ($('#js_edit_stationID_query option:selected').val() == "" || $('#js_edit_stationID_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择Station");
+                    return false;
+                }
+                if ($("#js_edit_EQP_EMTSerialNum").val() == "" || $("#js_edit_EQP_EMTSerialNum").val() == null) {
+                    PDMS.Utility.MessageBox.error("请输入ETM号");
+                    return false;
+                }
+                if ($("#js_edit_MachineNo").val() == "" || $("#js_edit_MachineNo").val() == null) {
+                    PDMS.Utility.MessageBox.error("请输入机台名称");
+                    return false;
+                }
+                if ($("#js_edit_Is_Enable").val() == "" || $("#js_edit_Is_Enable").val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择是否启用");
+                    return false;
+                }
+                var editform = $('#js_form_OEE_Machine_edit');
+                var uid = $(this).attr('data-id');
+                if (editform.valid()) {
+                    var _getParams = function () {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_edit_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_edit_form_query').serialize().replace(/\+/g, " ");
+                    };
+                    var options = {
+                        url: OEE_MachineMaintenance.urls.UpdateOEE_Machine,
+                        type: 'post',
+                        searchParams: _getParams(),
+                        success: function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("修改基本信息成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //新增按钮
+            $("#js_btn_save_new_Machine").click('click', function () {
+                //验证栏位
+                if ($('#js_edit_factory_query option:selected').val() == "" || $('#js_edit_factory_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+                if ($('#js_edit_optype_query').val() == "" || $('#js_edit_optype_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置BG");
+                    return false;
+                }
+                if ($('#js_edit_funplant_query').val() == "" || $('#js_edit_funplant_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置功能厂");
+                    return false;
+                }
+                if ($('#js_edit_Project_UID_query').val() == "" || $('#js_edit_Project_UID_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置专案");
+                    return false;
+                }
+                if ($('#js_edit_LineID_query option:selected').val() == "" || $('#js_edit_LineID_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择Line");
+                    return false;
+                }
+                if ($('#js_edit_stationID_query option:selected').val() == "" || $('#js_edit_stationID_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择Station");
+                }
+                if ($("#js_edit_EQP_EMTSerialNum").val() == "" || $("#js_edit_EQP_EMTSerialNum").val() == null) {
+                    PDMS.Utility.MessageBox.error("请输入ETM号");
+                    return false;
+                }
+                if ($("#js_edit_MachineNo").val() == "" || $("#js_edit_MachineNo").val() == null) {
+                    PDMS.Utility.MessageBox.error("请输入ETM号");
+                    return false;
+                }
+                if ($("#js_edit_Is_Enable").val() == "" || $("#js_edit_Is_Enable").val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择是否启用");
+                    return false;
+                }
+                var editform = $('#js_form_OEE_Machine_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: OEE_MachineMaintenance.urls.AddOEE_Machine,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("新增机台信息成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //显示修改的界面
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+            });
+            //模板下载
+            $('#js_btn_download_fl').on('click', function () {
+                this.form.action = OEE_MachineMaintenance.urls.downloadExcel;
+                $('#js_form_excel_add').submit();
+            });
+            //导入提交
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data == "SUCCESS") {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@T("QA.Importsuccessful")', function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.error(data);
+
+                        }
+                    }
+                });
+            });
+
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+
+            //Form Validate
+            $('#js_form_OEE_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+        });
+    </script>
+}

@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PDMS.Common" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PISLogPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\\Logs\\PIS\\</Value>
+    </Setting>
+    <Setting Name="ScheduleLogPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\\Logs\\PIS Schedule\\</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

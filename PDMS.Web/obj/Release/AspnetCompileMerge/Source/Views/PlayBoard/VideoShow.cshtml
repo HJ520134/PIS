@@ -1,0 +1,109 @@
+﻿@*@model int*@
+
+<div style="text-align: center;">
+    <video id="example_video_1" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="none" width="640" height="264"
+           x5-video-player-fullscreen="true"
+           data-setup="{}">
+    </video>
+</div>
+<link href="~/Content/css/video-js.min.css" rel="stylesheet" />
+<script src="~/Scripts/plugins/video.min.js"></script>
+<script>
+    //记录当前播放视频
+    var currentVideoName = '';
+
+    //所有视频名称
+    var allVideos = [];
+
+    //获取视频资源接口
+    var url ='@Url.Action("GetVideos", "PlayBoard")';
+
+    var srcPath = '/PIS_M/Upload/PlayBoard/Video/@ViewBag.Play_UID/';
+
+    $(function () {
+        //获取播放资源
+        //var sourceList = getRedioSource();
+
+        ////从第一个视频开始播放
+        //if (sourceList.length > 0) {
+        //    currentVideoName = sourceList[0];
+        //}
+        
+        //初始化
+        var player = videojs('example_video_1', {
+            autoplay: true,
+            muted: false,
+            controls: true,
+            height: $(window).height() + $('#div-operation').height(),
+            width: $(window).width(),
+            loop: false,
+            preload: true,
+            isFullscreen: true,
+            sources: [{ src: srcPath + currentVideoName, type: 'video/mp4' }]
+        }, function() {
+            debugger;
+            playNext(this);
+            //$('.vjs-fullscreen-control').click();
+            //一次播放结束后，循环播放
+            this.on('ended', function () {
+                debugger;
+                playNext(this);
+            });
+        });
+    });
+
+    //获取播放资源
+    function getRedioSource() {
+        var result;
+        var settingID = @ViewBag.SettingID;
+        //获取所有播放视频
+        var url ='@Url.Action("GetVideos", "PlayBoard")';
+        $.get(url, { settingID: settingID }, function (data) {
+            result = data;
+        });
+        return result;
+    }
+
+    function playNext(player) {
+        var nextVideoName = getNext();
+
+        //视频不为空才播放
+        if (nextVideoName != '') {
+            player.src({ src: srcPath + nextVideoName, type: 'video/mp4' });
+            //setTimeout(function(){ 
+            //    debugger;
+            //    player.play(); 
+            //}, 100);
+            
+            debugger;
+            //player.load();
+        }
+    }
+
+    //视频轮流播放
+    function getNext() {
+        var sourceList = getRedioSource();
+        if (sourceList.length == 0) {
+            currentVideoName = '';
+        }
+        else{
+            if (currentVideoName == '') {
+                currentVideoName = sourceList[0];
+            }else {
+                //获取当前播放视频在list 中的索引
+                var index = $.inArray(currentVideoName, sourceList);
+                if (index < 0) {
+                    //列表中没有此视频，下一个视频从第0个开始
+                    currentVideoName = sourceList[0];
+                }else {
+                    //下一个视频索引即index + 1
+                    var newIndex = (index + 1) % sourceList.length;
+                    currentVideoName = sourceList[newIndex];
+                }
+            }
+        }
+        return currentVideoName;
+    }
+
+
+</script>

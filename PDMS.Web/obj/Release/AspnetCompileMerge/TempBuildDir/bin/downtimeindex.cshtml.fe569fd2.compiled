@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Exception/DowntimeIndex.cshtml" hash="1626a5ce" filehash="fffffad3a9876162" flags="110000" assembly="App_Web_ahijikkr" type="ASP._Page_Views_Exception_DowntimeIndex_cshtml">
+    <filedeps>
+        <filedep name="/Views/Exception/DowntimeIndex.cshtml" />
+    </filedeps>
+</preserve>

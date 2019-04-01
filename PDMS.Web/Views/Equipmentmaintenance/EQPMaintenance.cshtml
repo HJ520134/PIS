@@ -1,0 +1,2799 @@
+﻿@*@model PDMS.Model.ViewModels.EQPRepairVM*@
+@model PDMS.Model.ViewModels.EQPRepairSearchVM
+<section class="content portal-content">
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-7">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-5">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    if (ViewBag.User_NTID != "EQPUSER")
+                    {
+                        <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_import">
+                            <i class="fa fa-plus"></i> 批量申请
+                        </a>
+                    }
+                    if (ViewBag.User_NTID != "EQPUSER")
+                    {
+                        <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_import_work">
+                            <i class="fa fa-plus"></i> 批量报工
+                        </a>
+                    }
+                    if (ViewBag.User_NTID != "EQPUSER")
+                    {
+                        <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_import_close">
+                            <i class="fa fa-plus"></i> 批量结案
+                        </a>
+                    }
+                    if (ViewBag.User_NTID != "EQPUSER")
+                    {
+                        <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_apply">
+                            <i class="fa fa-plus"></i> 提出申请单
+                        </a>
+                    }
+                    <a class="btn btn-primary btn-sm" id="bt_search" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> 查询</a>
+                    <a id="js_btn_export" class="btn btn-primary btn-sm" role="button">
+                        <i class="glyphicon glyphicon-save"></i> 导出
+                    </a>
+                }
+                <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>维修编号</th>
+                        <th>机台EMT</th>
+                        <th>机台序列号</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>成本中心</th>
+                        <th>成本中心描述</th>
+                        <th>制程</th>
+                        <th>机台类型</th>
+                        <th>厂内编号</th>
+                        <th>故障描述</th>
+                        <th>放置位置</th>
+                        <th>状态</th>
+                        <th>故障种类</th>
+                        <th>状况级别</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th>提报人员</th>
+                        <th>报修时间</th>
+                        <th>发生时间</th>
+                        <th>修复开始时间</th>
+                        <th>修复完成时间</th>
+                        <th>维修耗时(H)</th>
+                        <th>原因分析</th>
+                        <th>处理结果</th>
+                        <th>处理措施</th>
+                        <th>备注</th>
+                        <th>维修人</th>
+                        <th>更换配件</th>
+                        <th>人工工时</th>
+                        <th>最后更新时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>维修编号</th>
+                        <th>机台EMT</th>
+                        <th>机台序列号</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>成本中心</th>
+                        <th>成本中心描述</th>
+                        <th>制程</th>
+                        <th>机台类型</th>
+                        <th>厂内编号</th>
+                        <th>故障描述</th>
+                        <th>放置位置</th>
+                        <th>状态</th>
+                        <th>故障种类</th>
+                        <th>状况级别</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th>提报人员</th>
+                        <th>报修时间</th>
+                        <th>发生时间</th>
+                        <th>修复开始时间</th>
+                        <th>修复完成时间</th>
+                        <th>维修耗时(H)</th>
+                        <th>原因分析</th>
+                        <th>处理结果</th>
+                        <th>处理措施</th>
+                        <th>备注</th>
+                        <th>维修人</th>
+                        <th>更换配件</th>
+                        <th>人工工时</th>
+                        <th>最后更新时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">设备申请单</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditEQPMaintenance", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                <div class="modal-body form-horizontal">
+                    <div class="col-sm-12">
+                        <h4>
+                            <b>选择设备</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_optype">厂区</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_factory" name="Plant_OrganizationUID" data-live-search="true">
+                                @foreach (var item in Model.Plants)
+                                {
+                                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_optype">OP类型</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_optype" name="OP_Types" data-live-search="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label">功能厂</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant" data-live-search="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label">成本中心</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_costctr_add" name="CostCtr_UID" data-live-search="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_eqp_location">放置位置</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_eqp_location" name="EQP_Location" data-live-search="true">
+                                @*<option></option>
+                                @foreach (var item in Model.eqplocation)
+                                {
+                                    <option>@item</option>
+                                }*@
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label padding-lr-5">机台信息</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_edit_select_eqp_id" name="EQP_Uid" data-live-search="true">
+                                <optgroup label="机台序列号_EMT_财编_厂内编号">
+                                    <option></option>
+                                </optgroup>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_bu_name">制程</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_process" name="Process" placeholder="Process" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_eqp_plant_no">厂内编号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_eqp_plant_no" name="EQP_Plant_No" placeholder="EQP Plant No" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Project_Name">专案</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Project_Name" name="Project_Name" placeholder="Project_Name" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_contact">联系人</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm required" id="s_input_contact" name="Contact" placeholder="Contact"
+                                   required data-msg-required="Please enter Value" data-rule-maxlength="5" data-msg-maxlength="联系人不能超过5个字符">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_contact_tel ">联系电话</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control input-sm required needint" id="s_input_contact_tel" name="Contact_tel" placeholder="Contact tel" data-rule-maxlength="20" data-msg-maxlength="联系电话不能超过20个字符">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Mentioner">提报人员</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm " id="s_input_Mentioner" name="Mentioner" placeholder="Mentioner" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4>
+                            <b>填写故障信息</b>
+                        </h4>
+                    </div>
+
+                    <div id="error_time" class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Error_Time">发生时间</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Error_Time" name="Error_Time">
+                        </div>
+                    </div>
+
+                    @*<div id="error_time2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Error_Time2">发生时间</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Error_Time2" name="Error_Time">
+                        </div>
+                    </div>*@
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Apply_Time">报修时间</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Apply_Time" name="Apply_Time" placeholder="Apply Time" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_repair_reason">故障描述</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm required" id="s_repair_reason" name="Repair_Reason"
+                                   required data-msg-required="Please enter Repair Reason" data-rule-maxlength="50"
+                                   data-msg-maxlength="Please enter no more than {0} characters in Repair Reason.">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_bu_name">状况级别</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_select_errorlevel" name="Error_Level" data-live-search="true">
+                                <option></option>
+                                @foreach (var item in Model.errorinfo)
+                                {
+                                    if (item.Enum_Type == "EQPError_Level")
+                                    {
+                                        <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="Repair_Uid" name="Repair_Uid" />
+                    <input type="hidden" id="EQP_id" name="EQP_id" />
+                    <input type="hidden" id="isEdit" name="isEdit" />
+                    <div class="col-xs-12">
+                        <ul class="list-group validate-error"></ul>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_save" type="button"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_commit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">设备修复单</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditEQPMaintenance2", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_maintenance" }))
+                {
+                   
+               
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left">
+                            <h4>
+                                <b>选择设备</b>
+                            </h4>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">维修编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_optype" name="Repair_id" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">机台EMT</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_process" name="Equipment" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_op_types">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_op_types" name="OP_Types" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FunPlant">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_FunPlant" name="FunPlant" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_CostCtr">成本中心</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_CostCtr" name="CostCtr_ID" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Process">制程</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Process" name="Process" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_EQP_Plant_No">厂内编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_EQP_Plant_No" name="EQP_Plant_No" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Class_Desc">机台类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_Class_Desc" name="Class_Desc" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_repair_reason">故障描述</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_repair_reason" name="Repair_Reason" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Error_Time_commit">发生时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Error_Time_commit" name="Error_Time" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Apply_Time_commit">报修时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Apply_Time_commit" name="Apply_Time" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">开始时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Repair_BeginTime" name="Repair_BeginTime" placeholder="Repair BeginTime"
+                                       required data-msg-required="Please enter Value">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">完成时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Repair_EndTime" name="Repair_EndTime" placeholder="Repair EndTime"
+                                       required data-msg-required="Please enter Value">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">修复人员</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_labor" name="labor" data-live-search="true">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Mentioner">提报人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_Mentioner" name="Mentioner" placeholder="Mentioner" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-4" style="padding-left:0px;padding-top:5px">
+                            <div class="col-sm-3">
+                                <button type="button" class="btn fa fa-plus btn-primary" id="bt_add_labor">新增</button>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn fa fa-times btn-primary" id="bt_remove_labor">删除</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <table class=" table col-sm-8 table-condensed" id="table_labor" name="table_labor">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-checkbox nosort">
+                                                <input type="checkbox" class="js-checkbox-all" />
+                                            </th>
+                                            <th class="padding-l-5-i text-center">工号</th>
+                                            <th class="padding-1-5-i text-center">姓名</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left">
+                            <h4>
+                                <b>修复结果</b>
+                            </h4>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">损坏类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_errortype" name="Error_Types" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.errorinfo)
+                                    {
+                                        if (item.Enum_Type == "EQPError_Type")
+                                        {
+                                            <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">处理结果</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_result" name="Repair_Result" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.errorinfo)
+                                    {
+                                        if (item.Enum_Type == "EQPResult")
+                                        {
+                                            <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_reason_types">原因分析</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm required" id="s_input_repair_reason" name="Reason_Analysis" placeholder="Reason Analysis"
+                                       required data-rule-maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Repair Reason.">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-10 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_bu_name">处理措施</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm required" id="s_input_process" name="Repair_Method" placeholder="Repair Method">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-10 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_bu_name">备注</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm required" id="s_input_process" name="Repair_Remark" placeholder="Remark">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-10 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_material">更换材料</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_material" name="Assembly_Name" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.materialinfo)
+                                    {
+                                        <option value="@item.Material_Uid">@item.Assembly_Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="div_js_select_Reason_Analysis" class="form-group col-xs-12 col-md-10 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Reason_Analysis">重要料号原因分析</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Reason_Analysis"  data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3" style="padding-left:0px;padding-top:5px">
+                            <div class="col-sm-5">
+                                <button type="button" class="fa fa-plus btn btn-primary" id="bt_add_material">新增</button>
+                            </div>
+                            <div class="col-sm-5">
+                                <button type="button" class="fa fa-times btn btn-primary" id="bt_remove_material">删除</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12" style="padding-right:0px">
+                            <table class=" table table-condensed col-sm-9" id="table_material">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="padding-l-5-i text-center">材料</th>
+                                        @if (Model.showprice)
+                                        {
+                                            <th class="padding-l-5-i text-center">单价</th>
+                                        }
+                                        else
+                                        {
+                                            <th class="padding-l-5-i text-center" style="display:none">单价</th>
+                                        }
+                                        <th class="padding-1-5-i " style="display:none">名称</th>
+                                        <th class="padding-1-5-i text-center">数量</th>
+                                        @if (Model.showprice)
+                                        {
+                                        <th class="padding-1-5-i text-center">总费用</th>
+                                        }
+                                        else
+                                        {
+                                            <th class="padding-1-5-i text-center" style="display:none">总费用</th>
+                                        }                                        
+                                        <th class="padding-1-5-i text-center">原因分析</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                    </div>
+                    <input type="hidden" name="laborlist" id="laborlist" />
+                    <input type="hidden" name="matlist" id="matlist" />
+                    <input type="hidden" name="EQP_Uid" id="EQP_Uid" />
+                    <input type="hidden" name="Repair_Uid" id="Repair_Uid" />
+                    <input type="hidden" name="iseqp_user" id="iseqp_user" value="@Model.iseqp_user" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_save2" type="button"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            @*@if (Model.optypes.Count > 0)
+        {
+            <input type="hidden" name="Organization_UID" value=@Model.optypes[0].Organization_UID />
+        }
+        @if (Model.optypes.Count== 0)
+        {
+            <input type="hidden" name="Organization_UID" value=-1 />
+        }*@
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_factory2">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory2" name="Plant_OrganizationUID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_op_types">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_op_types" name="Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_funplant">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_funplant" name="FunPlant"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_costctr">成本中心</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_costctr" name="CostCtr"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_project_name">专案</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_project_name" name="Project_Name" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_eqp_location_search">放置位置</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_eqp_location_search" name="EQP_Location" data-live-search="true">
+                                            @*<option></option>
+                                            @foreach (var item in Model.eqplocation)
+                                            {
+                                                <option>@item</option>
+                                            }*@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_process">制程</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_process" name="Process"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_mfg_serial_num">机台序列号</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-sm" id="js_input_mfg_serial_num" name="Mfg_Serial_Num" placeholder="Mfg Serial Num" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="no-margin" />
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_errortype_search">损坏类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_errortype_search" name="Error_Types" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.errorinfo)
+                                            {
+                                                if (item.Enum_Type == "EQPError_Type")
+                                                {
+                                                    <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_errorlevel_search">状况级别</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_errorlevel_search" name="Error_Level" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.errorinfo)
+                                            {
+                                                if (item.Enum_Type == "EQPError_Level")
+                                                {
+                                                    <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_result_search">处理结果</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_result_search" name="Repair_Result" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.errorinfo)
+                                            {
+                                                if (item.Enum_Type == "EQPResult")
+                                                {
+                                                    <option value="@item.Enum_Value">@item.Enum_Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Labor_List_search">修复人员</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Labor_List_search" name="Labor_List" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.userinfo)
+                                            {
+                                                <option>@item.User_Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Update_Part_search">使用材料</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Update_Part_search" name="Update_Part" data-live-search="true">
+                                            @*<option></option>
+                                            @foreach (var item in Model.unitmat)
+                                            {
+                                                <option>@item</option>
+                                            }*@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_status_search">状态</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_status_search" name="Status" data-live-search="true">
+                                            <option></option>
+                                            <option value="Create">Create</option>
+                                            <option value="Commit">Commit</option>
+                                            <option value="Closed">Closed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_Repair_Remark_search">备注</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Repair_Remark" class="form-control input-sm " id="js_s_input_Repair_Remark_search">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_contact_search">联系人</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Contact" class="form-control input-sm " id="js_s_input_contact_search">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Mentioner_search">提报人员</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Mentioner" class="form-control input-sm " id="js_s_input_Mentioner_search">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_class_desc_search">机台类型</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Class_Desc" class="form-control input-sm " id="js_s_input_class_desc_search">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_repair_id">维修编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Repair_id" class="form-control input-sm " id="js_s_input_repair_id" placeholder="Repair id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label error">完成日期</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="End_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="End_Date_To" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">设备修复单</h4>
+                </div>
+                @using (Html.BeginForm("EQPMaintenanceClose", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_maintenance_close" }))
+                {
+                    <input type="hidden" name="laborlist" id="laborlist" />
+                    <input type="hidden" name="matlist" id="matlist" />
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left">
+                            <h4>
+                                <b>选择设备</b>
+                            </h4>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">维修编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_optype" name="Repair_id" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">机台信息</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_process" name="EQP_Id" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">开始时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Repair_BeginTime2" name="Repair_BeginTime" placeholder="Repair BeginTime" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">完成时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Repair_EndTime2" name="Repair_EndTime" placeholder="Repair EndTime" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">发生时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Error_Time2" name="Error_Time" placeholder="Error Time" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Apply_Time_view">报修时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Apply_Time_view" name="Apply_Time" placeholder="Apply Time" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_repair_reason">故障描述</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_repair_reason" name="Repair_Reason" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">状况级别</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="js_select_errorlevel" name="Error_Level" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Mentioner">提报人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_Mentioner" name="Mentioner" placeholder="Mentioner" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-5" style="padding-right:0px">
+                                <table class=" table col-sm-8 table-condensed" align="center" id="table_labor2" name="table_labor">
+                                    <thead>
+                                        <tr>
+                                            <th class="padding-l-5-i text-center">工号</th>
+                                            <th class="padding-1-5-i text-center">姓名</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left">
+                            <h4>
+                                <b>修复结果</b>
+                            </h4>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-10 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">处理结果</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="s_input_process" name="Repair_Result" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_errortype">损坏类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm " id="js_select_errortype" name="Error_Types" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_reason_types">原因分析</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm " id="s_input_repair_reason" name="Reason_Analysis" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-10 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_bu_name">处理措施</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm " id="s_input_process" name="Repair_Method" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-10 col-lg-10">
+                            <label class="col-sm-3 control-label" for="s_input_repair_remark">备注</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm " id="s_input_repair_remark" name="Repair_Remark" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-5" style="padding-right:0px">
+                                <table class=" table table-condensed col-sm-10" id="table_material2">
+                                    <thead>
+                                        <tr>
+                                            <th class="padding-l-5-i text-center">材料</th>
+                                            <th class="padding-1-5-i text-center">数量</th>
+                                            <th class="padding-1-5-i text-center">原因分析</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="EQP_Uid" id="EQP_Uid" />
+                    <input type="hidden" name="Repair_Uid" id="Repair_Uid" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_save_closed" type="button"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!--更新Excel Start-->
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">批量申请</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPMaintenanceExcel", "Equipmentmaintenance", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择档案</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="Select the file"
+                                       required data-msg-required="请选择EXCEL文件上传!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-warning btn-sm" href="../ExcelTemplate/EQPMaintenance_Template.xlsx">
+                            <i class="fa fa-save"></i> 范本下载
+                        </a>
+                        <button type="button" class="fa fa-times btn btn-primary" id="js_btn_clear_Update">Cancel</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update">Submit</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!--更新Excel Start-->
+    <div class="modal fade" id="js_importExcel_modal_work" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">批量报工</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPMaintenanceExcel_Work", "Equipmentmaintenance", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择档案</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="Select the file"
+                                       required data-msg-required="请选择EXCEL文件上传!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-warning btn-sm" href="../ExcelTemplate/EQPMaintenance_Repair_Template.xlsx">
+                            <i class="fa fa-save"></i> 范本下载
+                        </a>
+                        <button type="button" class="fa fa-times btn btn-primary" id="js_btn_clear_Update_work">Cancel</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update_work">Submit</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!--更新Excel Start-->
+    <div class="modal fade" id="js_importExcel_modal_close" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">批量结案</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPMaintenanceExcel_Close", "Equipmentmaintenance", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择档案</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="Select the file"
+                                       required data-msg-required="请选择EXCEL文件上传!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-warning btn-sm" href="../ExcelTemplate/EQPMaintenance_Close.xlsx">
+                            <i class="fa fa-save"></i> 范本下载
+                        </a>
+                        <button type="button" class="fa fa-times btn btn-primary" id="js_btn_clear_Update_close">Cancel</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update_close">Submit</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#bt_remove_labor').hide();
+            $('#bt_remove_material').hide();
+            $('#bt_add_material').hide();
+            $('#bt_add_labor').hide();
+            $('#div_js_select_Reason_Analysis').hide();
+        })
+
+        $(function () {
+            var EQPMaintenanceUrl = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryEQPMaintenance: '@Url.Action("QueryEQPMaintenance", "Equipmentmaintenance")',
+                    queryEQPMaintenanceByuid: '@Url.Action("QueryEQPMaintenanceByUid", "Equipmentmaintenance")',
+                    //删除EQPUser信息
+                    deleteEQPMaintenance: '@Url.Action("DeleteEQPMaintenance", "Equipmentmaintenance")',
+                    //取得机台信息
+                    getEquipInfo: '@Url.Action("QueryEquipmentInfoByUid", "Equipmentmaintenance")',
+                    //保存信息
+                    addOrEditEQPMaintenance: '@Url.Action("AddOrEditEQPMaintenance", "Equipmentmaintenance")',
+                    addOrEditEQPMaintenanceR:'@Url.Action("AddOrEditEQPMaintenanceR", "Equipmentmaintenance")',
+
+                    eQPMaintenanceCloseR:'@Url.Action("EQPMaintenanceCloseR", "Equipmentmaintenance")',
+
+                    queryEQPUserByuid: '@Url.Action("QueryEQPUserByUid", "Equipmentmaintenance")',
+                    queryqueryMaterialByuid: '@Url.Action("QueryMaterialUpdateByUid", "Equipmentmaintenance")',
+                    //更新子表信息
+                    updateSubTable: '@Url.Action("UpdateSubTable", "Equipmentmaintenance")',
+                    //取得op
+                    getoptypeByEqptype: '@Url.Action("GetOptypeByEqptype", "Equipmentmaintenance")',
+                    //根据op类型取得 专案
+                    getProjectnameByOptype: '@Url.Action("GetProjectnameByOptype", "Equipmentmaintenance")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Equipmentmaintenance")',
+                    //根据功能厂取得制程
+                    getProcessByFunplant: '@Url.Action("GetProcessByFunplant", "Equipmentmaintenance")',
+                    //根据功能厂取得机台序列号
+                    //getEqpidByProcess: '@Url.Action("GetEqpidByProcess", "Equipmentmaintenance")',
+                    //导出excel
+                    doExportFunction: '@Url.Action("DoExportFunction", "Equipmentmaintenance")',
+                    //根据用户信息取得所有机台
+                    queryeqpbyuser: '@Url.Action("Queryeqpbyuser", "Equipmentmaintenance")',
+                    //根据op类型取得功能厂
+                    queryFunPlantByOp: '@Url.Action("QueryFunplants", "Equipmentmaintenance")',
+                    //("QueryFunPlantByOp", "Equipmentmaintenance")',QueryFunctionPlant
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Equipmentmaintenance")',
+                    //getCurrentOPType: '@Url.Action("QueryOpTypesByUser", "Equipmentmaintenance")',
+                    //("GetCurrentOPType", "Equipmentmaintenance"),
+
+                    getEQPLocation: '@Url.Action("GetEQPLocation", "Equipmentmaintenance")',
+                    getEQPAllMaterial: '@Url.Action("GetEQPAllMaterial", "Equipmentmaintenance")',
+                    getEQPUnitMat: '@Url.Action("GetEQPUnitMat", "Equipmentmaintenance")',
+
+                    getMatReasonByMat: '@Url.Action("GetMatReasonByMat", "Equipmentmaintenance")',
+                    getEQPAllUserAPI: '@Url.Action("EQPAllUserAPI", "Equipmentmaintenance")',
+
+                    doAllEQPMaintenanceReprot: '@Url.Action("DoAllEQPMaintenanceReprot", "Equipmentmaintenance")',
+                    //取得成本中心
+                    getCostCtrs: '@Url.Action("GetCostCtrs", "Equipmentmaintenance")',
+                };
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Repair_Uid + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Repair_Uid + '">编辑</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '{1}' +
+                                            '{2}' +
+                                        '</div>';
+                            var buttonpost = '<button type="button" class="btn btn-primary btn-xs js-grid-commit" data-id="' + rowData.Repair_Uid + '">维修报工</button>';
+                            var butclose = '<button type="button" class="btn btn-primary btn-xs js-grid-close" data-id="' + rowData.Repair_Uid + '">结案</button>';
+                            var butView = '<button type="button" class="btn btn-primary btn-xs js-grid-View" data-id="' + rowData.Repair_Uid + '">查看</button>';
+                            if (rowData.Status == "Create")
+                            {
+                                result = result.replace('{2}', "");
+                                result = result.replace('{1}', buttonpost);
+                                if('@ViewBag.User_NTID' != "EQPUSER")
+                                {
+                                    result = result.replace('{0}', buttonEdit);
+                                }
+                                else
+                                {
+                                    result = result.replace('{0}', "");
+                                }
+                            }
+                            else if (rowData.Status == "Commit")
+                            {
+                                result = result.replace('{0}', "");
+                                result = result.replace('{1}', buttonpost);
+                                if (rowData.Repair_Result=="已完成") {
+                                    if('@ViewBag.User_NTID' != "EQPUSER")
+                                    {
+                                        result = result.replace('{2}', butclose);
+                                    }else
+                                    {
+                                        result = result.replace('{2}', "");
+                                    }
+                                }
+                                else {
+                                    result = result.replace('{2}', "");
+                                }
+                            }
+                            else if (rowData.Status == "Closed")
+                            {
+                                result = result.replace('{0}', butView);
+                                result = result.replace('{1}', "");
+                                result = result.replace('{2}', "");
+                            }
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "Repair_id",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Equipment",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Mfg_Serial_Num",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OP_TYPES",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "CostCtr_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "CostCtr_Description",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Class_Desc",
+                        className: "min-col-xs"
+                    }, {
+                        data: "EQP_Plant_No",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_Reason",
+                        className: "min-col-xs"
+                    }, {
+                        data: "EQP_Location",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Status",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Error_Types",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Error_Level",
+                        render: function (data, type, full, meta) {
+                            if (data=="特急")
+                                return '<label name="Update_No" style="background-color:red">' + data + '</label>';
+                            else if  (data=="紧急")
+                                return '<label name="Update_No" style="background-color:yellow">' + data + '</label>';
+                            else
+                                return '<label name="Update_No">' + data + '</label>';
+                        },
+                        className: "min-col-xs "
+                    }, {
+                        data: "Contact",
+                        className: "min-col-xs"
+                    } , {
+                        data: "Contact_tel",
+                        className: "min-col-xs"
+                    },
+                     {
+                         data: "Mentioner",
+                         className: "min-col-xs"
+                     },
+                    {
+                        data: "Apply_Time",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Error_Time",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_BeginTime",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Repair_EndTime",
+                        className: "min-col-lg"
+                    }, {
+                        data: "TotalTime",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Reason_Analysis",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_Result",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_Method",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_Remark",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Labor_List",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Update_Part",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Labor_Time",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }
+                ];
+                //#endregion 定义字段列
+
+                //#region edit columns
+                var funcEditColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.EQPUser_Uid + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: "User_Id",
+                    className: "min-col-xs"
+                }, {
+                    data: "User_Name",
+                    className: "min-col-xs"
+                }];
+
+                //#endregion
+
+                //#material edit columns
+                var strHiddenPrice = " hidden";
+                if ('@Model.showprice'== 'True') { strHiddenPrice = "";}
+                var materialDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Uid + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: "Material_Name",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text" disabled name="Material_Name" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Unit_Price",
+                    className: "min-col-xs text-center" + strHiddenPrice
+                }, {
+                    data: "Assembly_Name",
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "Update_No",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="Update_No" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Update_Cost",
+                    render: function (data, type, full, meta) {
+                        var html = '<input type="number" name="Update_Cost" class="form-control input-sm js-input-function-id" value="' + data + '">';
+                        return html;
+                    },
+                    className: "min-col-xs text-center" + strHiddenPrice
+                }, {
+                    data: "Reason_Analysis",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text" disabled name="Reason_Analysis" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-xs text-center"
+                }];
+
+                //#endregion
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryEQPMaintenance = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryEQPMaintenance,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('#js_Bom_datatable tbody tr td').addClass('text-center');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryEQPMaintenance(true, false);
+                    },
+                    queryEQPMaintenance: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryEQPMaintenance(false, buildCriteria);
+                    },
+                    GetLaborDatatable: function () {
+                        functionDatatable = $('#table_labor').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: funcEditColumns,
+                        });
+                        return functionDatatable;
+                    },
+                    SetLaborDatatable: function (datatable) {
+                        functionDatatable = datatable;
+                    },
+                    GetMaterialDatatable: function () {
+                        materialDatatable = $('#table_material').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: materialDatatableColumns
+                        });
+                        return materialDatatable;
+                    },
+                    SetMatDatatable: function (datatable) {
+                        materialDatatable = datatable;
+                    },
+                    LaborColumns: funcEditColumns,
+                    MatColumns: materialDatatableColumns
+                }
+            })();
+
+            EQPMaintenanceUrl.Init();
+
+            $('.needint').keydown(function (event) {
+                var value = event.key;
+                if (value.length > 1)
+                    return true;
+                if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                    return false;
+            })
+
+            //成本中心資料載入
+            url = EQPMaintenanceUrl.urls.getCostCtrs;
+            $.post(url, function (data) {
+                $('#js_select_costctr_add').html('<option></option>');
+                $('#js_select_costctr').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    //查詢頁
+                    if ($('#js_select_costctr_add').find('option[value=' + data[i].CostCtr_UID + ']').length == 0) {
+                        $('#js_select_costctr_add').append('<option value="' + data[i].CostCtr_UID + '">' + data[i].CostCtr + '</option>');
+                    }
+                    //編輯頁
+                    if ($('#js_select_costctr').find('option[value=' + data[i].CostCtr_UID + ']').length == 0) {
+                        $('#js_select_costctr').append('<option value="' + data[i].CostCtr_UID + '">' + data[i].CostCtr + '</option>');
+                    }
+                }
+                $('#js_select_costctr_add').selectpicker('refresh');
+                $('#js_select_costctr_add').selectpicker('val', '');
+                $('#js_select_costctr').selectpicker('refresh');
+                $('#js_select_costctr').selectpicker('val', '');
+            });
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    EQPMaintenanceUrl.queryEQPMaintenance(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+
+            $('#s_input_Error_Time,#s_input_Apply_Time,#s_input_Repair_BeginTime,#s_input_Repair_EndTime').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii', step: 1, hours12: false, minuteStep: 1, minDate: 0, todayHighlight: true, autoclose: true, language: 'zh-CN'
+            })
+
+            $('#js_select_labor,#js_edit_select_eqp_id,#js_select_material,#js_select_errortype,#js_select_errorlevel'+
+                ',#js_select_op_types,#js_select_project_name,#js_select_funplant,#js_select_process'+
+                ',#js_select_result,#js_select_eqp_location_search,#js_select_errorlevel_search,'+
+                '#js_select_result_search,#js_select_Labor_List_search,#js_select_Update_Part_search,'+
+                '#js_select_optype,#js_select_funplant_add,#js_select_Reason_Analysis').selectpicker({ 'selectedText': 'cat' });
+
+            //主界面上的查询按钮
+            $('#bt_search').click(function () {
+                if ($('#js_select_funplant').find('option').length == 0)
+                {
+                    $('#js_select_factory2').trigger('change');
+                }
+
+                $('#js_select_eqp_location_search').html('<option></option>');
+                $('#js_select_eqp_location_search').selectpicker('refresh');
+                url = EQPMaintenanceUrl.urls.getEQPLocation;
+                $.post(url, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+
+                        $('#js_select_eqp_location_search').append('<option value="' + data[i] + '">' + data[i] + '</option>');
+
+                    }
+                    $('#js_select_eqp_location_search').selectpicker('refresh');
+                });
+
+                $('#js_select_Update_Part_search').html('<option></option>');
+                $('#js_select_Update_Part_search').selectpicker('refresh');
+                url = EQPMaintenanceUrl.urls.getEQPUnitMat;
+                $.post(url, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+
+                        $('#js_select_Update_Part_search').append('<option value="' + data[i] + '">' + data[i] + '</option>');
+
+                    }
+                    $('#js_select_Update_Part_search').selectpicker('refresh');
+                });
+            })
+
+            //放置位置变更 start
+            $('#js_select_eqp_location').change(function () {
+                $('#js_edit_select_eqp_id').html('<optgroup label="机台序列号_EMT_财编_厂内编号"><option></option></optgroup>');
+                $('#js_edit_select_eqp_id').selectpicker('refresh');
+                var location = $('#js_edit_modal').find('select[name=EQP_Location]').val();
+                if (location != "") {
+                    var optype = $('#js_edit_modal').find('select[name=OP_Types]').val();
+                    var funplant = $('#js_edit_modal').find('select[name=FunPlant]').val();
+                    var url = EQPMaintenanceUrl.urls.queryeqpbyuser;
+                    $.post(url, { location: location, funplant: funplant, optype: optype }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_edit_modal').find('select[name=EQP_Uid]').find('optgroup').append('<option value=' + data[i].EQP_Uid + '>' + data[i].Mfg_Serial_Num + '_' + data[i].Equipment + '_' + data[i].Asset + '_' + data[i].EQP_Plant_No + '</option>')
+                        }
+                        $('#js_edit_select_eqp_id').selectpicker('refresh');
+                    })
+                }
+            })
+            //放置位置变更  end
+            //点击厂区是OP类型变化
+            $('#js_select_factory').change(function () {
+                var oporgid = $('#js_select_factory option:selected').val();
+                url = EQPMaintenanceUrl.urls.getCurrentOPType;
+                $('#js_select_optype').html('<option></option>');
+                $('#js_select_optype').selectpicker('refresh');
+
+                $('#js_select_eqp_location').selectpicker('val', '');
+                $("#js_select_eqp_location").trigger("liszt:updated");
+
+                $('#js_edit_select_eqp_id').html('');
+                $('#js_edit_select_eqp_id').selectpicker('refresh');
+                $('#js_edit_select_eqp_id').selectpicker('val', '');
+                $("#js_edit_select_eqp_id").trigger("liszt:updated");
+                //$('#js_select_funplant_add').html('');
+
+                $('#js_select_funplant_add').html('<option></option>');
+                $('#js_select_funplant_add').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                $('#js_select_optype').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+            })
+            //申请界面op类型变更  start
+            $('#js_select_optype').change(function () {
+                $('#js_select_eqp_location').selectpicker('val', '');
+                $("#js_select_eqp_location").trigger("liszt:updated");
+
+                $('#js_edit_select_eqp_id').html('');
+                $('#js_edit_select_eqp_id').selectpicker('refresh');
+                $('#js_edit_select_eqp_id').selectpicker('val', '');
+                $("#js_edit_select_eqp_id").trigger("liszt:updated");
+                $('#js_select_funplant_add').html('<option></option>');
+                $('#js_select_funplant_add').selectpicker('refresh');
+                if ($('#js_select_optype').val() != "") {
+                    var url = EQPMaintenanceUrl.urls.queryFunPlantByOp;
+                    $.post(url, { oporgid: $('#js_select_optype').val(), optypes: $('#js_select_optype option:selected').text() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            debugger;
+                            if ($('#js_select_funplant_add').find('option[value=' + data[i].System_FunPlant_UID + ']').length == 0) {
+                                if ("@ViewBag.User_NTID"=="EQPUSER")
+                                {
+                                    $('#js_select_funplant_add').append('<option value="' + data[i].System_FunPlant_UID + '">' + data[i].FunPlant + '</option>');
+                                }
+                                else
+                                {
+
+                                    if( @Model.funplantUID!=0)
+                                    {
+                                        if(@Model.funplantUID==data[i].FunPlant_OrganizationUID )
+                                        {
+                                            $('#js_select_funplant_add').append('<option value="' + data[i].System_FunPlant_UID + '">' + data[i].FunPlant + '</option>');
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $('#js_select_funplant_add').append('<option value="' + data[i].System_FunPlant_UID + '">' + data[i].FunPlant + '</option>');
+                                    }
+                                }
+
+
+                            }
+                        }
+                        $('#js_select_funplant_add').selectpicker('refresh');
+                    })
+                }
+            })
+            //申请界面Op类型变更  end
+
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory2').change(function () {
+                var oporgid = $('#js_select_factory2 option:selected').val();
+                url = EQPMaintenanceUrl.urls.getCurrentOPType;
+                $('#js_select_op_types').html('<option></option>');
+                $('#js_select_op_types').selectpicker('refresh');
+
+                $('#js_select_project_name').html('<option></option>');
+                $('#js_select_project_name').selectpicker('refresh');
+
+                $('#js_select_funplant').html('<option></option>');
+                $('#js_select_funplant').selectpicker('refresh');
+
+                $('#js_select_process').html('<option></option>');
+                $('#js_select_process').selectpicker('refresh');
+
+                $('#js_select_eqp_id').html('<option></option>');
+                $('#js_select_eqp_id').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_op_types').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                $('#js_select_op_types').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+            })
+            //查询界面OP类型变更  start
+            $('#js_select_op_types').change(function () {
+                $('#js_search_modal').find('input[name=Organization_UID]').val($(this).find('option:selected').data('oporguid'));
+                var url = EQPMaintenanceUrl.urls.getFunPlantByOPTypes;
+                $('#js_select_project_name').html('<option></option>');
+                $('#js_select_project_name').selectpicker('refresh');
+
+                $('#js_select_funplant').html('<option></option>');
+                $('#js_select_funplant').selectpicker('refresh');
+
+                $('#js_select_process').html('<option></option>');
+                $('#js_select_process').selectpicker('refresh');
+
+                $('#js_select_eqp_id').html('<option></option>');
+                $('#js_select_eqp_id').selectpicker('refresh');
+                if ($('#js_select_op_types option:selected').text() != "") {
+                    $.post(url, { Optype: $('#js_select_op_types option:selected').val(), Optypes: $('#js_select_op_types option:selected').text() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant').append('<option dataname="' + data[i].System_FunPlant_UID + '">' + data[i].FunPlant + '</option>');
+                            $('#js_select_funplant').selectpicker('refresh');
+                        }
+                    })
+                    url = EQPMaintenanceUrl.urls.getProjectnameByOptype;
+                    $.post(url, { Optype: $('#js_select_op_types option:selected').text() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_project_name').append('<option dataname="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                            $('#js_select_project_name').selectpicker('refresh');
+                        }
+                    }
+                    )
+                }
+            })
+            //查询界面OP类型变更  end
+
+
+            //功能厂变更   start
+            $('#js_select_funplant').change(function () {
+                var url = EQPMaintenanceUrl.urls.getProcessByFunplant;
+                $('#js_select_process').html('<option></option>');
+                $('#js_select_process').selectpicker('refresh');
+
+                if ($(this).val() != "") {
+                    var funplantuid = $('#js_select_funplant option:selected').attr('dataname');
+                    $.post(url, { funplantuid: funplantuid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_process').append('<option>' + data[i].process + '</option>');
+                            $('#js_select_process').selectpicker('refresh');
+                        }
+                    })
+                }
+            })
+            //功能厂变更  end
+
+            //填写数量时计算总费用  start
+            $('#table_material').on('change', '.input_update_no', function () {
+                var $sender = $(this),
+                inputValue = $.trim($sender.val()),
+                $tr = $sender.closest('tr'),
+                trIndex = $tr.index(),
+                $tds = $tr.find('td');
+                uniteprice = $tr.find('td:eq(2)').text();
+                $tds.find('input[name="Update_Cost"]').val(uniteprice * inputValue);
+            })
+
+            //填写数量时计算总费用  end
+
+            //勾选人员表
+            $('#table_labor').change(function () {
+                var $checkedItems = $('#table_labor .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    $('#bt_remove_labor').hide();
+                }
+                else
+                    $('#bt_remove_labor').show();
+            })
+
+            $('#table_material').change(function () {
+                var $checkedItems = $('#table_material .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    $('#bt_remove_material').hide();
+                }
+                else
+                    $('#bt_remove_material').show();
+            })
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = EQPMaintenanceUrl.urls.doAllEQPMaintenanceReprot;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                    //  PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = EQPMaintenanceUrl.urls.doExportFunction;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+
+            //选择维修人员
+            $('#js_select_labor').change(function () {
+                if ($('#js_select_labor').val() == "") {
+                    $('#bt_add_labor').hide();
+                } else {
+                    $('#bt_add_labor').show();
+                }
+            })
+            //选择更换材料---START
+            $('#js_select_material').change(function () {
+                $('#js_select_Reason_Analysis').html('<option></optioni>');
+                if ($('#js_select_material').val() == "") {
+                    $('#bt_add_material').hide();
+                    $('#div_js_select_Reason_Analysis').hide();
+                } else {
+                    var url = EQPMaintenanceUrl.urls.getMatReasonByMat,
+                        Material_Uid = $(this).val();
+                    $.post(url, { Material_Uid: Material_Uid }, function (data) {
+                        if (data.length == 0) {
+                            $('#div_js_select_Reason_Analysis').hide();
+                            $('#bt_add_material').show();
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_Reason_Analysis').append('<option value="' + data[i].Material_Reason_UID + '">' + data[i].Reason + '</option>');
+                            }
+                            $('#div_js_select_Reason_Analysis').show();
+                            $('#js_select_Reason_Analysis').selectpicker('refresh');
+                            $('#bt_add_material').hide();
+                        }
+                    })
+                }
+            })
+            //选择更换材料-----END
+            //重要料号原因分析变更---START
+            $('#js_select_Reason_Analysis').change(function () {
+                if ($('#js_select_material').val() == "") {
+                    $('#bt_add_material').hide();
+                } else {
+                    $('#bt_add_material').show();
+                }
+            })
+            //重要料号原因分析变更-----END
+
+            //新增更换材料
+            $('#bt_add_material').click(function () {
+                $('#div_js_select_Reason_Analysis').hide();
+                if ($('#js_select_material').val() == "") {
+                    PDMS.Utility.MessageBox.info('请选择更换材料');
+                    return false;
+                }
+                $('#bt_add_material').hide();
+                var Material_Uid = $('#js_select_material option:selected').val();
+                var Reason = $('#js_select_Reason_Analysis option:selected').text();
+                var url = EQPMaintenanceUrl.urls.queryqueryMaterialByuid;
+                var dataTable = EQPMaintenanceUrl.GetMaterialDatatable();
+                $.post(url, { Material_Uid: Material_Uid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_material option[value="' + data[i].Material_Uid + '"').remove();
+                        $('#js_select_material').selectpicker('refresh')
+                        var row = dataTable.row.add({
+                            "Material_Uid": data[i].Material_Uid,
+                            "Material_Name": data[i].Material_Name,
+                            "Unit_Price": data[i].Unit_Price,
+                            "Assembly_Name": data[i].Assembly_Name,
+                            "Update_No": '',
+                            "Update_Cost": '',
+                            "Reason_Analysis": Reason
+                        }).draw();
+                    }
+                })
+            })
+
+            //新增更换材料   end
+
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                if ($('#js_select_optype').find('option').length>1){
+                    $('#js_select_optype').selectpicker('val', '');
+                    $("#js_select_optype").trigger("liszt:updated");
+                    $('#js_select_optype').trigger('change');
+
+                    $('#js_select_funplant_add').html('');
+                    $("#js_select_funplant_add").selectpicker('refresh');
+                }
+
+                $('#js_select_funplant_add').selectpicker('val', '');
+                $("#js_select_funplant_add").trigger("liszt:updated");
+
+                $("#js_select_costctr_add").selectpicker('refresh');
+                $("#js_select_costctr_add").selectpicker('val', '');
+
+                $('#js_select_eqp_location').selectpicker('val', '');
+                $("#js_select_eqp_location").trigger("liszt:updated");
+
+                $('#js_edit_select_eqp_id').html('');
+                $('#js_edit_select_eqp_id').selectpicker('refresh');
+                $('#js_edit_select_eqp_id').selectpicker('val', '');
+                $("#js_edit_select_eqp_id").trigger("liszt:updated");
+
+                $('#js_select_errortype').selectpicker('val', '');
+                $("#js_select_errortype").trigger("liszt:updated");
+
+                $('#js_select_errorlevel').selectpicker('val', '');
+                $("#js_select_errorlevel").trigger("liszt:updated");
+                $('.list-group.validate-error').empty();
+                $('#js_edit_modal').find('input').val('');
+            });
+
+            //隐藏维修报工框时释放修复人及材料
+            $('#js_commit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_select_Reason_Analysis').html('');
+                $("#js_select_Reason_Analysis").selectpicker('refresh');
+                $('#table_labor tbody tr').each(function () {
+                    var userid = $(this).find('td:eq(0)').find('input').val();
+                    if ($(this).find('td').length>1) {
+                        var name = $(this).find('td:eq(1)').text() + '_' + $(this).find('td:eq(2)').text();
+                        $('#js_select_labor').append('<option value="' + userid + '">' + name + '</option>');
+                        $('#js_select_labor').selectpicker('refresh');
+                    }
+                });
+
+                $('#table_material tbody tr').each(function () {
+                    var materialuid = $(this).find('td:eq(0)').find('input').val();
+                    if ($(this).find('td').length > 1) {
+                        var name = $(this).find('td:eq(3)').text();
+                        $('#js_select_material').append('<option value="' + materialuid + '">' + name + '</option>');
+                        $('#js_select_material').selectpicker('refresh');
+                    }
+                })
+                $('#js_select_labor').selectpicker('val', '');
+                $("#js_select_labor").trigger("liszt:updated");
+
+                $('#js_select_material').selectpicker('val', '');
+                $("#js_select_material").trigger("liszt:updated");
+                $('#bt_remove_labor').hide();
+                $('#bt_remove_material').hide();
+            })
+
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+                $('#js_select_eqp_types').selectpicker('val', '');
+                $("#js_select_eqp_types").trigger("liszt:updated");
+
+
+                $('#js_select_op_types').selectpicker('val', '');
+                $("#js_select_op_types").trigger("liszt:updated");
+                $('#js_select_project_name').html('<option></option>');
+                $('#js_select_project_name').selectpicker('refresh');
+                $('#js_select_funplant').html('<option></option>');
+                $('#js_select_funplant').selectpicker('refresh');
+
+                $("#js_select_costctr").selectpicker('refresh');
+                $("#js_select_costctr").selectpicker('val', '');
+
+                $('#js_select_process').html('<option></option>');
+                $('#js_select_process').selectpicker('refresh');
+                $('#js_select_errortype_search').html('<option></option>');
+                $('#js_select_errortype_search').selectpicker('refresh');
+
+                $('#js_select_eqp_location_search').selectpicker('val', '');
+                $("#js_select_eqp_location_search").trigger("liszt:updated");
+
+                $('#js_select_errorlevel_search').selectpicker('val', '');
+                $("#js_select_errorlevel_search").trigger("liszt:updated");
+
+                $('#js_select_result_search').selectpicker('val', '');
+                $("#js_select_result_search").trigger("liszt:updated");
+
+                $('#js_select_Labor_List_search').selectpicker('val', '');
+                $("#js_select_Labor_List_search").trigger("liszt:updated");
+
+                $('#js_select_Update_Part_search').selectpicker('val', '');
+                $("#js_select_Update_Part_search").trigger("liszt:updated");
+
+                $('#js_select_status_search').selectpicker('val', '');
+                $("#js_select_status_search").trigger("liszt:updated");
+            });
+
+            //删除更换材料 start
+            $('#bt_remove_material').on('click', function () {
+
+                var dataTable = EQPMaintenanceUrl.GetMaterialDatatable();
+                var $checkedItems = $('#table_material .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var Material_Uid = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+
+                        var name = $('#table_material tbody tr:eq(' + trIndex + ') td:eq(3)').text();
+                        $('#js_select_material').append('<option value="' + Material_Uid + '">' + name + '</option>');
+                        $('#js_select_material').selectpicker('refresh');
+                        dataTable.row($tr).remove().draw();
+                    });
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                    if ($('#table_material tbody th td').length <= 1)
+                        $('#bt_remove_material').hide();
+                }
+            });
+            // 删除更换材料 end
+
+            //新增维修人员
+            $('#bt_add_labor').click(function () {
+                if ($('#js_select_labor').val() == "") {
+                    PDMS.Utility.MessageBox.info('请选择维修人员');
+                    return false;
+                }
+                $('#bt_add_labor').hide();
+                var user_uid = $('#js_select_labor option:selected').val();
+                var url = EQPMaintenanceUrl.urls.queryEQPUserByuid;
+                var dataTable = EQPMaintenanceUrl.GetLaborDatatable();
+                $.post(url, { EQPUser_Uid: user_uid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_labor option[value="' + data[i].EQPUser_Uid + '"').remove();
+                        $('#js_select_labor').selectpicker('refresh')
+                        var row = dataTable.row.add({
+                            "EQPUser_Uid": data[i].EQPUser_Uid,
+                            "User_Id": data[i].User_Id,
+                            "User_Name": data[i].User_Name
+                        }).draw();
+                    }
+                })
+            })
+
+            //新增维修人员  end
+
+            //删除维修人员 start
+            $('#bt_remove_labor').on('click', function () {
+                var dataTable = EQPMaintenanceUrl.GetLaborDatatable();
+                var $checkedItems = $('#table_labor .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var EQPUserUid = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var userid = $('#table_labor tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+                        var username = $('#table_labor tbody tr:eq(' + trIndex + ') td:eq(2)').text();
+                        $('#js_select_labor').append('<option value="' + EQPUserUid + '">' + userid + '_' + username + '</option>');
+                        $('#js_select_labor').selectpicker('refresh');
+                        dataTable.row($tr).remove().draw();
+                    });
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+                if ($('#table_labor tbody th td').length <= 1)
+                    $('#bt_remove_labor').hide();
+            });
+            // 删除维修人员 end
+
+            //取得机台信息
+            $('#js_edit_select_eqp_id').change(function () {
+                var eqp_Uid = $('#js_edit_select_eqp_id option:selected').val();
+                url = EQPMaintenanceUrl.urls.getEquipInfo;
+                $.post(url, { EQP_UID: eqp_Uid }, function (data) {
+                    if (data.length > 0) {
+                        $('#EQP_id').val(data[0].Equipment);
+                        $('#js_edit_modal').find('input[name=Process]').val(data[0].process);
+                        $('#js_edit_modal').find('input[name=EQP_Location]').val(data[0].EQP_Location);
+                        $('#js_edit_modal').find('input[name=EQP_Plant_No]').val(data[0].EQP_Plant_No);
+                        $('#js_edit_modal').find('input[name=Project_Name]').val(data[0].Project_Name);
+
+                    } else {
+
+                        $('#js_edit_modal').find('input[name=Process]').val("");
+                        $('#js_edit_modal').find('input[name=EQP_Plant_No]').val("");
+                        $('#js_edit_modal').find('input[name=Project_Name]').val("");
+                    }
+
+                })
+            })
+            $('#js_btn_save2').mouseover(function () {
+
+                var labordata = EQPMaintenanceUrl.GetLaborDatatable();
+                var matdata = EQPMaintenanceUrl.GetMaterialDatatable();
+                var FunctionLabors = [];
+                var FunctionMats = [];
+
+                labordata.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var sub = {};
+                    var row = $('#table_labor>tbody>tr').eq(rowIdx);
+                    sub["EQPUser_Uid"] = $.trim(row.find('input[name=cktrans]').val());
+                    FunctionLabors.push(sub);
+                });
+                matdata.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var sub = {};
+                    var row = $('#table_material>tbody>tr').eq(rowIdx);
+                    sub["Material_Uid"] = $.trim(row.find('input[name=cktrans]').val());
+                    sub["Update_No"] = $.trim(row.find('input[name=Update_No]').val());
+                    sub["Update_Cost"] = $.trim(row.find('input[name=Update_Cost]').val());
+                    sub["Reason_Analysis"] = $.trim(row.find('input[name=Reason_Analysis]').val());
+                    FunctionMats.push(sub);
+                });
+
+                $('#laborlist').val(JSON.stringify(FunctionLabors));
+                $('#matlist').val(JSON.stringify(FunctionMats));
+            })
+
+            ////结案
+            //$('#js_btn_save_closed').click(function () {
+            //    $('#js_form_maintenance_close').ajaxSubmit({
+            //        beforeSubmit: function () {
+
+            //        }, success: function (data) {
+            //            if (data.length > 2) {
+            //                PDMS.Utility.MessageBox.info(data);
+            //            }
+            //            else {
+            //                $('#js_view_modal').modal('hide');
+            //                PDMS.Utility.MessageBox.info('更新成功');
+            //                EQPMaintenanceUrl.queryEQPMaintenance();
+            //            }
+            //        }
+            //    });
+            //})
+            //结案
+            $('#js_btn_save_closed').click(function () {
+                if ($('#js_view_modal').find('input[name=Apply_Time]').val().length > 16) {
+                    var tmp = $('#js_view_modal').find('input[name=Apply_Time]').val().substr(0, 16);
+                    $('#js_view_modal').find('input[name=Apply_Time]').val(tmp);
+                }
+                if ($('#js_view_modal').find('input[name=Error_Time]').val().length > 16) {
+                    var tmp = $('#js_view_modal').find('input[name=Error_Time]').val().substr(0, 16);
+                    $('#js_view_modal').find('input[name=Error_Time]').val(tmp);
+                }
+
+                if ($('#js_view_modal').find('input[name=Repair_BeginTime]').val().length > 16) {
+                    var tmp = $('#js_view_modal').find('input[name=Repair_BeginTime]').val().substr(0, 16);
+                    $('#js_view_modal').find('input[name=Repair_BeginTime]').val(tmp);
+                }
+                if ($('#js_view_modal').find('input[name=Repair_EndTime]').val().length > 16) {
+                    var tmp = $('#js_view_modal').find('input[name=Repair_EndTime]').val().substr(0, 16);
+                    $('#js_view_modal').find('input[name=Repair_EndTime]').val(tmp);
+                }
+                var submitJson = $('#js_form_maintenance_close').serializeObject();          
+                debugger;
+                $.post(EQPMaintenanceUrl.urls.eQPMaintenanceCloseR, { jsonEQPMaintenance: JSON.stringify(submitJson)}, function (data) {
+                    if (data.length > 2) {
+                        debugger;
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_view_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('更新成功');
+                        EQPMaintenanceUrl.queryEQPMaintenance();
+                    }
+                });                  
+          
+            })
+    
+
+
+            // 维修报工保存按钮
+            //$('#js_btn_save2').click(function () {
+            //    debugger;
+            //    $('#js_form_maintenance').ajaxSubmit({
+            //        beforeSubmit: function () {
+
+            //            if ($('#table_labor tbody').find('tr').find('td').length<=1) {
+            //                PDMS.Utility.MessageBox.info('请选择维修人');
+            //                return false;
+            //            }
+            //            if ($('#js_commit_modal').find('input[name=Reason_Analysis]').val() == "") {
+            //                if ($('#table_material tbody tr').find('td:eq(6)').find('input[value!=""]').length == 0) {
+            //                    PDMS.Utility.MessageBox.info('请填写原因分析');
+            //                    return false;
+            //                }
+            //            }
+            //            if ($('#js_commit_modal').find('select[name=Repair_Result] option:selected').text() == "") {
+            //                PDMS.Utility.MessageBox.info('请选择处理结果');
+            //                return false;
+            //            }
+
+            //            if ($('#js_commit_modal').find('input[name=Repair_Method]').val() == "") {
+            //                PDMS.Utility.MessageBox.info('请填写处理措施');
+            //                return false;
+            //            }
+            //            if ($('#js_commit_modal').find('select[name=Error_Types] option:selected').text() == "") {
+            //                PDMS.Utility.MessageBox.info('请选择损坏类型');
+            //                return false;
+            //            }
+            //        },
+            //        success: function (data) {
+            //            debugger;
+            //            if (data.length > 2) {
+            //                PDMS.Utility.MessageBox.info(data);
+            //            }
+            //            else {
+            //                $('#js_commit_modal').modal('hide');
+            //                PDMS.Utility.MessageBox.info('更新成功');
+            //                EQPMaintenanceUrl.queryEQPMaintenance();
+            //            }
+            //        }
+            //    });
+            //})
+
+
+
+            $('#js_btn_save2').click(function () {
+                debugger;
+                        if ($('#table_labor tbody').find('tr').find('td').length<=1) {
+                            PDMS.Utility.MessageBox.info('请选择维修人');
+                            return false;
+                        }
+                        if ($('#js_commit_modal').find('input[name=Reason_Analysis]').val() == "") {
+                            if ($('#table_material tbody tr').find('td:eq(6)').find('input[value!=""]').length == 0) {
+                                PDMS.Utility.MessageBox.info('请填写原因分析');
+                                return false;
+                            }
+                        }
+                        if ($('#js_commit_modal').find('select[name=Repair_Result] option:selected').text() == "") {
+                            PDMS.Utility.MessageBox.info('请选择处理结果');
+                            return false;
+                        }
+
+                        if ($('#js_commit_modal').find('input[name=Repair_Method]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写处理措施');
+                            return false;
+                        }
+                        if ($('#js_commit_modal').find('select[name=Error_Types] option:selected').text() == "") {
+                            PDMS.Utility.MessageBox.info('请选择损坏类型');
+                            return false;
+                        }
+                        if ($('#js_commit_modal').find('input[name=Apply_Time]').val().length > 16) {
+                            var tmp = $('#js_commit_modal').find('input[name=Apply_Time]').val().substr(0, 16);
+                            $('#js_commit_modal').find('input[name=Apply_Time]').val(tmp);
+                        }
+                        if ($('#js_commit_modal').find('input[name=Error_Time]').val().length > 16) {
+                            var tmp = $('#js_commit_modal').find('input[name=Error_Time]').val().substr(0, 16);
+                            $('#js_commit_modal').find('input[name=Error_Time]').val(tmp);
+                        }
+
+                        if ($('#js_commit_modal').find('input[name=Repair_BeginTime]').val().length > 16) {
+                            var tmp = $('#js_commit_modal').find('input[name=Repair_BeginTime]').val().substr(0, 16);
+                            $('#js_commit_modal').find('input[name=Repair_BeginTime]').val(tmp);
+                        }
+                        if ($('#js_commit_modal').find('input[name=Repair_EndTime]').val().length > 16) {
+                            var tmp = $('#js_commit_modal').find('input[name=Repair_EndTime]').val().substr(0, 16);
+                            $('#js_commit_modal').find('input[name=Repair_EndTime]').val(tmp);
+                        }
+                        var submitJson = $('#js_form_maintenance').serializeObject();
+                        var  laborlist=$('#laborlist').val();
+                        var matlist=$('#matlist').val();
+                        var iseqp_user = $('#iseqp_user').val();
+                        debugger;
+                        $.post(EQPMaintenanceUrl.urls.addOrEditEQPMaintenanceR, { jsonEQPMaintenance: JSON.stringify(submitJson), laborlist:laborlist, matlist:matlist, iseqp_user:iseqp_user }, function (data) {
+                            if (data.length > 2) {
+                                debugger;
+                                PDMS.Utility.MessageBox.info(data);
+                            }
+                            else {
+                                        $('#js_commit_modal').modal('hide');
+                                        PDMS.Utility.MessageBox.info('更新成功');
+                                        EQPMaintenanceUrl.queryEQPMaintenance();
+                            }
+                        });
+
+                })
+
+            //维修报工保存按钮
+
+            //#region 提出申请单保存按钮
+            //$('#js_btn_save').on('click', function () {
+            //    $('#js_form_user_edit').ajaxSubmit({
+            //        beforeSubmit: function () {
+            //            if ($('#js_select_costctr_add option:selected').text() == "") {
+            //                PDMS.Utility.MessageBox.info('请选择成本中心');
+            //                return false;
+            //            }
+            //            if ($('#s_input_contact').val() == '') {
+            //                PDMS.Utility.MessageBox.info('请填写联系人');
+            //                return false;
+            //            } else if ($('#s_input_contact').val().length > 5) {
+            //                PDMS.Utility.MessageBox.info('联系人不能超过5个字符');
+            //                return false;
+            //            }
+            //            if ($('#s_input_contact_tel').val() == '') {
+            //                PDMS.Utility.MessageBox.info('请填写联系人电话');
+            //                return false;
+            //            } else if ($('#s_input_contact_tel').val().length > 20) {
+            //                PDMS.Utility.MessageBox.info('联系人电话不能超过20个字符');
+            //                return false;
+            //            }
+            //            if ($('#js_edit_select_eqp_id option:selected').text() == "") {
+            //                PDMS.Utility.MessageBox.info('请选择机台信息');
+            //                return false;
+            //            }
+            //            if ($('#js_edit_modal').find('input[name=Repair_Reason]').val() == "") {
+            //                PDMS.Utility.MessageBox.info('请填写故障描述');
+            //                return false;
+            //            }
+            //            if ($('#js_select_errorlevel option:selected').text() == "") {
+            //                PDMS.Utility.MessageBox.info('请选择状况级别');
+            //                return false;
+            //            }
+            //        },
+            //        success: function (data) {
+            //            if (data.length > 2) {
+            //                PDMS.Utility.MessageBox.info(data);
+            //            }
+            //            else {
+            //                $('#js_edit_modal').modal('hide');
+            //                EQPMaintenanceUrl.queryEQPMaintenance();
+            //                PDMS.Utility.MessageBox.info('更新成功');
+            //            }
+            //        }
+            //    });
+            //});
+
+            //提出申请单保存按钮
+            $('#js_btn_save').click('click', function () {
+                if ($('#js_select_costctr_add option:selected').text() == "") {
+                    PDMS.Utility.MessageBox.info('请选择成本中心');
+                    return false;
+                }
+                if ($('#s_input_contact').val() == '') {
+                    PDMS.Utility.MessageBox.info('请填写联系人');
+                    return false;
+                } else if ($('#s_input_contact').val().length > 5) {
+                    PDMS.Utility.MessageBox.info('联系人不能超过5个字符');
+                    return false;
+                }
+                if ($('#s_input_contact_tel').val() == '') {
+                    PDMS.Utility.MessageBox.info('请填写联系人电话');
+                    return false;
+                } else if ($('#s_input_contact_tel').val().length > 20) {
+                    PDMS.Utility.MessageBox.info('联系人电话不能超过20个字符');
+                    return false;
+                }
+                if ($('#js_edit_select_eqp_id option:selected').text() == "") {
+                    PDMS.Utility.MessageBox.info('请选择机台信息');
+                    return false;
+                }
+                if ($('#js_edit_modal').find('input[name=Error_Time]').val()=="") {
+                    PDMS.Utility.MessageBox.info('请填写发生时间');
+                    return false;
+                }
+                if ($('#js_edit_modal').find('input[name=Repair_Reason]').val() == "") {
+                    PDMS.Utility.MessageBox.info('请填写故障描述');
+                    return false;
+                }
+                if ($('#js_select_errorlevel option:selected').text() == "") {
+                    PDMS.Utility.MessageBox.info('请选择状况级别');
+                    return false;
+                }
+                if ($("#js_form_user_edit").valid()) {
+                    if ($('#js_edit_modal').find('input[name=Repair_Uid]').val() === "") {
+                        $('#js_edit_modal').find('input[name=Repair_Uid]').val(0);
+                    }
+                    if ($('#js_edit_modal').find('input[name=Error_Time]').val().length > 16) {
+                        var tmp = $('#js_edit_modal').find('input[name=Error_Time]').val().substr(0, 16);
+                        $('#js_edit_modal').find('input[name=Error_Time]').val(tmp);
+                    }
+                    var submitJson = $('#js_form_user_edit').serializeObject();
+                    var boolEdit = $('#isEdit').val();
+                    $.post(EQPMaintenanceUrl.urls.addOrEditEQPMaintenance, { jsonEQPMaintenance: JSON.stringify(submitJson), isEdit: boolEdit }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            EQPMaintenanceUrl.queryEQPMaintenance();
+                            PDMS.Utility.MessageBox.info('更新成功');
+                        }
+                    });
+                }
+            });
+            //#endregion
+
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //删除事件
+            $('body').on('click', '.js-grid-delete', function () {
+                var Repair_Uid = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var url = EQPMaintenanceUrl.urls.deleteEQPMaintenance;
+                    $.post(url, { Repair_Uid: Repair_Uid }, function (data) {
+                        if (data != 'FAIL') {
+                            EQPMaintenanceUrl.queryEQPMaintenance();
+                        } else {
+                            PDMS.Utility.MessageBox.error("FAIL");
+                        }
+                    });
+                });
+            });
+            //#endregion
+
+            // 批量申请上传
+            $('#btn_import').click(function () {
+                $('#js_importExcel_modal').modal('show', $(this));
+            });
+
+            $('#js_btn_clear_Update').click(function () {
+                var form = $(this).parents('form:first')[0];
+                if(form)
+                    form.reset();
+                $('#js_importExcel_modal').modal('hide');
+            });
+
+            $('#js_btn_excel_update').on('click', function () {
+                var form = $(this).parents('form:first');
+                if (!form.valid()) {
+                    return false;
+                } else {
+                    $('#js_importExcel_modal').modal('hide');
+                    $.blockUI({ message: "<h1>请等待...</h1>" });
+                    if (form) {
+                        form.ajaxSubmit({
+                            success: function (data) {
+                                $.unblockUI();
+                                if (data != '') {
+                                    PDMS.Utility.MessageBox.infohtml(data);
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.info('保存成功！');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            // 批量报工上传
+            $('#btn_import_work').click(function () {
+                $('#js_importExcel_modal_work').modal('show', $(this));
+            });
+
+            $('#js_btn_clear_Update_work').click(function () {
+                var form = $(this).parents('form:first')[0];
+                if (form)
+                    form.reset();
+                $('#js_importExcel_modal_work').modal('hide');
+            });
+
+            $('#js_btn_excel_update_work').on('click', function () {
+                var form = $(this).parents('form:first');
+                if (!form.valid()) {
+                    return false;
+                } else {
+                    $('#js_importExcel_modal_work').modal('hide');
+                    $.blockUI({ message: "<h1>请等待...</h1>" });
+                    if (form) {
+                        form.ajaxSubmit({
+                            success: function (data) {
+                                $.unblockUI();
+                                if (data != '') {
+                                    PDMS.Utility.MessageBox.infohtml(data);
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.info('保存成功！');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            // 批量报工上传
+            $('#btn_import_close').click(function () {
+                $('#js_importExcel_modal_close').modal('show', $(this));
+            });
+
+            $('#js_btn_clear_Update_close').click(function () {
+                var form = $(this).parents('form:first')[0];
+                if (form)
+                    form.reset();
+                $('#js_importExcel_modal_close').modal('hide');
+            });
+
+            $('#js_btn_excel_update_close').on('click', function () {
+                var form = $(this).parents('form:first');
+                if (!form.valid()) {
+                    return false;
+                } else {
+                    $('#js_importExcel_modal_close').modal('hide');
+                    $.blockUI({ message: "<h1>请等待...</h1>" });
+                    if (form) {
+                        form.ajaxSubmit({
+                            success: function (data) {
+                                $.unblockUI();
+                                if (data != '') {
+                                    PDMS.Utility.MessageBox.infohtml(data);
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.info('保存成功！');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            $('#btn_apply').click(function () {
+                $('#js_edit_modal').find('input[name=Mentioner]').val('@ViewBag.Mentioner');
+                $('#isEdit').val(false);
+                $('#js_edit_modal').find('input[name=Apply_Time]').val('@ViewBag.nowtime');
+                $('#js_edit_modal').find('input[name=Error_Time]').val('@ViewBag.nowtime');
+                //$('#error_time2').hide();
+                //$('#error_time').show();
+                $('#js_edit_modal').modal('show', $(this));
+                $('#js_select_factory').trigger('change');
+
+                $('#js_select_eqp_location').html('<option></option>');
+                $('#js_select_eqp_location').selectpicker('refresh');
+                url = EQPMaintenanceUrl.urls.getEQPLocation;
+                $.post(url, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+
+                        $('#js_select_eqp_location').append('<option value="' + data[i] + '">' + data[i] + '</option>');
+
+                    }
+                    $('#js_select_eqp_location').selectpicker('refresh');
+                });
+
+                // $('#js_select_optype').trigger('change');
+            })
+
+
+            //#region 点击GridView上的结案按钮事件
+            $('body').on('click', '.js-grid-close', function () {
+                $('#js_view_modal').modal('show', $(this));
+                document.getElementById("js_btn_save_closed").style.visibility = "visible";
+                var Repair_Uid = $(this).attr('data-id'),
+                    url = EQPMaintenanceUrl.urls.queryEQPMaintenanceByuid;
+                $.post(url, { Repair_Uid: Repair_Uid }, function (data) {
+                    $('#js_view_modal').find('input[name=Repair_id]').val(data.Repair_id);
+                    $('#js_view_modal').find('input[name=EQP_Id]').val(data.Mfg_Serial_Num + '_' + data.Equipment + '_' + data.Asset);
+                    $('#js_view_modal').find('input[name=EQP_Uid]').val(data.EQP_Uid);
+                    $('#js_view_modal').find('input[name=Repair_Uid]').val(data.Repair_Uid);
+                    $('#js_view_modal').find('input[name=Repair_BeginTime]').val(data.Repair_BeginTime);
+                    $('#js_view_modal').find('input[name=Repair_EndTime]').val(data.Repair_EndTime);
+                    $('#js_view_modal').find('input[name=Reason_Types]').val(data.Reason_Types);
+                    $('#js_view_modal').find('input[name=Repair_Method]').val(data.Repair_Method);
+                    $('#js_view_modal').find('input[name=Repair_Result]').val(data.Repair_Result);
+                    $('#js_view_modal').find('input[name=Repair_Reason]').val(data.Repair_Result);
+                    $('#js_view_modal').find('input[name=Reason_Analysis]').val(data.Reason_Analysis);
+                    $('#js_view_modal').find('input[name=Error_Time]').val(data.Error_Time);
+                    $('#js_view_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                    $('#js_view_modal').find('input[name=Error_Types]').val(data.Apply_Time );
+                    $('#js_view_modal').find('input[name=Error_Level]').val(data.Error_Level);
+                    $('#js_view_modal').find('input[name=Repair_Remark]').val(data.Repair_Remark);
+                    $('#js_view_modal').find('input[name=Error_Types]').val(data.Error_Types);
+                    $('#js_view_modal').find('input[name=Mentioner]').val(data.Mentioner);
+
+                    $('#table_labor2 tbody').html('');
+                    for (var i = 0; i < data.laborlist.length; i++) {
+                        $('#table_labor2 tbody').append('<tr></tr>');
+                        $('#table_labor2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.laborlist[i].User_Id + '</td>');
+                        $('#table_labor2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.laborlist[i].User_Name + '</td>');
+                    };
+                    $('#table_material2 tbody').html('');
+                    for (var i = 0; i < data.matlist.length; i++) {
+                        $('#table_material2 tbody').append('<tr></tr>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Material_Name + '</td>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Update_No + '</td>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Reason_Analysis + '</td>');
+                    };
+                });
+            });
+
+
+            $('body').on('click', '.js-grid-View', function () {
+                $('#js_view_modal').modal('show', $(this));
+
+                document.getElementById("js_btn_save_closed").style.visibility = "hidden";
+                var Repair_Uid = $(this).attr('data-id'),
+                    url = EQPMaintenanceUrl.urls.queryEQPMaintenanceByuid;
+                $.post(url, { Repair_Uid: Repair_Uid }, function (data) {
+                    $('#js_view_modal').find('input[name=Repair_id]').val(data.Repair_id);
+                    $('#js_view_modal').find('input[name=EQP_Id]').val(data.Mfg_Serial_Num + '_' + data.Equipment + '_' + data.Asset);
+                    $('#js_view_modal').find('input[name=EQP_Uid]').val(data.EQP_Uid);
+                    $('#js_view_modal').find('input[name=Repair_Uid]').val(data.Repair_Uid);
+                    $('#js_view_modal').find('input[name=Repair_BeginTime]').val(data.Repair_BeginTime);
+                    $('#js_view_modal').find('input[name=Repair_EndTime]').val(data.Repair_EndTime);
+                    $('#js_view_modal').find('input[name=Reason_Types]').val(data.Reason_Types);
+                    $('#js_view_modal').find('input[name=Repair_Method]').val(data.Repair_Method);
+                    $('#js_view_modal').find('input[name=Repair_Result]').val(data.Repair_Result);
+                    $('#js_view_modal').find('input[name=Repair_Reason]').val(data.Repair_Result);
+                    $('#js_view_modal').find('input[name=Reason_Analysis]').val(data.Reason_Analysis);
+                    $('#js_view_modal').find('input[name=Error_Time]').val(data.Error_Time);
+                    $('#js_view_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                    $('#js_view_modal').find('input[name=Error_Types]').val(data.Apply_Time);
+                    $('#js_view_modal').find('input[name=Error_Level]').val(data.Error_Level);
+                    $('#js_view_modal').find('input[name=Repair_Remark]').val(data.Repair_Remark);
+                    $('#js_view_modal').find('input[name=Error_Types]').val(data.Error_Types);
+                    $('#js_view_modal').find('input[name=Mentioner]').val(data.Mentioner);
+                    $('#table_labor2 tbody').html('');
+                    for (var i = 0; i < data.laborlist.length; i++) {
+                        $('#table_labor2 tbody').append('<tr></tr>');
+                        $('#table_labor2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.laborlist[i].User_Id + '</td>');
+                        $('#table_labor2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.laborlist[i].User_Name + '</td>');
+                    };
+                    $('#table_material2 tbody').html('');
+                    for (var i = 0; i < data.matlist.length; i++) {
+                        $('#table_material2 tbody').append('<tr></tr>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Material_Name + '</td>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Update_No + '</td>');
+                        $('#table_material2 tbody tr:last').append('<td class="min-col-xs" align="center">' + data.matlist[i].Reason_Analysis + '</td>');
+                    };
+                });
+            });
+
+            //申请界面的功能厂变更
+            $('#js_select_funplant_add').change(function () {
+                $('#js_select_eqp_location').selectpicker('val', '');
+                $("#js_select_eqp_location").trigger("liszt:updated");
+
+                $('#js_edit_select_eqp_id').html('');
+                $('#js_edit_select_eqp_id').selectpicker('refresh')
+
+            })
+
+            //#region 点击GridView上的Edit按钮事件
+            $('body').on('click', '.js-grid-edit', function () {
+                //$('#error_time').hide();
+                //$('#error_time2').show();
+                $('#js_edit_modal').modal('show', $(this));
+                $('#isEdit').val(true);
+                var Repair_Uid = $(this).attr('data-id'),
+                    url = EQPMaintenanceUrl.urls.queryEQPMaintenanceByuid;
+                $.post(url, { Repair_Uid: Repair_Uid }, function (data) {
+
+                    $('#js_select_factory').trigger('change');
+                    $('#js_select_optype').append('<option value="' + data.Organization_UID + '">' + data.OP_Types + '</option>');
+                    $('#js_select_optype').selectpicker('refresh')
+                    $('#js_select_optype').selectpicker('val', data.Organization_UID);
+                    //$("#js_select_optype").trigger("liszt:updated");
+                    $("#js_select_optype").trigger("change");
+
+                    $('#js_select_funplant_add').append('<option value="' + data.System_FunPlant_UID + '">' + data.FunPlant + '</option>');
+                    $('#js_select_funplant_add').selectpicker('refresh')
+                    $('#js_select_funplant_add').selectpicker('val', data.System_FunPlant_UID);
+                    $('#js_select_funplant_add').trigger('change');
+
+                    $('#js_select_costctr_add').selectpicker('refresh')
+                    $('#js_select_costctr_add').selectpicker('val', data.CostCtr_UID);
+
+                    $('#js_edit_modal').find('input[name=Repair_Uid]').val(data.Repair_Uid);
+                    $('#js_select_eqp_location option[value="' + data.EQP_Location + '"]').attr("selected", "true");
+                    $('#js_select_eqp_location').selectpicker('val', data.EQP_Location);
+                    $('#js_select_eqp_location').trigger('change');
+                    var value = data.Mfg_Serial_Num + '_' + data.Equipment + '_' + data.Asset;
+                    $('#js_edit_select_eqp_id optgroup').append('<option value="' + data.EQP_Uid + '">' + value + '</option>');
+                    $('#js_edit_select_eqp_id option[value="' + data.EQP_Uid + '"]').attr("selected", "true");
+                    $('#js_edit_select_eqp_id').selectpicker('val', data.EQP_Uid);
+                    $("#js_edit_select_eqp_id").trigger("liszt:updated");
+                    $('#js_edit_modal').find('input[name=Contact]').val(data.Contact);
+                    $('#js_edit_modal').find('input[name=Contact_tel]').val(data.Contact_tel);
+                    $('#js_edit_modal').find('input[name=Repair_Reason]').val(data.Repair_Reason);
+
+                    $('#js_edit_select_eqp_id').trigger('change');
+                    $('#js_edit_modal').find('input[name=Error_Time]').val(data.Error_Time);
+
+                    $('#js_select_errorlevel option[value="' + data.Error_Level + '"]').attr("selected", "true");
+                    $('#js_select_errorlevel').selectpicker('val', data.Error_Level);
+                    $("#js_select_errorlevel").trigger("liszt:updated");
+                    $('#js_edit_modal').find('input[name=Error_Time]').val(data.Error_Time);
+                    $('#js_edit_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                    $('#js_edit_modal').find('input[name=Mentioner]').val(data.Mentioner);
+
+                });
+            });
+            //#endregion 点击Edit按钮事件
+
+            //#region维修报工按钮
+            $('body').on('click', '.js-grid-commit', function () {
+                $('#js_commit_modal').modal('show', $(this));
+                var Repair_Uid = $(this).attr('data-id'),
+                    url = EQPMaintenanceUrl.urls.queryEQPMaintenanceByuid;
+                $.post(url, { Repair_Uid: Repair_Uid }, function (data) {
+                    debugger;
+                    $('#js_commit_modal').find('input[name=Repair_id]').val(data.Repair_id);
+                    $('#js_commit_modal').find('input[name=Equipment]').val(data.Equipment);
+                    $('#js_commit_modal').find('input[name=Repair_Reason]').val(data.Repair_Reason);
+                    $('#js_commit_modal').find('input[name=EQP_Uid]').val(data.EQP_Uid);
+                    $('#js_commit_modal').find('input[name=Repair_Uid]').val(data.Repair_Uid);
+                    $('#js_commit_modal').find('input[name=OP_Types]').val(data.OP_Types);
+                    $('#js_commit_modal').find('input[name=FunPlant]').val(data.FunPlant);
+                    $('#js_commit_modal').find('input[name=CostCtr_ID]').val(data.CostCtr_ID);
+                    $('#js_commit_modal').find('input[name=Process]').val(data.Process);
+                    $('#js_commit_modal').find('input[name=EQP_Plant_No]').val(data.EQP_Plant_No);
+                    $('#js_commit_modal').find('input[name=Class_Desc]').val(data.Class_Desc);
+                    $('#js_commit_modal').find('input[name=Error_Time]').val(data.Error_Time);
+                    $('#js_commit_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                    $('#js_commit_modal').find('input[name=Repair_BeginTime]').val(data.Repair_BeginTime);
+                    $('#js_commit_modal').find('input[name=Repair_EndTime]').val(data.Repair_EndTime);
+                    $('#js_commit_modal').find('input[name=Reason_Types]').val(data.Reason_Types);
+                    $('#js_commit_modal').find('input[name=Repair_Method]').val(data.Repair_Method);
+                    $('#js_commit_modal').find('input[name=Repair_Remark]').val(data.Repair_Remark);
+                    $('#js_commit_modal').find('input[name=Mentioner]').val(data.Mentioner);
+
+                    $('#js_select_result option[value="' + data.Repair_Result + '"]').attr("selected", "true");
+                    $('#js_select_result').selectpicker('val', data.Repair_Result);
+                    $("#js_select_result").trigger("liszt:updated");
+                    $('#js_commit_modal').find('input[name=Reason_Analysis]').val(data.Reason_Analysis);
+                    $('#js_select_errortype option[value="' + data.Error_Types + '"]').attr("selected", "true");
+                    $('#js_select_errortype').selectpicker('val', data.Error_Types);
+                    $("#js_select_errortype").trigger("liszt:updated");
+                    url = EQPMaintenanceUrl.urls.getEQPAllUserAPI;
+                    var thisbgUID = data.Organization_UID;
+                    var thisfunplantUID = data.FunPlant_OrganizationUID;
+                    $.post(url, { bgUID: thisbgUID, funplantUID: thisfunplantUID }, function (data) {
+                        $("#js_select_labor").empty();
+                        //添加空的选择框
+                        $("<option></option>")
+                            .val("Nothing")
+                            .text("")
+                            .appendTo($("#js_select_labor"));
+
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_labor').find('option[value=' + data[i].EQPUser_Uid + ']').length == 0) {
+                                $('#js_select_labor').append('<option value="' + data[i].EQPUser_Uid + '">' + data[i].User_IdAndName + '</option>');
+                                $('#js_select_labor').selectpicker('refresh');
+                            }
+                        }
+                    });
+                    var laborTable = $('#table_labor').DataTable({
+                        columns: EQPMaintenanceUrl.LaborColumns,
+                        ordering: false,
+                        data: data.laborlist,
+                        destroy: true,
+                        createdRow: function (row, data, index) {
+                            $(row).data("laborinfo", {
+                                "EQPUser_Uid": data.EQPUser_Uid,
+                                "User_Id": data.User_Id,
+                                "User_Name": data.User_Name
+                            });
+                        }
+                    });
+                    for (var i = 0; i < data.laborlist.length; i++) {
+                        $('#js_select_labor option[value="' + data.laborlist[i].EQPUser_Uid + '"').remove();
+                        $('#js_select_labor').selectpicker('refresh')
+                    }
+                    EQPMaintenanceUrl.SetLaborDatatable(laborTable);
+
+                    var matTable = $('#table_material').DataTable({
+                        columns: EQPMaintenanceUrl.MatColumns,
+                        ordering: false,
+                        data: data.matlist,
+                        destroy: true,
+                        createdRow: function (row, data, index) {
+                            $(row).data("matinfo", {
+                                "Material_Uid": data.Material_Uid,
+                                "Material_Name": data.Material_Name,
+                                "Unit_Price": data.Unit_Price,
+                                "Assembly_Name": data.Assembly_Name,
+                                "Update_No": data.Update_No,
+                                "Update_Cost": data.Update_Cost,
+                                "Reason_Analysis": data.Reason_Analysis
+                            });
+                        }
+                    });
+
+                    for (var i = 0; i < data.matlist.length; i++) {
+                        $('#js_select_material option[value="' + data.matlist[i].Material_Uid + '"').remove();
+                        $('#js_select_material').selectpicker('refresh')
+                    }
+                    EQPMaintenanceUrl.SetMatDatatable(matTable);
+                });
+            });
+            //#endregion 维修报工按钮
+        })
+    </script>
+}

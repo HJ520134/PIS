@@ -1,0 +1,218 @@
+﻿<section class="content-header portal-content-header">
+    <h1>储位库存明细</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>仓库别</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>仓库</th>
+                        <th>料架</th>
+                        <th>储位</th>
+                        <th>库存数量</th>
+                        <th>更新者</th>
+                        <th>更新时间</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>仓库别</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>仓库</th>
+                        <th>料架</th>
+                        <th>储位</th>
+                        <th>库存数量</th>
+                        <th>更新者</th>
+                        <th>更新时间</th>
+                        <th>说明</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="col-md-12 col-lg-8">
+                    </div>
+                    <div class="col-md-12 search-field col-lg-4">
+                        <a class="fa btn btn-primary" href="../StorageManage/MaterialInventory">
+                            <i class="glyphicon glyphicon-backward"></i>
+                            返回
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <input type="hidden" name="Material_Inventory_UID" id="Material_Inventory_UID" value=@ViewBag.Material_Inventory_UID />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+
+    <script type="text/javascript">
+
+        $(function () {
+            var subDatatable = null;
+        var MatInventorySetting = (function () {
+            var urls = {
+                //画面初始化加载
+                queryMaterialInventoryDetails: '@Url.Action("QueryMaterialInventoryDetails", "StorageManage")'
+            };
+            //#region 定义字段列
+            var columns = [{
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "BG",
+                    className: "min-col-xs"
+                }, {
+                    data: "Funplant",
+                    className: "min-col-xs"
+                }, {
+                    data: "Warehouse_Type",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Id",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Types",
+                    className: "min-col-xs"
+                }, {
+                    data: "Warehouse_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Rack_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Storage_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Inventory_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "ModifyUser",
+                    className: "min-col-xs"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-xs"
+                }, {
+                    data: "Desc",
+                    className: "min-col-xs"
+                }];
+
+            //#endregion 定义字段列
+
+            var _getParams = function () {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryMaterialInventoryDetails = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryMaterialInventoryDetails,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        scrollX: true,
+                        autoWidth: true,
+                        columns: columns
+                    }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+                $('table thead tr').find('th').removeClass('text-right');
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryMaterialInventoryDetails(true, false);
+                },
+                queryMaterialInventoryDetails: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryMaterialInventoryDetails(false, buildCriteria);
+                },
+                GetDatatable: function () {
+                if (subDatatable == null) {
+                    subDatatable = $('#js_Bom_datatable').DataTable({
+                        paging: false,
+                        searching: false,
+                        ordering: false,
+                        retrieve: true,
+                        columns: columns
+                    });
+                }
+                return subDatatable;
+            },
+            }
+        })();
+
+            MatInventorySetting.Init();
+
+    })
+    </script>
+}

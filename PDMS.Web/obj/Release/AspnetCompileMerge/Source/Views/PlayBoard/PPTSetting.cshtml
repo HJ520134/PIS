@@ -1,0 +1,498 @@
+﻿
+<section class="content-header portal-content-header">
+    <h1>播放看板--PPT播放设置</h1>
+</section>
+<!-- Main content -->
+@{
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Suredelete = T("QA.Suredelete").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.UploadVideo = T("FlowChart.UploadVideo").Text;
+    ViewBag.PlayTime = T("FlowChart.PlayTime").Text;
+    ViewBag.PlayTime1 = T("FlowChart.PlayTime1").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.kanbaninfo3 = T("FlowChart.kanbaninfo3").Text;
+    ViewBag.kanbaninfo4 = T("FlowChart.kanbaninfo4").Text;
+    ViewBag.kanbaninfo5 = T("FlowChart.kanbaninfo5").Text;
+    ViewBag.kanbaninfo6 = T("FlowChart.kanbaninfo6").Text;
+    ViewBag.kanbaninfo7 = T("FlowChart.kanbaninfo7").Text;
+    ViewBag.Addedsuccessfully = T("QA.Addedsuccessfully").Text;
+}
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a id="js_btn_add_movie" class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_movie">
+                <i class="fa fa-upload"></i> 上传PPT
+            </a>
+            <a id="js_btn_return" class="btn btn-primary btn-sm" role="button" data-toggle="modal">
+                <i class="fa fa-upload"></i> 返回
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <p>提示:</p>
+        <ul>
+            <li>1.仅支持的PPT文件格式:*.pptx, <span style="background-color:yellow;">文件名请用全英文，不要出现特殊字符(如:&)。</span></li>
+            <li>2.可上传多个PPT文件，但只能选择其中一个PPT播放。</li>
+            <li>3.播放切换时间即PPT中一个sheet 的播放停留时间，必须大于0。</li>
+            <li>4.上传的PPT文件会自动转换成同名的HTML文件，才能播放，若转换失败则不能播放。</li>
+            <li>5.若上传同名文件，则原文件会被覆盖。</li>
+            <li>6.由于PPT文件自身格式的原因，实际效果可能有少量差异。</li>
+        </ul>
+
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+
+    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="js_s_input_modified_by">播放账号</label>
+                    <div class="col-sm-8">
+                        <input id="js_playusername" type="text" value="@ViewBag.Play_UserName" class="form-control input-sm" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="js_s_input_modified_by">NTID</label>
+                    <div class="col-sm-8">
+                        <input id="js_playuserNTID" type="text" value="@ViewBag.Play_UserNTID" class="form-control input-sm" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="js_select_playppt">选择播放PPT</label>
+                    <div class="col-sm-8">
+                        <select id="js_select_playppt" class="selectpicker form-control input-sm" data-live-search="true">
+                            <option>--请选择要播放的PPT--</option>
+                            @foreach (var item in ViewBag.FileList)
+                            {
+                                if (ViewBag.Play_PPT != null && item == ViewBag.Play_PPT)
+                                {
+                                    <option selected="selected">@item</option>
+                                }
+                                else
+                                {
+                                    <option>@item</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="col-sm-5 control-label" for="js_input_sheetplaytime">播放切换时间(秒)</label>
+                    <div class="col-sm-7">
+                        <input type="number" class="form-control input-sm" id="js_input_sheetplaytime" placeholder="请输入大于0的整数" min="1" step="1" value="@ViewBag.SheetPlayTime">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <a id="js_btn_savesetting" class="btn btn-primary btn-sm" role="button">
+                        <i class="fa fa-save"></i> 保存
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_role_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Common.Action")</th>
+                        <th>文件名</th>
+                        <th title="转换HTML失败将不能播放">转换HTML文件</th>
+                        <th>文件上传时间</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.QueryHistory")</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_modified_by">@T("QA.Creator")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Creator" class="form-control input-sm" id="js_s_input_modified_by" placeholder="Modified By (NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">@T("QA.Createtime")</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">@T("FlowChart.From")</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">@T("FlowChart.To")</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_edit_movie" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">上传PPT文件</h4>
+                </div>
+                @using (Html.BeginForm("ImportPPTFile", "PlayBoard", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_add" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="js_s_input_upload">选择PPT文件：</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" accept="application/vnd.openxmlformats-officedocument.presentationml.presentation" class="form-control" id="js_s_input_upload" name="uploadName" />
+                                        <input type="text" name="playUserUID" value="@ViewBag.Play_UID" hidden />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_submit_upload"><i class="fa fa-save"></i> @T("QA.Submit")</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查看PPT</h4>
+                </div>
+                <div id="ppt-html" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+
+        $(function () {
+            var PPTSetting = (function () {
+                var urls = {
+                    queryRoles: '@Url.Action("QueryPPTFile", "PlayBoard")',
+                    AddNotice: '@Url.Action("AddNotice", "Board")',
+                    DeletePPTFile: '@Url.Action("DeletePPTFile", "PlayBoard")',
+                    GetOptypes: '@Url.Action("GetOptypes", "Board")',
+                    ReturnURL: '@Url.Action("Setting", "PlayBoard")',
+                    SaveSetting: '@Url.Action("SavePPTSetting", "PlayBoard")'
+                };
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var renderHtml='';
+                            if (rowData.HtmlName != null) {
+                                renderHtml += '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.HtmlName + '">查看</button> ';
+                            }
+                            renderHtml += '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="'+@ViewBag.SettingID+'" data-name="' + rowData.Name + '">删除</button>';
+                            $(td).html(renderHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "HtmlName",
+                        className: "min-col-xs"
+                    },{
+                        data: "LastWriteTime",
+                        className: "min-col-lg"
+                    }
+                ];
+
+                var _getParams = function () {
+
+                    //return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return "settingID=@ViewBag.SettingID"
+                };
+
+                var _queryRoles = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_role_datatable",
+                        remoteUrl: urls.queryRoles,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.Set(config);
+
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+
+            })();
+
+            PPTSetting.Init();
+
+
+            $("#js_role_datatable tr td").each(function (i) {
+                //获取td当前对象的文本,如果长度大于25;
+                if ($(this).text().length > 35) {
+                    //给td设置title属性,并且设置td的完整值.给title属性.
+                    $(this).attr("title", $(this).text());
+                    //获取td的值,进行截取。赋值给text变量保存.
+                    var text = $(this).text().substring(0, 35) + "...";
+                    //重新为td赋值;
+                    $(this).text(text);
+                }
+            });
+
+            $('#js_btn_return').click(function () {
+                var returnUrl = PPTSetting.urls.ReturnURL
+                window.location.href = returnUrl;
+            });
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    PPTSetting.QueryRoles();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //弹出查看画面
+            $('body').on('click', '.js-grid-view', function () {
+                debugger;
+                var src = '\\PIS_M\\Upload\\PlayBoard\\PPT\\' + @ViewBag.Play_UID + '\\' + $(this).attr('data-id');
+                //var url = encodeURI(src);
+                //空格换成%20
+                var url = src.replace(' ','%20');
+                $("#ppt-html").load(url);
+                $('#js_view_modal').modal('show', $(this));
+            });
+
+            //删除
+            $('body').on('click', '.js-grid-delete', function () {
+                debugger;
+                var settingID = $(this).attr('data-id');
+                var name = $(this).attr('data-name');
+
+                PDMS.Utility.MessageBox.confirm("确定要文件: " + name + " 吗?", function () {
+                    var url = PPTSetting.urls.DeletePPTFile;
+                    $.post(url, {settingID:settingID, name: name }, function (data) {
+                        debugger;
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_movie').modal('hide');
+                            PDMS.Utility.MessageBox.info("文件删除成功", function () {
+                                window.location.reload();
+                            });
+                        }
+                    });
+                });
+            });
+
+
+            //新增图片
+            $('#js_btn_submit_upload').on('click', function () {
+                $('#js_form_excel_add').ajaxSubmit({
+                    success: function (data) {
+                        debugger;
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_movie').modal('hide');
+                            PDMS.Utility.MessageBox.info("文件上传成功", function () {
+                                window.location.reload();
+                            });
+                        }
+                    },
+                    beforeSubmit: function(formData, jqForm, options) {
+                        //提交之前判断文件名是否包含特殊字符
+                        $(formData).each(function(){
+                            if (this.name == "uploadName") {
+                                var fileName = this.value.name;
+                                //文件名如果包含& 则不允许上传
+                                if (fileName.indexOf("&") >= 0 ) {
+                                    PDMS.Utility.MessageBox.error("PPT文件名不能包含特殊字符'&',请重新上传！",function() {
+                                    });
+                                    return false;
+                                }
+                                //其他字符，尚未确认
+                            }
+                        });
+                    }
+                });
+            });
+
+            //新增保存按钮点击事件
+            $('#js_btn_save_new_role').on('click', function () {
+                var typeName = $('#js_s_input_start').val();
+
+                if ($('#js_input_role_id').val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo3。");
+                    return;
+                }
+                if ($('#js_s_input_start').val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo4。");
+                    return;
+                }
+                if ($('#js_s_input_end').val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo5。");
+                    return;
+                }
+                if ($('#js_s_input_part_Color').val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo6。");
+                    return;
+                }
+                if ($('#js_s_input_part_scope').val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo7。");
+                    return;
+                }
+                var submitJson = $('#js_form_add').serializeObject();
+                $.post(PPTSetting.urls.AddNotice, { jsonAddNotice: JSON.stringify(submitJson) }, function (data) {
+                    if (data == 'OK') {
+                        PDMS.Utility.MessageBox.info("@ViewBag.Addedsuccessfully");
+                        window.location.reload();
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            });
+            GetOptypes();
+            function GetOptypes() {
+                $("#js_s_input_part_scope").empty();
+                $("#js_s_input_movie_scope").empty();
+                $.get(PPTSetting.urls.GetOptypes, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_part_scope"));
+                        });
+
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_movie_scope"));
+                        });
+
+                    }
+                });
+            }
+
+            $('#js_btn_clear').click(function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //保存设置
+            $("#js_btn_savesetting").click(function () {
+                debugger;
+                var length = $('#js_select_playppt')[0].length;
+                if (length == 1) {
+                    PDMS.Utility.MessageBox.info('没有可选的PPT文件，请先上传PPT。');
+                    return false;
+                }
+                var selectedIndex = $('#js_select_playppt')[0].selectedIndex;
+                if (selectedIndex == 0) {
+                    PDMS.Utility.MessageBox.info('请选择PPT。');
+                    return false;
+                }
+                var fileName = $('#js_select_playppt option:selected').text();
+
+                var sheetPlayTimeVal= $("#js_input_sheetplaytime").val();
+                var sheetPlayTime = parseInt(sheetPlayTimeVal);
+                if (sheetPlayTime <= 0) {
+                    PDMS.Utility.MessageBox.info('播放切换时间(秒)不能小于1。');
+                    return false;
+                }
+                var url = PPTSetting.urls.SaveSetting;
+                $.post(url, { settingID: @ViewBag.SettingID, fileName: fileName, sheetPlayTime:sheetPlayTime }, function (data) {
+                    if (data.isSuccess) {
+                        PDMS.Utility.MessageBox.info("保存成功!");
+                    }
+                    else {
+                        PDMS.Utility.MessageBox.error(data.message);
+                    }
+                });
+            });
+        });
+    </script>
+}

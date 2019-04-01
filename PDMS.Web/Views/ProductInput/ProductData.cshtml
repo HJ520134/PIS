@@ -1,0 +1,1021 @@
+﻿@{
+    ViewBag.Title = "ProductData";
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Successfullymodified = T("QA.Successfullymodified").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.Out = T("FlowChart.Out").Text;
+    ViewBag.In = T("FlowChart.In").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PPConfirm = T("FlowChart.PPConfirm").Text;
+    ViewBag.CurDate = T("FlowChart.CurDate").Text;
+    ViewBag.CurTime = T("FlowChart.CurTime").Text;
+    ViewBag.Info1 = T("FlowChart.Info1").Text;
+    ViewBag.Info2 = T("FlowChart.Info2").Text;
+    ViewBag.Info3 = T("FlowChart.Info3").Text;
+}
+<!-- Content Header (Page header) -->
+<section class="content-header portal-content-header">
+    <h1>
+        @T("FlowChart.ProdDataInput") -<span id="js_input_flowChartName"></span>
+        <small></small>
+    </h1>
+</section>
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        @*<div class="col-md-12 search-field col-lg-3">
+
+                <a class="btn btn-default btn-lg" data-toggle="modal" data-target="#js_search_modal" id="btn-search"><i class="fa fa-search"></i>查询</a>
+
+            </div>*@<!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-xs-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_plant_datatable">
+                <thead>
+                    <tr>
+                        @*<th class="table-col-checkbox nosort">
+                                <input type="checkbox" class="js-checkbox-all" />
+                            </th>*@
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>楼栋</th>
+                        <th>WIP</th>
+                        <th>计划</th>
+                        <th>未达成原因</th>
+                        <th>@T("FlowChart.lingliao")</th>
+                        <th>@T("QA.Goodnumber")</th>
+                        @*<th>正常良品数</th>
+                            <th>非正常良品数</th>*@
+                        <th>@T("QA.NGnumber")</th>
+                        @*<th>正常NG数</th>
+                            <th>非正常NG数</th>*@
+                        <th>@T("FlowChart.lingliaoCK")</th>
+                        <th>@T("FlowChart.tiaoji")</th>
+                        <th>@T("QA.Numberwarehouses")</th>
+                        <th>@T("FlowChart.notWIP")</th>
+                        <th>@T("FlowChart.reworkNum")</th>
+                    </tr>
+                </thead>
+
+            </table>
+            <div id="page" class="row" style="visibility: hidden;"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+    <div class="bottom_btn">
+        <div class="col-xs-12" style="padding-top:20px">
+            <div class="col-xs-10"></div>
+            <div class="col-xs-2">
+                <div class="col-xs-5 pull-right"><button id="btn-submit-inner" type="button" class="btn btn-primary btn-query pull-right"><i class="fa fa-save"></i>@T("QA.Submit")</button></div>
+                <div class="col-xs-5"></div>
+                <div class="col-xs-5 pull-right">
+                    <button id="btn-return-inner" type="button" onclick="javascript:history.go(-1) "class="btn btn-primary btn-query pull-right"><i class="fa fa-reply"></i>@T("Common.Back")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /.content -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title">@T("Common.Search")</h2>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="form-group">
+
+                                <label class="col-xs-3 control-label" for="js_input_func_plant">@T("QA.Ownedfactory")</label>
+                                <div class="col-xs-3">
+                                    <input input="input" class="form-control input-xs" value="@ViewBag.Func_Plant" id="js_input_func_plant" name="Func_Plant"
+                                           data-rule-maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Function Description.">
+                                </div>
+                                <label class="col-xs-2 control-label" for="js_s_select_flowchart_name">@T("QA.Process")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" id="js_s_select_flowchart_name" style="display:none" class="form-control input-xs" />
+                                    <input type="text" id="Current_FuncPlant_Click" style="display:none" class="form-control input-xs" />
+                                    <input type="text" name="Customer" value="@ViewBag.QuertFlag" style="display:none" id="js_s_input_QuertFlag">
+                                    <input type="text" name="country" id="autocomplete-ajax" class="form-control input-xs" />
+                                    @*<input type="text" name="country" id="autocomplete-ajax-x" class="form-control input-xs" disabled="disabled" style="visibility:hidden" />*@
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="col-xs-3 control-label" for="js_s_input_plant_customer">@T("QA.Client")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="Customer" value="@ViewBag.Customer" class="form-control input-xs" id="js_s_input_plant_customer">
+                                </div>
+
+
+                                <label class="col-xs-2 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="OP" value="@ViewBag.OP" class="form-control input-xs" id="js_s_input_OP">
+                                    <input type="text" name="Project" value="@ViewBag.Project" class="form-control input-xs" id="js_s_input_project">
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+
+                                <label class="col-xs-3 control-label" for="js_s_input_part_types">@T("QA.Part")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="Part_Types" value="@ViewBag.Part_Types" class="form-control input-xs" id="js_s_input_part_types">
+                                </div>
+                                <label class="col-xs-2 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                                <div class="col-xs-3">
+
+                                    <input type="text" name="Product_Phase" value="@ViewBag.Product_Phase" class="form-control input-xs" id="js_s_input_Product_Phase">
+
+                                </div>
+
+                            </div>
+                            <div class="form-group" style="padding-top:10px;">
+
+                                <label class="col-xs-3 control-label" for="js_s_input_reference_date">@T("FlowChart.Date")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="Date" value="@ViewBag.Date" class="form-control input-xs date" id="js_s_input_reference_date">
+                                </div>
+                                <label class="col-xs-2 control-label" for="js_s_select_time">@T("QA.Timeselection")</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="Time" value="@ViewBag.Time" class="form-control input-xs" id="js_s_select_time">
+
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-clear">Clear</button>
+                    <button id="btn-search-inner" type="button" class="btn btn-primary btn-query">Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.DataUpdate")</h4>
+                </div>
+
+                <form id="js_form_data_edit" class="form-horizontal clearfix">
+                    <div class="modal-body form-horizontal">
+                        <div class="row" id="js_edit_row">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-xs-5 control-label" for="s_input_Picking_QTY">@T("FlowChart.lingliao")</label>
+                                <input type="hidden" id="Edit_Product_UID" name="Product_UID" />
+                                <input type="hidden" id="hidColor" name="hidColor" />
+                                <input type="hidden" id="FlowChart_Detail_UID" name="FlowChart_Detail_UID" />
+                                <input type="hidden" id="ReworkFlag" name="ReworkFlag" />
+                                <input type="hidden" id="Page_Statue" />
+                                <input type="hidden" id="iswx" value="@ViewBag.IsWX" />
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs" id="s_input_Picking_QTY" name="Picking_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-xs-5 control-label" for="s_input_WH_Picking_QTY">@T("FlowChart.lingliaoCK")</label>
+                                <div class="col-xs-7">
+
+                                    <input type="text" class="form-control input-xs" id="s_input_WH_Picking_QTY" name="WH_Picking_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+
+                                </div>
+                            </div>
+                            @*<div class="form-group col-xs-12 col-md-6 ">
+                                    <label class="col-xs-5 control-label" for="s_input_Good_QTY">良品数</label>
+                                    <div class="col-xs-7">
+                                        <input type="text" class="form-control input-xs required" id="s_input_Good_QTY" name="Good_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                    </div>
+                                </div>*@
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Normal_Good_QTY">@T("QA.Goodnumber")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs required" id="s_input_Normal_Good_QTY" name="Normal_Good_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 hidden">
+                                <label class="col-xs-5 control-label" for="s_input_Abnormal_Good_QTY">@T("FlowChart.NotGood")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs required" id="s_input_Abnormal_Good_QTY" name="Abnormal_Good_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Adjust_QTY">@T("FlowChart.tiaoji")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_Adjust_QTY" name="Adjust_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            @*<div class="form-group col-xs-12 col-md-6 ">
+                                    <label class="col-xs-5 control-label" for="s_input_NG_QTY">NG数</label>
+                                    <div class="col-xs-7">
+                                        <input type="text" class="form-control input-xs " id="s_input_NG_QTY" name="NG_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                    </div>
+                                </div>*@
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Normal_NG_QTY">@T("QA.NGnumber")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_Normal_NG_QTY" name="Normal_NG_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 hidden ">
+                                <label class="col-xs-5 control-label" for="s_input_Abnormal_NG_QTY">@T("FlowChart.NotNG")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_Abnormal_NG_QTY" name="Abnormal_NG_QTY" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_WH_QTY">@T("QA.Numberwarehouses")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_WH_QTY" name="WH_QTY" data-rule-digits="true" data-msg-digits="@T("FlowChart.Interger")">
+                                </div>
+                            </div>
+                            <div id="div_nullwip" class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_NullWip_QTY">@T("FlowChart.notWIP")</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_NullWip_QTY" name="NullWip_QTY" data-rule-digits="true" data-msg-digits="@T("FlowChart.Interger")">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Unacommpolished_Reason">未达成原因</label>
+                                <div class="col-xs-7">
+                                    <select class="form-control input-sm" id="s_input_Unacommpolished_Reason" name="Unacommpolished_Reason"></select>
+                                </div>
+                            </div>
+                            <input type="hidden" id="Location_Flag" value="false" name="Location_Flag"  />
+                            <input type="hidden" name="isEdit" value="false" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+
+                        <button type="button" class="btn btn-primary " id="js_btn_save_edit_ReportBom"><i class="fa fa-save"></i>@T("Common.Save")</button>
+                    </div>
+                </form>
+                <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_alert_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.NotMatch")</h4>
+                </div>
+
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_type">@T("FlowChart.NotMatchType")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_type">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_process">@T("FlowChart.NotMatchProcess")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_process">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_funcplant">@T("FlowChart.NotMatchFunPlant")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_funcplant">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_funcplant_manager">@T("FlowChart.fuzeren")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_funcplant_manager">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_tel">@T("FlowChart.fuzerenContact")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_tel">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="js_error_email">@T("FlowChart.fuzerenEmail")：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="js_error_email">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_repair_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.NumOfRework")</h4>
+                </div>
+
+                <div class="modal-body form-horizontal">
+                    <div class="row" id="js_repair_row">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                    @*<button type="button" class="btn btn-primary " id="js_btn_save_rework"><i class="fa fa-save"></i>保存</button>*@
+                    <input id="hidFlowchartDetailUID" type="hidden" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_rework_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.NumOfRework")</h4>
+                </div>
+
+                <div class="modal-body form-horizontal">
+                    <div class="row" id="js_rework_row">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                    @*<button type="button" class="btn btn-primary " id="js_btn_save_rework"><i class="fa fa-save"></i>保存</button>*@
+                    <input id="hidReworkFlowchartDetailUID" type="hidden" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .popover {
+        max-width: 500px;
+    }
+
+    .popover-content .btn + .btn {
+        margin-left: 2px;
+    }
+
+    .product-input-text {
+        width: 100px !important;
+    }
+    .product-input-reworktext {
+        width: 100px !important;
+    }
+    .product-input-repairtext {
+        width: 100px !important;
+    }
+    
+</style>
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/ProductInputJS/DataBind.js"></script>
+    <script type="text/javascript" src="~/Scripts/PDMSJS/ProductInputJS/DataSubmit.js"></script>
+    <script type="text/javascript" src="~/Scripts/PDMSJS/ProductInputJS/ClickEvent.js"></script>
+    <script type="text/javascript" src="~/Scripts/PDMSJS/ProductInputJS/ReworkEvent.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var reworkError = window.False;
+            var subDatatable = null;
+            //获取当前功能厂
+            var getCurrentUid = function () {
+                url = ProductData.urls.GetCurrentFuncPlant;
+                $.post(url, function (data) {
+
+                    $('#js_input_func_plant').val(data);
+                });
+            }
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+
+                $('#js_form_data_edit li').hide();
+            });
+
+            //查询Product_Input表数据，将数据有错的在页面上标注出来
+            var checkAbnomalDate = function () {
+                url = ProductData.urls.GetWarringData;
+                $.post(url, function (data) {
+
+                    $('#js_input_func_plant').val(data);
+                });
+            }
+            var ProductData = (function () {
+                var urls =
+                {
+                    GetWarringData: '@Url.Action("GetWarringData", "ProductInput")',
+                    QueryProductData: '@Url.Action("QueryProductDatas", "ProductInput")',
+                    QueryProductSingelData: '@Url.Action("QueryProductData", "ProductInput")',
+                    ModifyProduct: '@Url.Action("ModifyProductData", "ProductInput")',
+                    GetCurrentFuncPlant: '@Url.Action("getCurrentPlantName", "ProductInput")',
+                    SaveDatas: '@Url.Action("SaveDatas", "ProductInput")',
+                    QueryFuncPlantInfo: '@Url.Action("QueryFuncPlantInfo", "ProductInput")',
+                    getRepairProcess: '@Url.Action("GetRepairToReworkProcess", "ProductInput")',
+                    GetReworkProcess:'@Url.Action("GetReworkProcess", "ProductInput")',
+                    GetErrorInfo: '@Url.Action("GetErrorInfo", "ProductInput")',
+                    GetIntervalInfo:'@Url.Action("GetIntervalInfo", "EventReportManager")',
+                    GetUnacommpolished_Reason:'@Url.Action("GetUnacommpolished_Reason", "EventReportManager")'
+                    
+                };
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Product_UID == 0)
+                                $(td).html('');
+                            else if (rowData.Is_Comfirm) {
+                                $(td).html('<button type="button"  disabled="disabled" class="btn btn-default btn-sm js-grid-edit" id="' + rowData.Rework_QTY + '_' + rowData.Is_Match + '" data-IsRedDisplay="' + rowData.IsRedDisplay + '" name="' + rowData.Rework_Flag + '" data-id="' + rowData.Product_UID +'_'+rowData.Location_Flag+ '">@ViewBag.Edit</button>');
+                            } else {
+                                $(td).html('<button type="button" class="btn btn-default btn-sm js-grid-edit" id="' + rowData.Rework_QTY + '_' + rowData.Is_Match + '" data-IsRedDisplay="' + rowData.IsRedDisplay + '" name="' + rowData.Rework_Flag + '" data-id="' + rowData.Product_UID + '_' +rowData.Location_Flag+'">@ViewBag.Edit</button>');
+                            }
+
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var html = ' <label>' + rowData.Process_Seq + '</label>' +
+                                '<input type="text"class="form-control input-xs" style="display:none;"  disabled="disabled"  name="Process_Seq"  value="' + rowData.Process_Seq + '">' +
+                                '<input type="text" class="form-control input-xs" style="display:none;"  name="Product_Stage"  value="' + rowData.Product_Stage + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Material_No"  value="' + rowData.Material_No + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Wip_Qty"  value="' + rowData.Wip_Qty + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Version"  value="' + rowData.FlowChart_Version + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_Phase"  value="' + rowData.Product_Phase + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="FunPlant_Manager"  value="' + rowData.FunPlant_Manager + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Part_Types"  value="' + rowData.Part_Types + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Project"  value="' + rowData.Project + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Customer"  value="' + rowData.Customer + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_Date"  value="' + rowData.Product_Date + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Time_Interval"  value="' + rowData.Time_Interval + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Target_Yield"  value="' + rowData.Target_Yield + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Prouct_Plan"  value="' + rowData.Prouct_Plan + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Master_UID"  value="' + rowData.FlowChart_Master_UID + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_UID"  value="' + rowData.Product_UID + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="DRI"  value="' + rowData.DRI + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Detail_UID"  value="' + rowData.FlowChart_Detail_UID + '">' +
+                                '  <input type="text" class="form-control input-xs" style="display:none;"  name="Rework_Flag"  value="' + rowData.Rework_Flag + '">' +
+                                  '  <input type="text" class="form-control input-xs" style="display:none;"  name="Location_Flag"  value="' + rowData.Location_Flag + '">';
+                            $(td).html(html);
+
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td).html(' <label>' + rowData.Process + '</label>' +
+                                '<input type="text"class="form-control"style="display:none;" disabled="disabled"  name="Process"  value="' + rowData.Process + '">');
+
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td).html(' <label>' + rowData.Color + '</label>' +
+                                '<input type="text"class="form-control"  style="display:none;" disabled="disabled"  name="Color"  value="' + rowData.Color + '">'
+                                );
+
+                        },
+                        className: "text-center"
+                    },
+                             {
+                                 data: null,
+                                 createdCell: function (td, cellData, rowData, row, col) {
+
+                                     $(td).html(' <label>' + rowData.Place + '</label>' +
+                                         '<input type="text"class="form-control"style="display:none;" disabled="disabled"  name="Place"  value="' + rowData.Place + '">');
+
+                                 },
+                                 className: "text-center"
+                             },
+
+                                 {
+                                     data: null,
+                                     createdCell: function (td, cellData, rowData, row, col) {
+
+                                         $(td).html(' <label>' + rowData.WIP_QTY + '</label>' +
+                                             '<input type="text"class="form-control"style="display:none;" disabled="disabled"  name="Wip_Qty"  value="' + rowData.WIP_QTY + '">');
+
+                                     },
+                                     className: "text-center"
+                                 },
+
+                                 //新加入计划和计划未达成原因选择
+                                   {
+                                       data: null,
+                                       createdCell: function (td, cellData, rowData, row, col) {
+
+                                           $(td).html(' <label>' + parseInt(rowData.Prouct_Plan/12) + '</label>' +
+                                               '<input type="text"class="form-control"style="display:none;" disabled="disabled"  name="Prouct_Plan"  value="' + parseInt(rowData.Prouct_Plan/12) + '">');
+
+                                       },
+                                       className: " text-center"
+                                   },
+
+                                     {
+                                         data: "Unacommpolished_Reason",
+                                         render: function (data, type, full, meta) {
+
+                                             var isEdit = false;
+                                             var html = '<select type="text" name="Unacommpolished_Reason" class="form-control input-sm " >';
+                                             var optionHtml = "";
+                                             if (Unacommpolished_ReasonList != null) {
+                                                 optionHtml += '<option value=" ">' + " " + '</option>';
+                                                 for (var i = 0; i < Unacommpolished_ReasonList.length; i++) {
+                                                     if (Unacommpolished_ReasonList[i] == data) {
+                                                         optionHtml += '<option selected="selected" value="' + Unacommpolished_ReasonList[i] + '">' + Unacommpolished_ReasonList[i] + '</option>';
+                                                     } else {
+                                                         optionHtml += '<option value="' + Unacommpolished_ReasonList[i] + '">' + Unacommpolished_ReasonList[i] + '</option>';
+                                                     }}
+                                             }
+                                             html += optionHtml + '</select>';
+                                             return html;
+                                         },
+                                         className: "text-center",
+
+                                     },
+
+
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '<input type="text" class="form-control  text-center product-input-text" name="Picking_QTY"  value="' + "" + '">';
+                            if (rowData.Product_UID != 0 && rowData.Picking_MismatchFlag == undefined)
+                                tdHTML += '<input type="text"class="form-control input-xs text-center  product-input-text" disabled="disabled" id="' + rowData.Product_UID + '" name="Picking_QTY"  value="' + rowData.Picking_QTY + '">';
+                            if (rowData.Picking_MismatchFlag != undefined)
+                                tdHTML += '<input type="text"class="form-control input-xs forAlertInput text-center  product-input-text"  style="background-color: red;" id="' + rowData.Product_UID + '" name="Picking_QTY"  value="' + rowData.Picking_QTY + '">' +
+                                    ' <input type="text" class="form-control input-xs  product-input-text" style="display:none;"  name="Picking_MismatchFlag"  value="' + rowData.Picking_MismatchFlag + '">' +
+                                    '  <input type="text" class="form-control input-xs  product-input-text" style="display:none;"  name="Picking_Contact"  value="' + rowData.Picking_Contact + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '<input type="text"class="form-control  text-center  product-input-text" id="' + rowData.Product_UID + '"  name="Normal_Good_QTY"  value="' + "" + '">';
+                            if (rowData.Product_UID != 0 && rowData.Good_MismatchFlag == undefined)
+                                tdHTML += '<input type="text"class="form-control  text-center  product-input-text" disabled="disabled" id="' + rowData.Product_UID + '" name="Normal_Good_QTY"  value="' + rowData.Normal_Good_QTY + '">';
+                            if (rowData.Good_MismatchFlag != undefined)
+                                tdHTML += '<input type="text"class="form-control forAlertInput text-center product-input-text"  style="background-color: red;" id="' + rowData.Product_UID + '"  name="Good_QTY"  value="' + rowData.Normal_Good_QTY + '">' +
+                                    ' <input type="text" class="form-control  product-input-text" style="display:none;"  name="Good_MismatchFlag"  value="' + rowData.Good_MismatchFlag + '">' +
+                                    '  <input type="text" class="form-control  product-input-text" style="display:none;"  name="Good_Contact"  value="' + rowData.Good_Contact + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                            ///再加两个隐藏的Input分别存放对方功能厂和联系方式，用户点击红框时候用modal显示相关信息。
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="Normal_NG_QTY"  value="' + "" + '">';
+                            else
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled"   name="Normal_NG_QTY"  value="' + rowData.Normal_NG_QTY + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="WH_Picking_QTY"  value="' + "" + '">';
+                            else
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled" l name="WH_Picking_QTY"  value="' + rowData.WH_Picking_QTY + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="Adjust_QTY"  value="' + "" + '">';
+                            else
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled" name="Adjust_QTY"   value="' + rowData.Adjust_QTY + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="WH_QTY"  value="' + "" + '">';
+                            else
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled"  name="WH_QTY"  value="' + rowData.WH_QTY + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },{
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var tdHTML = '<div>';
+                            if (rowData.Product_UID == 0)
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="NullWip_QTY"   value="' + rowData.NullWip_QTY + '">';
+                            else
+                                tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled"  name="NullWip_QTY"  value="' + rowData.NullWip_QTY + '">';
+                            tdHTML += '</div>';
+                            $(td).html(tdHTML);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Detail_UID" id=' + rowData.Product_UID + ' value=' + rowData.FlowChart_Detail_UID + '>';
+
+                            var reworkHTML = '<input type="button" class="btn btn-primary text-center rework product-input-reworktext" {0} {2}  value="{1}">';
+                            var repairHTML = '<input type="button" class="btn btn-primary text-center repair product-input-repairtext" {0} {2}   value="{1}">';
+
+                            var date = '@ViewBag.Product_Date';
+                            var time = '@ViewBag.Time_Interval';
+
+                            if (rowData.Product_UID == 0) {  //新增
+                                if (rowData.Rework_Flag != "Repair" && rowData.Rework_Flag != "Rework") {
+                                    $(td).html('');
+                                }
+                                else {
+                                    if (rowData.Rework_Flag == "Rework") {
+                                        reworkHTML = reworkHTML.replace(/\{1}/g, "返工");
+                                        //var timeIntervalUrl = ProductData.urls.GetIntervalInfo;
+                                        //初始化页面的时候需要把pop窗口自动生成多个Rework
+                                        //$.get(timeIntervalUrl,function(a){
+                                        //    var date = a.Items[0].NowDate;
+                                        //    var time = a.Items[0].Time_Interval;
+                                        //    CreateReworkPage(urls.GetReworkProcess, rowData, date, time);
+                                        //    $(td).html(reworkHTML);
+                                        //});
+                                        CreateReworkPage(rowData, date, time);
+                                        $(td).html(reworkHTML);
+
+
+                                    }
+                                    else { //Repair
+                                        repairHTML = repairHTML.replace(/\{1}/g, "修复");
+                                        //var timeIntervalUrl = ProductData.urls.GetIntervalInfo;
+                                        //初始化页面的时候需要把pop窗口自动生成多个Repair
+                                        //$.get(timeIntervalUrl,function(a){
+                                        //    var date = a.Items[0].NowDate;
+                                        //    var time = a.Items[0].Time_Interval;
+                                        //    CreateRepairPage(urls.getRepairProcess, rowData, date, time);
+                                        //    $(td).html(repairHTML);
+                                        //});
+                                        CreateRepairPage(rowData, date, time);
+                                        $(td).html(repairHTML);
+                                    }
+                                }
+                            }
+                            else {    //编辑
+                                if (rowData.Rework_Flag != "Repair" && rowData.Rework_Flag != "Rework") {
+                                    $(td).html('');
+                                }
+                                else {
+
+                                    reworkHTML = reworkHTML.replace(/\{0}/g, "disabled");
+                                    repairHTML = repairHTML.replace(/\{0}/g, "disabled");
+
+                                    if (rowData.Rework_Flag === "Repair") {
+                                        repairHTML = repairHTML.replace('{1}', rowData.SumInputOutput_ByRepair);
+                                        //var timeIntervalUrl = ProductData.urls.GetIntervalInfo;
+                                        if(rowData.IsRedDisplay){
+                                            repairHTML = repairHTML.replace(/\{2}/g, "style='background-color: red;'");
+                                        }
+                                        CreateRepairPage(rowData, date, time);
+                                        $(td).html(repairHTML);
+                                    }
+                                    else if (rowData.Rework_Flag === "Rework") {
+                                        reworkHTML = reworkHTML.replace('{1}', rowData.SumInputOutput_ByRework);
+                                        //var timeIntervalUrl = ProductData.urls.GetIntervalInfo;
+                                        if(rowData.IsRedDisplay){
+                                            reworkHTML = reworkHTML.replace(/\{2}/g, "style='background-color: red;'");
+                                        }
+
+                                        CreateReworkPage(rowData, date, time);
+                                        $(td).html(reworkHTML);
+                                    }
+                                }
+                            }
+                        },
+                        className: "text-center"
+                    }
+                ];
+                //根据条件隐藏提交按钮
+                var SetSubmitButton = function () {
+
+                    var dataTable = ProductData.GetSubDatatable();
+                    if (dataTable.rows().count() == 0) {
+                        $('#js_input_flowChartName').html("@ViewBag.PPConfirm");
+                        $('#js_input_flowChartName').css("color","red");
+                        $('#btn-submit-inner').hide();
+                    }
+                    else {
+                        dataTable
+                            .rows()
+                            .every(function (rowIdx, tableLoop, rowLoop) {
+                                var row = $('#js_plant_datatable>tbody>tr').eq(rowIdx);
+
+                                if (rowIdx == 0) //用数据的第一行判断是否为新建 并给页面标题赋值
+                                {
+                                    var flag = $.trim(row.find('input[name=Product_UID]').val());
+                                    var Customer = $.trim(row.find('input[name=Customer]').val());
+                                    var Project = $.trim(row.find('input[name=Project]').val());
+                                    var Part_Types = $.trim(row.find('input[name=Part_Types]').val());
+                                    var Product_Phase = $.trim(row.find('input[name=Product_Phase]').val());
+
+                                    //var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                                    var innnerString = Customer + '_' + Project + '_' + Part_Types + '_' + Product_Phase;
+                                    innnerString += "\n"+"@ViewBag.CurDate"+":" + "@ViewBag.Product_Date" + "@ViewBag.CurTime"+":" + "@ViewBag.Time_InterVal";
+                                    document.getElementById('js_input_flowChartName').innerHTML = innnerString //+ '_'+ FunPlant;
+                                    if (flag != "" && flag != "0") {
+                                        $('#btn-submit-inner').hide();
+                                    } else {
+                                        return;
+                                    }
+                                }
+
+                            });
+                    }
+                };
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _queryPlants = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_plant_datatable",
+                        remoteUrl: urls.QueryProductData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+
+                            columns: columns
+                        }
+                    };
+
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_plant_datatable",
+                        remoteUrl: urls.QueryProductData,
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    var chk_value = [];
+
+                    @*if (@ViewBag.IsWX==0) {
+                        $('#div_nullwip').hide();
+                        chk_value.push(15);
+                    }*@
+
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    PDMS.Utility.Criteria.Build();
+                    PDMS.Utility.Pages.Set(config);
+                    //$.unblockUI();
+                    //SetSubmitButton();
+                    $('.forAlertInput').on('click', function () {
+                        var funcPlant = $(this).next().val();
+                        var FunPlant_Contact = $(this).next().next().val();
+                        $('#js_alert_modal').find('input[name=FuncPlant_Tel]').val(FunPlant_Contact);
+                        $('#js_alert_modal').find('input[name=FuncPlant_Name]').val(funcPlant);
+
+                        $('#js_alert_modal').modal('show');
+                    });
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        GetUnacommpolished_Reason();
+                        _queryPlants(true);
+                        SetSubmitButton();
+                      
+                    },
+                    QueryProductData: function () {
+                        _queryPlants(false);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_plant_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                scrollX: true,
+                                autoWidth: true,
+                                columns: columns,
+                            });
+                        }
+                        return subDatatable;
+                    },
+                }
+
+            })();
+            ProductData.Init();
+           
+            //获取未达成原因
+            function  GetUnacommpolished_Reason() {
+                $.get(ProductData.urls.GetUnacommpolished_Reason, function (data) {
+                    Unacommpolished_ReasonList = data;
+                });
+            }
+
+
+            //点击Repair框，弹出“输入接收的返工数”
+            $('body').on('click', '.repair', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr).data();
+                var detailUID = row.FlowChart_Detail_UID;
+                var Product_UID = row.Product_UID;
+                var Is_Match = row.Is_Match;
+
+                var id = 'js_repair_modal_' + detailUID;
+                $('#' + id).modal('show');
+            });
+            //#endregion
+       
+            $('#btn-submit-inner').on('click', function () {
+                
+                //页面上面停留的时段
+                var innerHtml = $('#js_input_flowChartName').html();
+                var startIndex = $('#js_input_flowChartName').html().indexOf('@ViewBag.CurTime');
+                var curLength = '@ViewBag.CurTime'.length;
+                var selectTime = $('#js_input_flowChartName').html().substr(startIndex + curLength + 1);
+                var CurrentOp = $("#js_s_input_OP").val();
+                var timeIntervalUrl = ProductData.urls.GetIntervalInfo;
+                var date;
+                $.get(timeIntervalUrl,{ OPType: CurrentOp },function(a){
+                    date = a.NowDate;
+                    //通过数据库查询出来的实时时段
+                    timeInterval = a.Time_Interval;
+                    if(timeInterval != selectTime){ //当前时段已经过期的处理
+                        PDMS.Utility.MessageBox.info("@ViewBag.checkDataInfo2",function(){
+                            window.location.reload();
+                        });
+                    }
+                    else{
+                        SaveInfo(ProductData.GetSubDatatable(), ProductData.urls.SaveDatas);
+                    }
+                });
+
+
+
+            });
+
+            //点击查询时候执行   目前未使用
+            $('#btn-search-inner').click(function () {
+                if ($("#js_form_query").valid()) {
+                    ProductData.QueryProductData();
+                    $('#js_search_modal').modal('hide');
+                    $('#js_s_input_QuertFlag').val("Search");
+                    $('.forAlertInput').on('click', function () {
+                        var funcPlant = $(this).next().val();
+                        var FunPlant_Contact = $(this).next().next().val();
+                        $('#js_alert_modal').find('input[name=FuncPlant_Tel]').val(FunPlant_Contact);
+                        $('#js_alert_modal').find('input[name=FuncPlant_Name]').val(funcPlant);
+
+                        $('#js_alert_modal').modal('show');
+                    });
+                }
+            });
+
+            // 编辑页面的验证
+            $('#js_form_data_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_form_data_edit ul.validate-error'),
+                wrapper: 'li'
+            });
+            //红框弹出提示
+            $('.forAlertInput').on('click', function () {
+                if ($('#js_s_input_QuertFlag') == "Search") {
+                    return;
+                }
+                var productUid = $(this).attr("id");
+                var errorType = $(this).attr("name");
+                $.post(ProductData.urls.GetErrorInfo, { "productUid": productUid, "errorType": errorType }, function (data) {
+                    if (errorType === "Good_QTY")
+                        $("#js_error_type").val("@ViewBag.Info2");
+                    else {
+                        $("#js_error_type").val("@ViewBag.Info3");
+                    }
+                    $("#js_error_process").val(data.Process);
+                    $("#js_error_funcplant").val(data.FunPlant);
+                    $("#js_error_funcplant_manager").val(data.FunPlant_Manager);
+                    $("#js_error_tel").val(data.Tel);
+                    $("#js_error_email").val(data.Email);
+                    $('#js_alert_modal').modal('show');
+                });
+            });
+
+            $("#js_btn_save_edit_ReportBom").on('click', function () {
+                var url = ProductData.urls.ModifyProduct;
+                EditInfo(url);
+            });
+
+
+            //点击编辑的时触发事件 更具用户选择的UID，查询出值来绑定数值
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#hidColor').val('');
+                var url = ProductData.urls.QueryProductSingelData;
+                var uuid = $(this).attr('data-id').split('_')[0];
+                var flag = $(this).attr('data-id').split('_')[1];
+                var color = $(this).parent().parent().children().eq(4).text().trim();
+                var IsRedDisplay = $(this).attr('data-IsRedDisplay');
+                $('#hidColor').val(color);
+                $('#Location_Flag').val(flag);
+              
+                ClickEdit(url,flag,uuid,IsRedDisplay);
+                //$.unblockUI();
+            });
+
+
+
+
+
+        });
+
+    </script>
+}

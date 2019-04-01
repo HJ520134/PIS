@@ -1,0 +1,439 @@
+﻿<!-- Main content -->
+@{
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.kanbaninfo1 = T("FlowChart.kanbaninfo1").Text;
+}
+<section class="content portal-content">
+	<style>
+		.eboard-hvr-outline-out_part, .eboard-hvr-outline-out, .eqpboard-hvr-outline-out {
+			font-size: x-large;
+		}
+	</style>
+	
+    <input type="hidden" id="user_op" value="@ViewBag.Opty" />
+    <input type="hidden" id="user_plant" value=@ViewBag.plant />
+    <div class="wrapper eboard-wrapper">
+        <header class="main-header eboard-header">
+            <nav class="navbar navbar-static-top">
+                <div class=" container-fluid">
+                    <div class="navbar-header">
+                        <!-- Logo -->
+	                    <div class="logo" style="background: none">
+		                    <b>@T("FlowChart.KanBan")</b>
+	                    </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </nav>
+        </header>
+        <!-- Full Width Column -->
+        <div class="content-wrapper eboard-page" style="min-height: 617px;">
+            <div class="container-fluid">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <div class="row">
+                        <div class="col-md-12 eboard-header-title">
+                            <strong class="eboard-header-title-line ">@T("FlowChart.Projectlist")</strong>
+                        </div>
+                    </div>
+                    <hr class="eboard-hr margin-t-10">
+                </section>
+
+                <!-- Main content -->
+
+                <section class="content padding-t-0">
+                    <div class="row">
+
+                        @foreach (var Project in ViewBag.Projects)
+                        {
+                            <div class="col-sm-12 col-md-4">
+                                <a href="#" class="eboard-hvr-outline-out">
+                                    <div class="info-box bg-aqua">
+                                        <span class="info-box-icon"><i class="fa fa-clipboard text-3d"></i></span>
+                                        <div class="info-box-content eboard-infobox-content">
+                                            <h2>@Project</h2>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        }
+                    </div>
+                </section>
+                @*@if (ViewBag.plant == "CTU"|| ViewBag.plant == "CTU")
+                {*@
+                    <section class="content-header">
+                        <div class="row">
+                            <div class="col-md-12 eboard-header-title">
+                                <strong class="eboard-header-title-line ">@T("FlowChart.LoudongXuanze")</strong>
+                            </div>
+                        </div>
+                        <hr class="eboard-hr margin-t-10">
+                    </section>
+                    <section class="content padding-t-0">
+                        <div class="row">
+                            @foreach (var item in ViewBag.loctions)
+                            {
+                                <div class="col-sm-12 col-md-4">
+                                    <a href="#" class="eqpboard-hvr-outline-out">
+                                        <div class="info-box bg-aqua">
+                                            <span class="info-box-icon"><i class="fa fa-clipboard text-3d"></i></span>
+                                            <div class="info-box-content eboard-infobox-content">
+                                                <h2>@item</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                @*  }*@
+
+                <!-- /.content -->
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class=" eboard-main-footer" style=" border:none !important;">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 text-right eboard-footer-enter">
+                        <hr class="eboard-hr no-margin no-padding eboard-hr">
+                        <button type="button" class="btn btn-primary btn-lg margin-t-20 eboard-hvr-shutter-out-horizontal" id="js_btn_save_edit_ReportBom"><i class="fa fa-check-square-o"></i>@T("Common.Sure")</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- /.container -->
+        </footer>
+    </div>
+    @*<div id="main_content" style="background-color: rgba(85, 148, 133, 0.08); font-size: x-large">
+            <table>
+                <tr>
+                    <td>
+                        <div class="row">
+                            @foreach (var Project in ViewBag.Projects)
+                            {
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <button class="btn eboard-hvr-outline-out"  id=@Project value=@Project > <b>@Project</b> </button>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </td>
+                </tr>
+              <tr>
+                <td>
+                    <div class="row" style="padding-bottom:50px;">
+                        <div class="col-md-10"></div>
+                        <div class="col-md-2">
+                            <button type="button" style="width: 100px; height: 100px; margin: 20px 10px 30px 100px;font-size: x-large" id="js_btn_save_edit_ReportBom"><i class="fa fa-save"></i>确定</button>
+                        </div>
+                    </div>
+              </td>
+              </tr>
+            </table>
+
+        </div>*@
+    @*<div class="bg-orange-active row" id="divMar_System_Announcement" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:2px;width:100%; z-index:-1">
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 bg-black-01 col-md-1 col-xs-2 text-center" style="padding-left:20px">
+                <i class="icon fa fa-warning"></i> <span class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block "><b>通知</b></span>
+            </div>
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 col-md-11 col-xs-10" style="font-size: X-large;">
+                <marquee id="mar_System_Announcement" contenteditable="true" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();" behavior="scroll" direction="left"></marquee>
+            </div>
+        </div>*@
+
+</section><!-- /.content -->
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_parttypes_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.yewuxuanze")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="OP1_Part_types" class="row">
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr></tr>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btn_search" type="button" class="eboard-hvr-outline-out">@T("Common.Sure")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+
+    <script type="text/javascript">
+        var RoleMaintenance = null;
+        //$(document).ready(function () {
+
+        //    setInterval("startRequest1()", 10000);
+        //});
+
+        //function startRequest1() {
+        //    $.post(RoleMaintenance.urls.getNoticeContent, { "optype": $("#opType").val() }, function (data) {
+        //        if (data != "") {
+        //            var warningText = data;
+        //            $("#divMar_System_Announcement").show();
+        //            $("#mar_System_Announcement").html(warningText);
+
+
+        //        }
+        //    });
+        //}
+
+        $(function () {
+
+
+            $(document).ready(function () {
+                //setInterval("startRequest()", 1000);
+                //setInterval("startRequest1()", 3000);
+            });
+            function startRequest() {
+                RoleMaintenance.QueryRoles();
+            }
+            function startRequest1() {
+                $.post(RoleMaintenance.urls.getNoticeContent, { "optype": $("#user_op").val() }, function (data) {
+                    if (data != "") {
+                        var warningText = data;
+                        $("#divMar_System_Announcement").show();
+                        $("#mar_System_Announcement").html(warningText);
+
+
+                    }
+                });
+            }
+
+            var RoleMaintenance = (function () {
+                var urls = {
+                    redirectUrl: '@Url.Action("EBoardShowSettingSelectPart", "PlayBoard")',
+                    getNoticeContent: '@Url.Action("getNoticeContent", "Board")',
+                    AddNotice: '@Url.Action("AddNotice", "Board")',
+                    DeleteNotice: '@Url.Action("DeleteNotice", "Board")',
+                    getPartTypes: '@Url.Action("getPartTypes", "Board")'
+                };
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                {
+                    data:null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.UID + '">@ViewBag.Delete</button>');
+                    },
+                    className: "text-center"
+                },
+               {
+                   data: "Notice_Content",
+                   className: "min-col-xs"
+               },
+                {
+                    data: "Period",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Scope",
+                    className: "min-col-xs"
+                }, {
+                    data: "State",
+                    className: "min-col-lg"
+                }, {
+                    data: "Creator_User",
+                    className: "min-col-lg"
+                }
+                , {
+                    data: "Creat_Time",
+                    className: "min-col-lg"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_role_datatable",
+                        remoteUrl: urls.queryRoles,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.Set(config);
+
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+
+            })();
+
+            RoleMaintenance.Init();
+
+            //$.post(RoleMaintenance.urls.getNoticeContent, { "optype": $("#user_op").val() }, function (data) {
+            //    if (data !="") {
+            //        var warningText =data;
+            //            $("#divMar_System_Announcement").show();
+            //            $("#mar_System_Announcement").html(warningText);
+
+
+            //    }
+            //});
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    RoleMaintenance.QueryRoles();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //保存时运行
+            $("#js_btn_save_edit_ReportBom").click(function () {
+                var opType= $("#user_op").val();
+                var selectValue = "";
+                var plant = $('#user_plant').val();
+                $.each($(".eboard-hvr-outline-out"), function (i, item) {
+                    if ($(this).attr('style') == 'background-color:#5CACEE')
+                    {
+                        if (selectValue != "")
+                        {
+                            selectValue = selectValue + "," + $(this).find('h2').text();
+                        }
+                        else
+                            selectValue += $(this).find('h2').text();
+                    }
+
+                });
+                var selectlocation = "";
+                $.each($(".eqpboard-hvr-outline-out"), function (i, item) {
+                    if ($(this).attr('style') == 'background-color:#5CACEE') {
+                        if (selectlocation != "") {
+                            selectlocation = selectlocation + "," + $(this).find('h2').text();
+                        }
+                        else
+                            selectlocation += $(this).find('h2').text();
+                    }
+
+                });
+                if (selectValue == "")
+                {
+                    PDMS.Utility.MessageBox.error("@ViewBag.kanbaninfo1");
+                    return;
+                }
+
+                    //else if (selectlocation=="") {
+                    //    PDMS.Utility.MessageBox.error("请选择楼栋");
+                    //    return;
+                    //}
+                else
+                {
+                    url = RoleMaintenance.urls.redirectUrl + '?selectProjects=' + selectValue + '&opType=' + opType + '&location=' + selectlocation + '&plant=' + plant + '&settingID='+@ViewBag.SettingID;
+                    window.location.href = url;
+                }
+
+            })
+            killAside();
+            function killAside() {
+                $(".content-wrapper").css("cssText", "margin-left:0px !important");
+            }
+            //clear query conditions in search modal
+            $('.eboard-hvr-outline-out').click(function () {
+                if ($(this).attr('style') == 'background-color:#5CACEE')
+                {
+                    $(this).removeAttr('style');
+                    $($(this).find("div:first")).removeClass("eboard-selected");
+                }
+                else
+                {
+                    $(this).attr('style', 'background-color:#5CACEE');
+                    $($(this).find("div:first")).addClass("eboard-selected");
+                }
+
+            });
+
+            $('.eqpboard-hvr-outline-out').click(function () {
+                $('.eqpboard-hvr-outline-out').removeAttr('style');
+                $('.eqpboard-hvr-outline-out').find("div:first").removeClass("eboard-selected");
+                $(this).attr('style', 'background-color:#5CACEE');
+                $($(this).find("div:first")).addClass("eboard-selected");
+                //if ($(this).attr('style') == 'background-color:#5CACEE') {
+                //    $(this).removeAttr('style');
+                //    $($(this).find("div:first")).removeClass("eboard-selected");
+                //}
+                //else {
+                //    $(this).attr('style', 'background-color:#5CACEE');
+                //    $($(this).find("div:first")).addClass("eboard-selected");
+                //}
+
+            });
+
+            $('#btn_search').click(function () {
+                $('#js_parttypes_modal').modal('hide');
+            });
+
+            $('#js_btn_clear').click(function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                PDMS.Utility.Criteria.Clear();
+            });
+        });
+    </script>
+}
+
+<style>
+    .main-header {
+        display: none;
+    }
+
+    .main-footer {
+        display: none;
+    }
+
+    .main-sidebar {
+        display: none;
+    }
+
+    .content-wrapper {
+        margin-left: 0px !important;
+    }
+</style>
+
+
+
+

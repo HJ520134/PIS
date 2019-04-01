@@ -1,0 +1,479 @@
+﻿<section class="content-header portal-content-header">
+    <h1>
+        重要料号原因维护
+    </h1>
+</section>
+
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">模板下载</button>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">上传</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add_fl">新增</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> 查询</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+                     <a class="fa fa-times btn btn-primary" href="../Equipmentmaintenance/BasicInfo">
+                        @*<i class="glyphicon glyphicon-backward"></i>*@
+                        返回
+                    </a>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>原因</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>原因</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">重要料号原因明细</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditMaterialReason", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal"  style="height :200px;">
+
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-3 control-label" for="js_select_material_uid">料号</label>
+                                <div class="col-sm-9">
+                                    <select class="selectpicker form-control input-sm" id="js_select_material_uid" name="Material_Uid" data-live-search="true">
+                                        <optgroup label="料号_品名_型号">
+                                            <option></option>
+                                            @foreach (var item in ViewBag.mats)
+                                            {
+                                                <option value=@item.Material_Uid>@item.Material_Id _ @item.Material_Name _ @item.Material_Types</option>
+                                            }
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Reason">原因</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Reason" name="Reason" placeholder="Reason"
+                                           required data-msg-required="Please enter Value" data-rule-maxlength="20"
+                                           data-msg-maxlength="Please enter no more than {0} characters in value.">
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="Material_Reason_UID" name="Material_Reason_UID" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">导入重要料号原因</h4>
+            </div>
+            @using (Html.BeginForm("ImportMatReasonExcel", "Equipmentmaintenance", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">选择计划Excel档</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="选择文件"
+                                   required data-msg-required="请选择要上传的Excel档!" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_clear_Update">取消</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_excel_upload">提交</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查询</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="s_input_Material_Id">料号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Material_Id" class="form-control input-sm needint" id="s_input_Material_Id" placeholder="Material Id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="s_input_Material_Name">品名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Material_Name" class="form-control input-sm" id="s_input_Material_Name" placeholder="Material Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="s_input_Material_Types">型号</label>
+                                <div class="col-sm-8">
+                                    <input type="tel" name="Material_Types" class="form-control needint input-sm" id="s_input_Material_Types" placeholder="Material Types">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="s_input_ModifiedUser">修改者</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="ModifiedUser" class="form-control input-sm" id="s_input_ModifiedUser" placeholder="ModifiedUser">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@section ViewScripts{
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $('#btn_add_fl').click(function () {
+            $('#js_edit_modal').modal('show', $(this));
+        })
+        $(function () {
+            var MatReasonUrl = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryMatReason: '@Url.Action("QueryMatReason", "Equipmentmaintenance")',
+                    querymatReasonByuid: '@Url.Action("QuerymatReasonByuid", "Equipmentmaintenance")',
+                    deleteMatReason: '@Url.Action("DeleteMatReason", "Equipmentmaintenance")',
+                    //导出excel
+                    doExportMatReasonReprot: '@Url.Action("DoExportMatReasonReprot", "Equipmentmaintenance")',
+            
+                    doAllExportMatReasonReprot: '@Url.Action("DoAllExportMatReasonReprot", "Equipmentmaintenance")',
+                };
+
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Reason_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Material_Reason_UID + '">编辑</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Material_Reason_UID + '">删除</button>' +
+                                        '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Material_Id",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Types",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Reason",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ModifiedUser",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryMatReason = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryMatReason,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryMatReason(true, false);
+                    },
+                    queryMatReason: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryMatReason(false, buildCriteria);
+                    }
+                }
+            })();
+
+            MatReasonUrl.Init();
+
+            //清空
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    MatReasonUrl.queryMatReason();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //新增保存---START
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_edit_modal').find('select[name=Material_Uid]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择料号');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Reason]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入原因');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('更新成功');
+                            MatReasonUrl.queryMatReason();
+                        }
+                    }
+                });
+            })
+            //新增保存-----END
+
+            //隐藏编辑框时清空值---START
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal .list-group.validate-error').empty();
+                $('#js_edit_modal').find('input').val('');
+                $('#js_select_material_uid').selectpicker('val', '');
+                $('#js_select_material_uid').trigger("liszt:updated");
+            });
+            //隐藏编辑框时清空值-----END
+
+            $('#js_select_material_uid').selectpicker({ 'selectedText': 'cat' });
+
+            //删除事件---STSRT
+            $('body').on('click', '.js-grid-delete', function () {
+                var Material_Reason_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var url = MatReasonUrl.urls.deleteMatReason;
+                    $.post(url, { Material_Reason_UID: Material_Reason_UID }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info("删除成功");
+                            MatReasonUrl.queryMatReason();
+                        }
+                    });
+                });
+            });
+            //删除事件-----END
+
+            //#region 点击GridView上的Edit按钮事件
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+
+                var Material_Reason_UID = $(this).attr('data-id'),
+                    url = MatReasonUrl.urls.querymatReasonByuid;
+                $('#Material_Reason_UID').val(Material_Reason_UID);
+                $.post(url, { Material_Reason_UID: Material_Reason_UID }, function (data) {
+                    debugger;
+                    // $('#js_edit_modal').find('select[name=Material_UID]').val(data.Material_UID);
+
+                    $('#js_select_material_uid').selectpicker('val', data.Material_UID);
+                    $("#js_select_material_uid").trigger("liszt:updated");
+                    $('#js_edit_modal').find('input[name=Reason]').val(data.Reason);
+                });
+            });
+            //#endregion 点击Edit按钮事件
+
+            //#region 下载Excel模板
+            $('#btn_download_fl').on('click', function () {
+                var url = '@Html.Raw(Url.Action("DownloadMatReasonExcel", "Equipmentmaintenance"))';
+                this.form.action = url;
+                $('#js_form_excel_download').submit();
+            });
+            $('#btn_import_fl').on('click', function () {
+                $('#js_importExcel_modal').modal('show');
+            });
+
+            //提交     stat
+            $('#btn_excel_upload').on('click', function () {
+                $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+                $('#js_form_excel_upload').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('导入成功');
+                            MatReasonUrl.queryMatReason();
+                        }
+                    }
+                });
+            });
+            //提交   END
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = MatReasonUrl.urls.doAllExportMatReasonReprot;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var Material_Reason_UIDs = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = MatReasonUrl.urls.doExportMatReasonReprot;
+                    url += "?Material_Reason_UIDs=" + Material_Reason_UIDs.toString();
+                    window.location.href = url;
+                }
+            });
+        })
+    </script>
+}

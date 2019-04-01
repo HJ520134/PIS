@@ -1,0 +1,75 @@
+2016-09-29 14:28:19.0318 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:28:20.0398 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:28:29.7324 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:29:47.9268 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:29:50.0760 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:29:51.0250 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:29:52.5711 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:39:44.6080 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:39:45.1660 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:39:46.7731 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:39:48.0672 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:39:48.7562 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:42:11.4024 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:42:12.2044 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+
+2016-09-29 14:42:13.3165 | Error | System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 PDMS.Data.Repository.QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI(Int32 typeLevel, String ProjectName, String parentCode) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssurance_ExceptionTypeRepository.cs: 行 138 
+ QualityService.QueryExceptionTypeForAddAPI => QualityAssurance_ExceptionTypeRepository.QueryExceptionTypeForAddAPI => Logger.Error 
+

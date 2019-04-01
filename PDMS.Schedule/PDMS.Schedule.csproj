@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{92896CE0-20ED-4A4A-B147-995C33BC5B82}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PDMS.Schedule</RootNamespace>
+    <AssemblyName>PDMS.Schedule</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PDMS_Service.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PDMS_Service.Designer.cs">
+      <DependentUpon>PDMS_Service.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171221113932.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171221114014.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171221114114.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171221114214.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222071825.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222071909.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072009.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072109.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072209.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072309.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072409.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072509.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072609.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072709.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072809.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222072909.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073009.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073109.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073210.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073310.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073410.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073510.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073610.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073710.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073810.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222073910.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074010.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074110.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074210.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074310.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074410.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074510.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074610.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074710.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074810.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222074910.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075010.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075110.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075210.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075310.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075410.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075510.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075610.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075710.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075810.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222075911.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222080011.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222080111.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222080211.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222080311.xlsx" />
+    <None Include="bin\Debug\ReportCenter\FMTDashboard_20171222080411.xlsx" />
+    <None Include="_Install_PDMS.Schedule.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="_UnInstall_PDMS.Schedule.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDMS.Common\PDMS.Common.csproj">
+      <Project>{09b6a6ab-8dc7-4d94-8ee4-248360ac54b3}</Project>
+      <Name>PDMS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Data\PDMS.Data.csproj">
+      <Project>{d640cf57-9e8b-4ded-8e57-5333b14e05b6}</Project>
+      <Name>PDMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Service\PDMS.Service.csproj">
+      <Project>{8241f397-d5a6-41da-937d-cdec0efa6e85}</Project>
+      <Name>PDMS.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\Content\img\logo\logo1.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo2.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo3.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo4.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo5.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo6.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo7.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo8.png" />
+    <Content Include="bin\Debug\Content\img\logo\logo9.png" />
+    <Content Include="bin\Debug\Content\img\mail\btn-Approve.png" />
+    <Content Include="bin\Debug\Content\img\mail\btn-Reject.png" />
+    <Content Include="bin\Debug\Content\img\mail\Copyright.jpg" />
+    <Content Include="bin\Debug\Content\img\mail\Copyright.png" />
+    <Content Include="bin\Debug\Content\img\mail\line-head01.png" />
+    <Content Include="bin\Debug\Content\img\mail\mai01l-body.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-foot01.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-foot02.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-foot03-2.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-foot03.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-gotoPDMS.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-gotoSPP-left.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-gotoSPP-right.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-gotoSPP1.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-head01.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-head02.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-head03-2.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-head03.png" />
+    <Content Include="bin\Debug\Content\img\mail\mail01-system-info01.png" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2017\12\2017-12-21.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2017\12\2017-12-28.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2017\12\2017-12-29.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2018\01\2018-01-02.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2018\01\2018-01-03.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchEmalLog\2018\01\2018-01-04.txt" />
+    <Content Include="bin\Debug\PIS_log\BatchFMTDashBoardLog\2018\01\2018-01-03.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\PIS_log\BatchFMTDashBoardLog\2017\12\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

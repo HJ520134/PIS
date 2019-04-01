@@ -1,0 +1,307 @@
+﻿
+
+<section class="content-header portal-content-header" style="  margin:0px;padding:0px">
+    <h1></h1>
+</section>
+
+<div id="myTabContent" class="tab-content">
+    <div style="width: 100%; width: 1500px; min-width: 1046px;">
+        <div id="imgchangediv" style="width: 1038px; display: inline-block;margin:0 10PX 0 10PX;Border:1px solid #dddddd;">
+            <div>
+                <img src="~/Content/img/home/banner.png" style="display: block;width: 100%;" />
+            </div>
+            <div style="display: none;">
+                <img src="~/Content/img/home/contact-banner.png" style="display: block; width: 100%; " />
+            </div>
+
+        </div>
+        <div style="width: 415px; display: inline-block;  vertical-align: top;color:#ecf0f5;Border:1px solid #dddddd;">
+            <div style="width: 100%; min-width: 346px; background-color: #f1f1f1; ">
+                <div style="display: inline-block; color: #3c8dbc;margin:3PX 0 0 10PX;">
+                    <span style="font-size: 20px;">E</span>xternal system connection
+                </div>
+                <div style="display: inline-block; text-align:right; width:190px ;color:#626262 ;">
+                    Other JPG System Link
+                </div>
+                <div style="display: inline-block; text-align:right; width:20px ;color:#3c8dbc ;">
+                    <img src="~/Content/img/home/arrow.png" style="width: 100%;" />
+                </div>
+            </div>
+            <div style="width: 100%; background-color: #ffffff; padding: 5px; height: 332px;">
+                <a href="http://cnctug0hrmweb01/CN51/default.aspx">
+                    <div style="display: inline-block; width: 185px;height:90px; background-color: #f1f1f1; padding: 10px; margin: 5px;">
+                        <i class="icon-RFID" style="font-size: 35px; color: #3c8dbc"></i>
+                        <span style="color: #3c8dbc">加班系统</span>
+                    </div>
+                </a>
+
+                <a href="http://ctuweb01/">
+                    <div style="display: inline-block; width: 185px; height:90px;background-color: #f1f1f1; padding: 10px; margin: 5px;">
+                        <i class="icon-TR" style="font-size: 35px; color: #3c8dbc"></i>
+                        <span style="color: #3c8dbc">捷普成都IT自助系统</span>
+                    </div>
+                </a>
+
+                <a href="http://wxiplm01.corp.jabil.org/Windchill/app/#ptc1/homepage">
+                    <div style="display: inline-block; width: 185px; height:90px;background-color: #f1f1f1; padding: 10px; margin: 5px;">
+                        <i class="icon-E-TRN" style="font-size: 35px; color:#3c8dbc"></i>
+                        <span style="color: #3c8dbc">PLM管理系统</span>
+                    </div>
+                </a>
+
+                <a href="http://twtchg0km01/hris/#x">
+                    <div style="display: inline-block; width: 185px; height:90px;background-color: #f1f1f1; padding: 10px; margin: 5px;">
+                        <i class="icon-system-icon" style="font-size: 35px; color: #3c8dbc"></i>
+                        <span style="color: #3c8dbc">HRIS系统</span>
+                    </div>
+                </a>
+
+                <a href="https://performancemanager4.successfactors.com/login#/companyEntry">
+                    <div style="display: inline-block; width: 185px; height:90px;background-color: #f1f1f1; padding: 10px; margin: 5px;">
+                        <i class="icon-TMR" style="font-size: 35px; color: #3c8dbc"></i>
+                        <span style="color: #3c8dbc">SF系统</span>
+                    </div>
+                </a>
+
+
+            </div>
+        </div>
+    </div>
+    <div style="padding-top: 5px; width: 1482px; min-width: 1046px;margin-left:5PX;">
+        <div style="width: 49%; display: inline-block; height: 200px; vertical-align: top; background-color: #ffffff;margin: 5px;Border:1px solid #dddddd;">
+            <div style="width: 100%; min-width: 300px;">
+                <div style="display: inline-block; color:  #3c8dbc;margin:3PX 0 0 10PX;">
+                    <span style="font-size: 18px;">R</span>eport View
+                </div>
+                <div style="display: inline-block; text-align:right; width:600px ;color:#3c8dbc ;">
+                    <img src="~/Content/img/home/line1.png"  style="float"/>
+                    
+                </div>
+            </div>
+            <div style="width: 100%; background-color: white; padding: 10px;">
+                <!--a.)	戰情報表-->
+                <a href="~/eventreportmanager/productreportInterval" id="report">
+                    <div class="report-box text-center xxxx1" ; style="display: inline-block; width: 135px;height:100px; background-color: #5cacdf; padding: 10px; /*margin: 1px;*/ ">
+                        <i class="icon-report-icon" style="font-size: 46px; color:  #ffffff"></i>
+                        <br />
+                        <span id="menutext1" style="color:#ffffff; word-wrap:break-word;">@T("Home.WarfieldStatements")</span>
+
+                    </div>
+                </a>
+                <!--b.)	品質報表-->
+                <a href="~/QUALITY/QAReportSum" id="QAReport">
+                    <div class="report-box text-center xxxx2" ; style="display: inline-block; width: 135px;height:100px; background-color: #6cb4e4; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-MYR" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext2" style="color:#ffffff ; word-wrap:break-word; ">@T("QA.QAReport")</span>
+                    </div>
+                </a>
+                <!--c.)	設備維修報表-->
+                <a href="~/equipmentmaintenance/eqpmaintenancereport" id="Equipment_report">
+                    <div class="report-box text-center xxxx3" ; style="display: inline-block; width: 135px;height:100px; background-color: #7cbbe6; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-chart30" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext3" style="color:#ffffff; word-wrap:break-word;">@T("Home.EquipmentReport")</span>
+                    </div>
+                </a>
+                <!--d.)	Trace QA Report-->
+                <a href="~/board/StaticQEBordAndQETopTen" id="Trace_QA_report">
+                    <div class="report-box text-center xxxx4" ; style="display: inline-block; width: 135px;height:100px; background-color: #88c4e8; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-OQC" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext4" style="color:#ffffff; word-wrap:break-word;">Trace QA Report</span>
+                    </div>
+                </a>
+
+                <!--e.)	QA不良数据录入-->
+                <a href="~/QUALITY/QAFLOWCHARTLIST" id="QAdetails__data_input">
+                    <div class="report-box text-center xxxx5" ; style="display: inline-block; width: 135px;height:100px; background-color: #98c8ec; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-drawer" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext5" style="color:#ffffff; word-wrap:break-word;">@T("Home.QABadDataInput")</span>
+                    </div>
+                </a>
+                <!-------------------------------------------------------------------------------------->
+                <!--f.)	战情图表-->
+                <a href="~/chart/yield" id="chart_yield">
+                    <div class="report-box text-center xxxx1" ; style="display: inline-block; width: 135px;height:100px; background-color: #5cacdf; padding: 10px;/*margin: 1px;*/ ">
+                        <i class="icon-report-icon" style="font-size: 46px; color:  #ffffff"></i>
+                        <br />
+                        <span id="menutext6" style="color:#ffffff; word-wrap:break-word;">@T("Home.WarfieldChart")</span>
+                    </div>
+                </a>
+                <!--g.)	產銷良率-->
+                <a href="~/qaproductsalereport/prosalereport" id="Q_report">
+                    <div class="report-box text-center xxxx2" ; style="display: inline-block; width: 135px;height:100px; background-color: #6cb4e4; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-assignment_turned_in" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <!--<span id="menutext" style="color:#ffffff ; word-wrap:break-word;">@T("Home.ProductionAndSalesOfOneAndSecondYieldReport")</span>-->
+                        <span id="menutext7" style="color:#ffffff; word-wrap:break-word;">产销一\二次良率报表</span>
+
+                    </div>
+                </a>
+                <!--h.)	GL Project Report-->
+                <a href="~/goldenline/customer" id="goldenline">
+                    <div class="report-box text-center xxxx3" ; style="display: inline-block; width: 135px;height:100px; background-color: #7cbbe6; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-s-mold" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext8" style="color:#ffffff; word-wrap:break-word;">Golden Line</span>
+                    </div>
+                </a>
+                <!--i.)	OEE Machine Chart-->
+                <a href="~/oee/oee_machinepiereport" id="oee_machinepiereport">
+                    <div class="report-box text-center xxxx4" ; style="display: inline-block; width: 135px;height:100px; background-color: #88c4e8; padding: 10px;/*margin: 1px;*/">
+                        <i class="icon-assignment" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext9" style=" color:#ffffff; word-wrap:break-word;">OEE Machine</span>
+                    </div>
+                </a>
+                <!--j.)	CNC Parameter Report-->
+                <a href="~/cncmachine/cncmachinereport" id="cncmachinereport">
+                    <div class="report-box text-center xxxx5" ; style="display: inline-block; width: 135px;height:100px; background-color: #98c8ec; padding: 10px">
+                        <i class="icon-report-title" style="font-size: 46px; color: #ffffff"></i>
+                        <br />
+                        <span id="menutext10" style="color:#ffffff; word-wrap:break-word;">CNC Report</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div style="width: 49%; display: inline-block; height: 200px; vertical-align: top; background-color: #ffffff; margin: 5px;Border:1px solid #dddddd;">
+            <div style="width: 100%; min-width: 300px;margin:3PX 0 0 10PX">
+                <div style="display: inline-block; color: #3c8dbc" ;">
+                    <span style="font-size: 18px;">S</span>hortcut interface link
+                </div>
+                <div style="display: inline-block; text-align:right; width:100px ;color:#3c8dbc ;">
+
+                    <img src="~/Content/img/home/2.png" />
+                </div>
+            </div>
+            <div style="width: 100%; background-color: white; padding: 10px;">
+                <div class="report-box text-center xxxx1" ; style="display: inline-block; width: 135px;height:100px; background-color: #5cacdf; padding: 10px;/*margin: 1px;*/ ">
+                    <i class="icon-product-data-input" style="font-size: 46px; color:  #ffffff"></i>
+                </div>
+                <div class="report-box text-center xxxx2" ; style="display: inline-block; width: 135px;height:100px; background-color: #6cb4e4; padding: 10px;/*margin: 1px;*/">
+                    <i class="icon-product-data-input" style="font-size: 46px; color: #ffffff"></i>
+                </div>
+                <div class="report-box text-center xxxx3" ; style="display: inline-block; width: 135px;height:100px; background-color: #7cbbe6; padding: 10px;/*margin: 1px;*/">
+                    <i class="icon-product-data-input" style="font-size: 46px; color: #ffffff"></i>
+                </div>
+                <div class="report-box text-center xxxx4" ; style="display: inline-block; width: 135px;height:100px; background-color: #88c4e8; padding: 10px;/*margin: 1px;*/">
+                    <i class="icon-product-data-input" style="font-size: 46px; color: #ffffff"></i>
+                </div>
+                <div class="report-box text-center xxxx5" ; style="display: inline-block; width: 135px;height:100px; background-color: #98c8ec; padding: 10px;/margin: 1px">
+                    <i class="icon-product-data-input" style="font-size: 46px; color: #ffffff"></i>
+                </div>
+                <!---------------------------------------------------->
+                <div class="report-box text-center xxxx1" ; style="display: inline-block; width: 135px;height:100px; background-color: #5cacdf; padding: 10px;/*margin: 1px;*/ ">
+                    <i class="icon-product-data-input" style="font-size: 46px; color:  #ffffff"></i>
+                </div>
+                <div class="report-box text-center xxxx2" ; style="display: inline-block; width: 135px;height:100px; background-color: #6cb4e4; padding: 10px;/*margin: 1px;*/">
+                    <i class="icon-product-data-input" style="font-size: 46px; color: #ffffff"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+       #imgyuan {
+           width: 60px;
+           height: 20px;
+           border-radius: 12px;
+           background-color: red;
+           padding-left: 13px;
+           margin: 0 auto;
+           position: relative;
+           top: -40px;
+           background-color: rgba(1, 150, 0, 0.3);
+       }
+           /*
+    *每一个小圆点
+    * */
+           #imgyuan font {
+               border: 1px solid white;
+               width: 11px;
+               height: 11px;
+               border-radius: 50%;
+               margin-right: 9px;
+               margin-top: 4px;
+               display: block;
+               float: left;
+               background-color: white;
+           }
+            
+</style>
+<script type="text/javascript" src="~/Scripts/js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript">
+
+
+
+
+    bannerIndex = 0;
+    setTimeout(changeBanner, 5000)
+    function changeBanner() {
+        bannerIndex = (bannerIndex + 1) % 2;
+        $('#imgchangediv div').each(function (index, item) {
+            console.log($(item));
+            if (index == bannerIndex)
+                $(item).show();
+            else
+                $(item).hide();
+        });
+        setTimeout(changeBanner, 5000);
+    }
+
+
+    $(".xxxx1").hover(
+        function () {
+            //mouseover
+            $(this).css("background-color", "#3c8dbc");
+        },
+        function () {//mouseout
+            $(this).css("background-color", "#5cacdf");
+        }
+    );
+
+    $(".xxxx2").hover(
+        function () {
+            //mouseover
+            $(this).css("background-color", "#3c8dbc");
+        },
+        function () {//mouseout
+            $(this).css("background-color", "#6cb4e4");
+        }
+    );
+
+    $(".xxxx3").hover(
+        function () {
+            //mouseover
+            $(this).css("background-color", "#3c8dbc");
+        },
+        function () {//mouseout
+            $(this).css("background-color", "#7cbbe6");
+        }
+    );
+
+    $(".xxxx4").hover(
+        function () {
+            //mouseover
+            $(this).css("background-color", "#3c8dbc");
+        },
+        function () {//mouseout
+            $(this).css("background-color", "#88c4e8");
+        }
+    );
+
+    $(".xxxx5").hover(
+        function () {
+            //mouseover
+            $(this).css("background-color", "#3c8dbc");
+        },
+        function () {//mouseout
+            $(this).css("background-color", "#98c8ec");
+        }
+    );
+
+  
+
+</script>

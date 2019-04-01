@@ -1,0 +1,351 @@
+﻿@model PDMS.Model.ViewModels.Fixture_PartVM
+<section class="content portal-content">
+    <div class="row col-lg-12">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "queryForm", @class = "form-inline" }))
+        {
+            @*<div class="form-group">
+        <label class="titlewhite">@T("GL.Site"):</label>
+        <select class="btn btn-default" name="Plant_Organization_UID">
+            <option value="0"></option>
+            @foreach (var item in Model.Plants)
+            {
+                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+            }        </select>
+    </div>
+    <div class="form-group">
+        <label class="titlewhite">@T("GL.BG"):</label>
+        <select class="btn btn-default" name="BG_Organization_UID"></select>
+        <input type="hidden"  name="ShiftID"  value=@ViewBag.ShiftID />
+     </div>*@
+            @*<div class="form-group" style="display:none">
+                <label class="titlewhite">@T("GL.FunctionPlant"):</label>
+                <select class="btn btn-default" name="FunPlant_Organization_UID" hidden="hidden"></select>
+            </div>*@
+            <div class="form-group" style="float: right;">
+                <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+                <button type="button" class="btn btn-primary btn-sm" data-target="#js_edit_modal"  id="js_btn_add_shiftTime">@T("Common.AddNew")</button>
+            </div>
+        }
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_shiftTime_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("GL.Site")</th>
+                        <th>@T("GL.BG")</th>
+                        <th>@T("GL.ShiftName")</th>
+                        <th>@T("GL.RestStartTime ")</th>
+                        <th>@T("GL.RestEndTime ")</th>
+                        <th>@T("GL.Sequence")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div>
+    </div>
+</section>
+
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain BU Detail</h4>
+                </div>
+                @using (Html.BeginForm("AddOrUpdateGLRestTime", "GoldenLine", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                        
+                  
+                            @*<div class="form-group col-xs-12 col-md-6 col-lg-6"  style=" display:none">
+                                <label class="col-sm-5 control-label">@T("GL.ShiftName")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" readonly="readonly"  name="ShiftTimeID"  placeholder="ShiftTimeID" >
+                                </div>
+                            </div>*@
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">@T("GL.Sequence")</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm required" name="SEQ" placeholder="Sequence">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">@T("GL.RestStartTime ")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="StartTime" placeholder="StartTime"
+                                           required data-msg-required="Start time is required">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">@T("GL.RestEndTime ")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="EndTime" placeholder="EndTime"
+                                           required data-msg-required="End Time is required">
+                                </div>
+                            </div>
+
+
+  
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="shiftID" name="shiftID" value="false" />
+                            <input type="hidden" id="ShiftTimeID" name="ShiftTimeID" value="false" />
+                            <input type="hidden" id="RestID" name="RestID" value="false" />
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+        var dataSource = (function () {
+                var urls = {
+                    getShiftTime: '@Url.Action("GetRestTimeList", "GoldenLine")',
+                    GetRestTimeByID: '@Url.Action("GetRestTimeByID", "GoldenLine")',
+                    backFL: '@Url.Action("shifttime", "GoldenLine")',
+                    removeShiftTimeByID: '@Url.Action("RemoveRestTimeByID", "GoldenLine")'
+                }
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.RestID + '">Edit</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.RestID + '">Delete</button>' +
+                                '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: 'Plant_Organization_Name',
+                        className: "min-col-xs"
+                    }, {
+                        data: 'BG_Organization_Name',
+                        className: "min-col-xs"
+                    }, {
+                        data: "Shift",
+                        className: "min-col-xs"
+                    }, {
+                        data: "StartTime",
+                        className: "min-col-lg"
+                    },
+                    {
+                        data: "EndTime",
+                        className: "min-col-lg"
+                    },
+
+                      {
+                          data: "SEQ",
+                          className: "min-col-lg"
+                      },
+
+
+                    {
+                        data: 'Modified_UserName',
+                        className: "min-col-lg"
+                    },
+
+                    {
+                        data: "Modified_Time",
+                        className: "min-col-lg"
+                    }]
+                var getData = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_shiftTime_datatable",
+                        searchParams: { ShiftID: @ViewBag.ShiftID},
+                        remoteUrl: urls.getShiftTime,
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        getData();
+                    },
+                    getShiftTimes: function () {
+                        $('#page').page('destroy');
+                        getData();
+                    }
+                }
+            })();
+            dataSource.Init();
+
+
+            function GetQueryString(name)
+            {
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null)return  unescape(r[2]); return null;
+            }
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.removeShiftTimeByID;
+                if (id) {
+                    PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                        $.post(url, { id: id }, function (data) {
+                            if (data && data.Result)
+                                dataSource.getShiftTimes();
+                            else
+                                PDMS.Utility.MessageBox.error("删除失败！");
+                        });
+                    });
+                }
+            });
+
+            $('#js_btn_add_shiftTime').click(function () {
+                $('#js_edit_modal').find('input[name=isEdit]').val(false);
+                $('#js_edit_modal').data('entity', { isEdit: false }).modal('show', $(this));
+                Seteditadd();
+            });
+            $('#btn_back').on('click', function () {
+                var url = dataSource.urls.backFL;
+                window.location.href = url;
+            });
+            $('#queryForm').submit(function () {
+                var queryData = $(this).serialize();
+                dataSource.getShiftTimes();
+                return false;
+            });
+            $('form select').change(function () {
+                form = $(this).parents('form:first');
+                var opt2 = form.find('select[name=BG_Organization_UID]');
+                var opt3 = form.find('select[name=FunPlant_Organization_UID]');
+                value = $(this).val();
+                switch ($(this)[0].name) {
+                    case 'Plant_Organization_UID':
+                        opt2.empty();
+                        opt3.empty();
+                        if (value != 0) {
+                            url = '@Url.Action("GetCurrentOPType", "Fixture")';
+                            $.post(url, { plant_OrganizationUID: value }, function (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    opt2.append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                            });
+                            opt2.trigger('change');
+                        }
+                        break;
+                    case 'BG_Organization_UID':
+                        opt3.empty();
+                        if (value != 0) {
+                            url = '@Url.Action("GetFunPlantByOPTypes", "Fixture")';
+                            $.post(url, { Optype: value }, function (data) {
+                                opt3.append('<option value=""></option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    opt3.append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                                }
+                            });
+                        }
+                        break;
+                    case 'FunPlant_Organization_UID':
+
+                        break;
+                }
+            });
+            $('form select[name=Plant_Organization_UID]').trigger('change');
+
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+               
+                    success: function (data) {
+
+                        if (data.length > 4) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            var queryData = $(this).serialize();
+                            dataSource.getShiftTimes();
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            // add button click event - grid row edit
+            //$('body').on('click', '.js-grid-edit', function () {
+            //    var id = $(this).attr('data-id'),
+            //        url = dataSource.urls.GetRestTimeByID;
+            //    if (id) {
+            //        var form = $('#js_edit_modal');
+            //        $.post(url, { id: id }, function (data) {
+            //            if (data) {
+            //                data.isEdit = true;
+            //                $('#js_edit_modal').data('entity', data).modal('show', $(this));
+            //            }
+            //        });
+            //    }
+            //});
+            function Seteditadd() {
+                var  ShiftTimeID=  GetQueryString('ShiftID');
+                $('#ShiftTimeID').val(ShiftTimeID);
+                $("#shiftID").val(ShiftTimeID);
+           
+            }
+            $('body').on('click', '.js-grid-edit', function () {
+
+                $('#js_edit_modal').modal('show', $(this));
+                $('#js_edit_modal').find('input[name=isEdit]').val(true);
+                $('#isEdit').val(true);
+                var id = $(this).attr('data-id'),
+                 url = dataSource.urls.GetRestTimeByID;
+                $.post(url, { id: id }, function (data) {
+                    $('#js_edit_modal').find('input[name=ShiftTimeID]').val(data.ShiftTimeID);
+                    $("#shiftID").val(data.ShiftTimeID);
+                    $('#js_edit_modal').find('input[name=StartTime]').val(data.StartTime);
+                    $('#js_edit_modal').find('input[name=EndTime]').val(data.EndTime);
+                    $('#js_edit_modal').find('input[name=SEQ]').val(data.SEQ);
+                    $("#RestID").val(id);
+                    var isenable = '' + data.IsEnabled;
+                    $('#js_input_Is_Enable_Add').selectpicker('val', isenable);
+                    $("#js_input_Is_Enable_Add").trigger("liszt:updated");
+
+                });
+            });
+
+        });
+        // modal event
+
+    </script>
+}

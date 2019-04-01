@@ -1,0 +1,906 @@
+﻿@model PDMS.Model.EntityDTO.GL_LineDTO
+@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+}
+
+    <section class="content portal-content">
+        <div class="row">
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+
+            <div class="col-md-9">
+                <label class="control-label" id="lblTitle"></label>
+            </div>
+
+            <div class="col-md-12 search-field col-lg-3">
+                <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+            </div>
+        </div>
+        <hr class="hr-custom">
+
+        <div class="row">
+            <div class="col-xs-12" id="js_criteria_alert_cnt">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>@Model.ProjectName @Model.LineName  @Model.Phase - Flow Chart</h4>
+                @using (Html.BeginForm("ImportExcel", "GoldenLine", FormMethod.Post, new { id = "js_form_excel_add" }))
+            {
+                    <div class="row">    
+                        <div class="col-sm-6">
+                            <div class=" pull-left">
+
+                                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download">@T("QA.Templatedownload")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                                <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">@T("Common.AddNew")</button>
+                                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_downloadIPQC">IPQC 检测点 @T("QA.Templatedownload")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_flIPQC">IPQC 检测点 @T("Common.UploadExcel")</button>
+                            </div>
+                        </div>
+                        </div>
+                }
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_line_datatable">
+                    <thead>
+                        <tr>
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th class="table-col-seq nosort">Number</th>
+                            <th>@T("Common.Seq")</th>
+                            <th>Station Name</th>
+                            <th>MES Station Name</th>
+                            <th>Binding Seq</th>
+                            <th>IE Cycle Time</th>
+                            <th>IsBirth</th>
+                            <th>IsOutput</th>
+                            <th>IsTest</th>
+                            <th>IsGoldenLine</th>
+                            <th>IsOEE</th>
+                            <th>IsMES</th>
+                            <th>OEE Target</th>
+                            <th>IsEnabled</th>
+                            <th>@T("QA.Editor")</th>
+                            <th>@T("QA.Changetime")</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="page" class="row"></div>
+            </div>
+        </div>
+    </section>
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain BU Detail</h4>
+                </div>         
+                    @using (Html.BeginForm("AddOrUpdateGLStations", "GoldenLine", FormMethod.Post, new { id = "js_form_user_edit" }))
+                    {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="StationName" placeholder="StationName"
+                                           required data-msg-required="Station Name is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">MES Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" name="MESStationName">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Binding Seq</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="Binding_Seq" placeholder="Binding Seq"
+                                           required data-msg-required="Binding Seq ">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Cycle Time</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="CycleTime" placeholder="CycleTime"
+                                           required data-msg-required="Cycle Time is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Seq</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="Seq" placeholder="Seq"
+                                           required data-msg-required="Seq is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Birth</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsBirth" value="true" name="IsBirth">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Output</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsOutput" value="true" name="IsOutput">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Test</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsTest" value="true" name="IsTest">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is GoldenLine</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsGoldenLine" value="true" name="IsGoldenLine">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is OEE</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsOEE" value="true" name="IsOEE">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" >
+                                <label class="col-sm-5 control-label">Is MES</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsOne" value="true" name="IsOne">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="display:none">
+                                <label class="col-sm-5 control-label">Is Two</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsTwo" value="true" name="IsTwo">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="display:none">
+                                <label class="col-sm-5 control-label">Is Three</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsThree" value="true" name="IsThree">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="display:none">
+                                <label class="col-sm-5 control-label">Is Four</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="Is Four" value="true" name="Is Four">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="display:none">
+                                <label class="col-sm-5 control-label">Is Five</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="IsFive" value="true" name="IsFive">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">OEE Target</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="DashboardTarget" placeholder="OEE Target">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_input_Is_Enable_Add">@T("Common.Published")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm required" id="js_input_Is_Enable" name="IsEnabled" data-live-search="true">
+                                       
+                                          <option value="true">启用</option>
+                                        <option value="false">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="StationID" value="0" />
+                            <input type="hidden" name="Plant_Organization_UID" value="@Model.Plant_Organization_UID" />
+                            <input type="hidden" name="BG_Organization_UID" value="@Model.BG_Organization_UID" />
+                            <input type="hidden" name="FunPlant_Organization_UID" value="@Model.FunPlant_Organization_UID" />
+                            <input type="hidden" name="LineID" value="@Model.LineID" />
+                            <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                            <input type="hidden" name="isEdit" value="false" />
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                </div>
+                    }
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="js_DetectionPoint_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">检测点维护</h4>
+            </div>
+            @using (Html.BeginForm("AddOrEditGL_QADetectionPoint", "GLQAReport", FormMethod.Post, new { id = "js_form_user_editPoint" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">Station Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="StationName" placeholder="StationName"
+                                       required data-msg-required="Station Name is blank or missing" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">WIP</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" name="WIP">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">Scan IN Station Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="ScanIN" placeholder="Scan IN  Station Name"
+                                       required data-msg-required="Scan IN  Station Name ">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">Scan OUT Station Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="ScanOUT" placeholder="Scan OUT Station Name"
+                                       required data-msg-required="Scan OUT Station Name">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">Scan NG Station Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="ScanNG" placeholder="Scan NG Station Name"
+                                       required data-msg-required="Scan NG Station Name">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">Scan BACK Station Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="ScanBACK" placeholder="Scan BACK Station Name"
+                                       required data-msg-required="Scan BACK Station Name">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_input_Is_Enable_Point">@T("Common.Published")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm required" id="js_input_Is_Enable_Point" name="IsEnabled" data-live-search="true">
+                                    <option value="true">启用</option>
+                                    <option value="false">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="QADetectionPointID" value="0" />
+                        <input type="hidden" name="StationID" value="0" />
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>  
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_newPoint"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">File Upload</h4>
+                </div>
+@using (Html.BeginForm("UploadFlowChartNewFile", "GoldenLine", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_updateall" }))
+{        
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">Select an Excel file</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadfile" placeholder="ExcelFile"
+                                       required data-msg-required="Please select an Excel file" />
+                                <input type="hidden" name="Plant_Organization_UID" value="@Model.Plant_Organization_UID" />
+                                <input type="hidden" name="BG_Organization_UID" value="@Model.BG_Organization_UID" />
+                                <input type="hidden" name="FunPlant_Organization_UID" value="@Model.FunPlant_Organization_UID" />
+                                <input type="hidden" name="LineID" value="@Model.LineID" />
+                                <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_UpdateAll">@T("Common.Cancel")</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_updateAll">@T("QA.Submit")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="js_DetectionPointimportExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">File Upload</h4>
+            </div>
+            @using (Html.BeginForm("UploadDetectionPointFile", "GLQAReport", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_importPoint">Select an Excel file</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_importPoint" name="uploadfile" placeholder="ExcelFile"
+                                   required data-msg-required="Please select an Excel file" />   
+                            <input type="hidden" name="LineID" value="@Model.LineID" />                    
+                        </div>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear">@T("Common.Cancel")</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel">@T("QA.Submit")</button>   
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var dataSource = (function () {
+                var urls = {
+                    getStations: '@Url.Action("GetStation", "GoldenLine")',
+                    getStationsByID: '@Url.Action("GetStationByID", "GoldenLine")',
+                    backFL: '@Url.Action("LineSetup", "GoldenLine")',
+                    removeStationByID: '@Url.Action("RemoveStationByID", "GoldenLine")',
+                    getStationsDetectionPointByID:'@Url.Action("GetStationsDetectionPointByID", "GLQAReport")'
+                }
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.StationID + '">@ViewBag.Edit</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '{1}' +
+                                '{2}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.StationID + '">@ViewBag.Delete</button>' +
+                                '</div>';
+
+                            var buttonDetectionPoint = '<button type="button" class="btn btn-primary btn-xs js-grid-DetectionPoint" data-id="' + rowData.StationID + '">检测点维护</button>';
+                            var buttonTargetYield = '<button type="button" class="btn btn-primary btn-xs js-grid-TargetYield" data-id="' + rowData.StationID + '">目标良率维护</button>';
+                            result = result.replace('{0}', buttonEdit);
+                            if(rowData.IsTest)
+                            {
+                                result = result.replace('{1}', buttonDetectionPoint);
+                                result = result.replace('{2}', buttonTargetYield);
+                            }else
+                            {
+                                result = result.replace('{1}', "");
+                                result = result.replace('{2}', "");
+                            }
+                      
+                            $(td).html(result);
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        className: "table-col-seq"
+                    }, {
+                        data: 'Seq',
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: 'StationName',
+                        className: "min-col-xs text-center"
+                    }, 
+                    {
+                        data: 'MESStationName',
+                        className: "min-col-xs text-center"
+                    },{
+                        data: 'Binding_Seq',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'CycleTime',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'IsBirth',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "IsOutput",
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'IsTest',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    },  {
+                        data: "IsGoldenLine",
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'IsOEE',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                     {
+                         data: 'IsOne',
+                         render: function (data, type, full, meta) {
+                             return data ? 'Y' : 'N';
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                        {
+                            data: 'DashboardTarget',
+                            className: "min-col-xs text-center"
+                        }, 
+                     {
+                         data: "IsEnabled",
+                         render: function (data, type, full, meta) {
+                             return data ? 'Y' : 'N';
+                         },
+                         className: "text-center"
+                     },
+                    {
+                        data: 'System_Users.User_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs text-center"
+                    }]
+                var getStations = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_line_datatable",
+                        searchParams: { LineID: @Model.LineID},
+                        remoteUrl: urls.getStations,
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        getStations();
+                        $(".text-center").removeClass("sorting");
+                        $('.text-center').removeAttr('onclick');
+                    },
+                    getStations: function () {
+                        $('#page').page('destroy');
+                        getStations();
+                    }
+                }
+            })();
+            dataSource.Init();
+            $('#btn_back').on('click', function () {
+                var url = dataSource.urls.backFL;
+                window.location.href = url;
+            });
+
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.removeStationByID;
+                if (id) {
+                    PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                        $.post(url, { id: id }, function (data) {
+                            if (data && data.Result)
+                                dataSource.getStations();
+                            else
+                                PDMS.Utility.MessageBox.error("站点已在使用中或者使用过因此不能删除，如果不用此站点，请在编辑中禁用！");
+                                //PDMS.Utility.MessageBox.error("Remove Failed!");
+                        });
+                    });
+                }
+            });
+            $('#js_btn_add').click(function () {
+                $('#isEdit').val(false);
+                Seteditadd();
+            });
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        if ($('#js_edit_modal').find('input[name=StationName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写站点名称');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=MESStationName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写MES站点名称');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=Binding_Seq]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写绑定序号');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('input[name=CycleTime]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写CycleTime');
+                            return false;
+                        }
+                        ///用逗号拆分目标，验证用户填写的数据是否满足要求
+                        var  OEETarget=$('#js_edit_modal').find('input[name=DashboardTarget]').val();
+                        if(OEETarget !="")  //不填写的时候放它一马
+                        {
+                            var TargetList=OEETarget.split(',');
+                            //判断拆分后的数据是否为两个（0~100）的整数
+                            if(TargetList.length!=2)
+                            {
+                                PDMS.Utility.MessageBox.info('OEE Target填写格式错误，请用逗号隔开目标方式填写');
+                                return false;
+                            }
+                            else 
+                            {
+                                var  Target1=parseInt( TargetList[0]);
+                                var  Target2=parseInt(TargetList[1]);
+                                //  判断两个目标是否都为数字，且在（0~100）之间
+
+                                if(isNaN(Target1) || isNaN(Target2))
+                                {
+                                    PDMS.Utility.MessageBox.info('OEE Target填写格式错误，请在逗号两侧使用整数填写');
+                                    return false;
+                                }
+                                else
+                                {
+                                    if(Target1>=Target2)
+                                    {
+                                        PDMS.Utility.MessageBox.info('OEE Target填写格式错误，前面的值需要小于后面的值');
+                                        return false;
+                                    }
+                                    else 
+                                    {
+                                        if ( Target1<0 || Target1>100 || Target2<0 || Target2>100)
+                                        {
+                                            PDMS.Utility.MessageBox.info('OEE Target填写格式错误，目标值必须在0~100之间');
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                    },
+                    success: function (data) {
+
+                        if (data.length > 4) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            dataSource.getStations();
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            $('body').on('click', '.js-grid-edit', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.getStationsByID;
+                if (id) {
+                    var form = $('#js_edit_modal');
+                    $.post(url, { id: id }, function (data) {
+                        if (data) {
+                            data.isEdit = true;
+                            $('#js_edit_modal').data('entity', data).modal('show', $(this));
+                        }
+                    });
+                }
+            });
+
+            $('body').on('click', '.js-grid-edit', function () {
+
+                $('#js_edit_modal').modal('show', $(this));
+                $('#isEdit').val(true);
+                var id = $(this).attr('data-id'),
+                 url = dataSource.urls.getStationsByID;
+                $.post(url, { id: id }, function (data) {
+                    $('#js_edit_modal').find('input[name=StationID]').val(data.StationID);
+                    $('#js_edit_modal').find('input[name=StationName]').val(data.StationName);
+                    $('#js_edit_modal').find('input[name=MESStationName]').val(data.MESStationName);
+                    $('#js_edit_modal').find('input[name=Binding_Seq]').val(data.Binding_Seq);
+                    $('#js_edit_modal').find('input[name=CycleTime]').val(data.CycleTime);
+                    $('#js_edit_modal').find('input[name=Seq]').val(data.Seq);
+                    
+                    $('#js_edit_modal').find('input[name=DashboardTarget]').val(data.DashboardTarget);
+                    if(data.IsBirth==true)
+                    {
+                        $("#IsBirth").prop("checked",true);
+                    }else
+                    {
+                        $("#IsBirth").prop("checked",false);
+                    }
+
+                    if(data.IsOutput==true)
+                    {
+                        $("#IsOutput").prop("checked",true);
+                    }else
+                    {
+                        $("#IsOutput").prop("checked",false);
+                    }
+                    if(data.IsTest==true)
+                    {
+                        $("#IsTest").prop("checked",true);
+                    }else
+                    {
+                        $("#IsTest").prop("checked",false);
+                    }
+                    if(data.IsGoldenLine==true)
+                    {
+                        $("#IsGoldenLine").prop("checked",true);
+                    }else
+                    {
+                        $("#IsGoldenLine").prop("checked",false);
+                    }
+                    if(data.IsOEE==true)
+                    {
+                        $("#IsOEE").prop("checked",true);
+                    }else
+                    {
+                        $("#IsOEE").prop("checked",false);
+                    }
+                    if(data.IsOne==true)
+                    {
+                        $("#IsOne").prop("checked",true);
+                    }else
+                    {
+                        $("#IsOne").prop("checked",false);
+                    }
+
+                    var isenable = '' + data.IsEnabled;
+                    $('#js_input_Is_Enable').selectpicker('val', isenable);
+                    $("#js_input_Is_Enable").trigger("liszt:updated");
+                    $('#js_edit_modal').find('input[name=Plant_Organization_UID]').val(data.Plant_Organization_UID);
+                    $('#js_edit_modal').find('input[name=BG_Organization_UID]').val(data.BG_Organization_UID);
+                    $('#js_edit_modal').find('input[name=FunPlant_Organization_UID]').val(data.FunPlant_Organization_UID);
+                    $('#js_edit_modal').find('input[name=LineID]').val(data.LineID);
+                    $('#js_edit_modal').find('input[name=CustomerID]').val(data.CustomerID);
+
+                });
+            });
+
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-DetectionPoint', function () {
+                SeteditDetectionPointadd();
+
+                $('#js_DetectionPoint_modal').modal('show', $(this));
+                //$('#isEdit').val(true);
+             
+                var id = $(this).attr('data-id'),
+                 url = dataSource.urls.getStationsDetectionPointByID;
+                $('#js_DetectionPoint_modal').find('input[name=StationID]').val(id);
+
+                $.post(url, { StationID: id }, function (data) {
+                    $('#js_DetectionPoint_modal').find('input[name=StationName]').val(data.StationName);
+                    $('#js_DetectionPoint_modal').find('input[name=WIP]').val(data.WIP);
+                    $('#js_DetectionPoint_modal').find('input[name=ScanIN]').val(data.ScanIN);
+                    $('#js_DetectionPoint_modal').find('input[name=ScanOUT]').val(data.ScanOUT);
+                    $('#js_DetectionPoint_modal').find('input[name=ScanNG]').val(data.ScanNG);
+                    $('#js_DetectionPoint_modal').find('input[name=ScanBACK]').val(data.ScanBACK);
+                    $('#js_DetectionPoint_modal').find('input[name=StationID]').val(data.StationID);
+                    $('#js_DetectionPoint_modal').find('input[name=QADetectionPointID]').val(data.QADetectionPointID);
+                    var isenable = '' + data.IsEnabled;
+                    $('#js_input_Is_Enable_Point').selectpicker('val', isenable);
+                    $("#js_input_Is_Enable_Point").trigger("liszt:updated");
+             
+
+                });
+
+                @*var id = $(this).attr('data-id'),
+                    url = '@Url.Action("GLQAStation", "GLQAReport")';
+                window.location.href = url + "?StationID=" + id;*@
+            });
+
+            function SeteditDetectionPointadd() {
+                $('#js_DetectionPoint_modal').find('input[name=StationID]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=StationName]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=WIP]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=ScanIN]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=ScanOUT]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=ScanNG]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=ScanBACK]').val('');
+                $('#js_DetectionPoint_modal').find('input[name=QADetectionPointID]').val('');
+            }
+            $('#js_btn_save_newPoint').click(function () {
+                $('#js_form_user_editPoint').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        if ($('#js_DetectionPoint_modal').find('input[name=WIP]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写WIP');
+                            return false;
+                        }
+
+                        if ($('#js_DetectionPoint_modal').find('input[name=ScanIN]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanIN站点名称');
+                            return false;
+                        }
+                        if ($('#js_DetectionPoint_modal').find('input[name=ScanOUT]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanOUT站点名称');
+                            return false;
+                        }
+                        if ($('#js_DetectionPoint_modal').find('input[name=ScanNG]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanNG站点名称');
+                            return false;
+                        }
+                        if ($('#js_DetectionPoint_modal').find('input[name=ScanBACK]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanBACK站点名称');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+
+                        if (data.length > 4) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_DetectionPoint_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                           // dataSource.getStations();
+                        }
+                    }
+                });
+            })
+
+
+
+
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-TargetYield', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("GLQAYield", "GLQAReport")';
+                window.location.href = url + "?StationID=" + id;
+            });
+
+
+
+            function Seteditadd() {
+                $('#js_edit_modal').find('input[name=StationID]').val('');
+                $('#js_edit_modal').find('input[name=StationName]').val('');
+                $('#js_edit_modal').find('input[name=MESStationName]').val('');
+                $('#js_edit_modal').find('input[name=Binding_Seq]').val('');
+                $('#js_edit_modal').find('input[name=CycleTime]').val('');
+                $('#js_edit_modal').find('input[name=Seq]').val('');
+                $('#js_edit_modal').find('input[name=DashboardTarget]').val('');
+                
+                $("#IsBirth").prop("checked",false);
+                $("#IsOutput").prop("checked",false);
+                $("#IsTest").prop("checked",false);
+                //$('#js_edit_modal').find('input[name=Plant_Organization_UID]').val('');
+                //$('#js_edit_modal').find('input[name=BG_Organization_UID]').val('');
+                //$('#js_edit_modal').find('input[name=FunPlant_Organization_UID]').val('');
+                //$('#js_edit_modal').find('input[name=LineID]').val('');
+                //$('#js_edit_modal').find('input[name=CustomerID]').val('');
+            }
+            $('#js_btn_download').on('click', function () {
+                debugger;
+                var url = '@Html.Raw(Url.Action("DownloadStationExcel", "GoldenLine", new { id = @Model.LineID}))';
+                this.form.action = url;
+                $('#js_form_excel_add').submit();
+            });
+
+            $('#btn_import_fl').on('click', function () {
+                $('#js_importExcel_modal').modal('show');
+            });
+
+            $('#js_btn_clear_Updateall').click(function () {
+                $('#js_s_input_import').val('');
+            });
+
+            $('#js_btn_excel_updateAll').on('click', function () {
+                debugger;
+                $('#js_importExcel_modalAll').modal('hide');
+                $.blockUI({ message: "<h1>请等待...</h1>" });
+                $('#js_form_excel_updateall').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_excel_updateall').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('保存成功！');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+
+            $('#js_btn_downloadIPQC').on('click', function () {
+                debugger;
+                var url = '@Html.Raw(Url.Action("DownloadIPQCStationExcel", "GLQAReport", new { id = @Model.LineID}))';
+                this.form.action = url;
+                $('#js_form_excel_add').submit();
+            });
+
+            $('#btn_import_flIPQC').on('click', function () {
+                $('#js_DetectionPointimportExcel_modal').modal('show');
+            });
+
+            $('#js_btn_clear').click(function () {
+                $('#js_s_input_importPoint').val('');
+            });
+
+            $('#js_btn_excel').on('click', function () {
+                debugger;
+                $('#js_DetectionPointimportExcel_modal').modal('hide');
+                $.blockUI({ message: "<h1>请等待...</h1>" });
+                $('#js_form_excel_update').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_excel_update').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('保存成功！');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+
+        });
+        // modal event
+
+    </script>
+}

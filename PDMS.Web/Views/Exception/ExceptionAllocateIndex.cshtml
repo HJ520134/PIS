@@ -1,0 +1,1375 @@
+﻿@model PDMS.Model.ViewModels.Exception.ExceptionVM
+<section class="content portal-content">
+    @*查询条件*@
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                <button id="bt_search" type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> @T("Exception.Query")</button>
+                @*  <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">邮件定时设定</button>*@
+                <button type="button" class="fa fa-plus btn btn-primary" id="btn_email_add"> @T("Exception.AddReceivePeople")</button>
+
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        <th>@T("Exception.Project")</th>
+                        <th>@T("Exception.ReceiveLevel")</th>
+                        <th>@T("Exception.ReceiveType")</th>
+                        <th>@T("Exception.Email")</th>
+                        <th>NTID</th>
+                        <th>@T("Exception.UserName")</th>
+
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        <th>@T("Exception.ModifyUser")</th>
+                        <th>@T("Exception.ModifyTime")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        <th>@T("Exception.Project")</th>
+                        <th>@T("Exception.ReceiveLevel")</th>
+                        <th>@T("Exception.ReceiveType")</th>
+                        <th>@T("Exception.Email")</th>
+                        <th>NTID</th>
+                        <th>@T("Exception.UserName")</th>
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        <th>@T("Exception.ModifyUser")</th>
+                        <th>@T("Exception.ModifyTime")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+
+    <div class="modal fade" id="js_edit_email_modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.AddReceivePeople")</h4>
+                </div>
+                @using (Html.BeginForm("AddExceptionEmail", "Exception", FormMethod.Post, new { id = "js_form_email" }))
+                {
+                    <input type="hidden" name="fixturelist" id="fixturelist" />
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left;margin-bottom:20px;">
+                            <h4 style="display:inline-block">
+                                <b>@T("Exception.BaseInfo")</b>
+                            </h4>
+                            <button type="button" class="btn btn-primary btn-sm pull-right margin-l-10" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+
+                            <button type="button" class="btn btn-success btn-sm pull-right" id="bt_email_save"><i class="fa fa-save"></i>  @T("Exception.SaveBaseInfo")</button>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_select_plant_email">@T("Exception.Site")</label>
+                            <div class="col-sm-8">
+                                <select class="form-control input-sm" id="js_select_plant_email" name="Plant_Organization_UID">
+                                    <option value=0></option>
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_select_op_types_email">@T("Exception.BG")</label>
+                            <div class="col-sm-8">
+                                <select class="form-control input-sm" id="js_select_op_types_email" name="BG_Organization_UID">
+                                    @if (Model.optypes != null)
+                                    {
+                                        <option value=0></option>
+
+                                        foreach (var item in Model.optypes)
+                                        {
+                                            if (item.BG != "Support team")
+                                            {
+                                                <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_select_Project_UID">@T("Exception.Project")</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_Project_UID" name="Project_UID"
+                                        data-live-search="true">
+                                    @*@if (Model.ExceDepts != null)
+                                        {
+                                            <option value=0></option>
+                                            foreach (var item in Model.ExceDepts)
+                                            {
+                                                <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                            }
+                                        }*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_select_Exception_Times">@T("Exception.ReceiveLevel")</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_Exception_Times" name="Exception_Times"
+                                        data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_ReceiveType">@T("Exception.ReceiveType")</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_input_ReceiveType" name="ReceiveType"
+                                        data-live-search="true">
+                                    <option value="1">Receive</option>
+                                    <option value="2">CC</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_NT">NTID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm required" id="js_input_User_NT" name="User_NT" placeholder="NTID"
+                                       required data-msg-required="Please type [NTID]."
+                                       data-rule-maxlength="20" data-msg-maxlength="Length of NTID need less than {0} characters.">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_Name">@T("Exception.UserName")</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm required" id="js_input_User_Name" name="User_Name" placeholder="User Name"
+                                       required data-msg-required="Please type User Name!"
+                                       data-rule-maxlength="20" data-msg-maxlength="Length of User Name need less than {0} characters." readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_Email">@T("Exception.Email")</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control input-sm required" id="js_input_User_Email" name="User_Email" placeholder="Email" required readonly data-msg-required="Please type [Email]."
+                                       data-rule-maxlength="50" data-msg-maxlength="Length of Email need less than {0} characters.">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="pull-left" style="color:#808080;display:inline-block;text-align:left;margin-top:6px;font-style:oblique">Note：each receive level under project must set receive people,otherwise Email will not be sent to this level !</p>
+                        <button class="btn btn-primary btn-sm" id="js_btn_email_save" type="button"><i class="fa fa-save"></i> @T("Common.AddNew")</button>
+                        @*<button class="btn btn-primary btn-sm" id="js_btn_email_delete" type="button"><i class="fa fa-trash-o fa-fw"></i> 删除</button>*@
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_email_del"><i class="fa fa-times"></i> @T("Common.Delete")</button>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <table class="table table-condensed col-sm-9" id="table_email" name="table_email">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-checkbox nosort">
+                                        <input type="checkbox" class="js-checkbox-all" />
+                                    </th>
+                                    <th class="hidden"></th>
+                                    <th>@T("Exception.Project")</th>
+                                    <th>@T("Exception.ReceiveLevel")</th>
+                                    <th>@T("Exception.ReceiveType")</th>
+                                    <th class="hidden"></th>
+                                    <th>NTID</th>
+                                    <th>@T("Exception.UserName")</th>
+                                    <th>@T("Exception.Email")</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+
+
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="js_edit_email_modal_2">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.EditUserEmail")</h4>
+                </div>
+                @using (Html.BeginForm("EditExceptionEmail", "Exception", FormMethod.Post, new { id = "js_form_email_2" }))
+                {
+                    <input type="hidden" name="fixturelist" id="fixturelist" />
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="col-sm-12" style="text-align:left">
+                            <h4>
+                                <b>@T("Exception.BaseInfo")</b>
+                            </h4>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6 hidden">
+                            <label class="col-sm-4 control-label" for="js_input_Exception_Email_UID">系统编号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm" id="js_input_Exception_Email_UID" name="Exception_Email_UID" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_select_Exception_Times_2">@T("Exception.ReceiveLevel")</label>
+                            <div class="col-sm-8">
+                                <input class="selectpicker form-control input-sm" id="js_select_Exception_Times_2" name="Exception_Times" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_ReceiveType_2">@T("Exception.ReceiveType")</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_input_ReceiveType_2" name="ReceiveType"
+                                        data-live-search="true">
+                                    <option value="1">Receive</option>
+                                    <option value="2">CC</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_NT_2">NTID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm required" id="js_input_User_NT_2" name="User_NT" placeholder="NTID"
+                                       required data-msg-required="Please type [NTID]."
+                                       data-rule-maxlength="20" data-msg-maxlength="Length of NTID need less than {0} characters.">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_Name_2">@T("Exception.UserName")</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm" id="js_input_User_Name_2" name="User_Name" placeholder="User Name"
+                                       data-rule-maxlength="20" data-msg-maxlength="Length of User Name need less than {0} characters." readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-4 control-label" for="js_input_User_Email_2">@T("Exception.Email")</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control input-sm required" id="js_input_User_Email_2" name="User_Email" placeholder="Email" required data-msg-required="请输入[收件人邮箱]."
+                                       data-rule-maxlength="20" data-msg-maxlength="Length of Email need less than {0} characters." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_email_edit_save" type="button"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-2">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.Query")</h4>
+                </div>
+
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="modal-footer">
+                        <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_plant_search">@T("Exception.Site")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_plant_search" name="Plant_Organization_UID">
+                                            <option value=0></option>
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_op_types_search">@T("Exception.BG")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_op_types_search" name="BG_Organization_UID">
+                                            @if (Model.optypes != null)
+                                            {
+                                            <option value=0></option>
+
+                                                foreach (var item in Model.optypes)
+                                                {
+                                                    if (item.BG != "Support team")
+                                                    {
+                                            <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_Project_UID_search">@T("Exception.Project")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Project_UID_search" name="Project_UID"
+                                                data-live-search="true">
+                                            @*@if (Model.ExceDepts != null)
+                                                {
+                                                <option value=0></option>
+                                                    foreach (var item in Model.ExceDepts)
+                                                    {
+                                                <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                                    }
+                                                }*@
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Exception_Times_search">@T("Exception.ReceiveLevel")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Exception_Times_search" name="Exception_Times"
+                                                data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_ReceiveType_search">@T("Exception.ReceiveType")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_input_ReceiveType_search" name="ReceiveType"
+                                                data-live-search="true">
+                                            <option value="0"></option>
+                                            <option value="1">Receive</option>
+                                            <option value="2">CC</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_User_NT_search">NTID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_User_NT_search" name="User_NT" placeholder="NTID">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_User_Name_search">@T("Exception.UserName")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_User_Name_search" name="User_Name">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_User_Email_search">@T("Exception.Email")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_User_Email_search" name="User_Email" placeholder="Email">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_User_NTID_search">@T("Exception.ModifyUser").ToString()</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_UserNTID" class="form-control input-sm" id="js_s_input_User_NTID_search" placeholder="NTID">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" data-type="date-interval">@T("Exception.ModifyTime")</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_from" class="form-control input-sm date" id="js_s_input_Modified_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_to" class="form-control input-sm date" id="js_s_input_Modified_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Exception.Query")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        })
+
+        $('#js_btn_clear').click(function () {
+            $('#js_select_plant_search').val(0);
+            $('#js_select_op_types_search').val(0);
+            $('#js_select_Project_UID_search').html('<option value=0></option>');
+            $("#js_select_Project_UID_search").selectpicker('refresh');
+            $("#js_select_Project_UID_search").trigger('change');
+            $('#js_select_funplant_search').val(0);
+            $('#js_select_Account_UID_search').val(0);
+            $('#js_select_Workshop_ID_search').val(0);
+            $('#js_select_Workshop_UID_search').val(0);
+            $('#js_select_Account_UID_search').selectpicker('val', '');
+            $("#js_select_Account_UID_search").trigger("liszt:updated");
+            PDMS.Utility.Criteria.Clear();
+        });
+
+        //#endregion
+        $(function () {
+            var ExceptionRul = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryExceptionEmail: '@Url.Action("queryExceptionEmail", "Exception")',
+                    getOrgByParant: '@Url.Action("GetOrgByParant", "Fixture")',
+                    queryFixtureTotakeByUid: '@Url.Action("QueryFixtureTotakeByUid", "Fixture")',
+                    queryFixtureByUid: '@Url.Action("QueryFixtureByUid", "Fixture")',
+                    //导出excel
+                    doExportFunction: '@Url.Action("DoFTExportFunction", "Fixture")',
+                    getFixtureByWorkshop: '@Url.Action("GetFixtureByWorkshop", "Fixture")',
+                    viewFixtureTotakeDetails: '@Url.Action("FixtureTotakeDetail", "Fixture")',
+                    getUserByOp: '@Url.Action("GetUserByOpLY", "Fixture")',
+                    getUserByWorkshop: '@Url.Action("GetUserByWorkshop", "Fixture")',
+
+                    //添加部门发送时间段
+                    addPeriodTime: '@Url.Action("AddPeriodTime", "Exception")',
+                    //根据部门ID获取所有发送时间点
+                    fetchPeriodTimeBasedDeptID: '@Url.Action("FetchPeriodTimeBasedDeptID", "Exception")',
+                    //删除发送时间点
+                    deletPeriodTime: '@Url.Action("DeletPeriodTime", "Exception")',
+                    //更新部门的发送信息
+                    updateDeptTime: '@Url.Action("UpdateDeptTime", "Exception")',
+                    //获取部门信息，编辑的时候用
+                    fetchExceptionDept: '@Url.Action("FetchExceptionDept", "Exception")',
+                    //删除异常部门
+                    deleExceptionDept: '@Url.Action("DeleExceptionDept", "Exception")',
+                    //获取异常信息
+                    fetchExceptionEmailInfo: '@Url.Action("FetchExceptionEmailInfo", "Exception")',
+                    //删除异常收件人
+                    deleExceptionEmail: '@Url.Action("DeleExceptionEmail", "Exception")',
+                    //根据Plant,BG获取Depts
+                    fetchExceptionDepts: '@Url.Action("FetchExceptionDepts", "Exception")',
+                    fetchUserInfo: '@Url.Action("FetchUserInfo", "Exception")',
+                    //根据BG获取project
+                    fetchExceptionProject: '@Url.Action("FetchExceptionProject", "Exception")',
+                    //获取异专案周期信息
+                    fetchExceptionProjectCycleTime: '@Url.Action("FetchExceptionProjectCycleTime", "Exception")',
+                    //添加邮箱
+                    addExceptionEmail: '@Url.Action("AddExceptionEmail", "Exception")',
+                };
+
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Email_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-email-edit" data-id="' + rowData.Exception_Email_UID + '" style="margin-top:5px">Edit Email</button>' +
+                                                     '</br><button type="button" class="btn btn-primary btn-xs js-grid-email-dele" data-id="' + rowData.Exception_Email_UID + '"style="margin-top:5px">Delete Email</button>' +
+                                        '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                     {
+                         data: "Plant",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "BG",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "Project_Name",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "Exception_Times",
+                         className: "min-col-xs text-center"
+                     },
+
+                     {
+                         //data: "ReceiveType",
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             var result = '';
+                             if (rowData.ReceiveType == 1) {
+                                 result = 'Receive';
+                             } else {
+                                 result = 'CC';
+                             }
+                             $(td).html(result);
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                    {
+                        data: "User_Email",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "User_NT",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "User_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Created_User",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Created_Date",
+                        className: "min-col-xs text-center"
+                    },
+                {
+                    data: "Modified_UserName",
+                    className: "min-col-xs text-center"
+                },
+                {
+                    data: "Modified_Date",
+                    className: "min-col-xs text-center"
+                }
+                ];
+                var columnsEmail = [
+                            {
+                                data: null,
+                                createdCell: function (td, cellData, rowData, row, col) {
+                                    $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Email_UID + '">')
+                                    .addClass('table-col-checkbox');
+                                },
+                                className: "text-center min-col-xs"
+                            },
+                            {
+                                data: "Exception_Email_UID",
+                                className: "text-center min-col-xs hidden"
+                            },
+                            {
+                                data: "Project_Name",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "Exception_Times",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                //data: "ReceiveType",
+                                data: null,
+                                createdCell: function (td, cellData, rowData, row, col) {
+                                    var result = '';
+                                    if (rowData.ReceiveType == 1) {
+                                        result = 'Receive';
+                                    } else {
+                                        result = 'CC';
+                                    }
+                                    $(td).html(result);
+                                },
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "ReceiveType",
+                                className: "min-col-xs text-center hidden"
+                            },
+                            {
+                                data: "User_NT",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "User_Name",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "User_Email",
+                                className: "min-col-xs text-center"
+                            }];
+                var fixtureDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Time_UID + '">')
+                        ;
+                    },
+                    className: "text-center min-col-xs"
+                },
+                 {
+                     data: "Exception_Time_UID",
+                     className: "min-col-xs text-center"
+                 },
+                {
+                    data: "Exception_Time_At",
+                    className: "min-col-xs text-center"
+                }];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                };
+
+                var _queryExceptionEmail = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryExceptionEmail,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryExceptionEmail(true, false);
+                    },
+                    queryExceptionEmail: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryExceptionEmail(false, true);
+                    },
+                    GetExceptionDatatable: function () {
+                        fixtureDatatable = $('#table_exception2').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: fixtureDatatableColumns
+                        });
+                        return fixtureDatatable;
+                    },
+                    GetExceptionEmailtable: function () {
+                        emailDatatable = $('#table_email').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: columnsEmail
+                        });
+                        return emailDatatable;
+                    },
+                    SetFixtureDatatable: function (datatable) {
+                        fixtureDatatable = datatable;
+                    },
+                    FixtureColumns: fixtureDatatableColumns
+                }
+            })();
+
+            ExceptionRul.Init();
+
+            //done--------------------------------------------------------------------------------------
+
+            //++++++++++++++选择后联动
+
+            //----新增收件人那块
+            $('#js_select_Project_UID').change(function () {
+                var projectID = $('#js_select_Project_UID option:selected').val();
+                $('#js_select_Exception_Times').html('<option value=0></option>');
+                var url = ExceptionRul.urls.fetchExceptionProjectCycleTime;
+                if (projectID == 0) {
+                    return;
+                }
+                $.post(url, { projectID: projectID }, function (data) {
+                    if (data != 0) {
+                        for (var i = 1; i <= data.success.SendMaxTime; i++)
+                            $('#js_select_Exception_Times').append('<option value="' + i + '">' + i + '</option>');
+                        $("#js_select_Exception_Times").selectpicker('refresh');
+                        $("#js_select_Exception_Times").trigger('change');
+                    }
+                })
+            });
+            //----查询那块
+            $('#js_select_Project_UID_search').change(function () {
+                var projectID = $('#js_select_Project_UID_search option:selected').val();
+                $('#js_select_Exception_Times_search').html('<option value=0></option>');
+                var url = ExceptionRul.urls.fetchExceptionProjectCycleTime;
+                if (projectID == 0) {
+                    return;
+                }
+                $.post(url, { projectID: projectID }, function (data) {
+                    if (data != 0) {
+                        for (var i = 1; i <= data.success.SendMaxTime; i++)
+                            $('#js_select_Exception_Times_search').append('<option value="' + i + '">' + i + '</option>');
+
+                    }
+                })
+                $("#js_select_Exception_Times_search").selectpicker('refresh');
+                $("#js_select_Exception_Times_search").trigger('change');
+            });
+
+            $('#js_select_Exception_Times,#js_select_Project_UID').change(function () {
+                ClearTable2();
+            })
+            //添加收件人的邮箱
+            $('#js_btn_email_save').click(function () {
+                var isValid = true;
+                var errorMsg = "";
+                var projectID = $('#js_select_Project_UID option:selected').val();
+                if (projectID == '0') {
+                    errorMsg += 'Please select【Project】';
+                    isValid = false;
+                }
+                var projectName = $('#js_select_Project_UID option:selected').text();
+                var sendTime = $('#js_select_Exception_Times option:selected').val();
+                if (sendTime == '0' || sendTime == undefined) {
+                    errorMsg += 'Please select【Receive level】';
+                    isValid = false;
+                }
+                var userNT = $('#js_input_User_NT').val();
+                if (userNT == '') {
+                    errorMsg += 'Please type【NTID】';
+                    isValid = false;
+                }
+                var userName = $('#js_input_User_Name').val();
+                if (userName == '') {
+                    errorMsg += 'Please type【User Name】';
+                    isValid = false;
+                }
+                var email = $('#js_input_User_Email').val();
+                if (email == '') {
+                    errorMsg += 'Please type【Email】';
+                    isValid = false;
+                }
+                var receiveType = $('#js_input_ReceiveType').val();
+                if (!isValid) {
+                    if (errorMsg != "") {
+                        PDMS.Utility.MessageBox.info(errorMsg);
+                    }
+                    return false;
+                }
+
+                var dataTable = ExceptionRul.GetExceptionEmailtable();
+                var row = dataTable.row.add({
+                    "Exception_Email_UID": 0,
+                    "Project_Name": projectName,
+                    "Exception_Times": sendTime,
+                    "ReceiveType": receiveType,
+                    "User_NT": userNT,
+                    "User_Name": userName,
+                    "User_Email": email
+                }).draw();
+            })
+            //最后的保存，添加所有专案下面的收件人
+            $('#bt_email_save').click(function () {
+                var parameters = [];
+                var isValid = true;
+                var errorMsg = "";
+                var projectID = $('#js_select_Project_UID').val();
+                if (projectID == '0') {
+                    errorMsg += 'Please select【Project】';
+                    isValid = false;
+                }
+                var sendTime = $('#js_select_Exception_Times').val();
+                if (sendTime == '0' || sendTime == undefined) {
+                    errorMsg += 'Please select【Receive level】';
+                    isValid = false;
+                }
+                if (!isValid) {
+                    if (errorMsg != "") {
+                        PDMS.Utility.MessageBox.info(errorMsg);
+                    }
+                    return false;
+                }
+                var url = ExceptionRul.urls.addExceptionEmail;
+                var dataTable = ExceptionRul.GetExceptionEmailtable();
+                var $checkedItems = $('#table_email .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    var uid = $('#table_email tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+                    var receiveType = $('#table_email tbody tr:eq(' + trIndex + ') td:eq(5)').text();
+                    var ntid = $('#table_email tbody tr:eq(' + trIndex + ') td:eq(6)').text();
+                    var useName = $('#table_email tbody tr:eq(' + trIndex + ') td:eq(7)').text();
+                    var email = $('#table_email tbody tr:eq(' + trIndex + ') td:eq(8)').text();
+
+                    if (uid == 0) {
+                        parameters.push({
+                            Project_UID: projectID,
+                            Exception_Times: sendTime,
+                            User_NT: ntid,
+                            User_Name: useName,
+                            User_Email: email,
+                            ReceiveType: receiveType,
+                        });
+                    }
+
+                });
+                if (parameters.length > 0) {
+                    $.post(url, { model: JSON.stringify(parameters) }, function (data) {
+                        if (data.success > 0) {
+                            PDMS.Utility.MessageBox.info("Add " + data.success + " data successfully !");
+                            ClearTable2();
+                            FetchPeriodTimeBasedProjectID();
+
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("Add data failed !");
+                        }
+                    });
+                }
+
+                //$('#js_form_email').ajaxSubmit({
+                //    beforeSubmit: function () {
+
+                //    },
+                //    success: function (data) {
+                //        var dataTable = ExceptionRul.GetExceptionEmailtable();
+                //        if (data.success.Repeat == 0) {
+
+
+                //           var row = dataTable.row.add({
+                //                "Exception_Email_UID": data.success.Exception_Email_UID,
+                //                "Exception_Dept_Name": data.success.Exception_Dept_Name,
+                //                "Exception_Times": data.success.Exception_Times,
+                //                "ReceiveType": data.success.ReceiveType,
+                //                "User_NT": data.success.User_NT,
+                //                "User_Name": data.success.User_Name,
+                //                "User_Email": data.success.User_Email
+                //            }).draw();
+
+                //            PDMS.Utility.MessageBox.info("Add successfully !");
+                //        }
+                //        else if (data.success.Repeat == 1) {
+                //            if (JudgeFixExist(data.success.Exception_Email_UID) == true) {
+                //                var row = dataTable.row.add({
+                //                    "Exception_Email_UID": data.success.Exception_Email_UID,
+                //                    "Exception_Dept_Name": data.success.Exception_Dept_Name,
+                //                    "Exception_Times": data.success.Exception_Times,
+                //                    "ReceiveType": data.success.ReceiveType,
+                //                    "User_NT": data.success.User_NT,
+                //                    "User_Name": data.success.User_Name,
+                //                    "User_Email": data.success.User_Email
+                //                }).draw();
+                //            }
+                //            PDMS.Utility.MessageBox.info('Account already exists,please confirm !');
+                //        }
+                //        else {
+                //            PDMS.Utility.MessageBox.info("Save failed !");
+                //        }
+                //    }
+                //});
+
+
+
+            });
+            $('#js_btn_email_del').click(function () {
+                var dataTable = ExceptionRul.GetExceptionEmailtable();
+                var $checkedItems = $('#table_email .js-checkbox-item:checked');
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        dataTable.row($tr).remove().draw();
+                    });
+                }
+
+            });
+
+
+            //判断表格是否已经存在相同的数据
+            function JudgeFixExist(data) {
+                var ret = true;
+                var $checkedItems = $('#table_email .js-checkbox-item');
+                if ($checkedItems.length > 0) {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var Fixture_M_UID = $sender.val();
+                        if (Fixture_M_UID == data)
+                            ret = false;
+                    });
+                }
+                return ret;
+            }
+            $('#js_form_email').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_form_email ul.validate-error'),
+                wrapper: 'li'
+            });
+            //++点击按钮弹出module
+            //----定时添加module
+            //$('#btn_add').click(function () {
+            //    $('#js_edit_dept_modal').modal('show', $(this));
+            //})
+            //----邮件添加module
+            $('#btn_email_add').click(function () {
+                $('#js_edit_email_modal').modal('show', $(this));
+            })
+            //----查询module
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    ExceptionRul.queryExceptionEmail();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            //编辑收件人信息
+            $('body').on('click', '.js-grid-email-edit', function () {
+                var uid = $(this).data('id');
+                $('#js_edit_email_modal_2').modal('show', $(this));
+                $('#js_input_Exception_Email_UID').val(uid);
+                var url = ExceptionRul.urls.fetchExceptionEmailInfo;
+                //拿部门名称
+                $.post(url, { uid: uid }, function (data) {
+                    $('#js_select_Exception_Times_2').val(data.success.Exception_Times)
+                    $('#js_input_ReceiveType_2').val(data.success.ReceiveType).trigger('change');
+                    $('#js_input_User_NT_2').val(data.success.User_NT);
+                    $('#js_input_User_Name_2').val(data.success.User_Name);
+                    $('#js_input_User_Email_2').val(data.success.User_Email);
+
+                })
+
+            });
+            $('#js_btn_email_edit_save').click(function () {
+                $('#js_form_email_2').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var isValid = true;
+                        var errorMsg = "";
+                        var username = $('#js_input_User_Name_2').val();
+                        var email = $('#js_input_User_Email_2').val();
+                        var ntid = $('#js_input_User_NT_2').val();
+                        if (ntid == '') {
+                            errorMsg += 'Please type NTID !';
+                            isValid = false;
+                        }
+                        if (username == '') {
+                            errorMsg += ' No user name exists for this NTID account !';
+                            isValid = false;
+                        }
+                        if (email == '') {
+                            errorMsg += ' No email exists for this NTID account !';
+                            isValid = false;
+                        }
+                        if (!isValid) {
+                            if (errorMsg != "") {
+                                PDMS.Utility.MessageBox.info(errorMsg);
+                            }
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success == 2) {
+                            PDMS.Utility.MessageBox.info('Save data failed, this user already exists !');
+                            return;
+                        }
+                        if (data.success > 0) {
+                            $('#js_edit_email_modal_2').modal('hide');
+                            PDMS.Utility.MessageBox.info('Save data successfully !');
+                            //查询刷新的
+                            ExceptionRul.queryExceptionEmail();
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("Sava data failed！");
+                        }
+                    }
+                });
+
+
+
+            });
+            //首页删除
+            $('body').on('click', '.js-grid-email-dele', function () {
+                var uid = $(this).data('id')
+                PDMS.Utility.MessageBox.confirm('Delete this record ?', function () {
+                    var url = ExceptionRul.urls.deleExceptionEmail;
+                    $.post(url, { uid: uid }, function (data) {
+                        if (data.success > 0) {
+                            PDMS.Utility.MessageBox.info("Delete data successfully");
+                            ExceptionRul.queryExceptionEmail();
+                        } else {
+                            PDMS.Utility.MessageBox.info("Delete data failed");
+                        }
+
+                    })
+                });
+
+            });
+
+
+            //清空小表格
+            function ClearTable2() {
+                var dataTable = ExceptionRul.GetExceptionEmailtable();
+                var $checkedItems = $('#table_email .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+                });
+            }
+
+
+            //所有modal隐藏所要做的事情
+            //----邮件填写modal
+            $('#js_edit_email_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_email_modal').find('input').val('');//清空所有input
+                $('#js_select_Project_UID').val(0).trigger('change');
+                $("#js_select_Project_UID").selectpicker('refresh');
+                $('#js_select_Exception_Times').html('<option value=0></option>');
+                $("#js_select_Exception_Times").selectpicker('refresh');
+                var dataTable = ExceptionRul.GetExceptionEmailtable();
+                var $checkedItems = $('#table_email .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                ExceptionRul.queryExceptionEmail();
+                //$('#js_edit_email_modal').find('select').find('option:first').attr("selected", true);//下拉框默认选择第一项空
+
+            });
+            //----时间填写modal
+            //$('#js_edit_dept_modal').on('hidden.bs.modal', function (e) {
+            //    $('#js_edit_dept_modal').find('input').val('');//清空所有input
+            //    $('#js_select_Exception_Dept_UID').val(0).trigger('change');
+            //    $('#js_select_DealyDayNub').val(0).trigger('change');
+            //    $('#js_select_DayPeriod').val(1).trigger('change');
+            //    $('#js_select_SendMaxTime').val(1).trigger('change');
+            //    //$('#js_edit_dept_modal').find('select').find('option:first').attr("selected", true);//下拉框默认选择第一项空
+            //    //清空表格
+            //    var dataTable = ExceptionRul.GetExceptionDatatable();
+            //    var $checkedItems = $('#table_exception2 .js-checkbox-item');
+            //    $.map($checkedItems, function (checkbox) {
+            //        var $sender = $(checkbox);
+            //        var $tr = $sender.closest('tr');
+            //        var trIndex = $tr.index();
+            //        dataTable.row($tr).remove().draw();
+            //    });
+
+            //});
+            //----修改邮件modal
+            $('#js_edit_email_modal_2').on('hidden.bs.modal', function (e) {
+                $('#js_edit_email_modal_2').find('input').val('');//清空所有input
+                $('#js_select_Exception_Times_2').val(0).trigger('change');
+                $("#js_select_Exception_Times_2").selectpicker('refresh');
+
+
+
+            });
+
+
+            //异常编码----厂区变更-----BG变更
+            $('#js_select_plant_dept').change(function () {
+                var plantuid = $('#js_select_plant_dept option:selected').val();
+                $('#js_select_Exception_Dept_UID').html('<option value=0></option>');
+                $("#js_select_Exception_Dept_UID").selectpicker('refresh');
+                $("#js_select_Exception_Dept_UID").trigger('change');
+                //先删除所有
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_dept').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantCode(plantuid, 0);
+            });
+            function SetOpByPlantCode(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_dept').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_dept').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_dept').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_dept').change(function () {
+                var bgorg = $('#js_select_op_types_dept option:selected').val();
+
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_dept').val();
+                BG_Organization_UID = bgorg;
+
+                var url = ExceptionRul.urls.fetchExceptionDepts;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                    return;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                    return;
+                }
+                $.post(url, { BG_Organization_UID: BG_Organization_UID, Plant_Organization_UID: Plant_Organization_UID }, function (data) {
+                    $('#js_select_Exception_Dept_UID').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Exception_Dept_UID').append('<option value="' + data[i].Exception_Dept_UID + '">' + data[i].Exception_Dept_Name + '</option>');
+                    }
+                    $("#js_select_Exception_Dept_UID").selectpicker('refresh');
+                    $("#js_select_Exception_Dept_UID").trigger('change');
+                });
+
+            })
+            //邮件添加中的--------------厂区--BG---
+            $('#js_select_plant_email').change(function () {
+                var plantuid = $('#js_select_plant_email option:selected').val();
+                $('#js_select_op_types_email').html('<option value=0></option>');
+                $('#js_select_Project_UID').html('<option value=0></option>');
+                $("#js_select_Project_UID").selectpicker('refresh');
+                $("#js_select_Project_UID").trigger('change');
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_Project_UID').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantEmail(plantuid, 0);
+            });
+            function SetOpByPlantEmail(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_email').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_email').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_email').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_email').change(function () {
+                var bgorg = $('#js_select_op_types_email option:selected').val();
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_email').val();
+                BG_Organization_UID = bgorg;
+                var url = ExceptionRul.urls.fetchExceptionProject;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                }
+                $.post(url, { uid: BG_Organization_UID }, function (data) {
+                    $('#js_select_Project_UID').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_UID').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $("#js_select_Project_UID").selectpicker('refresh');
+                    $("#js_select_Project_UID").trigger('change');
+                });
+                //接受等级
+                $('#js_select_Exception_Times').html('<option value=0></option>');
+                $("#js_select_Exception_Times").selectpicker('refresh');
+            })
+            //搜索框的----厂区---BG---
+            $('#js_select_plant_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_search').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantSearch(plantuid, 0);
+            });
+            function SetOpByPlantSearch(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_search').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_search').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_search').change(function () {
+                var bgorg = $('#js_select_op_types_search option:selected').val();
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_search').val();
+                BG_Organization_UID = bgorg;
+                var url = ExceptionRul.urls.fetchExceptionProject;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                }
+                $.post(url, { uid: BG_Organization_UID }, function (data) {
+                    $('#js_select_Project_UID_search').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_UID_search').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $("#js_select_Project_UID_search").selectpicker('refresh');
+                    $("#js_select_Project_UID_search").trigger('change');
+                });
+
+            })
+
+
+            $('#js_input_User_NT').blur(function () {
+
+                var ntid = $('#js_input_User_NT').val();
+                if (ntid == '') {
+                    return;
+                }
+                var url = ExceptionRul.urls.fetchUserInfo;
+                $.post(url, { NTID: ntid }, function (data) {
+                    if (data != null) {
+                        $('#js_input_User_Email').val(data.User_Email);
+
+                        $('#js_input_User_Name').val(data.User_Name);
+                    } else {
+                        $('#js_input_User_Email').val('');
+
+                        $('#js_input_User_Name').val('');
+                        PDMS.Utility.MessageBox.info("Cannot get both user Email and user name, please set user information first ! ");
+                    }
+
+                })
+
+
+            });
+
+
+            $('#js_input_User_NT_2').blur(function () {
+                var ntid = $('#js_input_User_NT_2').val();
+                if (ntid == '') {
+                    return;
+                }
+                var url = ExceptionRul.urls.fetchUserInfo;
+                $.post(url, { NTID: ntid }, function (data) {
+                    if (data != null) {
+                        $('#js_input_User_Email_2').val(data.User_Email);
+
+                        $('#js_input_User_Name_2').val(data.User_Name);
+                    } else {
+                        $('#js_input_User_Email_2').val('');
+
+                        $('#js_input_User_Name_2').val('');
+                        PDMS.Utility.MessageBox.info("Cannot get both user Email and user name, please set user information first ! ");
+                    }
+
+                })
+            });
+
+
+            //done-end--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+        })
+    </script>
+}

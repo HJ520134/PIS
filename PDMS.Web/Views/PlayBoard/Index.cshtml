@@ -1,0 +1,459 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>PIS(M) - @ViewBag.PageTitle </title>
+
+    <link rel="stylesheet" href="~/Content/AdminLTE/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Scripts/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/ionicons.min.css" />
+    <link rel="stylesheet" href="~/Content/Css/icomoonFonts.css" />
+    @*<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+        <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>*@
+
+    @*<link rel="apple-touch-icon-precomposed" sizes="57x57" href="Content/img/logo-icon/apple-icon-57x57-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="Content/img/logo-icon/apple-icon-60x60-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="Content/img/logo-icon/apple-icon-72x72-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="Content/img/logo-icon/apple-icon-76x76-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="Content/img/logo-icon/apple-icon-114x114-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="Content/img/logo-icon/apple-icon-120x120-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="Content/img/logo-icon/apple-icon-144x144-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="Content/img/logo-icon/apple-icon-152x152-precomposed.png" />*@
+
+
+    @Styles.Render("~/Content/DataTables")
+    @Styles.Render("~/Content/kendo")
+    @Styles.Render("~/Content/AdminLTE_Theme")
+    @Styles.Render("~/Content/css/css")
+
+    @Scripts.Render("~/bundles/basic_framework")
+    @Scripts.Render("~/bundles/DataTables")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/spp-framework")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!--RWD n Portal n Special CSS-->
+    @*<link rel="stylesheet" href="~/Content/css/Portal-xs.css" media="screen and (max-width: 768px)">
+        <link rel="stylesheet" href="~/Content/css/Portal-sm.css" media="screen and (min-width: 768px) and (max-width: 992px)">
+        <link rel="stylesheet" href="~/Content/css/Portal-md.css" media="screen and (min-width: 992px) and (max-width: 1200px)">
+        <link rel="stylesheet" href="~/Content/css/Portal-lg.css" media="screen and (min-width: 1200px)">*@
+</head>
+<body>
+    <section class="content portal-content">
+        <div id="div-operation" class="bg-success" title="点击“回车键”缩放">
+            <di class="row bg-success">
+                <div class="col-xs-12">
+                    @*<div class="col-md-12 col-lg-5">
+                        </div>*@
+                    <div class="col-md-12 col-lg-12">
+                        <div class="col-sm-1">
+                            <button id="fullscreen" class="btn btn-primary btn-sm" onclick="fullSr()">全屏</button>
+                            <button id="fullscreen-cancel" class="btn btn-primary btn-sm" onclick="cancFullSr()" style="display:none;">取消全屏</button>
+                        </div>
+                        <div class="col-sm-2">
+                            当前播放画面：<span id="current-view"></span>
+                        </div>
+                        <div class="col-sm-2">
+                            播放方式：<span id="play-type"></span>@*定时播放[全天]*@
+                        </div>
+                        <div id="div_playOption" class="col-sm-2">
+                            <a id="bt_last" class="fa btn btn-primary" title="上一画面"> <<</a>
+                            <a id="bt_play" class="fa btn btn-primary" role="button" style="display:none;" title="播放"> ►</a>
+                            <a id="bt_pause" class="fa btn btn-primary" role="button" title="暂停"> ||</a>
+                            <a id="bt_next" class="fa btn btn-primary" role="button" title="下一画面"> >></a>
+                        </div>
+                        <div id="div_select_playtime" class="col-sm-2">
+                            <table>
+                                <tr>
+                                    <td>轮流播放切换时间：</td>
+                                    <td>
+                                        <select id="js_select_playtime" class="form-control input-sm" style="width:100px; float:left;">
+                                            <option value='5'>5秒</option>
+                                            <option value='10'>10秒</option>
+                                            <option value='60'>1分钟</option>
+                                            <option value='120'>2分钟</option>
+                                            <option value='180'>3分钟</option>
+                                            <option value='300' selected="selected">5分钟</option>
+                                            <option value='480'>8分钟</option>
+                                            <option value='600'>10分钟</option>
+                                            <option value='900'>15分钟</option>
+                                            <option value='1800'>30分钟</option>
+                                            <option value='3600'>1小时</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        @*<div class="col-sm-1">
+                                <a id="bt_next" class="fa fa-angle-left btn btn-primary" role="button" href="~/PlayBoard/Setting"> 播放设置</a>
+                            </div>*@
+                    </div>
+                </div>
+            </di>
+        </div>
+
+        <div id="partial-div" class="row">
+        </div>
+
+    </section>
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            //全局变量
+            //播放账号UID
+            PLAY_USER_UID = @ViewBag.PlayUserUID;
+            //当前播放的view
+            CURRENT_VIEW ='';
+            //播放设置id
+            CURRENT_SETTINGID = 0;
+            //轮流播放子画面切换时间间隔
+            INTURNPLAY_INTERVAL = -1;
+            //轮询时间间隔，定时轮询，如果后台设置有变化，可以很快响应
+            KEEPASK_INTERVAL = -1;
+            //是否定时播放
+            ISTIMINGPLAY = true;
+            //是否暂停
+            ISPAUSE = false;
+
+            //是否可以正常运行，发布时不可正常运行
+            ISHEALTH = true;
+
+            //初始化即开始轮询
+            keepAsk();
+
+            //设置子画面高度
+            document.getElementById('partial-div').style.height = $(window).height() + "px";
+
+            //播放
+            $('#bt_play').click(function () {
+                ISPAUSE = false;
+                $(this).hide();
+                $('#bt_pause').show();
+                resetInTurnPlayInterval();
+            });
+
+            //暂停
+            $('#bt_pause').click(function () {
+                ISPAUSE = true;
+                $(this).hide();
+                $('#bt_play').show();
+                if (INTURNPLAY_INTERVAL != -1) {
+                    clearInterval(INTURNPLAY_INTERVAL);
+                }
+            });
+
+            //上一画面
+            $('#bt_last').click(function () {
+                lastView();
+            });
+
+            //下一画面
+            $('#bt_next').click(function () {
+                nextInTurnView();
+            });
+
+            //触发播放时间change 事件
+            $('#js_select_playtime').trigger('change');
+
+            //播放上一页
+            function lastView() {
+                switchInTurnView(-1);//-1表示向前切换
+
+                //如果是播放状态（此时显示暂停按钮），切换后继续播放
+                //if ($('#bt_pause').is(':visible')) {
+                //    $('#js_select_playtime').trigger('change');
+                //}
+                resetInTurnPlayInterval();
+            }
+
+            //播放下一页
+            function nextInTurnView() {
+                switchInTurnView(1);//1表示向后切换1个画面
+
+                //如果是播放状态（此时显示暂停按钮），切换后继续播放
+                //if ($('#bt_pause').is(':visible')) {
+                //    $('#js_select_playtime').trigger('change');
+                //}
+                resetInTurnPlayInterval();
+            }
+
+            //根据步长切换子画面，步长为1表示下一画面，-1表示上一画面
+            function switchInTurnView(step) {
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetInTurnPartialView", "PlayBoard")',
+                    data: { playUserUID:PLAY_USER_UID, currentSettingID:CURRENT_SETTINGID, step:step},
+                    datatype: "json",
+                    success: function (data) {
+                        if (data != null) {
+                            //显示子画面
+                            showPartialView(data.PlayBoard_Setting_ID);
+
+                            //为true 表示定时播放，现在是轮流播放，更新成false
+                            if (ISTIMINGPLAY == true) {
+                                //更新ISTIMINGPLAY，表示播放的是轮流播放
+                                ISTIMINGPLAY = false;
+                                //重置播放间隔
+                                resetInTurnPlayInterval();
+                            }
+
+                            //刷新播放信息
+                            refreshPlayInfo(data);
+                        }else {
+                            //轮流播放的优先级最低，此时若没有轮流播放的画面，播放信息置为空白
+                            $("#current-view").text("暂无播放画面");
+                            $("#play-type").text("");
+                            $('#partial-div').html("");
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ISHEALTH = false;
+                    }
+                });
+            }
+
+            //重置播放间隔
+            function resetInTurnPlayInterval() {
+                if (ISPAUSE) {
+                    //暂停状态清除播放间隔
+                    if (INTURNPLAY_INTERVAL != -1) {
+                        clearInterval(INTURNPLAY_INTERVAL);
+                    }
+                }else {
+                    //在播放状态才重置
+                    var playTime = $('#js_select_playtime option:selected').val();
+                    if (INTURNPLAY_INTERVAL != -1) {
+                        clearInterval(INTURNPLAY_INTERVAL);
+                    }
+                    INTURNPLAY_INTERVAL = setInterval(nextInTurnView, playTime * 1000);
+                }
+            }
+
+            //显示子画面
+            function showPartialView(settingID) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ShowPartialView", "PlayBoard")',
+                    data: {settingID:settingID},
+                    datatype: "json",
+                    success: function (data) {
+                        $('#partial-div').html(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ISHEALTH = false;
+                    }
+                });
+            }
+
+            //播放时间切换，重新设置播放时间
+            $('#js_select_playtime').change(function () {
+                resetInTurnPlayInterval()
+            });
+
+            //轮询，间隔很短的时间到后台查询是否有定时播放的画面，若有，立即切换到定时播放画面
+            function keepAsk() {
+                //先测试网络是否OK
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("IsHealth", "PlayBoard")',
+                    data: {username:$("#username").val(), content:$("#content").val()},
+                    timeout:10000,
+                    dataType: "json",
+                    success: function(data){
+                        getTimingPartialView();
+
+                        //发布成功后刷新一下，这样有更新也不用手动刷新
+                        if (ISHEALTH == false) {
+                            ISHEALTH = true;
+                            window.location.reload();
+                        }
+
+                    },
+                    error:function(XMLHttpRequest, textStatus, errorThrown) {
+                        //请求失败后，做一下操作
+                        //强行清空定时器
+                        forceClearInterval();
+                        //轮流播放的优先级最低，此时若没有轮流播放的画面，播放信息置为空白
+                        $("#current-view").text("系统维护，请稍后。。。");
+                        $("#play-type").text("");
+                        $('#partial-div').html("<h1 style=''>系统维护，请稍后。。。</h1>");
+
+                        ISHEALTH = false;
+                    }
+                });
+            }
+
+            //网络测试OK后调用
+            function getTimingPartialView() {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetTimingPartialView", "PlayBoard")',
+                    data: { playUserUID:PLAY_USER_UID},
+                    datatype: "json",
+                    success: function (data) {
+                        if (data != null) {
+                            //更新ISTIMINGPLAY，表明播放的是定时播放
+                            ISTIMINGPLAY = true;
+                            //暂停轮流播放，轮流播放interval 要取消
+                            if (INTURNPLAY_INTERVAL != -1) {
+                                clearInterval(INTURNPLAY_INTERVAL);
+                            }
+
+                            //要定时播放的画面，如果和当前播放的当前播放不同，立即切换
+                            if (data.PlayBoard_Setting_ID != CURRENT_SETTINGID || $('#partial-div')[0].innerHTML == "") {
+                                //强行清空定时器
+                                forceClearInterval();
+                                //刷新播放信息
+                                refreshPlayInfo(data);
+
+                                //切换画面
+                                showPartialView(data.PlayBoard_Setting_ID);
+                            }
+                        }
+                        else {
+                            //没有拿到定时播放的画面，再查找轮流播放的画面，如果已经在轮流播放了则不管
+                            if (ISTIMINGPLAY) {
+                                //强行清空定时器
+                                forceClearInterval();
+                                nextInTurnView();
+                            }
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ISHEALTH = false;
+                    }
+                });
+            }
+
+            //刷新播放信息
+            function refreshPlayInfo(dto)
+            {
+                if (dto != null) {
+                    //给全局变量赋值，保存当前播放画面的ActionName,切换画面时作为参数传递给接口
+                    CURRENT_SETTINGID = dto.PlayBoard_Setting_ID;
+                    $("#current-view").text(dto.Title);
+                    if (dto.IsTiming) {
+                        $("#play-type").text("定时播放"+dto.CurrentPlayTime);
+                        if (dto.PlayTime != null) {
+                            $("#play-type").attr("title","所有播放时间: "+ dto.PlayTime);
+                        }
+                        else {
+                            $("#play-type").attr("title","");
+                        }
+
+                        $("#current-view").attr("title","");
+
+                        //隐藏轮流播放相关div
+                        $("#div_playOption").hide();
+                        $("#div_select_playtime").hide();
+                    }
+                    else {
+                        $("#current-view").attr("title","上一画面: [" + dto.LastViewTitle + "]  下一画面: [" + dto.NextViewTiitle+"]");
+                        $("#play-type").text("轮流播放");
+                        $("#play-type").attr("title","");
+
+                        //显示轮流播放相关div
+                        $("#div_playOption").show();
+                        $("#div_select_playtime").show();
+                    }
+                }
+            }
+
+            $('#js_btn_clear').click(function () {
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).find("option").first().attr("selected", true);
+                    //$(this).selectpicker('refresh');
+                });
+                PDMS.Utility.Criteria.Clear();
+            });
+            $(function () {
+
+                var StorageReportSetting = (function () {
+                    var urls = {
+                        //画面初始化加载
+                        queryFixtureMaintenance: '@Url.Action("QueryFixtureMaintenance", "Fixture")',
+                        switchChildView: '@Url.Action("ChildAction", "PlayBoard")'
+                    };
+
+                })();
+            });
+
+            //10秒轮询,看是否有需要播放的定时画面
+            KEEPASK_INTERVAL = setInterval(keepAsk, 1000 * 10);
+        });
+
+        //全屏
+        function fullSr() {
+            var docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            }
+            else if (docElm.msRequestFullscreen) {
+                docElm = document.body; //overwrite the element (for IE)
+                docElm.msRequestFullscreen();
+            }
+            else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            }
+            else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            }
+            $("#fullscreen").hide();
+            $("#fullscreen-cancel").show();
+            $(".navbar-static-top").hide();
+        }
+
+        //取消全屏
+        function cancFullSr() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
+            else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+            $("#fullscreen").show();
+            $("#fullscreen-cancel").hide();
+            $(".navbar-static-top").show();
+        }
+
+        //强行清除定时器
+        function forceClearInterval() {
+            for(var i = 1; i < 1000; i++) {
+                if( i != KEEPASK_INTERVAL){
+                    clearInterval(i);
+                }
+            }
+        }
+
+        //点击子画面，让操作隐藏或显示
+        $("#partial-div").click(function() {
+            $("#div-operation").toggle("fast");
+        });
+        //回车键可触发
+        $(document).keypress(function () {
+            debugger;
+            if (event.keyCode == 13) {
+                $("#div-operation").toggle("fast");
+            }
+        });
+    </script>
+</body>
+</html>

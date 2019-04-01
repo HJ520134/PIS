@@ -1,0 +1,489 @@
+﻿@charset "utf-8";
+/* ======PDMS 配色要修改menu按鈕顏色，在下方====== */
+
+
+/*=====電子看版用的css===== */
+.eboard-header {
+	box-shadow:0px 2px 1px rgba(0,0,0,0.5);
+	}
+.eboard-hr {
+	border-top:1px solid rgba(256,256,256,1);
+	box-shadow:0px -1px 0px rgba(0,0,0,0.2);
+	/*border-top:1px solid rgba(149,216,239,0.3);
+	/*box-shadow:0px -1px 1px rgba(0,0,0,0.5)*/
+	}
+.eboard-wrapper {
+	font-size:larger;
+	}
+.eboard-page {
+	/*background:#222D32;
+	background-image:url(../img/eboard/board-bg.jpg);
+	background-repeat:no-repeat;
+	background-position:top;
+	background-size:cover;*/
+	background:#FFF;
+	font-size:larger;
+	background-image:url(../img/eboard/board-bg-left-1.png);
+	background-repeat:no-repeat;
+	background-position:left top;
+	background-size:400px;
+	}
+.eboard-page:before {
+	content:'';
+	width:100%;
+	height:100%;
+	margin:0px auto;
+	z-index:0;
+	top:-88px;
+	position:absolute;
+	background-image:url(../img/eboard/board-bg-right-1.png);
+	background-repeat:no-repeat;
+	background-position:right bottom;
+	background-size:300px;
+	}
+.eboard-wrapper:before {
+	content:'PIS';
+	font-size:250px;
+	font-weight:900;
+	color: rgba(153,153,153,0.1);
+	text-align:center;
+	width:100%;
+	height:100%;
+	margin:0px auto;
+	z-index:0;
+	top:-88px;
+	position:absolute;
+	padding-top:250px;
+	text-shadow:inherit -1px -1px 0px rgba(255,255,255,1), -1px -1px 0px rgba(0,0,0,0.7),1px 1px 0px rgba(0,0,0,0.7);
+	}	
+.eboard-header-title {
+	letter-spacing:6px;
+	/*color:#FFF;*/
+	text-shadow:2px 2px 0px rgba(256,256,256,1);
+	}
+.eboard-header-title-line {
+	border-left:5px solid #00A65A;
+	padding-left:10px
+	}
+.eboard-main-footer {
+	margin:0px;
+	padding:0px;
+	background:#ECF0F5;
+	z-index:1;
+	/*background:#ECF0F5;*/
+	/*background:#222D32;
+	background-image:url(../img/eboard/board-bg.jpg);
+	background-repeat:no-repeat;
+	background-position:0px -600px;;
+	background-size:cover;*/
+	/*box-shadow: inset 0px 3px 3px rgba(0,0,0,0.5);*/
+	}
+.eboard-footer-enter {
+	padding:0px 30px 20px 30px;
+	}
+.eboard-footer-notice {
+	box-shadow: 0px -3px 3px rgba(0,0,0,0.5);	
+	}
+.eboard-footer-emegency-notice {
+	padding-top:30px;
+	padding-bottom:30px;
+	}
+.eboard-title {
+	border-radius:2px;
+	padding:5px;
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f3f3f3+50,ededed+51,ffffff+100&0.8+0,0.3+99 */
+background: -moz-linear-gradient(45deg,  rgba(255,255,255,0.8) 0%, rgba(243,243,243,0.55) 50%, rgba(237,237,237,0.54) 51%, rgba(255,255,255,0.3) 99%, rgba(255,255,255,0.3) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(45deg,  rgba(255,255,255,0.8) 0%,rgba(243,243,243,0.55) 50%,rgba(237,237,237,0.54) 51%,rgba(255,255,255,0.3) 99%,rgba(255,255,255,0.3) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(45deg,  rgba(255,255,255,0.8) 0%,rgba(243,243,243,0.55) 50%,rgba(237,237,237,0.54) 51%,rgba(255,255,255,0.3) 99%,rgba(255,255,255,0.3) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ccffffff', endColorstr='#4dffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	}
+.eboard-infobox {
+	margin-bottom:20px;
+	}
+.eboard-infobox-content {
+	border-left:1px solid rgba(0,0,0,0.3);
+	min-height:90px;
+	box-shadow: inset 1px 0px 0px rgba(255,255,255,0.3)
+	}
+.text-3d {
+    text-shadow:1px 1px 0px rgba(0,0,0,0.5),-1px -1px 0px rgba(0,0,0,0.5);
+	}
+.eboard-process-smallbox {
+	min-height:110px;
+	margin-bottom:20px;
+	}
+.eboard-smallbox-inner {
+	margin-right:90px;
+	margin-bottom:15px;
+	padding-top:30px !important
+	}
+.eboard-smallbox-h3 {
+	white-space: normal !important;
+	font-size:30px !important;
+	text-shadow:-1px -1px 0px rgba(0,0,0,0.3);
+	color:#FFF
+	}
+.eboard-smallbox-icon {
+	padding-top:10px;
+	}
+.eboard-selected {
+	position: relative;
+	background:#FF851B !important;
+	color:#FFF !important;
+	}
+.eboard-selected:before {
+    content: "";
+    position: absolute;
+	top: -8px;
+	right: -8px;
+	bottom: -8px;
+	left: -8px;
+    border: #FF7701  solid 6px;  /*rgba(52,70,92,1)*/
+	}
+.eboard-selected:after {
+    content:" ";
+	top:0px;
+	right:0px;
+    position: absolute;
+	width:130px;
+	height:100%;
+	background: rgba(0,0,0,0.2);
+	background-image:url(../img/eboard/check-mark.png);
+	background-repeat:no-repeat;
+	background-position:right center;
+	background-size:96px auto;
+	box-shadow:inset 5px 0px 5px rgba(0,0,0,0.2)
+	}
+/* Shutter Out Horizontal */
+.eboard-hvr-shutter-out-horizontal {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  background: #3C8DBC;
+  -webkit-transition-property: color;
+  transition-property: color;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+}
+.eboard-hvr-shutter-out-horizontal:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #00A65A;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transform-origin: 50%;
+  transform-origin: 50%;
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+.eboard-hvr-shutter-out-horizontal:hover, .eboard-hvr-shutter-out-horizontal:focus, .eboard-hvr-shutter-out-horizontal:active {
+  color: white;
+}
+.eboard-hvr-shutter-out-horizontal:hover:before, .eboard-hvr-shutter-out-horizontal:focus:before, .eboard-hvr-shutter-out-horizontal:active:before {
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+
+/* Outline Out */
+.eboard-hvr-outline-out {
+  display: block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+.eboard-hvr-outline-out:before {
+  content: '';
+  position: absolute;
+  border: rgba(0,0,0,0.2) solid 1px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: top, right, bottom, left;
+  transition-property: top, right, bottom, left;
+  box-shadow:1px 1px 0px rgba(256,256,256,1),1px 1px 0px rgba(0,0,0,0.5);
+}
+.eboard-hvr-outline-out:hover:before, .eboard-hvr-outline-out:focus:before, .eboard-hvr-outline-out:active:before {
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  border: rgba(52,70,92,0.5) solid 4px; 
+}
+
+/* ======PDMS 配色要修改menu按鈕顏色====== */
+/* ==sidebar-menu 次標題要因底色深淺有變化== */
+/*第二層標題*/
+.li-menu-header {
+	color:rgba(256,256,256,0.6) !important;
+	background: rgba(1,1,1,0.2) !important;
+}
+/* ==配色要修改skin-black.min.css及body的class:skin-black== */
+.main-header .sidebar-toggle {
+	background-color: #FFFFFF;
+	color: #333;
+	border-right: 1px solid #eee;
+	}
+.main-header .sidebar-toggle:focus, .main-header .sidebar-toggle:active {
+	background-color: #FFFFFF;
+	color: #333;
+	border-right: 1px solid #eee;
+	}	
+/*依配色可刪掉*/
+.skin-black .sidebar-menu>li.active>a {
+    border-left-color: rgba(255,255,255,0.5);
+}
+/* ======PDMS index====== */	
+.list-nypro {
+	list-style: none;
+    padding:0;
+    margin:0;
+	}
+.list-nypro li { 
+    padding-left: 1em; 
+    text-indent: -.7em;
+}
+.list-nypro li:before {
+    content: "▪ \0000a0";
+    color: #E35929;
+}
+.list-manual{
+	
+	}
+.list-manual li{
+	vertical-align: top;
+	display:table
+	}
+.list-manual h5 {
+	margin-bottom:5px;
+	}
+.list-manual h5:before {
+	content: "▪ \0000a0";
+    color: #E35929;
+	}
+.list-manual dl {
+	padding-left: 0.8em;
+	float:left;
+	margin-right:5px;
+	margin-bottom:10px;
+	display:table-cell
+	}
+.list-manual dt {
+	color:#00764B
+	}	
+.table-manual td {
+	padding-right:10px;
+	vertical-align:top;
+	text-align:left;
+	color: #9D9D9D
+	}
+.table-manual h5 {
+	font-weight:600;
+	margin-bottom:5px;
+	color:#333
+	}
+.table-manual h5:before {
+	content: "▪ \0000a0";
+    color: #E35929;
+	}
+.table-manual li {
+	float:left;
+	}
+.table-manual dl {
+	padding-left: 0.8em;
+	float:left;
+	margin-right:5px;
+	margin-bottom:10px;
+	}
+.table-manual dt {
+	color:#00764B
+	}	
+.manual-box {
+	text-align:left;
+	color: #9D9D9D
+	}
+.manual-box h5 {
+	font-weight:600;
+	margin-bottom:5px;
+	color:#333
+	}
+.manual-box h5:before {
+	content: "▪ \0000a0";
+    color: #E35929;
+	}
+.manual-box li {
+	float:left;
+	vertical-align:top
+	}
+.manual-box dl {
+	padding-left: .4em;
+	float:left;
+	margin-right:5px;
+	margin-bottom:10px;
+	}
+.manual-box dt {
+	color:#00764B
+	}	
+/* ======index banner====== */
+.index-banner-img {
+	width:100%;
+	height:auto;
+	}
+	
+/* ======bi RnDReference====== */	
+.RnD_photo img {
+	height:160px;
+	padding:5px
+	}
+/* ======bi Share of Wallet====== */
+.sow-img img {
+	width:100%;
+	max-width:603px
+	}	
+/* ======Report Capability Summary====== */
+.cs_tab_left_width {
+	width:100px
+	}
+
+/*--- RWD ---*/
+@media (max-width: 768px) {
+/*xs*/
+/* ======PDMS index====== */
+.index-img {
+	width: inherit;
+	padding:0px 0px 10px 0px ;
+	}
+.index-img img {
+	width: 70px;
+	height: auto
+	}
+.index-manual-box {
+	width:calc(100% - 70px);
+	padding-right:0px
+	}
+/*======BI / Products ======*/
+.products-pane {
+	height:350px;
+	overflow:auto !important
+	}
+/* ======BI / Consumer Electronics Reports====== */
+.cep-photo{
+	width:90%;
+	height:auto
+	}
+/* ======Report/Capability Summary====== */
+.cs_img img {
+	height:100px;
+	width:auto
+	}
+
+}
+@media (min-width: 768px) and (max-width: 992px) {
+/*sm*/
+/* ======PDMS index====== */
+.index-img {
+	width: inherit;
+	padding:0px 0px 10px 0px ;
+	}
+.index-img img {
+	width: 70px;
+	height: auto
+	}
+	
+.index-manual-box {
+	width:calc(100% - 70px);
+	padding-right:0px
+	}
+/*======BI / Products ======*/
+.products-pane{
+	height:350px;
+	overflow:auto !important
+	}
+/* ======BI / Consumer Electronics Reports====== */
+.cep-photo{
+	width:90%;
+	height:auto
+	}
+/* ======Report Capability Summary====== */
+.cs_img img {
+	height:100px;
+	width:auto
+	}
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+/*md*/
+/* ======PDMS index====== */
+.index-img {
+	width:110px;
+	padding:0px 0px 10px 0px ;
+	}
+.index-manual-box {
+	width:calc(100% - 110px);
+	padding-right:10px
+	}
+/*======BI / Products ======*/
+.products-pane {
+	height:480px;
+	overflow:auto !important
+	}
+/* ======BI / Consumer Electronics Reports====== */
+.cep-photo{
+	width:90%;
+	height:auto
+	}
+/* ======Report Capability Summary====== */
+.cs_img img {
+	height:100px;
+	width:auto
+	}
+}
+@media (min-width: 1200px) {
+/*lg*/
+/* ======PDMS index====== */
+.index-img {
+	width:110px;
+	padding:0px 0px 10px 0px ;
+	}
+.index-manual-box {
+	width:calc(100% - 110px);
+	padding-right:10px
+	}
+/*======BI / Products ======*/
+.products-pane {
+	height:475px;
+	overflow:auto !important
+	}
+/* ======BI / Consumer Electronics Reports====== */
+.cep-photo{
+	width:60%;
+	height:auto
+	}
+/* ======Report Capability Summary====== */
+.cs_img img {
+	height:150px;
+	width:auto
+	}
+
+}

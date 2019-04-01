@@ -1,0 +1,814 @@
+﻿@charset "utf-8";
+/*jabile:#005288
+GP:#00764B
+Nypro:#E35929*/
+
+/*@media (min-width: 480px) { }
+@media (min-width: 768px) { }
+@media (min-width: 992px) { }
+@media (min-width: 1200px) { } */
+
+/* ==LOGO== */
+.login-logo-logoimg {
+    height: 68px;
+    width: auto;
+}
+.logo-mini-logoimg {
+    height: 30px;
+    width: auto;
+    vertical-align: top;
+    margin-top: 10px;
+}
+
+.logo-lg-logoimg {
+    height: 36px;
+    width: auto;
+    vertical-align: top;
+    margin-top: 7px;
+}
+.footer-logo {
+	height:14px;
+	width:auto;
+	vertical-align: middle;
+	margin-left:5px;
+	margin-right:5px
+	}
+/* ==大頭貼調整== */
+.navbar-nav > .user-menu .user-image {
+	width: 20px;
+    height: 20px
+	}
+.user-menu .dropdown-toggle {
+	padding-left:10px;
+	padding-right:10px
+	}
+/*logoutt*/
+.dropdown-menu {
+	box-shadow:1px 1px 1px rgba(116,116,116,0.5)
+}
+/* ==sidebar-menu== */
+/* ======SPP 配色要修改menu按鈕顏色====== */
+/* ==sidebar-menu 次標題要因底色深淺有變化== */
+/*第一標題顏色*/
+.skin-black .sidebar a {
+	color:#C8D6DB
+}
+
+/*第三標題顏色*/
+.skin-black .treeview-menu>li>a {
+	color: #E1E9EC;
+	}
+/*第二層標題滑過顏色，依配色可刪掉*/
+.skin-black .sidebar-menu>li.active>a {
+    border-left-color: rgba(255,255,255,0.5);
+
+}
+/* ==配色要修改skin-black.min.css及body的class:skin-black== */
+.main-header .sidebar-toggle {
+	background-color: #FFFFFF;
+	color: #333;
+	border-right: 1px solid #eee;
+	}
+.main-header .sidebar-toggle:focus, .main-header .sidebar-toggle:active {
+	background-color: #FFFFFF;
+	color: #333;
+	border-right: 1px solid #eee;
+	}
+/*次menu斷行*/
+.treeview-menu {
+    padding-left: 0px !important;
+    padding-top: 0px !important;
+}
+.treeview-menu li {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	/*border-bottom:1px solid #36484E;*/
+}
+
+/*第二層標題*/
+.li-menu-header {
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 13px;
+	color:rgba(222,230,233,0.7) !important;
+	background: rgba(1,1,1,0.2) !important;
+}
+.li-menu-header::before {
+	content: " ❚ ";
+	color: #00764B;
+	padding-right: 2px;
+}
+/*======button顏色調整======*/
+.btn-primary {
+    background-color: #1968A4 ;
+    border-color: #1C5E90 ;
+}
+.btn-info {
+    background-color: #0098E4;
+    border-color: #017FBD 
+}
+.btn-success {
+
+}
+.btn-danger {
+    background-color: #B00000;
+    border-color: #920B09;
+}
+.btn-warning {
+    background-color: #EB6100;
+    border-color: #CD5402;
+}
+.btn-default {
+    background-color: #ECECEC;
+    color: #444;
+    border-color: #C6C6C6;
+}
+/*======header的my-task======*/
+.my-task {
+    padding: 15px;
+    border-bottom: 1px solid #F4F4F4;
+    height: auto;
+}
+/*======.table表格======*/
+.table thead th {
+    background: #546A74; /*#3c8dbc*/
+    color: #FFF;
+   /* vertical-align: middle !important;*/
+}
+.table tbody th {
+    background: #D6DDE1;
+    color: inherit;
+}
+.table tfoot th {
+    background: #546A74;
+    color: #FFF;
+    vertical-align: middle !important;
+}
+
+/*======form 表單 input lab======*/
+.form-horizontal-custom .form-group {
+    margin-top: 5px;
+    margin-bottom: 5px;
+	}
+.form-horizontal-custom .form-group [class*="col-"] {
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+    }
+/*input 說明字' icon減少padding*/
+.input-group-addon {
+    padding: 6px 6px;
+	}
+/* form 表單 input使用/ */
+form label.no-padding-l {
+	padding-left:0  !important;
+	}
+form label.no-padding-vr {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+	}
+form label.no-padding-hr {
+    padding-left: 0  !important;
+    padding-right: 0 !important;
+}
+/*======modal======*/
+.modal-custom .modal-header,.modal-custom .modal-body,.modal-custom .modal-footer {
+    padding: 10px;
+}
+.modal-bgfff .modal-body thead th, .modal-bgfff .modal-body tfoot th {
+	background:#D6DDE1;
+	color:#333
+	}
+.modal-bgfff .modal-body, .modal-bgfff .modal-footer {
+	background:#fff !important;
+	color:#333 !important;
+	border-top:1px solid #e5e5e5;
+	}
+	
+/*======box 全部垂直罝中, 要全部各自加這個css======*/
+.pull-middle {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+/*--字垂直置中--*/
+.text-vertical-mid {
+	vertical-align:middle !important;
+	}
+/* ======其他元======件 */
+.nypro-dot::before {
+	content:'●';
+	color:#E35929;
+	padding-right:10px
+	}
+.gp-dot::before {
+	content:'●';
+	color:#00764B;
+	padding-right:10px
+	}
+.width-30 {
+	width:30px
+	}
+.width-150 {
+	width:150px
+	}
+.width-200 {
+	width:200px
+	}
+/*======margin & padding 空格======*/
+.no-padding-l {
+    padding-left:0 ;
+}
+.no-padding-r {
+    padding-left: 0;
+}
+.no-padding-hr {
+    padding-left: 0;
+    padding-right: 0;
+}
+.no-padding-vr {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+.padding-lr-5 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.padding-lr-10 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.padding-lr-15 {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.padding-t-0 {
+	padding-top:0px !important;
+	}
+.padding-l-5 {
+    padding-left: 5px;
+}
+.padding-r-5 {
+    padding-right: 5px;
+}
+.padding-r-10 {
+    padding-right: 10px;
+}
+.padding-tb-5 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.padding-tb-10 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.padding-t-10 {
+    padding-top: 10px;
+}
+/*時區調整高度用*/
+.padding-t-7 {
+    padding-top: 7px;
+}
+.padding-b-10 {
+    padding-bottom: 10px;
+}
+.padding-all-2 {
+    padding: 2px;
+}
+.padding-all-5 {
+    padding: 5px;
+}
+.padding-all-20 {
+    padding: 20px;
+}
+.padding-all-10 {
+    padding: 10px;
+}
+.padding-all-15 {
+    padding: 15px;
+}
+.margin-tb-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.margin-lr-5 {
+	margin-left:5px;
+	margin-right:5px;
+	}
+.margin-t-5 {
+    margin-top: 5px;
+	}
+.margin-b-5 {
+    margin-bottom: 5px;
+	}
+.margin-l-5 {
+	margin-left:5px;
+	}
+.margin-r-5 {
+	margin-right:5px;
+	}
+.margin-tb-10 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+	}
+.margin-lr-10 {
+    margin-left:10px;
+    margin-right:10px;
+	}
+.margin-t-10 {
+    margin-top: 10px;
+	}
+.margin-b-10 {
+	margin-bottom:10px;
+	}
+.margin-l-10 {
+	margin-left:10px;
+	}
+.margin-r-10 {
+	margin-right:10px;
+	}
+.margin-t-20 {
+    margin-top: 20px;
+}
+.margin-20 {
+	margin:20px
+	}
+.margin-top-none {
+	margin-top:0px
+	}
+.margin-bottom-none-important {
+	margin-bottom:0px !important
+	}
+/*======其他元件======*/
+.hr-custom {
+    margin: 5px 0px 5px 0px;
+	}
+.hr-carving {
+    margin: 5px 0px 5px 0px;
+	border: 0;
+    border-top: 1px solid rgba(0,0,0,0.2);
+	border-bottom: 1px solid rgba(256,256,256,0.8);
+	}	
+.label-new {
+    padding: .1em .2em .2em;
+    border-radius: .2em;
+	}
+.coming-soon {
+    padding: 30px 0px;
+	}
+.coming-soon img {
+	max-width: 300px;
+	width: 60%;
+	height: auto;
+	}
+/*======Title 標題======*/
+.title-sub {
+    padding:0px 10px;
+	margin-top:5px;
+	margin-bottom:5px;
+	border-left:5px #00764B solid
+}
+.title-third {
+	padding:0px 10px;
+	margin-top:5px;
+	border-left:5px #005288 solid
+	}	
+.blockquote-title {
+	padding:0px 10px;
+	border-color:#00764B
+	}
+.blockquote-title h4 {
+	margin:5px 0px;
+	}
+.blockquote-title p {
+	color:#999
+	}
+/*======邊線======*/
+.border-top-2 {
+	border-top:0.2em solid
+	}
+.border-gray {
+	border-color:#B5BBC8
+	}
+/*======Text 與 line height 與 顏色 與======*/
+.line-height-1em {
+    line-height: 1em;
+}
+.text-size-6 {
+    font-size: 6px;
+} 
+.text-size-9 {
+    font-size: 9px;
+}
+.text-gray-light {
+	color:#7C7C7C
+	}
+.text-jb {
+    color: #005288;
+}
+.text-gp {
+    color: #00764B;
+}
+.text-nypro {
+    color: #E35929;
+}
+.text-info02 {
+    color: #d9edf7;
+}
+.text-success02 {
+    color: #dff0d8;
+}
+.bg-jb {
+    background: #005288;
+}
+.bg-gp {
+    background: #00764B;
+}
+.bg-nypro {
+    background: #E35929;
+}
+.bg-white-08 {
+    background:rgba(255,255,255,0.8);
+}
+.bg-black-03 {
+	background:rgba(0,0,0,0.3);
+	}
+.bg-black-01 {
+	background:rgba(0,0,0,0.1);
+	}
+/*--PM PS--*/
+.bg-ps-blue {background: #325D88 }
+.bg-ps-green {background: #93C54B }
+.bg-ps-sky {background: #29ABE0 }
+.bg-ps-orange {background: #F47C3C }
+.bg-ps-yellow {background: #FFC926 }
+.bg-ps-bluedark {background: #001F3F }
+.bg-ps-tiffany {background: #30BBBB }
+.bg-ps-purple {background: #555299 }
+.bg-ps-magenta {background: #CA195A }
+.bg-ps-redorange {background: #DD4B39 }
+.text-ps-blue {background: #325D88 }
+.text-ps-green {background: #93C54B }
+.text-ps-sky {background: #29ABE0 }
+.text-ps-orange {background: #F47C3C }
+.text-ps-yellow {background: #FFC926 }
+.text-ps-bluedark {background: #001F3F }
+.text-ps-tiffany {background: #30BBBB }
+.text-ps-purple {background: #555299 }
+.text-ps-magenta {background: #CA195A }
+.text-ps-redorange {background: #DD4B39 }
+/*======top search======*/
+.search-keyword {
+    margin-left: 5px;
+    padding-left: 5px;
+    border-left: 1px solid #eeeeee;
+}
+/*======iframe  ======*/
+.iframe-body {
+    padding: 0px 26px 0px 10px;
+    margin: 0px;
+}
+/*====== bootstrap column same height 可置底、中、上，用於ROW ======*/
+.inside-full-height {
+    /*
+  // if you want to give content full height give him height: 100%;
+  // with content full height you can't apply margins to the content
+  // content full height does not work in ie http://stackoverflow.com/questions/27384433/ie-display-table-cell-child-ignores-height-100
+  */
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* columns of same height styles */
+
+.row-height {
+    display: table;
+    table-layout: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+.col-height {
+    display: table-cell;
+    float: none;
+    height: 100%;
+}
+
+.col-top {
+    vertical-align: top;
+}
+
+.col-middle {
+    vertical-align: middle;
+}
+
+.col-bottom {
+    vertical-align: bottom;
+}
+
+/*(min-width: 480px)*/
+@media (min-width: 480px) {
+    .row-xs-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-xs-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-xs-top {
+        vertical-align: top;
+    }
+
+    .col-xs-middle {
+        vertical-align: middle;
+    }
+
+    .col-xs-bottom {
+        vertical-align: bottom;
+    }
+}
+/*(min-width: 768px)*/
+@media (min-width: 768px) {
+    .row-sm-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-sm-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-sm-top {
+        vertical-align: top;
+    }
+
+    .col-sm-middle {
+        vertical-align: middle;
+    }
+
+    .col-sm-bottom {
+        vertical-align: bottom;
+    }
+}
+/*(min-width: 992px)992*/
+@media (min-width: 992px) {
+    .row-md-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-md-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-md-top {
+        vertical-align: top;
+    }
+
+    .col-md-middle {
+        vertical-align: middle;
+    }
+
+    .col-md-bottom {
+        vertical-align: bottom;
+    }
+}
+/*min-width: 1200px*/
+@media (min-width: 1200px) {
+    .row-lg-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-lg-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-lg-top {
+        vertical-align: top;
+    }
+
+    .col-lg-middle {
+        vertical-align: middle;
+    }
+
+    .col-lg-bottom {
+        vertical-align: bottom;
+    }
+}
+/*====== col - 5個clums=====*/
+.col-xs-5th,
+.col-sm-5th,
+.col-md-5th,
+.col-lg-5th {
+    position: relative;
+    min-height: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.col-xs-5th {
+    width: 20%;
+    float: left;
+}
+/*@media (min-width: 768px)*/
+@media (min-width: 768px) {
+.col-sm-5th {
+        width: 20%;
+        float: left;
+    }
+}
+/*@media (min-width: 992px)*/
+@media (min-width: 992px)  {
+    .col-md-5th {
+        width: 20%;
+        float: left;
+    }
+}
+/*@media (min-width: 1200px)*/
+@media (min-width: 1200px) {
+    .col-lg-5th {
+        width: 20%;
+        float: left;
+    }
+}
+/*====== col 水平置中，靠右，審核單的submit等按鈕專用======*/
+.row-centered {
+	text-align:center;
+	}/*button的上一層的div*/
+.col-centered {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align: center;
+    /* inline-block space fix */
+    margin-right:-4px;
+	}/*button的div*/
+.row-right {
+	text-align: right;
+	}/*button的上一層的div*/
+.col-right {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align: center;
+    /* inline-block space fix */
+    margin-right:-4px;
+	}/*button的div*/	
+/*======popover  ======*/
+.popover {
+    max-width: 500px;
+}
+
+.popover-content .btn + .btn {
+    margin-left: 2px;
+}
+/*=========== arrow ==========*/
+.arrow_top {
+	position: relative;
+	background: #ffffff;
+	border: 1px solid #a6a6a6;
+	box-shadow:1px 1px 2px rgba(0,0,0,0.2), -1px -1px 2px rgba(0,0,0,0.2)
+}
+.arrow_top:after, .arrow_top:before {
+	bottom: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.arrow_top:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #ffffff;
+	border-width: 6px;
+	margin-left: -6px;
+}
+.arrow_top:before {
+	border-color: rgba(166, 166, 166, 0);
+	border-bottom-color: #a6a6a6;
+	border-width: 7px;
+	margin-left: -7px;
+}
+/*=========== modal ==========*/
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ============ Form ============ */
+.form-group{
+    margin-bottom: 10px;
+}
+.search-radio-cnt {
+    min-height: 30px;    
+}
+/* ============ swiper-master ============ */
+.swiper-container {
+	}
+.swiper-wrapper {
+	}
+.swiper-pagination {
+	}
+.swiper-slide {
+	text-align: center;
+	font-size: inherit;
+	background: inherit;
+	
+	/* Center slide text vertically */
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+}
+/* ============ Hover-master ============ */
+/* Overline Reveal */
+.hvr-overline-reveal {
+  display: inherit;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow: hidden;
+}
+.hvr-overline-reveal:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: #1968A4;
+  height: 4px;
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+.hvr-overline-reveal:hover:before, .hvr-overline-reveal:focus:before, .hvr-overline-reveal:active:before {
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+/* Fade */
+.hvr-fade {
+  display: block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: color, background-color;
+  transition-property: color, background-color;
+}
+.hvr-fade:hover, .hvr-fade:focus, .hvr-fade:active {
+  background-color: #1968A4;
+  color: white;
+}

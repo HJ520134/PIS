@@ -1,0 +1,2011 @@
+﻿
+@{
+}
+
+<style>
+    .piediv {
+        height: 300px;
+        border: 1px solid #ffffff;
+        border-color: #c7bfc7;
+    }
+
+    .gaugediv {
+        height: 300px;
+    }
+
+    .button {
+        /*background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20%;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+        .button:hover {
+            color: #0026ff;
+        }
+</style>
+<style>
+    .DownTime {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: #2287b9;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .FirstYield {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: gold;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    p {
+        /*background-color: blue;*/
+        /* Rotate p */ transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        /* Internet Explorer */ -moz-transform: rotate(90deg);
+        /* Firefox */ -webkit-transform: rotate(90deg);
+        /* Safari 和 Chrome */ -o-transform: rotate(90deg); /* Opera */
+    }
+</style>
+<style type="text/css">
+    #lineId, #datetimepicker {
+        width: 120px;
+    }
+
+    .textbox {
+        background-color: gold;
+        text-align: center;
+        margin: 2px;
+        border-radius: 5px;
+    }
+
+    .table.dataTable.table-condensed > thead > tr > th {
+        padding-left: 6px !important;
+    }
+
+    #UtilizationRate, #BalanceRate {
+        border: 40px solid green;
+        background-color: green;
+        font-size: 3.5em;
+    }
+
+    #tbl * {
+        text-align: center;
+    }
+
+    .row {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .btn {
+        font-size: 12px;
+    }
+
+    #tbl1 > tbody > tr > th, #tbl1 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #tbl2 > tbody > tr > th, #tbl2 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #maindv {
+        margin-top: 30px;
+    }
+
+    #mainTbl tr td:first-child {
+        font-weight: bolder;
+    }
+
+    thead tr td {
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    #theadtr td {
+        background-color: #4F5D6C;
+    }
+
+    .output {
+        font-weight: bold;
+    }
+
+    .titlewhite {
+        font-size: 13px;
+        background-color: #3c8dbc;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border: 1px #546a74;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+        margin-bottom: 0px;
+    }
+
+    .station_titlewhite {
+        font-size: 14px;
+        background-color: #3c8dbc;
+        /*border-bottom-left-radius: 3px;*/
+        border: 1px #546a74;
+        padding: 6px 12px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+        margin-bottom: 0px;
+    }
+
+    .titlewhite2 {
+        font-size: 13px;
+        background-color: #ffffff;
+        /*border-top-left-radius: 3px;*/
+        border: 1px solid #dddada;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #333;
+        margin: 0px -5px;
+    }
+
+    .dis {
+        /*display: flex;*/
+        /*margin-left: 1%;*/
+    }
+
+        .dis:hover {
+            font-family: monospace;
+        }
+
+    .function {
+        font-size: 12px;
+        background-color: #ffffff;
+        border-top: 1px solid #ffffff;
+        border-right: 0px solid #ff0000;
+        border-bottom: 0px solid #ffffff;
+        border-left: 0px solid #ffffff;
+        padding: 6px 12px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    .divShow {
+    }
+
+    .defaultDowntime {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .defaultFirstYield {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .background {
+        background-color: #ecf0f5;
+    }
+
+    .yangshi1 {
+        font-weight: bold;
+    }
+</style>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    /*
+              * 外面盒子样式---自己定义
+              */
+
+    .page_div {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 15px;
+        font-family: "microsoft yahei";
+        color: #666666;
+        margin-right: 10px;
+        padding-left: 20px;
+        box-sizing: border-box;
+    }
+        /*
+             * 页数按钮样式
+             */
+
+        .page_div a {
+            min-width: 30px;
+            height: 28px;
+            border: 1px solid #dce0e0 !important;
+            text-align: center;
+            margin: 0 4px;
+            cursor: pointer;
+            line-height: 28px;
+            color: #666666;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+    #firstPage,
+    #lastPage {
+        width: 50px;
+        color: #0073A9;
+        border: 1px solid #0073A9 !important;
+    }
+
+    #prePage,
+    #nextPage {
+        width: 70px;
+        color: #0073A9;
+        border: 1px solid #0073A9 !important;
+    }
+
+    .page_div .current {
+        background-color: #0073A9;
+        border-color: #0073A9;
+        color: #FFFFFF;
+    }
+
+    .totalPages {
+        margin: 0 10px;
+    }
+
+        .totalPages span,
+        .totalSize span {
+            color: #0073A9;
+            margin: 0 5px;
+        }
+
+    .circle {
+        width: 20px;
+        height: 20px;
+        background: red;
+        -moz-border-radius: 20px;
+        -webkit-border-radius: 20px;
+        border-radius: 20px;
+        /*box-shadow: 5px 5px 5px #888888;*/
+        /*box-shadow: rgb(11, 234, 235) 0px 0px 18px inset;*/
+        /*-webkit-animation-name: shineRed;
+        -webkit-animation-duration: 600ms;
+        -webkit-animation-iteration-count: infinite;*/
+        background: #e2e2e2;
+    }
+
+    .isflash_dtcode {
+        background-color: green;
+        animation: fade 600ms infinite;
+        -webkit-animation: fade 600ms infinite;
+    }
+
+    .isflash_cnc {
+        background-color: #de8b07;
+        animation: fade 600ms infinite;
+        -webkit-animation: fade 600ms infinite;
+    }
+
+    .isflash_oee {
+        background-color: #d01414;
+        animation: fade 600ms infinite;
+        -webkit-animation: fade 600ms infinite;
+    }
+
+    .isOffLine {
+        background-color: #2aa398;
+        animation: fade 200ms infinite;
+        -webkit-animation: fade 800ms infinite;
+    }
+
+    .isflash_dfcode {
+        background-color: #108d9d;
+        animation: fade 600ms infinite;
+        -webkit-animation: fade 600ms infinite;
+    }
+
+    .abnormalState {
+        margin-top: -51px;
+        /*background-color: bisque;*/
+        height: 50px;
+        width: 60%;
+        margin-left: 39%;
+        text-align: center;
+    }
+
+    .triangle-down {
+        width: 0;
+        height: 0;
+        border-left: 30px solid transparent;
+        border-right: 30px solid transparent;
+        border-top: 60px solid red;
+    }
+
+    @@keyframes fade {
+        from {
+            opacity: 1.0;
+            -webkit-box-shadow: 0 0 5px #bbb;
+        }
+
+        50% {
+            opacity: 0.4;
+            -webkit-box-shadow: 0 0 10px red;
+        }
+
+        to {
+            opacity: 1.0;
+            -webkit-box-shadow: 0 0 5px #bbb;
+        }
+    }
+
+    @@-webkit-keyframes fade {
+        from {
+            opacity: 1.0;
+            -webkit-box-shadow: 0 0 5px #bbb;
+        }
+
+        50% {
+            opacity: 0.4;
+            -webkit-box-shadow: 0 0 10px red;
+        }
+
+        to {
+            opacity: 1.0;
+            -webkit-box-shadow: 0 0 5px #bbb;
+        }
+    }
+</style>
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+        $(".navbar-static-top").hide();
+    }
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        $(".navbar-static-top").show();
+    }
+</script>
+<!DOCTYPE html>
+<link href="~/Content/css/OeeFontClass.css" rel="stylesheet" />
+<section class="content-header portal-content-header background">
+    <h1 style="margin-right:1.3%;height:20px">
+        @*<span id="id_Station_Name" style="font-family: Times New Roman; color:red; margin-left:5%">Station Oee Value :</span>
+            <span id="id_Station_OeeValue" style="font-family: Times New Roman; color:red; margin-left:1%">"00%"</span>*@
+        @*<input id="js_btn_IsShow" style="margin-left:1%" type="button" value="hide"   class ="col-lg-1  pull-right fa fa-download btn btn-primary titlewhite" />*@
+        <button id="js_btn_IsShow" style="margin-left:2%" class="titlewhite col-md-1  pull-right" value="0">@T("Oee.IsShow")</button>
+        <button id="view-fullscreen" style="margin-left:1%" class="titlewhite col-md-1 pull-right" onclick="fullSr()">@T("Oee_Common.FullScreen")</button>
+        <button id="cancel-fullscreen" style="margin-left:1%" class="titlewhite col-md-1  pull-right" onclick="cancFullSr()">@T("Oee_Common.CancelFullScreen")</button>
+        <label id="id_Station_FirstYield" class="station_titlewhite col-md-2  pull-right " style="text-align:center;  background-color :#4f878a ">Quality(OK)</label>
+        <label id="id_Station_PerformanceRate" class="station_titlewhite col-md-2  pull-right " style="text-align:center;background-color :#76a6b8  ">Performance</label>
+        <label id="id_Station_AvailableRate" class="station_titlewhite col-md-2   pull-right " style="text-align:center; background-color :#9cc4e5"> Availability</label>
+        <label id="id_Station_OeeValue" class="station_titlewhite col-md-2  pull-left" style="text-align:center; background-color :#3c8dbc;margin-left:1%"> </label>
+    </h1>
+
+    <div class="row hidden">
+        <input type="hidden" id="id_Plant_UID" name="Plant_Organization_UID" value="@ViewBag.Plant_UID" />
+        <input type="hidden" id="id_BG_UID" name="BG_Organization_UID" value="@ViewBag.BG_UID" />
+        <input type="hidden" id="id_Project_UID" name="Project_UID" value="@ViewBag.customerId" />
+        <input type="hidden" id="id_LineID" name="LineID" value="@ViewBag.lineName" />
+        <input type="hidden" id="id_StationID" name="StationID" value="@ViewBag.stationName" />
+        <input type="hidden" id="id_OEE_MachineInfo_UID" name="OEE_MachineInfo_UID" value="@ViewBag.MachineName" />
+        <input type="hidden" id="id_currentShiftID" name="ShiftTimeID" value="@ViewBag.ShiftID" />
+        <input type="hidden" id="id_startTime" name="startTime" value="@ViewBag.startTime" />
+        <input type="hidden" id="id_endTime" name="endTime" value="@ViewBag.endTime" />
+        <input type="hidden" id="id_isFromPhotoReport" name="isFromPhotoReport" value="@ViewBag.isFromPhotoReport" />
+        <input type="hidden" id="id_ViewBag_OrderByRule" name="OrderByRule" value="@ViewBag.OrderByRule" />
+    </div>
+</section>
+<section class="content-header portal-content-header background">
+    <div id="js_search_Param" style="margin:2px 1% 2px 0px;width:100%;">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="width:96%; border-left:5px solid #3c8dbc;background-color:#ffffff;margin-left:2%;height:110px">
+                <form id="js_form_query" class="form-inline">
+                    <div style="margin-top:1%;">
+                        <input id="VersionNumber" name="VersionNumber" type="text" value="0" hidden="hidden" />
+                        <input id="Param_LineName" name="Param_LineName" type="text" value="0" hidden="hidden" />
+                        <input id="Param_StationName" name="Param_StationName" type="text" value="0" hidden="hidden" />
+                        <input id="OEE_DownTimeType_UID" name="OEE_DownTimeType_UID" type="text" value="0" hidden="hidden" />
+                        <div class="form-group col-md-12">
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.Changqu")</label>
+                                <select class="titlewhite2" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.BG")</label>
+                                <select class="titlewhite2" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.PJ")</label>
+                                <select class="titlewhite2" id="customerId" name="CustomerID" data-live-search="true"> </select>
+                            </div>
+                            <div class='dis col-md-3'>
+                                <label class="titlewhite">@T("OEE.Line")</label>
+                                <select class="titlewhite2" id="lineName" name="LineID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-3'>
+                                <button type="button" style="font-size:medium" id="searchbtn" class="fa fa-search btn btn-primary"> @T("Common.Search")</button>
+                                <button type="button" style="font-size:medium" id="btn_Exprot1" class="fa fa-download btn btn-primary" data-toggle="modal" data-target="#js_Export_modal">@T("Common.Export")</button>
+                                <button type="button" style="font-size:medium;display:none" id="btn_DTCode_Exprot" class="fa fa-download btn btn-primary">@T("OEE.ExportDTCode")</button>
+
+                                @*   <button type="button" style="font-size:medium" id="btn_Exprot1" class="fa fa-download btn btn-primary" data-toggle="modal" data-target="#js_Export_modal">@T("Common.Export")</button>*@
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite"><strong>@T("OEE.Station")</strong></label>
+                                <select id="stationName" class="titlewhite2" name="StationID" data-live-search="true">  </select>
+                            </div>
+                            @*<div class='dis col-md-3' style="margin-top:1%">
+                                    <label class="titlewhite"><strong>@T("OEE.Machine")</strong></label>
+                                    <select id="MachineName" class="titlewhite2" name="EQP_Uid" data-live-search="true">  </select>
+                                </div>*@
+                            <input type="hidden" id="MachineName" name="MachineName" value="" />
+                            <input type="hidden" id="id_PageSize" name="PagePieSize" value="9" />
+                            <input type="hidden" id="id_PageNum" name="PageNum" value="0" />
+
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite">@T("OEE.Shift")</label>
+                                <select id="myRetriveShift" class="titlewhite2" name="ShiftTimeID" data-live-search="true"> </select>
+                            </div>
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite">@T("OEE.Date")</label>
+                                <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                    <input type='text' class="form-control input-sm" id="startTime" name="startTime" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                <div class='titlewhite2 input-group date' style="display:none; border:0px;padding:0px 0px" id='datetimepicker'>
+                                    <input type='text' class="form-control input-sm" id="endTime" name="endTime" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class='dis col-md-3' style="margin-top:1%">
+                                <label class="titlewhite">排序</label>
+                                <select id="id_OrderByRule" class="titlewhite2" style="background-color:antiquewhite" name="OrderByRule" data-live-search="true">
+                                    <option value="0">OEE%由低到高</option>
+                                    <option value="1">OEE%由高到低</option>
+                                    <option value="2">AR%由低到高</option>
+                                    <option value="3">AR%由高到低</option>
+                                    <option value="4">PR%由低到高</option>
+                                    <option value="5">PR%由高到低</option>
+                                    <option value="6">QR%由低到高</option>
+                                    <option value="7">QR%由高到低</option>
+                                    <option value="8">机台名称A-Z</option>
+                                    <option value="9">机台名称Z-A</option>
+                                </select>
+                            </div>
+                            <div id="id_id_oee_return" class='dis col-md-3' style="margin-top:1%;">
+                                <button type="button" style="font-size:medium" id="id_StationStatic_return" class="fa  ui-icon-arrowreturn-1-e btn btn-primary"> @T("QA.Return")</button>
+                                <button type="button" style="font-size:medium;display:none" id="btn_DFCode_Exprot" class="fa fa-download btn btn-primary">@T("OEE.ExportDFCode")</button>
+                            </div>
+                            <div class="form-group col-md-12">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content portal-content background  " style="height:1000px">
+    <div style="width:100%;float:left;">
+        <div class="xftb col-md-12 table-container">
+            <div>
+                <div id="id_all_div1" class="col-xs-4 piediv" style="display:none;">
+                    <div id="id_div1" style="display:none;">
+                        <div class="" style="width:20%; ">
+                            <label id="id_MachineName1" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站1</strong></label>
+                            @* <input type="button" value="80%" id="id_AvailableRate1"  style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#ffe96c" class="btn btn-primary" />*@
+                            <label id="id_AvailableRate1" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate1" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8 "><strong>50%</strong></label>
+                            <label id="id_FirstYield1" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine1" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine1" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID1" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%;" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart1">
+                        </div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div1" class="circle" style="float:left;margin-left:50%; " title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div1" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div1" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div1" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div2" class="col-xs-4 piediv" style="border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div2" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName2" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站2</strong></label>
+                            <label id="id_AvailableRate2" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate2" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8 "><strong>50%</strong></label>
+                            <label id="id_FirstYield2" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine2" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine2" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID2" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart2"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div2" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div2" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div2" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div2" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div3" class="col-xs-4 piediv" style="border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div3" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName3" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站3</strong></label>
+                            <label id="id_AvailableRate3" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate3" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8 "><strong>50%</strong></label>
+                            <label id="id_FirstYield3" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine3" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine3" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID3" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart3"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div3" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div3" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div3" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div3" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div4" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;display:none;">
+                    <div id="id_div4" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName4" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站4</strong></label>
+                            <label id="id_AvailableRate4" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate4" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8 "><strong>50%</strong></label>
+                            <label id="id_FirstYield4" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine4" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine4" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID4" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart4" "></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div4" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div4" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div4" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div4" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div5" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div5" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName5" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站5</strong></label>
+                            <label id="id_AvailableRate5" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate5" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8 "><strong>50%</strong></label>
+                            <label id="id_FirstYield5" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine5" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine5" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID5" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart5"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div5" class="circle" style="float:left;margin-left:50%; " title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div5" class="circle" style="float:left;margin-left:5%; " title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div5" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div5" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div6" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div6" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName6" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站6</strong></label>
+                            <label id="id_AvailableRate6" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate6" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8"><strong>50%</strong></label>
+                            <label id="id_FirstYield6" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine6" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine6" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID6" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart6"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div6" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div6" class="circle" style="float:left;margin-left:5%; " title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div6" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div6" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div7" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;display:none;">
+                    <div id="id_div7" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName7" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站7</strong></label>
+                            <label id="id_AvailableRate7" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5"><strong>80%</strong></label>
+                            <label id="id_PerformanceRate7" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8"><strong>50%</strong></label>
+                            <label id="id_FirstYield7" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine7" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine7" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID7" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart7"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div7" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div7" class="circle" style="float:left;margin-left:5%; " title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div7" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div7" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div8" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div8" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName8" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站8</strong></label>
+                            <label id="id_AvailableRate8" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5 "><strong>80%</strong></label>
+                            <label id="id_PerformanceRate8" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8"><strong>50%</strong></label>
+                            <label id="id_FirstYield8" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine8"  title="机台断网(Machine OffLine)" class="isOffLine"style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine8"  title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID8" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart8"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div8" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div8" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div8" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div8" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+                <div id="id_all_div9" class="col-xs-4 piediv" style="border-top: 1px solid #ffffff;border-left: 1px solid #ffffff;display:none;">
+                    <div id="id_div9" style="display:none;">
+                        <div class="" style="width:20%">
+                            <label id="id_MachineName9" style="text-align:left;  width :100%; margin-top:40%;margin-left:5%; "><strong>工站9</strong></label>
+                            <label id="id_AvailableRate9" class="button" style="text-align:center;  width :100%; margin-top:5%;margin-left:5%; background-color :#9cc4e5 "><strong>80%</strong></label>
+                            <label id="id_PerformanceRate9" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#76a6b8"><strong>50%</strong></label>
+                            <label id="id_FirstYield9" class="button" style="text-align:center;   width:100%;  margin-top:5%;margin-left:5%;background-color:#4f878a"><strong>30%</strong></label>
+                            <div id="id_OffLine9" class="isOffLine" title="机台断网(Machine OffLine)" style="display:none; text-align:center;background-color:rgb(255, 0, 0);  width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:#161313">&#xe63d;</i>
+                            </div>
+                            <div id="id_OnLine9" title="机台网络正常(Machine Online)" style="display:none;text-align:center;background-color:#2aa398;   width:100%;  margin-top:5%;margin-left:5%;">
+                                <i class="iconfont" style="font-size: 28px;color:white">&#xe614;</i>
+                            </div>
+                            <input type="hidden" id="id_MachineID9" name="MachineID" value="" />
+                        </div>
+                        <div style="width:80%" class="gaugediv img-responsive" id="OEEMetricsGaugeEchart9"></div>
+                    </div>
+                    <div class="abnormalState">
+                        <div id="id_dtcode_div9" class="circle" style="float:left;margin-left:50%;" title="@T("OEE.DTCodeDescription")">
+                        </div>
+                        <div id="id_cnc_div9" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.CNCDescription")">
+                        </div>
+                        <div id="id_oeevalue_div9" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.OEEValueDescription")">
+                        </div>
+                        <div id="id_dfcode_div9" class="circle" style="float:left;margin-left:5%;" title="@T("OEE.DFCodeDescription")">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12" style="display:inline">
+            <div id="id_div_Abnormal" class="col-lg-6" style="display:none;height:70px; margin-top:20px;float:left">
+                <div id="Aboustatus" class="page_div">
+                    <div style="background-color:#108d9d;width:150px;font-size:12px; margin-left:0px;height:28px;text-align: center ;float:right;color:#ffffff;line-height:28px" title="@T("OEE.DFCodeDescription")">
+                        @T("OEE.Abnormal") ☞@T("DF Code")
+                    </div>
+                    <div style="background-color:#d01414;width:150px;font-size:12px; margin-left:0px;height:28px;text-align: center ;float:right;color:#ffffff;line-height:28px" title="@T("OEE.OEEValueDescription")">
+                        @T("OEE.Abnormal") ☞@T("OEE.Abnormal_OeeValue")
+                    </div>
+                    <div style="background-color:#de8b07;width:150px;font-size:12px; margin-left:0px; height:28px;text-align: center ;float:right;color:#ffffff;line-height:28px" title="@T("OEE.CNCDescription")">
+                        @T("OEE.Abnormal") ☞CNC
+                    </div>
+                    <div style="background-color:green;width:150px;font-size:12px; height:28px;float:right; text-align: center;color:#ffffff;line-height:28px" title="@T("OEE.DTCodeDescription")">
+                        @T("OEE.Abnormal") ☞DT Code
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 pull-right" style="margin-top:20px;float:right ;">
+                <div value="10"></div>
+                <div id="page" class="page_div"></div>
+            </div>
+        </div>
+    </div>
+    <div id="id_div_lastUpdateTime" class="col-md-3  pull-right" style="float:right;margin-top:15px">
+        <strong>@T("OEE.LastUpdateTime") : </strong>  <span id="id_LastUpdateTime">No</span>
+    </div>
+</section>
+@section ViewModals{
+    <div class="modal fade" id="js_Export_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div style="background-color:#3c8dbc" class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Export")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div style="margin-left:30%; margin-top:1%;display:flex">
+                                    <label class="titlewhite">开始日期</label>
+                                    <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                        <input type='text' class="form-control input-sm" id="id_export_startTime" name="startTime" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div style="margin-left: 10%;margin-top:1%;display:flex">
+                                    <label class="titlewhite">结束日期</label>
+                                    <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                        <input type='text' class="form-control input-sm" id="id_export_endTime" name="endTime" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_Butemplate_Exprot">Export-Bu</button>
+                    @*<button type="button" class="fa fa-download btn btn-primary" id="btn_Public_Exprot">@T("Common.Export")</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    @*<script src="~/Scripts/js/jquery.min.js"></script>*@
+    <script src="~/Scripts/js/paging.js"></script>
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript" src="~/Scripts/rowspam.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script src="~/Scripts/ECharts/echarts-3.8.4.js"></script>
+    <script src="~/Scripts/ECharts/echarts-3.8.4.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var CkeckIsOK = true;
+            intervalInt = 0;
+            var MachinePieReport = (function () {
+                var urls = {
+                    QueryOEE_EveryDayMachine: '@Html.Raw(Url.Action("QueryOEE_EveryDayMachine", "OEE"))',
+                    GetMachineBreakDown: '@Html.Raw(Url.Action("GetMachineBreakDown", "OEE"))',
+                    GetMachineIndexName: '@Html.Raw(Url.Action("GetMachineIndexName", "OEE"))',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                    getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                    getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                    //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                    getLineDTOs: '@Url.Action("GetLineDTOs", "OEE")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getStationDTOs: '@Url.Action("GetStationDTOs", "OEE")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getMachineDTOs: '@Url.Action("GetAllByStationID", "OEE")',
+                    ///获取机台的统计图表的数据
+                    GetMachinePieReportData: '@Url.Action("GetMachinePieReportData", "OEE")',
+                    GetStationLastUpdateTime: '@Url.Action("GetStationLastUpdateTime", "OEE")',
+
+                    ExportAllMachineMetrics: '@Url.Action("ExportAllMachineMetrics", "OEE")',
+                    CheckExportDate: '@Url.Action("CheckExportDate", "OEE")',
+                    //导出异常的不良代码
+                    ExportAbnormalDTCode: '@Url.Action("ExportStationAbnormalDTCode", "OEE")',
+                    ExportAbnormalDFCode: '@Url.Action("ExportMachineAbnormalDFCode", "OEE")',
+                    ExportBuTemplateReport: '@Url.Action("ExportBuTemplateReport", "OEE")',
+
+                    ///获取当前时间
+                    GetCurrentDateTime: '@Url.Action("GetCurrentDateTime", "OEE")',
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        SetDeafult();
+                        if ($("#id_isFromPhotoReport").val() == "true") {
+                            SetContinueDefault()
+                        }
+
+                        ShowAllStationOEE($(".current").text());
+                        GetLastUpdateTime();
+                    }
+                }
+            })();
+            MachinePieReport.Init();
+
+            $("#js_btn_IsShow").click(function () {
+                $("#js_search_Param").toggle();
+            });
+
+            //60秒刷新
+            if (intervalInt != 0) {
+                clearInterval(intervalInt);
+            }
+
+            intervalInt = setInterval(function () {
+                ShowAllStationOEE($(".current").text());
+                GetLastUpdateTime();
+            }, 1000 * 60);
+
+            Date.prototype.Format = function (fmt) { //author: meizz
+                var o = {
+                    "M+": this.getMonth() + 1, //月份
+                    "d+": this.getDate(), //日
+                    "h+": this.getHours(), //小时
+                    "m+": this.getMinutes(), //分
+                    "s+": this.getSeconds(), //秒
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                    "S": this.getMilliseconds() //毫秒
+                };
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            }
+            $('#id_export_startTime').val(new Date().Format('yyyy-MM-dd'))
+            $('#id_export_endTime').val(new Date().Format('yyyy-MM-dd'))
+
+            $('#btn_Exprot').click(function () {
+                var checkdateIsOK = true;
+                var LineName = $('#lineName option:selected').text();
+                $("#Param_LineName").val(LineName);
+                var stationName = $('#stationName option:selected').text();
+                $("#Param_StationName").val(stationName);
+                if ($("#id_export_endTime").val() == null || $("#id_export_endTime").val() == "") {
+
+                    PDMS.Utility.MessageBox.error("请选择结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                if ($("#id_export_startTime").val() == null || $("#id_export_startTime").val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择开始日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                if ($("#id_export_startTime").val() > $("#id_export_endTime").val()) {
+                    PDMS.Utility.MessageBox.error("开始日期不能大于结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                var CheckExportDateUrl = MachinePieReport.urls.CheckExportDate;
+                $.get(CheckExportDateUrl, { EndTime: $("#id_export_endTime").val(), StartTime: $("#id_export_startTime").val() }, function (data) {
+                    if (!data) {
+                        PDMS.Utility.MessageBox.error("导出日期不能大于31天！");
+                        checkdateIsOK = false;
+                        return false;
+                    }
+                });
+
+                checkSerchParam();
+                $("#endTime").val($("#id_export_endTime").val());
+                $("#startTime").val($("#id_export_startTime").val());
+                $('#js_Export_modal').modal('hide');
+
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = MachinePieReport.urls.ExportAllMachineMetrics;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+
+            //检查查询条件是否填写完成
+            function checkSerchParam() {
+                if ($('#js_select_factory_query').val() == null || $('#js_select_factory_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询厂区！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#js_select_optype_query').val() == null || $('#js_select_optype_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询BG！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#customerId').val() == null || $('#customerId').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询专案！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#lineName').val() == null || $('#lineName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询线！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#stationName').val() == null || $('#stationName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询工站！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#MachineName').val() == null || $('#MachineName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询机台！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#myRetriveShift').val() == null || $('#myRetriveShift').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询班次！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+            }
+
+            $('#js_btn_IsShow').click(function () {
+                if ($("#js_btn_IsShow").val() == "show") {
+                    $("#js_btn_IsShow").val("hide")
+                    $("#js_search_Param").show();
+                } else
+                    if ($("#js_btn_IsShow").val() == "hide") {
+                        $("#js_btn_IsShow").val("show")
+                        $("#js_search_Param").hide();
+                    }
+            })
+
+            $("#id_StationStatic_return").click(function () {
+                var reportUrl = '@Html.Raw(Url.Action("OEE_LineStaticReport", "OEE"))';
+                reportUrl = reportUrl + "?isFromPhotoReport=" + "StationStatic";
+                window.location.href = reportUrl;
+            })
+
+            function SetContinueDefault() {
+                $('#js_select_factory_query').val($("#id_Plant_UID").val());
+                $('#js_select_optype_query').val($("#id_BG_UID").val());
+                $('#customerId').val($("#id_Project_UID").val());
+                $('#lineName').val($("#id_LineID").val());
+                $('#stationName').val($("#id_StationID").val());
+                $('#MachineName').val($("#id_OEE_MachineInfo_UID").val());
+                $('#myRetriveShift').val($("#id_currentShiftID").val());
+                $('#startTime').val($("#id_startTime").val());
+                $('#endTime').val($("#id_endTime").val());
+                if ($('#id_ViewBag_OrderByRule').val() != "" && $('#id_ViewBag_OrderByRule').val() != null) {
+                    $('#id_OrderByRule').val($('#id_ViewBag_OrderByRule').val());
+                }
+            }
+            //导出异常DT明细
+            $('#btn_DTCode_Exprot').click(function () {
+                var checkdateIsOK = true;
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = MachinePieReport.urls.ExportAbnormalDTCode;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+
+            //导出异常DF明细
+            $('#btn_DFCode_Exprot').click(function () {
+                var checkdateIsOK = true;
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = OEEMetricsReport.urls.ExportAbnormalDFCode;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+
+            //导出 BuTemplate
+            $('#btn_Butemplate_Exprot').click(function () {
+                var checkdateIsOK = true;
+                var LineName = $('#lineName option:selected').text();
+                $("#Param_LineName").val(LineName);
+                var stationName = $('#stationName option:selected').text();
+                $("#Param_StationName").val(stationName);
+                if ($("#id_export_endTime").val() == null || $("#id_export_endTime").val() == "") {
+
+                    PDMS.Utility.MessageBox.error("请选择结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+                if ($("#id_export_startTime").val() == null || $("#id_export_startTime").val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择开始日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                if ($("#id_export_startTime").val() > $("#id_export_endTime").val()) {
+                    PDMS.Utility.MessageBox.error("开始日期不能大于结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                var CheckExportDateUrl = MachinePieReport.urls.CheckExportDate;
+                $.get(CheckExportDateUrl, { EndTime: $("#id_export_endTime").val(), StartTime: $("#id_export_startTime").val() }, function (data) {
+                    if (!data) {
+                        PDMS.Utility.MessageBox.error("导出日期不能大于31天！");
+                        checkdateIsOK = false;
+                        return false;
+                    }
+                });
+
+                checkSerchParam();
+                $("#endTime").val($("#id_export_endTime").val());
+                $("#startTime").val($("#id_export_startTime").val());
+                $('#js_Export_modal').modal('hide');
+
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = MachinePieReport.urls.ExportBuTemplateReport;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+            //查询
+            $('#searchbtn').click(function () {
+                ShowAllStationOEE($(".current").text());
+                GetLastUpdateTime();
+            });
+            GetLastUpdateTime();
+            //根据厂区获取OP
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+
+            //根据OP获取专案
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshShiftTimeSelect();
+            })
+
+            //根据专案获取线别
+            $('#customerId').change(function () {
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+            })
+
+            //根据线获取站点
+            $('#lineName').change(function () {
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+            })
+
+            //加载BG或OP
+            function GetOPTypes() {
+                debugger;
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = MachinePieReport.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = MachinePieReport.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+                debugger;
+                $('#customerId').empty();
+                $('#customerId').html('<option></option>');
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+            }
+
+            //加载班别
+            function refreshShiftTimeSelect() {
+                debugger;
+                $('#myRetriveShift').empty();
+                $('#myRetriveShift').html('<option></option>');
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getShiftTimeDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    $('#myRetriveShift').append('<option value="' + -1 + '">' + "全天" + '</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+            }
+
+            function GetLastUpdateTime() {
+                var UpdateTimeUrl = MachinePieReport.urls.GetStationLastUpdateTime;
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                $.post(UpdateTimeUrl, { StationID: $('#stationName').val(), Plant_UID: $('#js_select_factory_query').val(), BG_UID: $('#js_select_optype_query').val() }, function (data) {
+                    $("#id_LastUpdateTime").text(data);
+                });
+            }
+
+            //设置初始默认值
+            function SetDeafult() {
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+                //1 获取厂区下面的OP
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    $('#js_select_factory_query').val($("#id_Plant_UID").val());
+                    $("#startTime").val($("#id_startTime").val());
+                    $("#endTime").val($("#id_endTime").val());
+                } else {
+
+                    var currentDateUrl = MachinePieReport.urls.GetCurrentDateTime;
+                    var currentDate = new Date().Format('yyyy-MM-dd');
+                    $.get(currentDateUrl, {}, function (data) {
+                        currentDate = data;
+                    });
+
+                    $("#startTime").val(currentDate);
+                    $("#endTime").val($("#startTime").val());
+                }
+
+                //1 获取厂区下面的OP
+                var oporgid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    oporgid = $("#id_Plant_UID").val();
+                } else {
+                    oporgid = $('#js_select_factory_query option:selected').val();
+                }
+                //var oporgid = $('#js_select_factory_query option:selected').val();
+                var OPTypeurl = MachinePieReport.urls.getCurrentOPType;
+                $.post(OPTypeurl, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_select_optype_query').append('<option  value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    }
+                });
+
+                //2 获取专案
+                var optypeUid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    optypeUid = $("#id_BG_UID").val();
+                } else {
+                    optypeUid = $('#js_select_optype_query option:selected').val();
+                }
+                //var optypeUid = $('#js_select_optype_query option:selected').val();
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getCustomerDTOs;
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+
+                //3 获取线
+                var customerId = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    customerId = $("#id_Project_UID").val();
+                } else {
+                    customerId = $('#customerId option:selected').val();
+                }
+                //var customerId = $('#customerId option:selected').val();
+                var getLineByOPTypeUrl = MachinePieReport.urls.getLineDTOs;
+                $.get(getLineByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+
+                //4 获取工站
+                var LineId = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    LineId = $("#id_LineID").val();
+                } else {
+                    LineId = $('#lineName option:selected').val();
+                }
+                //var LineId = $('#lineName option:selected').val();
+                var getstationByOPTypeUrl = MachinePieReport.urls.getStationDTOs;
+                $.get(getstationByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+
+
+                //// 5 根据站点获取机台
+                //var stationUID = 0;
+                //if ($("#id_isFromPhotoReport").val() == "true") {
+                //    stationUID = $("#id_StationID").val();
+                //} else {
+                //    stationUID = $('#stationName option:selected').val();
+                //}
+                ////var stationUID = $('#stationName option:selected').val();
+                //var getMachineByOPTypeUrl = MachinePieReport.urls.getMachineDTOs;
+                //$.get(getMachineByOPTypeUrl, { stationUID: stationUID }, function (data) {
+                //    for (var i = 0; i < data.length; i++) {
+                //        $('#MachineName').append('<option value="' + data[i].OEE_MachineInfo_UID + '">' + data[i].MachineNo + '</option>');
+                //    }
+                //});
+
+                //6 获取班别
+                var oporgid = 0;
+                var optypeUid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    optypeUid = $('#id_BG_UID').val();
+                    oporgid = $('#id_Plant_UID').val();
+                } else {
+                    optypeUid = $('#js_select_optype_query').val();
+                    oporgid = $('#js_select_factory_query option:selected').val();
+                }
+                //var optypeUid = $('#js_select_optype_query').val();
+                //var oporgid = $('#js_select_factory_query option:selected').val();
+                var getProjectByOPTypeUrl = MachinePieReport.urls.getShiftTimeDTOs;
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    $('#myRetriveShift').append('<option value="' + -1 + '">' + "全天" + '</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+
+                $('#datetimepicker').datetimepicker({
+                    defaultDate: new Date(),
+                    format: 'YYYY-MM-DD',
+                });
+            }
+
+            var OeeValue = "0";
+            //OEEMetricsGaugeEchart
+            //ShowOEEMetricsGaugeEchart();
+            //for (var i = 1; i < 10; i++) {
+            //    var id = "OEEMetricsGaugeEchart" + i;
+            //    ShowOEEMetricsGaugeEchart(id);
+            //}
+            var CkeckIsOK = true;
+            function checkSerchParam() {
+                if ($('#js_select_factory_query').val() == null || $('#js_select_factory_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询厂区！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#js_select_optype_query').val() == null || $('#js_select_optype_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询BG！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#customerId').val() == null || $('#customerId').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询专案！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#lineName').val() == null || $('#lineName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询线！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#stationName').val() == null || $('#stationName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询工站！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                //if ($('#MachineName').val() == null || $('#MachineName').val() == "") {
+                //    PDMS.Utility.MessageBox.error("请选择查询机台！");
+                //    CkeckIsOK = false;
+                //    return false;
+                //}
+
+                if ($('#myRetriveShift').val() == null || $('#myRetriveShift').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询班次！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if ($('#startTime').val() == null || $('#startTime').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询开始时间！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                //if ($('#endTime').val() == null || $('#endTime').val() == "") {
+                //    PDMS.Utility.MessageBox.error("请选择查询结束时间！");
+                //    CkeckIsOK = false;
+                //    return false;
+                //}
+            }
+
+            function GetURL(MachineInfo_UID) {
+                var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))'
+                //window.location.href = url;
+                var Plant_UID = $('#js_select_factory_query option:selected').val();
+                var BG_UID = $('#js_select_optype_query option:selected').val();
+                var customerId = $('#customerId option:selected').val();
+                var lineName = $('#lineName option:selected').val();
+                var stationName = $('#stationName option:selected').val();
+                var MachineName = MachineInfo_UID;
+                var ShiftID = $('#myRetriveShift option:selected').val();
+                var startTime = $('#startTime').val();
+                var endTime = $('#startTime').val();
+                reportUrl = reportUrl + "?Plant_UID=" + Plant_UID + "&&BG_UID=" + BG_UID + "&&customerId=" + customerId + "&&lineName=" + lineName + "&&stationName=" + stationName + "&&MachineName=" + MachineName + "&&ShiftID=" + ShiftID + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&isFromPhotoReport=" + "true";
+                return reportUrl;
+            }
+
+            function ShowOEEMetricsGaugeEchart(name, MachineInfo_UID, FirstTarget, SecondTarget, OeeStationValue) {
+                OeeValue = OeeStationValue;
+                var OEEMetricsGaugeEchart = echarts.init(document.getElementById(name));
+                OEEMetricsGaugeEchart.showLoading({ text: 'Trying to read the data...', maskcolor: 'transparent' });
+                option = {
+                    title: {
+                        text: 'OEE Value',
+                        x: 'center',
+                        y: '0%'
+                    },
+                    tooltip: {
+                        formatter: "{a} <br/>{b} : {c}%"
+                    },
+                    toolbox: {
+                        feature: {
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [
+                        {
+                            y: '10%',
+                            name: 'OEE Value',
+                            type: 'gauge',
+                            detail: { formatter: OeeValue, fontSize: 14 },
+                            axisLine: {            // 坐标轴线
+                                lineStyle: {       // 属性lineStyle控制线条样式
+                                    color: [[FirstTarget, '#c23531'], [SecondTarget, '#63869e'], [1, '#91c7ae']]
+                                }
+                            },
+                            data: [{ value: OeeValue, name: '稼动率', MachineID: MachineInfo_UID }]
+                        }
+                    ]
+                };
+                var reg = new RegExp("%");
+                if (OeeValue == "" || OeeValue == undefined) {
+                    option.series[0].data[0].value = 0;
+                } else {
+                    option.series[0].data[0].value = OeeValue.replace(reg, "");
+                }
+
+                OEEMetricsGaugeEchart.setOption(option, true);
+                OEEMetricsGaugeEchart.hideLoading();
+
+                OEEMetricsGaugeEchart.on('click', function (param) {
+                    console.log(param.data.MachineID);
+                    checkSerchParam();
+                    if (CkeckIsOK) {
+                        //window.open(GetURL(MachineInfo_UID));
+                        var reportUrl = '@Html.Raw(Url.Action("oee_metricsphotoreport", "OEE"))';
+                        reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + param.data.MachineID;
+                        window.open(reportUrl);
+                        //window.location.href = GetURL(MachineInfo_UID);
+                    }
+                });
+            }
+
+            function ShowAllStationOEE(num) {
+                $("#id_PageSize").val(9);
+                $("#id_PageNum").val(num);
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                $.ajax({
+                    url: MachinePieReport.urls.GetMachinePieReportData,
+                    type: 'post',
+                    async: 'false',
+                    data: _getParams(),
+                    dataType: 'json',
+                    success: function (result) {
+                        for (var i = 0; i < 9; i++) {
+                            var index = i + 1;
+                            var id_div = "id_div" + index;
+                            id_div = "#" + id_div;
+                            $(id_div).css("display", "none");
+                            var id_all_div = "id_all_div" + index;
+                            id_all_div = "#" + id_all_div;
+                            $(id_all_div).css("display", "none");
+                        };
+                        var exportDTCode = false;
+                        var exportDFCode = false;
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].IsTotalStationStatic == "NO") {
+                                var index = i + 1;
+                                var id = "OEEMetricsGaugeEchart" + index;
+                                var id_MachineName = "id_MachineName" + index;
+                                var id_AvailableRate = "id_AvailableRate" + index;
+                                var id_PerformanceRate = "id_PerformanceRate" + index;
+                                var id_FirstYield = "id_FirstYield" + index;
+                                var id_MachineID = "id_MachineID" + index;
+                                var id_div = "id_div" + index;
+                                id_div = "#" + id_div;
+                                $(id_div).css("display", "flex");
+                                $("#id_div_lastUpdateTime").css("display", "block");
+                                $("#id_div_Abnormal").css("display", "block");
+                                //总体的div
+                                var id_all_div = "id_all_div" + index;
+                                id_all_div = "#" + id_all_div;
+                                $(id_all_div).css("display", "block");
+
+                                //异常状态
+                                var id_dtcode_div = "id_dtcode_div" + index;
+                                id_dtcode_div = "#" + id_dtcode_div;
+                                if (result[i].Is_DtCodeAbnormal) {
+                                    exportDTCode = true;
+                                    $(id_dtcode_div).addClass("isflash_dtcode");
+                                } else {
+                                    $(id_dtcode_div).removeClass("isflash_dtcode");
+                                }
+                                var id_cnc_div = "id_cnc_div" + index;
+                                id_cnc_div = "#" + id_cnc_div;
+                                if (result[i].Is_CncResetAbnomal) {
+                                    $(id_cnc_div).addClass("isflash_cnc");
+                                } else {
+                                    $(id_cnc_div).removeClass("isflash_cnc");
+                                }
+
+                                var id_oeevalue_div = "id_oeevalue_div" + index;
+                                id_oeevalue_div = "#" + id_oeevalue_div;
+                                if (result[i].Is_OeeAbnomal) {
+                                    $(id_oeevalue_div).addClass("isflash_oee");
+                                } else {
+                                    $(id_oeevalue_div).removeClass("isflash_oee");
+                                }
+
+                                //DF Code
+                                var id_dfcode_div = "id_dfcode_div" + index;
+                                id_dfcode_div = "#" + id_dfcode_div;
+                                if (result[i].Is_DfCeodeAbnomal) {
+                                    exportDFCode = true;
+                                    $(id_dfcode_div).addClass("isflash_dfcode");
+                                } else {
+                                    $(id_dfcode_div).removeClass("isflash_dfcode");
+                                }
+
+                                //是否断网
+
+                                var id_OffLine = "id_OffLine" + index;
+                                id_OffLine = "#" + id_OffLine;
+                                var id_OnLine = "id_OnLine" + index;
+                                id_OnLine = "#" + id_OnLine;
+                                if (result[i].Is_ShowOffLine) {
+                                    if (result[i].Is_OffLine) {
+                                        $(id_OffLine).css("display", "block");
+                                        $(id_OffLine).css({ "background-color": "#ff0000" });
+                                        $(id_OffLine).addClass("isOffLine");
+                                        $(id_OnLine).css("display", "none");
+                                    }
+                                    else {
+                                        $(id_OnLine).css("display", "block");
+                                        $(id_OffLine).css("display", "none");
+                                        $(id_OffLine).removeClass("isOffLine");
+                                    }
+                                }else
+                                {
+                                    $(id_OnLine).css("display", "none");
+                                    $(id_OffLine).css("display", "none");
+                                }
+
+
+                                id_MachineName = "#" + id_MachineName;
+                                id_AvailableRate = "#" + id_AvailableRate;
+                                id_PerformanceRate = "#" + id_PerformanceRate;
+                                id_FirstYield = "#" + id_FirstYield;
+                                id_MachineID = "#" + id_MachineID;
+                                $(id_MachineID).val(result[i].OEE_MachineInfo_UID);
+                                var MachineInfo_UID = result[i].OEE_MachineInfo_UID;
+                                $(id_MachineName).text(result[i].MachineName);
+                                $(id_AvailableRate).text((result[i].AvailableRate * 100).toFixed(2) + "%");
+                                $(id_PerformanceRate).text((result[i].PerformanceRate * 100).toFixed(2) + "%");
+                                $(id_FirstYield).text((result[i].FirstYield * 100).toFixed(2) + "%");
+                                ShowOEEMetricsGaugeEchart(id, MachineInfo_UID, result[i].FirstDashBoardTarget / 100, result[i].SecondDashBoardTarget / 100, (result[i].OEEValue * 100).toFixed(2) + "%");
+                            }
+                            if (result[i].IsTotalStationStatic == "YES") {
+                                $("#id_Station_FirstYield").text("Quality(OK): " + result[i].FirstYield);
+                                $("#id_Station_PerformanceRate").text("Performance: " + result[i].PerformanceRate);
+                                $("#id_Station_AvailableRate").text("Availability: " + result[i].AvailableRate);
+                                var oeestationValue = parseFloat(result[i].OEEValue);
+                                if (oeestationValue < 50) {
+                                    $("#id_Station_OeeValue").attr("style", "text-align:center; background-color :#c23531;margin-left:1%");
+                                } else if (oeestationValue < 75) {
+                                    $("#id_Station_OeeValue").attr("style", "text-align:center; background-color :#63869e;margin-left:1%");
+                                } else {
+                                    $("#id_Station_OeeValue").attr("style", "text-align:center; background-color :#91c7ae;margin-left:1%");
+                                };
+
+                                var stationName = $('#stationName option:selected').text();
+                                if (stationName == "" || stationName == null) {
+                                    stationName = "Station OeeValue:";
+                                }
+                                $("#id_Station_OeeValue").text(stationName + "：" + result[i].OEEValue);
+                            }
+                            if (result[i].IsTotalStationStatic == "PAGE") {
+                                $("#page").paging({
+                                    pageNo: $(".current").text(),
+                                    totalPage: result[i].TotalPage,
+                                    totalSize: result[i].TotalCount,
+                                    //totalPage: 5,
+                                    //totalSize: 45,
+                                    callback: function () {
+                                        ShowAllStationOEE($(".current").text())
+                                    }
+                                })
+                            }
+                        }
+
+                        if (exportDTCode) {
+                            $("#btn_DTCode_Exprot").css("display", "");
+                        } else {
+                            $("#btn_DTCode_Exprot").css("display", "none");
+                        }
+
+                        if (exportDFCode) {
+                            $("#btn_DFCode_Exprot").css("display", "");
+                        } else {
+                            $("#btn_DFCode_Exprot").css("display", "none");
+                        }
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                });
+            }
+            //id_AvailableRate1
+            $('#id_AvailableRate1').click(function () {
+                var MachineInfo_UID = $("#id_MachineID1").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate1
+            $('#id_PerformanceRate1').click(function () {
+                var MachineInfo_UID = $("#id_MachineID1").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield1
+            $('#id_FirstYield1').click(function () {
+                var MachineInfo_UID = $("#id_MachineID1").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_AvailableRate2
+            $('#id_AvailableRate2').click(function () {
+                var MachineInfo_UID = $("#id_MachineID2").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate2
+            $('#id_PerformanceRate2').click(function () {
+                var MachineInfo_UID = $("#id_MachineID2").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield2
+            $('#id_FirstYield2').click(function () {
+                var MachineInfo_UID = $("#id_MachineID2").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_AvailableRate3
+            $('#id_AvailableRate3').click(function () {
+                var MachineInfo_UID = $("#id_MachineID3").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate3
+            $('#id_PerformanceRate3').click(function () {
+                var MachineInfo_UID = $("#id_MachineID3").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield3
+            $('#id_FirstYield3').click(function () {
+                var MachineInfo_UID = $("#id_MachineID3").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+            //id_AvailableRate4
+            $('#id_AvailableRate4').click(function () {
+                var MachineInfo_UID = $("#id_MachineID4").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate4
+            $('#id_PerformanceRate4').click(function () {
+                var MachineInfo_UID = $("#id_MachineID4").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield4
+            $('#id_FirstYield4').click(function () {
+                var MachineInfo_UID = $("#id_MachineID4").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+
+            //id_AvailableRate5
+            $('#id_AvailableRate5').click(function () {
+                var MachineInfo_UID = $("#id_MachineID5").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate5
+            $('#id_PerformanceRate5').click(function () {
+                var MachineInfo_UID = $("#id_MachineID5").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield5
+            $('#id_FirstYield5').click(function () {
+                var MachineInfo_UID = $("#id_MachineID5").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+
+            //id_AvailableRate6
+            $('#id_AvailableRate6').click(function () {
+                var MachineInfo_UID = $("#id_MachineID6").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate6
+            $('#id_PerformanceRate6').click(function () {
+                var MachineInfo_UID = $("#id_MachineID6").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield6
+            $('#id_FirstYield6').click(function () {
+                var MachineInfo_UID = $("#id_MachineID6").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+            //id_AvailableRate7
+            $('#id_AvailableRate7').click(function () {
+                var MachineInfo_UID = $("#id_MachineID7").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate7
+            $('#id_PerformanceRate7').click(function () {
+                var MachineInfo_UID = $("#id_MachineID7").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield7
+            $('#id_FirstYield7').click(function () {
+                var MachineInfo_UID = $("#id_MachineID7").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+
+            //id_AvailableRate8
+            $('#id_AvailableRate8').click(function () {
+                var MachineInfo_UID = $("#id_MachineID8").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate8
+            $('#id_PerformanceRate8').click(function () {
+                var MachineInfo_UID = $("#id_MachineID8").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield8
+            $('#id_FirstYield8').click(function () {
+                var MachineInfo_UID = $("#id_MachineID8").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+
+
+            //id_AvailableRate9
+            $('#id_AvailableRate9').click(function () {
+                var MachineInfo_UID = $("#id_MachineID9").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            //id_PerformanceRate9
+            $('#id_PerformanceRate9').click(function () {
+                var MachineInfo_UID = $("#id_MachineID9").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+            // id_FirstYield9
+            $('#id_FirstYield9').click(function () {
+                var MachineInfo_UID = $("#id_MachineID9").val();
+                checkSerchParam();
+                if (CkeckIsOK) {
+                    var reportUrl = '@Html.Raw(Url.Action("OEE_EveryDayMachine", "OEE"))';
+                    reportUrl = reportUrl + "?isFromPhotoReport=" + "PieOEE" + "&&MachineName=" + MachineInfo_UID;
+                    window.open(reportUrl);
+                }
+            })
+
+        });
+    </script>
+}

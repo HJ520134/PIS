@@ -1,0 +1,1220 @@
+﻿@model IEnumerable<PDMS.Model.SystemRoleDTO>
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+        <!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> Search</a>
+            <a class="btn btn-primary btn-sm" role="button" id="js_btn_add_role_function">
+                <i class="fa fa-plus"></i> Add
+            </a>
+            <a id="js_btn_export" class="btn btn-primary btn-sm" role="button">
+                <i class="glyphicon glyphicon-save"></i> Export
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+
+    </div><!--/次標題 與 搜尋-->
+
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <!--row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_role_function_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Role ID</th>
+                        <th>Function ID</th>
+                        <th>Function Name</th>
+                        <th>Order Index</th>
+                        <th>Is Show(Function)</th>
+                        <th>URL</th>
+                        <th>Is Show(Role)</th>
+                        <th>Sub Function Qty</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Role ID</th>
+                        <th>Function ID</th>
+                        <th>Function Name</th>
+                        <th>Order Index</th>
+                        <th>Is Show(function)</th>
+                        <th>URL</th>
+                        <th>Is Show(role)</th>
+                        <th>Sub Function Qty</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="select" for="js_s_select_role_id">Role ID</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_select_role_id" name="Role_UID">
+                                            <option value="0"></option>
+                                            @foreach (var item in Model)
+                                            {
+                                                <option value="@item.Role_UID">@item.Role_ID</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_function_id">Function ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Function_ID" class="form-control input-sm" id="js_s_input_function_id" placeholder="Function ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_function_name">Function Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Function_Name" class="form-control input-sm" id="js_s_input_function_name" placeholder="Function Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_modified_by">Modified By</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_By" class="form-control input-sm" id="js_s_input_modified_by" placeholder="Modified By (NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">Modified Date</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="js_btn_clear" type="button"><i class="fa fa-eraser"></i> Clear</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_query" type="button"><i class="fa fa-search"></i> Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">View</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label" style="text-align:left">Role ID:</label>
+                                <div class="col-sm-7">
+                                    <p class="form-control-static" id="js_view_p_role_id"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label text-left">Role Name:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static" id="js_view_p_role_name"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        Function
+                    </h4>
+                    <table class="table table-condensed" id="js_view_function_datatable">
+                        <thead>
+                            <tr>
+                                <th class="padding-l-5-i">Seq</th>
+                                <th class="padding-l-5-i">Function ID</th>
+                                <th class="padding-l-5-i">Function Name</th>
+                                <th class="padding-l-5-i">Order Index</th>
+                                <th class="padding-l-5-i">Is Show (Function)</th>
+                                <th class="padding-l-5-i">URL</th>
+                                <th class="padding-l-5-i">Is Show (Role)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <hr class="no-margin" />
+                    <h4>
+                        Sub Function
+                    </h4>
+                    <table class="table table-condensed" id="js_view_sub_func_table">
+                        <thead>
+                            <tr>
+                                <th class="padding-l-5-i">Seq</th>
+                                <th class="padding-l-5-i">Sub Function ID</th>
+                                <th class="padding-l-5-i">Sub Function Name</th>
+                                <th class="padding-l-5-i">Grant</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">View</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label padding-lr-5" style="text-align:left">Role ID</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control input-sm" id="js_edit_select_role_id" name="Role_UID">
+                                        @foreach (var item in Model)
+                                        {
+                                            <option value="@item.Role_UID" data-role-name="@item.Role_Name">@item.Role_ID</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label padding-lr-5">Role Name</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static" id="js_edit_p_role_name">
+                                        @if (Model.First() != null)
+                                        {
+                                            @Model.First().Role_Name
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        Function
+                        <button class="btn btn-primary btn-sm" id="js_btn_add_func">Add Function</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_del_func">Delete Function</button>
+                    </h4>
+                    <table class="table table-condensed" id="js_edit_function_datatable">
+                        <thead>
+                            <tr>
+                                <th class="table-col-checkbox nosort">
+                                    <input type="checkbox" class="js-checkbox-all" />
+                                </th>
+                                <th class="padding-l-5-i">Seq</th>
+                                <th class="padding-l-5-i">Function ID</th>
+                                <th class="padding-l-5-i">Function Name</th>
+                                <th class="padding-l-5-i">Order Index</th>
+                                <th class="padding-l-5-i">Is Show (Function)</th>
+                                <th class="padding-l-5-i">URL</th>
+                                <th class="padding-l-5-i">Is Show (Role)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <hr class="no-margin" />
+                    <h4>
+                        Sub Function
+                    </h4>
+                    <table class="table table-condensed" id="js_edit_sub_func_table">
+                        <thead>
+                            <tr>
+                                <th class="padding-l-5-i">Seq</th>
+                                <th class="padding-l-5-i">Sub Function ID</th>
+                                <th class="padding-l-5-i">Sub Function Name</th>
+                                <th class="padding-l-5-i">Grant</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit"><i class="fa fa-save"></i> Edit Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var RoleFunctionSettingUrls = {
+                queryRoleFunctions: '@Url.Action("QueryRoleFunctions", "Settings")',
+                queryRoleFunction: '@Url.Action("QueryRoleFunction", "Settings")',
+                queryRoleSubFunctions: '@Url.Action("QueryRoleSubFunctions", "Settings")',
+                querySubFunctions: '@Url.Action("QuerySubFunctionsByFunctionUID", "Settings")',
+                getFunctionByID: '@Url.Action("GetFunctionByID", "Settings")',
+                deleteRoleFunction: '@Url.Action("DeleteRoleFunction", "Settings")',
+                addRoleFunction: '@Url.Action("AddRoleFunctionWithSubs", "Settings")',
+                modifyRoleFunction: '@Url.Action("ModifyRoleFunctionWithSubs", "Settings")',
+                exportRoleFunctionSetting: '@Url.Action("ExportRoleFunctionSetting", "Settings")'
+            };
+
+            //#region RoleFunctionSetting
+            var RoleFunctionSetting = (function () {
+
+                var functionDatatable = null,
+                    subDatatable = null,
+                    editData = null;
+
+                //#region columns
+                var columns = [{
+
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_Role_Function_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Role_UID + '">View</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Role_UID + '">Edit</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.System_Role_Function_UID + '">Delete</button>' +
+                                    '</div>');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                }, {
+                    data: "Role_ID",
+                    className: "min-col-md"
+                }, {
+                    data: "Function_ID",
+                    className: "min-col-md"
+                }, {
+                    data: "Function_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Order_Index",
+                    className: "min-col-xs"
+                }, {
+                    data: "Is_Show_Function",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "URL",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show_Role",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-md"
+                }, {
+                    data: "SubFunctionCount",
+                    render: function (data, type, full, meta) {
+                        return data > 0 ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }];
+                //#endregion
+
+                //#region view columns
+                var funcViewColumns = [{
+                    className: "table-col-seq",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }, {
+                    data: "Function_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Function_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Order_Index",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "URL",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show_Role",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-xs"
+                }];
+
+                var subfuncViewColumns = [
+                    {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "Sub_Fun",
+                        className: "min-col-lg",
+                    }, {
+                        data: "Sub_Fun_Name",
+                        className: "min-col-lg",
+
+                    }, {
+                        data: "Grant",
+                        render: function (data, type, full, meta) {
+                            return data ? "Y" : "N";
+                        },
+                        className: "min-col-lg",
+                    }];
+                //#endregion view columns
+
+                //#region edit columns
+                var funcEditColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_Role_Function_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }, {
+                    data: "Function_ID",
+                    render: function (data, type, full, meta) {
+
+                        var isEdit = true;
+                        var html = '<input type="text" name="Function_ID" class="form-control input-sm js-input-function-id"' + (isEdit ? 'disabled' : '') + ' value="' + data + '">';
+                        return html;
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "Function_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Order_Index",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "URL",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show_Role",
+                    render: function (data, type, full, meta) {
+                        var html = '<select class="form-control input-sm js-select-func-isshow">' +
+                                    '<option value="true" ' + (data ? 'selected' : '') + '>Y</option>' +
+                                    '<option value="false" ' + (!data ? 'selected' : '') + '>N</option>' +
+                                '</select>'
+                        return html;
+                    },
+                    className: "min-col-xs"
+                }];
+
+                var subfuncEditColumns = [
+                    {
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "Sub_Fun",
+                        className: "min-col-lg",
+                    }, {
+                        data: "Sub_Fun_Name",
+                        className: "min-col-lg",
+
+                    }, {
+                        data: "Grant",
+                        render: function (data, type, full, meta) {
+                            var html = '<select class="form-control input-sm js-select-subfunc-isshow">' +
+                                   '<option value="true" ' + (data ? 'selected' : '') + '>Y</option>' +
+                                   '<option value="false" ' + (!data ? 'selected' : '') + '>N</option>' +
+                               '</select>'
+                            return html;
+                        },
+                        className: "min-col-lg",
+                    }]
+                //#endregion
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoleFunctions = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_role_function_datatable",
+                        remoteUrl: RoleFunctionSettingUrls.queryRoleFunctions,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoleFunctions(true);
+                    },
+                    QueryRoleFunctions: function () {
+                        _queryRoleFunctions(false);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_edit_sub_func_table').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: subfuncEditColumns,
+                            });
+                        }
+                        return subDatatable;
+                    },
+                    SetSubDatatable: function (datatable) {
+                        subDatatable = datatable;
+                    },
+                    DestroySubTable: function () {
+                        if (subDatatable != null) {
+                            subDatatable.destroy();
+                        }
+                    },
+                    GetFunctionDatatable: function () {
+
+                        if (functionDatatable == null) {
+
+                            functionDatatable = $('#js_edit_function_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: funcEditColumns,
+                            });
+                        }
+                        return functionDatatable;
+                    },
+                    SetFunctionDatatable: function (datatable) {
+                        functionDatatable = datatable;
+                    },
+                    DestroyFunctionDatatable: function () {
+                        if (functionDatatable != null) {
+                            functionDatatable.destroy();
+                        }
+                    },
+                    ViewColumns: { funcView: funcViewColumns, subfuncView: subfuncViewColumns },
+                    EditColumns: { funcEdit: funcEditColumns, subFuncEdit: subfuncEditColumns },
+                    GetEditData: function () { return editData },
+                    SetEditData: function (editdata) {
+                        editData = editdata;
+                    }
+                }
+
+            })();
+            //#endregion
+
+            RoleFunctionSetting.Init();
+
+            //#region Page elements events
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+
+                if ($("#js_form_query").valid()) {
+                    RoleFunctionSetting.QueryRoleFunctions();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //查询清除
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+
+                    $('#js_s_querytype_valid').prop('checked', true);
+                });
+            });
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+
+                var $selectList = $('#js_role_function_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = RoleFunctionSettingUrls.exportRoleFunctionSetting;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //Grid中View按钮
+            $('body').on('click', '.js-grid-view', function () {
+
+                var roleUId = $(this).data('id'),
+                    url = RoleFunctionSettingUrls.queryRoleFunction;
+
+                $.get(url, { roleUId: roleUId }, function (data) {
+
+                    $('#js_view_function_datatable').DataTable({
+                        columns: RoleFunctionSetting.ViewColumns.funcView,
+                        ordering: false,
+                        data: data.HeadFunctions,
+                        destroy: true
+                    });
+
+                    $('#js_view_modal').modal('show');
+                });
+
+            });
+
+            //View Modal grid change事件
+            $('#js_view_function_datatable').on('click', 'tr', function () {
+
+                var $sender = $(this);
+                var roleUId = $sender.data('role-uid'),
+                    functionUId = $sender.data('function-uid'),
+                    url = RoleFunctionSettingUrls.queryRoleSubFunctions;
+
+                if (!$sender.hasClass('selected')) {
+
+                    $('#js_view_function_datatable tr.selected').removeClass('selected');
+                    $sender.addClass('selected');
+
+                    $.get(url, { Role_UID: roleUId, Function_UID: functionUId }, function (data) {
+
+                        $('#js_view_sub_func_table').DataTable({
+                            columns: RoleFunctionSetting.ViewColumns.subfuncView,
+                            ordering: false,
+                            data: data,
+                            destroy: true
+                        });
+                    });
+                }
+            });
+
+            //Grid中删除按钮
+            $('body').on('click', '.js-grid-delete', function () {
+
+                var uid = $(this).data('id');
+
+                PDMS.Utility.MessageBox.confirm(
+                    "Are you sure to delete this item?"
+                    , function () {
+                        var url = RoleFunctionSettingUrls.deleteRoleFunction;
+                        $.get(url, { uid: uid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                RoleFunctionSetting.QueryRoleFunctions(true);
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    });
+            });
+
+            //Grid中编辑按钮
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var roleUId = $(this).data('id'),
+                    url = RoleFunctionSettingUrls.queryRoleFunction;
+                RoleFunctionSetting.SetEditData(null);
+
+                $.get(url, { roleUId: roleUId }, function (data) {
+
+                    $('#js_edit_select_role_id').val(roleUId);
+                    $('#js_edit_p_role_name').text($('#js_edit_select_role_id option:selected').data('role-name'));
+
+                    var functionTable = $('#js_edit_function_datatable').DataTable({
+                        columns: RoleFunctionSetting.EditColumns.funcEdit,
+                        ordering: false,
+                        data: data.HeadFunctions,
+                        destroy: true,
+                        createdRow: function (row, data, index) {
+                            $(row).data('function-uid', data.Function_UID).data('role-uid', roleUId);
+                        }
+                    });
+
+                    RoleFunctionSetting.SetFunctionDatatable(functionTable);
+
+                    if (data.HeadFunctions.length > 0) {
+
+                        var firstSub = data.HeadFunctions[0].SubFun;
+
+                        if (firstSub && firstSub.length > 0) {
+
+                            var subTable = $('#js_edit_sub_func_table').DataTable({
+                                columns: RoleFunctionSetting.EditColumns.subFuncEdit,
+                                ordering: false,
+                                data: firstSub,
+                                destroy: true
+                            });
+
+                            RoleFunctionSetting.SetSubDatatable(subTable);
+                        }
+                    }
+                    $('#js_edit_function_datatable').data('selected-index', 0);
+                    RoleFunctionSetting.SetEditData(data);
+                    $('#js_edit_modal').modal('show');
+                });
+
+            });
+
+            //界面增加按钮
+            $('#js_btn_add_role_function').click(function () {
+
+                var emptyData = {
+                    Role_UID: $('#js_edit_select_role_id').val(),
+                    HeadFunctions: []
+                };
+
+                var functionTable = $('#js_edit_function_datatable').DataTable({
+                    columns: RoleFunctionSetting.EditColumns.funcEdit,
+                    data: emptyData.HeadFunctions,
+                    ordering: false,
+                    destroy: true,
+                    createdRow: function (row, data, index) {
+                        $(row).data('function-uid', data.Function_UID);
+                    }
+                });
+                RoleFunctionSetting.SetFunctionDatatable(functionTable);
+                RoleFunctionSetting.GetSubDatatable().clear().draw();
+                RoleFunctionSetting.SetEditData(emptyData);
+                $('#js_edit_function_datatable').data('selected-index', 0);
+
+                $('#js_edit_modal').modal('show', $(this));
+            })
+
+            //Edit Modal grid change事件
+            $('#js_edit_function_datatable').on('click', 'tr', function () {
+
+                var $sender = $(this);
+                var roleUId = $sender.data('role-uid'),
+                    functionUId = $sender.data('function-uid'),
+                    index = $sender.index(),
+                    url = RoleFunctionSettingUrls.queryRoleSubFunctions;
+
+                if (!functionUId) {
+                    var dataTable = RoleFunctionSetting.GetSubDatatable();
+                    dataTable.clear().draw();
+                    $('#js_edit_function_datatable tr.selected').removeClass('selected');
+                    $sender.addClass('selected');
+                    return;
+                }
+
+                if (!$sender.hasClass('selected')) {
+
+                    $('#js_edit_function_datatable tr.selected').removeClass('selected');
+                    $sender.addClass('selected');
+
+                    var editData = RoleFunctionSetting.GetEditData();
+                    var headFunc = editData.HeadFunctions[index];
+
+                    if (headFunc.SubFun === undefined || headFunc.SubFun.length === 0) {
+
+                        $.ajax({
+                            type: "get",
+                            url: url,
+                            async: false,
+                            data: { Role_UID: roleUId, Function_UID: functionUId },
+                            success: function (data) {
+                                editData.HeadFunctions[index].SubFun = data;
+                            }
+                        });
+                    }
+
+                    $('#js_edit_sub_func_table').DataTable({
+                        columns: RoleFunctionSetting.EditColumns.subFuncEdit,
+                        ordering: false,
+                        data: editData.HeadFunctions[index].SubFun,
+                        destroy: true
+                    });
+                }
+                try {
+                    $('#js_edit_function_datatable').ajax.reload();
+                } catch (e) {
+                   
+                }
+              
+
+                $('#js_edit_function_datatable').data('selected-index', index);
+            });
+
+            //增加Function按钮
+            $('#js_btn_add_func').on('click', function () {
+
+                var dataTable = RoleFunctionSetting.GetFunctionDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                    var $tr = $(dataTable.row(this).node());
+                    var functionUId = $tr.data('function-uid');
+
+                    if (functionUId === undefined || functionUId == 0) {
+
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                        allowAdd = false;
+                        return false;
+                    }
+                });
+
+                if (allowAdd) {
+                    var row = dataTable.row.add({
+                        "System_Role_Function_UID": 0,
+                        "Function_ID": "",
+                        "Function_Name": "",
+                        "Order_Index": "",
+                        "Is_Show": "",
+                        "URL": "",
+                        "Is_Show_Role": true
+                    }).draw();
+
+                    $(row.node()).find('input[name=Function_ID]').removeAttr("disabled");
+                }
+                $('#js_edit_function_datatable').ajax.reload();
+
+            });
+
+            //删除Function按钮
+            $('#js_btn_del_func').on('click', function () {
+
+                var dataTable = RoleFunctionSetting.GetFunctionDatatable();
+
+                var $checkedItems = $('#js_edit_function_datatable .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+
+                } else {
+
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var systemFuncUId = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var editData = RoleFunctionSetting.GetEditData();
+
+                        if (systemFuncUId > 0) {
+
+                            $.get(RoleFunctionSettingUrls.deleteRoleFunction
+                                , { uid: systemFuncUId }
+                                , function (data) {
+                                    if (data != "SUCCESS") {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    } else {
+                                        dataTable.row($tr).remove().draw();
+                                        editData.HeadFunctions.splice(trIndex, 1);
+                                        RoleFunctionSetting.GetSubDatatable().clear().draw();
+                                    }
+                                });//end get
+
+                        } else {
+                            dataTable.row($tr).remove().draw();
+                            if (trIndex < editData.HeadFunctions.length) {
+                                editData.HeadFunctions.splice(trIndex, 1);
+                            }
+                        }
+
+                    });
+
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+            });
+
+            //编辑function ID 失去焦点后触发
+            $('#js_edit_function_datatable').on('blur', '.js-input-function-id', function () {
+
+                var $sender = $(this),
+                    inputValue = $.trim($sender.val()),
+                    $tr = $sender.closest('tr'),
+                    trIndex = $tr.index(),
+                    $tds = $tr.find('td'),
+                    originalFunc = $tr.data('o-function-id'),
+                    editData = RoleFunctionSetting.GetEditData(),
+                    exitFunctions = editData.HeadFunctions;
+
+                if (originalFunc === undefined) {
+                    originalFunc = '';
+                }
+
+                var removeFunction = function () {
+                    if (editData.HeadFunctions.length > trIndex) {
+                        editData.HeadFunctions.splice(trIndex, 1);
+                        $tr.data('o-function-id', '');
+                    }
+                };
+
+                var clearTd = function (tds) {
+                    tds[3].innerText = '';
+                    tds[4].innerText = '';
+                    tds[5].innerText = '';
+                    tds[6].innerText = '';
+                };
+
+                if (inputValue === '') {
+                    $tr.data('function-uid', 0);
+
+                    clearTd($tds);
+                    removeFunction();
+                    return;
+                }
+
+                //已有Function 未修改
+                if (originalFunc === inputValue) {
+
+                    //set subfunc datatables
+                    $('#js_edit_sub_func_table').DataTable({
+                        columns: RoleFunctionSetting.EditColumns.subFuncEdit,
+                        ordering: false,
+                        data: exitFunctions[trIndex].SubFun,
+                        destroy: true
+                    });
+
+                } else {
+
+                    //通过function id获取function信息
+                    $.get(RoleFunctionSettingUrls.getFunctionByID, { functionId: inputValue }, function (data) {
+
+
+                        if (data.Function_UID === 0) {
+                            PDMS.Utility.MessageBox.error('Function which id is "' + inputValue + '" not exist');
+
+                            $tr.data('function-uid', 0);
+                            clearTd($tds);
+
+                            if (originalFunc !== '') {
+                                removeFunction();
+                            }
+                            return false;
+                        }
+                        if (data.URL === null || $.trim(data.URL) === '') {
+                            PDMS.Utility.MessageBox.error('This function is not a userful item and can not to add');
+
+                            $tr.data('function-uid', 0);
+                            clearTd($tds);
+
+                            if (originalFunc !== '') {
+                                removeFunction();
+                            }
+                            return false;
+                        }
+
+                        var flag = true;
+
+                        $.each(exitFunctions, function (index, item) {
+                            if (item.Function_UID === data.Function_UID && trIndex != index) {
+                                flag = false;
+                                return false;
+                            }
+                        });
+
+                        if (flag) {
+
+
+                            $tds[3].innerText = data.Function_Name;
+                            $tds[4].innerText = data.Order_Index;
+                            $tds[5].innerText = data.Is_Show ? 'Y' : 'N';
+                            $tds[6].innerText = data.URL;
+                            data.Is_Show_Role = true;
+
+                            //get subfunc
+                            $.ajax({
+                                type: "get",
+                                url: RoleFunctionSettingUrls.querySubFunctions,
+                                async: false,
+                                data: { uid: data.Function_UID },
+                                success: function (subFuncs) {
+                                    data.SubFun = subFuncs;
+                                }
+                            });
+
+                            //set subfunc datatables
+                            $('#js_edit_sub_func_table').DataTable({
+                                columns: RoleFunctionSetting.EditColumns.subFuncEdit,
+                                ordering: false,
+                                data: data.SubFun,
+                                destroy: true
+                            });
+
+                            if (originalFunc !== '') {
+                                removeFunction();
+                            }
+                            $tr.data('function-uid', data.Function_UID).data('o-function-id', data.Function_ID);
+                            editData.HeadFunctions.push(data);
+                            $('#js_edit_function_datatable').data('selected-index', trIndex);
+                            $sender.attr('disabled', 'disabled');
+
+                        } else {
+                            PDMS.Utility.MessageBox.error('Function ' + data.Function_ID + ' is aleadly exist');
+                            $tr.data('function-uid', 0);
+                            clearTd($tds);
+
+                            if (originalFunc !== '') {
+                                removeFunction();
+                            }
+                            return;
+                        }
+                    })
+
+                };
+
+            });
+
+            //role function & role subfunction select change事件
+            $('#js_edit_function_datatable').on('change', '.js-select-func-isshow', function () {
+                var $sender = $(this),
+                    $tr = $sender.closest('tr'),
+                    trIndex = $tr.index(),
+                    editData = RoleFunctionSetting.GetEditData();
+
+                editData.HeadFunctions[trIndex].Is_Show_Role = $sender.val() === 'true';
+            });
+
+            $('#js_edit_sub_func_table').on('change', '.js-select-subfunc-isshow', function () {
+                
+                var $sender = $(this),
+                    $tr = $sender.closest('tr'),
+                    trIndex = $tr.index(),
+                    editData = RoleFunctionSetting.GetEditData(),
+                    roleFuncIndex = $('#js_edit_function_datatable').data('selected-index');
+
+                editData.HeadFunctions[roleFuncIndex].SubFun[trIndex].Grant = $sender.val() === 'true';
+            });
+
+            //保存按钮
+            $('#js_btn_save').click(function () {
+
+                var editData = RoleFunctionSetting.GetEditData();
+                editData.Role_UID = $('#js_edit_select_role_id').val();
+                editData.Modified_UID = PDMS.Utility.Tools.GetLoginUserAccountID();
+
+                var dataTable = RoleFunctionSetting.GetFunctionDatatable();
+                var allowAdd = true;
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                    var $tr = $(dataTable.row(this).node());
+                    var functionUId = $tr.data('function-uid');
+
+                    if (functionUId === undefined || functionUId == 0) {
+
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1));
+                        allowAdd = false;
+                        return false;
+                    }
+                });
+
+                if (allowAdd) {
+
+                    if (editData.HeadFunctions.length > 0) {
+
+                        $.post(RoleFunctionSettingUrls.addRoleFunction
+                                , { jsonFunctionWithSubs: JSON.stringify(editData) }
+                                , function (data) {
+                                    if (data == 'SUCCESS') {
+                                        PDMS.Utility.MessageBox.info("Save Success");
+
+                                        RoleFunctionSetting.GetFunctionDatatable().clear().draw();
+                                        RoleFunctionSetting.GetSubDatatable().clear().draw();
+                                        RoleFunctionSetting.SetEditData(null);
+
+                                        var emptyData = {
+                                            Role_UID: $('#js_edit_select_role_id').val(),
+                                            HeadFunctions: []
+                                        };
+                                        RoleFunctionSetting.SetEditData(emptyData);
+                                        $('#js_edit_function_datatable').data('selected-index', 0);
+                                    } else {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    }
+                                });
+                    } else {
+                        PDMS.Utility.MessageBox.error("please add at least one function");
+                    }
+                }
+
+            });
+
+            //编辑保存按钮
+            $('#js_btn_save_edit').click(function () {
+
+                var editData = RoleFunctionSetting.GetEditData();
+                editData.Modified_UID = PDMS.Utility.Tools.GetLoginUserAccountID();
+
+                var dataTable = RoleFunctionSetting.GetFunctionDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                    var $tr = $(dataTable.row(this).node());
+                    var functionUId = $tr.data('function-uid');
+
+                    if (functionUId === undefined || functionUId == 0) {
+
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1));
+                        allowAdd = false;
+                        return false;
+                    }
+                });
+
+                if (allowAdd) {
+                    if (editData.HeadFunctions.length > 0) {
+
+                        $.post(RoleFunctionSettingUrls.modifyRoleFunction
+                                , { jsonFunctionWithSubs: JSON.stringify(editData) }
+                                , function (data) {
+
+                                    if (data == 'SUCCESS') {
+                                        PDMS.Utility.MessageBox.info("Save Success");
+                                        $('#js_edit_modal').modal('hide');
+
+                                    } else {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    }
+                                });
+                    } else {
+                        PDMS.Utility.MessageBox.error("please add at least one function");
+                    }
+                }
+            });
+
+            // Add/Edit model 出现和消失事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var $button = $(event.relatedTarget)
+                var $modal = $(this)
+                var $title = $modal.find('.modal-title');
+
+                if ($button.attr('id') == 'js_btn_add_role_function') {
+
+                    $title.text("Add Role Function");
+                    $('#js_edit_select_role_id').removeAttr('readonly');
+                    $('#js_btn_save_edit').hide();
+                    $('#js_btn_save').show();
+                }
+                else {
+                    $title.text("Edit Role Function");
+                    $('#js_edit_select_role_id').attr('readonly', 'readonly');
+                    $('#js_btn_save_edit').show();
+                    $('#js_btn_save').hide();
+                }
+            });
+
+            $('#js_edit_modal').on('hide.bs.modal', function (event) {
+                var $modal = $(this);
+                $modal.find('.modal-body').scrollTop(0);
+                RoleFunctionSetting.GetSubDatatable().clear().draw();
+            });
+
+            $('#js_edit_select_role_id').on('change', function () {
+                $('#js_edit_p_role_name').text($(this).find('option:selected').data('role-name'));
+            });
+            //#endregion
+        });
+    </script>
+}

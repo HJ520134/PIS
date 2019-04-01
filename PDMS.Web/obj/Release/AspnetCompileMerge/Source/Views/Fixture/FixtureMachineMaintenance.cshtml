@@ -1,0 +1,1189 @@
+﻿@model PDMS.Model.ViewModels.Fixture_MachineVM
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-4">
+            @*<button type="button" class="btn btn-primary btn-sm js-grid-import" id="excel_input_btn">@T("QA.Importtheupdate")</button>*@
+            <a href="~/ExcelTemplate/Fixture_Machine.xlsx" class="fa fa-download btn btn-primary" target="_blank"> 模板下载</a>
+            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl"> 上传</button>
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_Fixture_Machine"> @T("Common.AddNew")</a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>
+            <button type="button" class="fa fa-batchappend btn btn-primary" id="js_btn_batchappend" style="display:none;"> 批量新增</button>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Fixture_Machine_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>机台代码</th>
+                        <th>设备编号</th>
+                        <th>机台名称</th>
+                        <th>机台描述</th>
+                        <th>机台类型</th>
+                        <th>产线</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>机台代码</th>
+                        <th>设备编号</th>
+                        <th>机台名称</th>
+                        <th>机台描述</th>
+                        <th>机台类型</th>
+                        <th>产线</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true" value="0"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_input_Machine_ID_query">机台代码</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Machine_ID" class="form-control input-sm" id="js_input_Machine_ID_query" placeholder="机台代码">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_input_Equipment_No_query">设备编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Equipment_No" class="form-control input-sm" id="js_input_Equipment_No_query" placeholder="设备编号">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_input_Machine_Name_query">机台名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Machine_Name" class="form-control input-sm" id="js_input_Machine_Name_query" placeholder="机台名称">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_Machine_Desc_query">机台描述</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Machine_Desc" class="form-control input-sm" id="js_Machine_Desc_query" placeholder="机台描述">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_Machine_Type_query">机台类型</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Machine_Type" class="form-control input-sm" id="js_Machine_Type_query" placeholder="机台类型">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_select_line_query">产线</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_line_query" name="Production_Line_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_select_enable_flag_query">是否启用</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_enable_flag_query" name="Is_Enable">
+                                            <option value=""></option>
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain Fixture_Machine</h4>
+                </div>
+
+                @using (Html.BeginForm("AddOrEditFixture_Machine", "Fixture", FormMethod.Post, new { id = "js_form_Fixture_Machine_edit" }))
+                {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <input type="hidden" name="Fixture_Machine_UID" id="js_hidden_Fixture_Machine_uid" value="0" />
+                        @*<input type="hidden" name="Plant_Organization_UID" id="js_hidden_Plant_Organization_uid" value="0" />
+                            <input type="hidden" name="BG_Organization_UID" id="js_hidden_BG_Organization_uid" value="0" />
+                            <input type="hidden" name="FunPlant_Organization_UID" id="js_hidden_FunPlant_Organization_uid" value="0" />*@
+
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                            {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_add">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_add" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_add">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_input_MachineId_add">机台代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="js_input_MachineId_add" name="Machine_ID" placeholder="机台代码"
+                                           required data-msg-required="请输入[机台代码]."
+                                           data-rule-maxlength="30" data-msg-maxlength="机台代码不能超过 {0} 个字符.">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_Select_Equipment_add" title="选中后带出设备编号">关联设备</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_Select_Equipment_add" name="EQP_Uid" data-live-search="true" title="设备类型名称_设备编号"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_input_EquipmentNo_add" title="可由选中的设备带出">设备编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_input_EquipmentNo_add" name="Equipment_No" placeholder="设备编号"
+                                           data-rule-maxlength="30" data-msg-maxlength="设备编号不能超过 {0} 个字符.">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_input_MachineName_add">机台名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="js_input_MachineName_add" name="Machine_Name" placeholder="机台名称"
+                                           required data-msg-required="请输入[机台名称]."
+                                           data-rule-maxlength="30" data-msg-maxlength="机台名称不能超过 {0} 个字符.">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_input_MachineDesc_add">机台描述</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_input_MachineDesc_add" name="Machine_Desc" placeholder="机台描述"
+                                           data-rule-maxlength="100" data-msg-maxlength="机台描述不能超过 {0} 个字符.">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_input_MachineType_add">机台类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_input_MachineType_add" name="Machine_Type" placeholder="机台类型"
+                                           data-rule-maxlength="30" data-msg-maxlength="机台类型不能超过 {0} 个字符.">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_select_line_add">产线</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm required" id="js_select_line_add" name="Production_Line_UID" required data-msg-required="[产线]不能为空" data-live-search="true" title="生产线代码_生产线名称"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_e_select_enable_flag">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_e_select_enable_flag" name="Is_Enable">
+                                        <option value="false">禁用</option>
+                                        <option value="true">启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_Fixture_Machine"><i class="fa fa-save"></i> 保存</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_Fixture_Machine"><i class="fa fa-save"></i> 保存</button>
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">机台导入</h4>
+                </div>
+                @using (Html.BeginForm("ImportFixture_Machine", "Fixture", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" accept=".xls,.xlsx" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查看产线信息</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">厂区</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_factory" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">OP类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_optype" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">功能厂</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_funplant" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">机台代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_MachineId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">设备编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_EquipmentNo" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">机台名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_MachineName" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label" for="js_v_input_ccode">机台描述</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_MachineDesc" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">机台类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_MachineType" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">产线代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_LineId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">产线名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_LineName" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">创建人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_creator" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">创建日期</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control input-sm" id="js_v_input_create_date" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">修改人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_modifier" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label no-padding-l" for="js_v_input_modified_date">修改日期</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control input-sm" id="js_v_input_modified_date" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">是否启用</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_enable_flag" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+        $(function () {
+            var Fixture_MachineMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        EditFixture_Machine: '@Url.Action("EditFixtureMachine", "Fixture")',
+                        AddFixture_Machine: '@Url.Action("AddFixtureMachine", "Fixture")',
+                        queryFixture_Machines: '@Url.Action("QueryFixtureMachines", "Fixture")',
+                        queryFixture_Machine: '@Url.Action("QueryFixtureMachine", "Fixture")',
+                        deleteFixture_Machine: '@Url.Action("DeleteFixtureMachine", "Fixture")',
+                        exportFixture_Machines: '@Url.Action("DoExportFixtureMachine", "Fixture")',
+                        exportFixture_MachinesByQuery: '@Url.Action("DoExportFixtureMachineByQuery", "Fixture")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        getLine_InfoList: '@Url.Action("GetProductionLineList", "Fixture")',
+                        downloadExcel: '@Url.Action("Fixture_Machine", "Fixture")',
+                        //取得设备EMT 顺便带EQP_Uid steven
+                        getEquipmentInfoList: '@Url.Action("GetEquipmentInfoList", "Fixture")'
+                    };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Machine_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">'
+                            + '<input type="hidden" name="EQP_Uid" value="' + rowData.EQP_Uid + '">';
+
+                            var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Fixture_Machine_UID + '">查看</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Fixture_Machine_UID + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Fixture_Machine_UID + '" data-LineName = "' + rowData.Line_Name + '">删除</button>' +
+                                        '</div>';
+                            var resultHtml = hiddenHtml + buttonHtml;
+                            $(td).html(resultHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Plant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BG_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Machine_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Equipment_No",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Machine_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Machine_Desc",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Machine_Type",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Production_Line_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Is_Enable",
+                        render: function (data, type, full, meta) {
+                            return data ? "启用" : "禁用";
+                        },
+                        className: "min-col-xs"
+                    }
+                , {
+                    data: "ModifiedUser.User_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _queryFixture_Machines = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Fixture_Machine_datatable",
+                        remoteUrl: urls.queryFixture_Machines,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryFixture_Machines(true);
+                    },
+                    queryFixture_Machines: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryFixture_Machines(false);
+                    }
+                }
+
+            })();
+            Fixture_MachineMaintenance.Init();
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    Fixture_MachineMaintenance.queryFixture_Machines(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Fixture_Machine_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //PDMS.Utility.MessageBox.info('请选择要导出的数据');
+                    //全部导出
+                    var url = Fixture_MachineMaintenance.urls.exportFixture_MachinesByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = Fixture_MachineMaintenance.urls.exportFixture_Machines;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //批量新增设备机台 steven
+            $('#js_btn_batchappend').click(function () {
+                var url = "@Url.Action("BatchAppend", "Fixture")";
+                $.get(url, function (data) {
+                    //console.log(data);
+                })
+            });
+
+            //extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_Fixture_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format('YYYY-MM-DD'));
+                });
+            });
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.hasClass('js-grid-edit')) {
+                    //编辑
+                    title.text("编辑机台信息");
+                    $('#js_btn_save_new_Fixture_Machine').hide();
+                    $('#js_btn_save_edit_Fixture_Machine').show();
+                    $("#js_hidden_edit_id").val(0);
+
+                    var uid = button.attr("data-id");
+                    //调api 获取机台信息，填充到编辑画面
+                    $.get(Fixture_MachineMaintenance.urls.queryFixture_Machine, { uid: uid }, function (data) {
+                        $('#js_select_factory_add').val(data.Plant_Organization_UID);
+                        $('#js_select_factory_add').trigger('change');
+
+                        $('#js_select_optype_add').val(data.BG_Organization_UID);
+                        $('#js_select_optype_add').trigger('change');
+
+                        $('#js_select_funplant_add').val(data.FunPlant_Organization_UID);
+                        $('#js_select_funplant_add').trigger('change');
+
+                        $('#js_input_MachineId_add').val(data.Machine_ID);
+                        $('#js_input_EquipmentNo_add').val(data.Equipment_No);
+                        $('#js_input_MachineName_add').val(data.Machine_Name);
+                        $('#js_input_MachineDesc_add').val(data.Machine_Desc);
+                        $('#js_input_MachineType_add').val(data.Machine_Type);
+                        $('#js_select_line_add').selectpicker('val', data.Production_Line_UID);
+                        $('#js_e_select_enable_flag').selectpicker('val', data.Is_Enable.toString());
+                        if (data.EQP_Uid != null) {
+                            $('#js_Select_Equipment_add').val(data.EQP_Uid);
+                            $('#js_Select_Equipment_add').trigger('change');
+                        }
+                    });
+
+
+                } else if (button.attr('id') == 'js_btn_add_Fixture_Machine') {
+                    //新增
+                    title.text("新增机台");
+                    $('#js_select_factory_add').trigger('change');
+                    $('#js_select_optype_add').trigger('change');
+
+                    $('#js_select_pixture_MachineId_add').val('');
+                    $('#js_input_MachineName_add').val('');
+                    $('#js_input_MachineDesc_add').val('');
+                    $('#js_input_MachineType_add').val('');
+                    $('#js_e_select_enable_flag').selectpicker('val', 'false');
+
+                    //$('#js_input_Fixture_Machine').data('original', '');
+                    //$('#js_input_end_date').attr("disabled", false);
+                    $('#js_btn_save_new_Fixture_Machine').show();
+                    $('#js_btn_save_edit_Fixture_Machine').hide();
+
+                    $('#js_Select_Equipment_add').trigger('change');
+                }
+            })
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //edit button in grid
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var $sender = $(this);
+                if ($sender.hasClass('disabled')) {
+                    PDMS.Utility.MessageBox.error("Fixture_Machine already expired, can't edit!");
+                    return;
+                }
+
+                $("#js_hidden_edit_id").val(1);
+                var uid = $(this).attr('data-id'),
+                    url = Fixture_MachineMaintenance.urls.queryFixture_Machine;
+                $.post(url, { uid: uid }, function (data) {
+                    //隐藏字段
+                    $('#js_hidden_Fixture_Machine_uid').val(uid);
+                    $('#js_hidden_Plant_Organization_uid').val(data.Plant_Organization_UID);
+                    $('#js_hidden_BG_Organization_uid').val(data.BG_Organization_UID);
+                    $('#js_hidden_FunPlant_Organization_uid').val(data.FunPlant_Organization_UID);
+                    //显示字段
+                    $('#js_input_Fixture_Machine_Name_add').val(data.Fixture_Machine_Name);
+                    $('#js_input_BuildingName').val(data.Building_Name);
+                    $('#js_input_FloorName').val(data.Floor_Name);
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+
+            });
+
+            //delete button in grid
+            $('body').on('click', '.js-grid-delete', function () {
+                var uid = $(this).attr('data-id');
+                var dataLineName = $(this).attr('data-LineName');
+                PDMS.Utility.MessageBox.confirm(
+                    "你确定要删除机台:[" + dataLineName + "]?"
+                    , function () {
+                        var url = Fixture_MachineMaintenance.urls.deleteFixture_Machine;
+                        $.post(url, { uid: uid }, function (data) {
+
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("机台删除成功", function () {
+                                    window.location.reload();
+                                });
+                            } else if (data == 'HAVEREFERENCE') {
+                                PDMS.Utility.MessageBox.error("机台已在使用，不可删除!");
+                            } else {
+                                PDMS.Utility.MessageBox.error("Error:" + data);
+                            }
+                        });
+                    });
+            });
+
+            //查看
+            $('body').on('click', '.js-grid-view', function () {
+
+                var uid = $(this).attr('data-id');
+                var url = Fixture_MachineMaintenance.urls.queryFixture_Machine;
+                $.get(url, { uid: uid }, function (data) {
+
+                    //隐藏字段
+                    $('#js_v_input_factory').val(data.Plant_Organization_Name);
+                    $('#js_v_input_optype').val(data.BG_Organization_Name);
+                    $('#js_v_input_funplant').val(data.FunPlant_Organization_Name);
+
+                    $('#js_v_input_MachineId').val(data.Machine_ID);
+                    $('#js_v_input_EquipmentNo').val(data.Equipment_No);
+                    $('#js_v_input_MachineName').val(data.Machine_Name);
+                    $('#js_v_input_MachineDesc').val(data.Machine_Desc);
+                    $('#js_v_input_MachineType').val(data.Machine_Type);
+
+                    $('#js_v_input_LineId').val(data.Production_Line_ID);
+                    $('#js_v_input_LineName').val(data.Production_Line_Name);
+                    $('#js_v_input_enable_flag').val(data.Is_Enable == true ? "启用" : "禁用");
+
+                    $('#js_v_input_creator').val(data.Created_UserName);
+                    $('#js_v_input_create_date').val(data.Created_Date);
+                    $('#js_v_input_modifier').val(data.Modified_UserName);
+                    $('#js_v_input_modified_date').val(data.Modified_Date);
+
+                    $('#js_view_modal').modal('show');
+                });
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+
+            })
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+
+            $('#js_select_factory_add').change(function () {
+                refreshOptypeAdd();
+                refreshFuncPlant();
+                refreshProductionLineAdd();
+                refreshEquipmentAdd();
+            })
+
+            //编辑时optype 改变时间
+            $('#js_select_optype_add').change(function () {
+                refreshFuncPlant();
+                refreshProductionLineAdd();
+                refreshEquipmentAdd();
+            });
+
+            //功能城刷新
+            $('#js_select_funplant_add').change(function () {
+                refreshProductionLineAdd();
+                refreshEquipmentAdd();
+            });
+
+            //刷新设备下拉框
+            $('#js_Select_Equipment_add').change(function () {
+                var equipmentNo = $('#js_Select_Equipment_add').find("option:selected").attr('equipment');
+                //当有选中设备时
+                if (equipmentNo != '' && equipmentNo != null && equipmentNo != undefined) {
+                    //带入设备编号，并禁用
+                    $('#js_input_EquipmentNo_add').val(equipmentNo);
+                    $('#js_input_EquipmentNo_add').attr("readonly", true);
+                } else {
+                    //清空设备编号，并启用
+                    $('#js_input_EquipmentNo_add').val('');
+                    $('#js_input_EquipmentNo_add').attr("readonly", false);
+                }
+            });
+
+
+            //当EquipmentNo value on change,the inport EQP_Uid & MachineType . you can import more data
+            //$('#js_Select_Equipment_add').change(function () {
+            //    if (EqpArray != 0) {
+            //        //   alert(JSON.stringify(EqpArray));
+            //        var EquipmentNo = $('#js_Select_Equipment_add option:selected').val();
+            //        $.each(EqpArray, function (index, values) {
+            //            if (EquipmentNo == values.Id) {
+            //                $('#js_input_MachineType_add').val(values.valName);
+            //                $('#js_hidden_EQP_Uid').val(values.UID);
+            //                $('#js_input_MachineId_add').val(values.Mfg_Serial_Num);
+            //            }
+
+            //        })
+            //    }
+
+            //})
+
+            //刷新OP类型
+            function refreshOptypeAdd() {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                url = Fixture_MachineMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_add').empty();
+                $('#js_select_optype_add').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_optype_add').selectpicker('refresh');
+            }
+
+            //刷新功能厂列表
+            function refreshFuncPlant() {
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val()
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = 0;
+                }
+                var getFuncPlantUrl = Fixture_MachineMaintenance.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_add').empty();
+                $('#js_select_funplant_add').html('<option></option>');
+                $.post(getFuncPlantUrl, { Optype: optypeVal }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                $('#js_select_funplant_add').selectpicker('refresh');
+            }
+
+            //刷新产线列表
+            function refreshProductionLineAdd() {
+                $('#js_select_line_add').empty();
+                $('#js_select_line_add').html('<option></option>');
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val();
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = 0;
+                }
+                var getProcessUrl = Fixture_MachineMaintenance.urls.getLine_InfoList;
+                $.post(getProcessUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_line_add').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_ID + "_" + data[i].Line_Name + '</option>');
+                    }
+                });
+                $('#js_select_line_add').selectpicker('refresh');
+            }
+            //刷新设备EMT steven
+            //var EqpArray = [];
+            function refreshEquipmentAdd() {
+                debugger;
+                $('#js_Select_Equipment_add').empty();
+                $('#js_Select_Equipment_add').html('<option disable></option>');
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val()
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (optypeVal == "" || optypeVal == undefined || optypeVal == false) {
+                    optypeVal = null;
+                }
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = null;
+                }
+
+                //OP类型不为null 才请求，不然加载很慢
+                if (optypeVal != null) {
+                    var getProcessUrl = Fixture_MachineMaintenance.urls.getEquipmentInfoList;
+                    $.post(getProcessUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_Select_Equipment_add').append('<option value="' + data[i].EQP_Uid + '" equipment="' + data[i].Equipment + '">' + data[i].Equipment + ' ' + data[i].Class_Desc + '</option>');
+                        }
+                    });
+                }
+                $('#js_Select_Equipment_add').selectpicker('refresh');
+                //var names = $("select[id*='EquipmentNo']").attr('id');
+                //alert(names);
+                //tempString = 'add';
+                //if (IsSearchState == true) {
+                //    tempString = 'query'
+                //}
+                //if (IsAddEditState == true) {
+                //    tempString = 'add'
+                //}
+
+                //$('#js_input_MachineId_add' + tempString).val('');
+                //$('#js_input_MachineType_add' + tempString).val('');
+                //$('#js_Select_EquipmentNo_add' + tempString).empty();
+                //$('#js_Select_EquipmentNo_add' + tempString).html('<option></option>');
+                //var vfactoryVal = $('#js_select_factory_' + tempString).val(); //厂区
+                //var vfunplantVal = $('#js_select_funplant_' + tempString).val();//功能厂組織流水號
+                //var vOptypeVal = $('#js_select_optype_' + tempString).val();//OP类型
+
+                //var urls = Fixture_MachineMaintenance.urls.getEquipmentInfoList;
+
+
+                //if (vfactoryVal && vfunplantVal && vOptypeVal) {
+                //    $.post(urls, { Plant_Organization_UID: vfactoryVal, BG_Organization_UID: vOptypeVal, FunPlant_Organization_UID: vfunplantVal }, function (data) {
+                //        //   $('#js_input_MachineDesc_add').text($('#js_Select_Equipment_add option:selected').data('Class_Desc'));
+                //        //  $('#js_input_MachineName_add').text($('#js_input_MachineName_add').data('Class_Desc'));
+                //        for (var i = 0; i < data.length; i++) {
+                //            EqpArray.push({ Id: data[i].Equipment, valName: data[i].Class_Desc, UID: data[i].EQP_Uid, Mfg_Serial_Num: data[i].Mfg_Serial_Num });
+                //            $('#js_Select_EquipmentNo_' + tempString).append('<option value="' + data[i].Equipment + '">' + data[i].Equipment + '</option>');
+
+                //        }
+                //    });
+                //}
+
+
+            }
+
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = Fixture_MachineMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                //$('#js_select_optype_query').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+
+                $('#js_select_optype_query').selectpicker('refresh');
+                $('#js_select_funplant_query').selectpicker('refresh');
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+
+                $('#js_select_line_query').empty();
+                $('#js_select_line_query').html('<option></option>');
+                if ($('#js_select_optype_query option:selected').text() != "") {
+
+                    var factoryVal = $('#js_select_factory_query').val();
+                    var optypeVal = $('#js_select_optype_query').val()
+                    var funplantVal = $('#js_select_funplant_query').val();
+                    if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                        funplantVal = 0;
+                    }
+                    var url = Fixture_MachineMaintenance.urls.getFunPlantByOPTypes;
+                    $.post(url, { Optype: optypeVal }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            //$('#js_select_funplant_query').selectpicker('refresh');
+                        }
+                    });
+
+                    if (optypeVal > 0) {
+                        var getProcessUrl = Fixture_MachineMaintenance.urls.getLine_InfoList;
+                        $.post(getProcessUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_line_query').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_ID + "_" + data[i].Line_Name + '</option>');
+                            }
+                        });
+                    }
+                }
+                $('#js_select_funplant_query').selectpicker('refresh');
+                $('#js_select_line_query').selectpicker('refresh');
+            })
+
+            //功能厂change
+            $('#js_select_funplant_query').change(function () {
+                url = Fixture_MachineMaintenance.urls.getLine_InfoList;
+                $('#js_select_line_query').empty();
+                $('#js_select_line_query').html('<option></option>');
+                $.post(url, { Plant_Organization_UID: $('#js_select_factory_query').val(), BG_Organization_UID: $('#js_select_optype_query').val(), FunPlant_Organization_UID: $('#js_select_funplant_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_line_query').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_ID + "_" + data[i].Line_Name + '</option>');
+                    }
+                });
+                $('#js_select_line_query').selectpicker('refresh');
+            });
+
+            //新增修改Fixture_Machine按钮
+            $("#js_btn_save_edit_Fixture_Machine").click('click', function () {
+                var editform = $('#js_form_Fixture_Machine_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: Fixture_MachineMaintenance.urls.EditFixture_Machine,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'EXIST') {
+                                PDMS.Utility.MessageBox.error("修改机台[厂区][OP类型][机台代码][产线代码]重复");
+                            }
+                            else if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("修改机台信息成功", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+
+            //新增保存Fixture_Machine按钮
+            $("#js_btn_save_new_Fixture_Machine").click('click', function () {
+                var editform = $('#js_form_Fixture_Machine_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: Fixture_MachineMaintenance.urls.AddFixture_Machine,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'EXIST') {
+                                PDMS.Utility.MessageBox.error("新增机台[厂区][OP类型][机台代码][产线代码]重复");
+                            }
+                            else if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("新增机台信息成功", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //#region 模板下载
+            $('#js_btn_download_fl').on('click', function () {
+
+                this.form.action = Fixture_MachineMaintenance.urls.downloadExcel;
+                $('#js_form_excel_add').submit();
+            });
+            //#endregion
+            //提交     stat
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@T("QA.Importsuccessful")', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+            //提交   END
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+
+
+
+            //Form Validate
+            $('#js_form_Fixture_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+        });
+    </script>
+}

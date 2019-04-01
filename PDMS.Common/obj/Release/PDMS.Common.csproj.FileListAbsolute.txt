@@ -1,0 +1,14 @@
+D:\Git\PISMVC\PDMS.Common\bin\Release\NLog.config
+D:\Git\PISMVC\PDMS.Common\bin\Release\NLog.xsd
+D:\Git\PISMVC\PDMS.Common\bin\Release\PDMS.Common.dll.config
+D:\Git\PISMVC\PDMS.Common\bin\Release\PDMS.Common.dll
+D:\Git\PISMVC\PDMS.Common\bin\Release\PDMS.Common.pdb
+D:\Git\PISMVC\PDMS.Common\bin\Release\Aspose.Slides.dll
+D:\Git\PISMVC\PDMS.Common\bin\Release\Newtonsoft.Json.dll
+D:\Git\PISMVC\PDMS.Common\bin\Release\NLog.dll
+D:\Git\PISMVC\PDMS.Common\bin\Release\System.Linq.Dynamic.dll
+D:\Git\PISMVC\PDMS.Common\bin\Release\Newtonsoft.Json.xml
+D:\Git\PISMVC\PDMS.Common\bin\Release\NLog.xml
+D:\Git\PISMVC\PDMS.Common\obj\Release\PDMS.Common.csprojResolveAssemblyReference.cache
+D:\Git\PISMVC\PDMS.Common\obj\Release\PDMS.Common.dll
+D:\Git\PISMVC\PDMS.Common\obj\Release\PDMS.Common.pdb

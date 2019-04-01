@@ -1,0 +1,1033 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> Search</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_function">
+                <i class="fa fa-plus"></i> Add
+            </a>
+            <a id="js_btn_export" class="btn btn-primary btn-sm" role="button">
+                <i class="glyphicon glyphicon-save"></i> Export
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_function_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Parent Function ID</th>
+                        <th>Parent Function Name</th>
+                        <th>Function ID</th>
+                        <th>Function Name</th>
+                        <th>Order Index</th>
+                        <th>Is Show</th>
+                        <th>URL</th>
+                        <th>Function_UID</th>
+                        <th>Sub Function</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Parent Function ID</th>
+                        <th>Parent Function Name</th>
+                        <th>Function ID</th>
+                        <th>Function Name</th>
+                        <th>Order Index</th>
+                        <th>Is Show</th>
+                        <th>URL</th>
+                        <th>Function_UID</th>
+                        <th>Sub Function</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_parent_function_id">Parent Function ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Parent_Function_ID" class="form-control input-sm" id="js_s_input_parent_function_id" placeholder="Parent Function ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_parent_function_name">Parent Function Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Parent_Function_Name" class="form-control input-sm" id="js_s_input_parent_function_name" placeholder="Parent Function Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_function_id">Function ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Function_ID" class="form-control input-sm" id="js_s_input_function_id" placeholder="Function ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_function_name">Function Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Function_Name" class="form-control input-sm" id="js_s_input_function_name" placeholder="Function Name">
+                                    </div>
+                                </div>
+                            </div>                        
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_modified_by">Modified By</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_By" class="form-control input-sm" id="js_s_input_modified_by" placeholder="Modified By (NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">Modified Date</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> Clear</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain Function</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_maintain" class="form-horizontal clearfix">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_parent_function_id">Parent Function ID</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Parent_Function_ID" class="form-control input-sm" id="js_input_parent_function_id" placeholder="Parent Function ID">
+                                        <input type="hidden" name="Parent_Function_UID" id="js_hidden_parent_function_uid">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_parent_function_name">Parent Function Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Parent_Function_Name" class="form-control input-sm" id="js_input_parent_function_name" placeholder="Parent Function Name" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_function_id">Function ID</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Function_ID" class="form-control input-sm" id="js_input_function_id" placeholder="Function ID"
+                                               required data-msg-required="Please enter Function ID"
+                                               maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Function ID.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_function_name">Function Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Function_Name" class="form-control input-sm" id="js_input_function_name" placeholder="Function Name"
+                                               required data-msg-required="Please enter Function Name"
+                                               data-rule-maxlength="100" data-msg-maxlength="Please enter no more than {0} characters in Function Name.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="s_input_func_desc">Function Description</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control input-sm" id="js_input_func_desc" name="Function_Desc" placeholder="Function Description"
+                                               data-rule-maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Function Description.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_order_index">Order Index</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Order_Index" class="form-control input-sm" id="js_input_order_index" placeholder="Order Index"
+                                               data-rule-digits="true" data-msg-digits="Order Index should be digits" 
+                                               data-rule-min="1" data-msg-min="Order Index must greater than 0"
+                                               required data-msg-required="Please enter Order Index">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_icon_classname">Icon ClassName</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Icon_ClassName" class="form-control input-sm" id="js_input_icon_classname" placeholder="Icon ClassName"
+                                               data-rule-maxlength="30" data-msg-maxlength="Please enter no more than {0} characters in Icon ClassName.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_function_name">Function URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="URL" class="form-control input-sm" id="js_input_function_url" placeholder="Function URL"
+                                               data-rule-maxlength="500" data-msg-maxlength="Please enter no more than {0} characters in Function URL.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_select_is_show">Is Show</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control input-sm" id="js_select_is_show" name="Is_Show">
+                                            <option value="true">Y</option>
+                                            <option value="false">N</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_function_name">Mobile URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="Mobile_URL" class="form-control input-sm" id="js_input_mobile_url" placeholder="Mobile URL"
+                                               data-rule-maxlength="500" data-msg-maxlength="Please enter no more than {0} characters in Mobile URL.">
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="Function_UID" id="js_hidden_function_id" value="0" />
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        Sub Function
+                        <button class="btn btn-primary btn-sm" id="js_btn_add_sub_func">Add Sub Function</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_del_sub_func">Delete Sub Function</button>
+                    </h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_sub_func_table" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="table-col-seq nosort">Seq</th>
+                                        <th class="nosort">Sub Function ID</th>
+                                        <th class="nosort">Sub Function Name</th>
+                                        <th class="nosort">Sub Function URL</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_function"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_function"><i class="fa fa-save"></i> Edit Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">View Function</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_maintain" class="form-horizontal clearfix">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Parent Function ID</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Parent_Function_ID" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Parent Function Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Parent_Function_Name" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Function ID</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Function_ID" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Function Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Function_Name" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Function Description</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" name="Function_Desc" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Order Index</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Order_Index" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Icon ClassName</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Icon_ClassName" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Function URL</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="URL" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Is Show</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control input-sm" name="Is_Show" disabled>
+                                        <option value="true">Y</option>
+                                        <option value="false">N</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label" for="js_input_function_name">Mobile URL</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="Mobile_URL" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        Sub Function
+                    </h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_sub_func_table_view" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-seq nosort">Seq</th>
+                                        <th class="nosort">Sub Function ID</th>
+                                        <th class="nosort">Sub Function Name</th>
+                                        <th class="nosort">Sub Function URL</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<style>
+    input.fullWidth {
+        width: 100% !important;
+    }
+</style>
+@section ViewScripts{
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var FunctionMaintenanceUrls = {
+                queryFunctions: '@Url.Action("QueryFunctions", "Settings")',
+                queryFunction: '@Url.Action("QueryFunction", "Settings")',
+                deleteFunction: '@Url.Action("DeleteFunction", "Settings")',
+                deleteSubFunction: '@Url.Action("DeleteSubFunction", "Settings")',
+                addFunction: '@Url.Action("AddFunction", "Settings")',
+                doExportFunction: '@Url.Action("DoExportFunction", "Settings")',
+                getParentFunc: '@Url.Action("GetFunctionByID", "Settings")',
+                modifyFunction: '@Url.Action("ModifyFunctionWithSubs", "Settings")'
+            };
+
+            //#region FunctionMaintenance
+            var FunctionMaintenance = (function () {
+
+                var subDatatable = null;
+
+                //#region columns
+                var columns = [{
+
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Function_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Function_UID + '">View</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Function_UID + '">Edit</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Function_UID + '">Delete</button>' +
+                                    '</div>');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                }, {
+                    data: "Parent_Function_ID",
+                    className: "min-col-md"
+                }, {
+                    data: "Parent_Function_Name",
+                    className: "min-col-md"
+                }, {
+                    data: "Function_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Function_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Order_Index",
+                    className: "min-col-lg"
+                }, {
+                    data: "Is_Show",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "URL",
+                    className: "min-col-md"
+                }, {
+                    data: "Function_UID",
+                    className: "min-col-md"
+                }, {
+                    data: "SubFunctionCount",
+                    render: function (data, type, full, meta) {
+                        return data;
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }];
+                //#endregion
+
+                //#region subColumns
+                var subColumns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_FunctionSub_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center",
+                    defaultContent: ' ',
+                }, {
+                    className: "table-col-seq",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }, {
+                    data: "Sub_Fun",
+                    className: "min-col-lg",
+                    render: function (data, type, full, meta) {
+
+                        var isEdit = $('#js_hidden_function_id').val() > 0;
+                        var html = isEdit ? '<input type="text" name="Sub_Fun" class="form-control input-sm fullWidth" readonly="readonly" value="' + data + '">' :
+                         '<input type="text" name="Sub_Fun" class="form-control input-sm fullWidth" value="' + data + '">';
+
+                        return html;
+                    }
+                }, {
+                    data: "Sub_Fun_Name",
+                    className: "min-col-lg",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text" name="Sub_Fun_Name" class="form-control input-sm fullWidth" value="' + data + '">';
+                    }
+
+                }, {
+                    data: "Sub_Fun_URL",
+                    className: "min-col-lg",
+                    render: function (data, type, full, meta) {
+                        return '<input type="text" name="Sub_Fun_URL" class="form-control input-sm fullWidth" value="' + data + '">';
+                    }
+                }];
+                //#endregion subColumns
+
+                var subColumnsForView = [
+                    {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "Sub_Fun",
+                        className: "min-col-lg",
+                    }, {
+                        data: "Sub_Fun_Name",
+                        className: "min-col-lg",
+
+                    }, {
+                        data: "Sub_Fun_URL",
+                        className: "min-col-lg",
+                    }];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryFunctions = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_function_datatable",
+                        remoteUrl: FunctionMaintenanceUrls.queryFunctions,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryFunctions(true);
+                    },
+                    QueryFunctions: function () {
+                        _queryFunctions(false);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_sub_func_table').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: subColumns,
+                            });
+                        }
+                        return subDatatable;
+                    },
+                    SetSubDatatable: function (datatable) {
+                        subDatatable = datatable;
+                    },
+                    DestroySubTable: function () {
+                        if (subDatatable != null) {
+                            subDatatable.destroy();
+                        }
+                    },
+                    SubColumns: subColumns,
+                    SubColumnsForView: subColumnsForView
+                }
+
+            })();
+            //#endregion
+
+            FunctionMaintenance.Init();
+
+            //#region Page elements events
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+
+                if ($('#js_form_query').valid()) {
+
+                    FunctionMaintenance.QueryFunctions();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //增加SubFun按钮
+            $('#js_btn_add_sub_func').on('click', function () {
+
+                var dataTable = FunctionMaintenance.GetSubDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    for (var i = 2; i < 4; i++) {
+                        if ($.trim($(dataTable.cell(rowIdx, i).node()).find('input').val()) === "") {
+                            PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                            allowAdd = false;
+                            return;
+                        }
+                    }
+                });
+                if (allowAdd) {
+                    var row = dataTable.row.add({
+                        "System_FunctionSub_UID": 0,
+                        "Sub_Fun": "",
+                        "Sub_Fun_Name": "",
+                        "Sub_Fun_URL": ""
+                    }).draw();
+                    $(row.node()).find('input[name=Sub_Fun]').removeAttr("readonly");
+                }
+            });
+
+            //删除SubFun按钮
+            $('#js_btn_del_sub_func').on('click', function () {
+
+                var dataTable = FunctionMaintenance.GetSubDatatable();
+
+                var $checkedItems = $('#js_sub_func_table .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+
+                } else {
+
+                    var functionUid = $('#js_hidden_function_id').val();
+
+                    $.map($checkedItems, function (checkbox) {
+                        var subFun_uid = $(checkbox).val();
+                        if (functionUid > 0 && subFun_uid > 0) {
+
+                            $.get(FunctionMaintenanceUrls.deleteSubFunction
+                                , { subfunction_UId: subFun_uid }
+                                , function (data) {
+                                    if (data != "SUCCESS") {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    } else {
+                                        dataTable.row($(checkbox).parents('tr')).remove().draw();
+                                    }
+                                });
+
+                        } else {
+                            dataTable.row($(checkbox).parents('tr')).remove().draw();
+                        }
+
+                    });
+
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+            });
+
+            //parent function id文本框失去焦点后根据内容自动填充parent function name
+            $('#js_input_parent_function_id').on('blur', function () {
+
+                $.get(FunctionMaintenanceUrls.getParentFunc, { functionId: $(this).val() },
+
+                    function (data) {
+                        $('#js_input_parent_function_name').val(data.Function_Name);
+                    });
+            });
+
+            //新增保存Function按钮
+            $('#js_btn_save_new_function').click('click', function () {
+
+                if ($.trim($('#js_input_parent_function_id').val()) !== '' && $.trim($('#js_input_parent_function_name').val()) === '') {
+                    PDMS.Utility.MessageBox.info("Please input right parent funtion id");
+
+                } else {
+
+                    if ($("#js_form_maintain").valid()) {
+                        var flag = true;
+                        var dataTable = FunctionMaintenance.GetSubDatatable();
+                        var submitJson = $('#js_form_maintain').serializeObject();
+                        var FunctionSubs = [];
+                        dataTable
+                            .rows()
+                            .every(function (rowIdx, tableLoop, rowLoop) {
+                                var sub = {};
+                                var row = $('#js_sub_func_table>tbody>tr').eq(rowIdx);
+                                var Sub_Fun = $.trim(row.find('input[name=Sub_Fun]').val());
+                                if (Sub_Fun === "") {
+                                    PDMS.Utility.MessageBox.info("Sub Function ID Can't be empty at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                if (Sub_Fun.length > 50) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 50 characters in Sub Function ID at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun"] = Sub_Fun;
+
+                                var Sub_Fun_Name = $.trim(row.find('input[name=Sub_Fun_Name]').val());
+                                if (Sub_Fun_Name === "") {
+                                    PDMS.Utility.MessageBox.info("Sub Function Name Can't be empty at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                if (Sub_Fun_Name.length > 30) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 30 characters in Sub Function Name at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun_Name"] = Sub_Fun_Name;
+
+                                var Sub_Fun_URL = $.trim(row.find('input[name=Sub_Fun_URL]').val());
+                                if (Sub_Fun_URL === "") {
+                                    Sub_Fun_URL = 'NA';
+                                }
+                                if (Sub_Fun_URL.length > 500) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 500 characters in Sub Function URL at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun_URL"] = Sub_Fun_URL.toUpperCase();
+
+                                FunctionSubs.push(sub);
+                            });
+
+                        if (!flag) { return };
+
+                        submitJson.FunctionSubs = FunctionSubs;
+
+                        $.post(FunctionMaintenanceUrls.addFunction, { jsonFunctionWithSubs: JSON.stringify(submitJson) }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("Save Success");
+                                $("#js_form_maintain input[type!='hidden']").val('');
+                                $("#js_select_is_show").val('true');
+                                dataTable.clear().draw();
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                }
+            });
+
+            //修改保存Function按钮
+            $('#js_btn_save_edit_function').click('click', function () {
+
+                if ($.trim($('#js_input_parent_function_id').val()) !== '' && $.trim($('#js_input_parent_function_name').val()) === '') {
+                    PDMS.Utility.MessageBox.info("Please input right parent funtion id");
+
+                } else {
+
+                    if ($("#js_form_maintain").valid()) {
+                        var flag = true;
+
+                        var dataTable = FunctionMaintenance.GetSubDatatable();
+                        var submitJson = $('#js_form_maintain').serializeObject();
+                        var FunctionSubs = [];
+                        dataTable
+                            .rows()
+                            .every(function (rowIdx, tableLoop, rowLoop) {
+                                var sub = {};
+                                var row = $('#js_sub_func_table>tbody>tr').eq(rowIdx);
+                                sub["System_FunctionSub_UID"] = row.find('.js-checkbox-item').val();
+                                var Sub_Fun = $.trim(row.find('input[name=Sub_Fun]').val());
+                                if (Sub_Fun === "") {
+                                    PDMS.Utility.MessageBox.info("Sub Function ID Can't be empty at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                if (Sub_Fun.length > 50) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 50 characters in Sub Function ID at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun"] = Sub_Fun;
+
+                                var Sub_Fun_Name = $.trim(row.find('input[name=Sub_Fun_Name]').val());
+                                if (Sub_Fun_Name === "") {
+                                    PDMS.Utility.MessageBox.info("Sub Function Name Can't be empty at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                if (Sub_Fun_Name.length > 30) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 30 characters in Sub Function Name at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun_Name"] = Sub_Fun_Name;
+
+                                var Sub_Fun_URL = $.trim(row.find('input[name=Sub_Fun_URL]').val());
+                                if (Sub_Fun_URL === "") {
+                                    Sub_Fun_URL = 'NA';
+                                }
+                                if (Sub_Fun_URL.length > 500) {
+                                    PDMS.Utility.MessageBox.info("Please enter no more than 500 characters in Sub Function URL at row #" + (rowIdx + 1));
+                                    flag = false;
+                                    return;
+                                }
+                                sub["Sub_Fun_URL"] = Sub_Fun_URL.toUpperCase();
+
+                                FunctionSubs.push(sub);
+                            });
+                        if (!flag) { return };
+
+                        submitJson.FunctionSubs = FunctionSubs;
+
+                        $.post(FunctionMaintenanceUrls.modifyFunction, { jsonFunctionWithSubs: JSON.stringify(submitJson) }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("Save Success");
+                                FunctionMaintenance.QueryFunctions(false);
+                                $('#js_edit_modal').modal('hide');
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                }
+
+            });
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_function_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = FunctionMaintenanceUrls.doExportFunction;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //Form Validate
+            $('#js_form_maintain').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions按钮
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                $(this).closest('.modal-content').find('input').val('');
+            });
+
+            //#region Add/Edit model 出现和消失事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.attr('id') == 'js_btn_add_function') {
+
+                    title.text("Add Function");
+
+                    $('#js_btn_save_edit_function').hide();
+                    $('#js_btn_save_new_function').show();
+                    $('#js_hidden_function_id').val(0);
+                }
+                else {
+                    title.text("Edit Function");
+
+                    $('#js_btn_save_edit_function').show();
+                    $('#js_btn_save_new_function').hide();
+                }
+            })
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                var dataTable = FunctionMaintenance.GetSubDatatable();
+                dataTable.clear().draw();
+
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+            //#endregion
+
+            //Grid中编辑按钮
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var uid = $(this).data('id'),
+                    url = FunctionMaintenanceUrls.queryFunction;
+
+                $.post(url, { uid: uid }, function (data) {
+
+                    $('#js_input_parent_function_id').val(data.Parent_Function_ID);
+                    $('#js_input_parent_function_name').val(data.Parent_Function_Name);
+                    $('#js_input_function_id').val(data.Function_ID);
+                    $('#js_input_function_name').val(data.Function_Name);
+                    $('#js_input_func_desc').val(data.Function_Desc);
+                    $('#js_input_order_index').val(data.Order_Index);
+                    $('#js_input_icon_classname').val(data.Icon_ClassName);
+                    $('#js_input_function_url').val(data.URL);
+                    $('#js_input_mobile_url').val(data.Mobile_URL);
+                    $('#js_select_is_show').val(data.Is_Show ? "true" : "false");
+                    $('#js_hidden_function_id').val(data.Function_UID);
+
+                    var subTable = $('#js_sub_func_table').DataTable({
+                        columns: FunctionMaintenance.SubColumns,
+                        ordering: false,
+                        data: data.FunctionSubs,
+                        destroy: true
+                    });
+
+                    FunctionMaintenance.SetSubDatatable(subTable);
+                    $('#js_edit_modal').modal('show');
+                });
+
+
+            });
+
+            //Grid中View按钮
+            $('body').on('click', '.js-grid-view', function () {
+
+                var uid = $(this).data('id'),
+                    url = FunctionMaintenanceUrls.queryFunction;
+
+                $.post(url, { uid: uid }, function (data) {
+                    var $modal = $('#js_view_modal')
+                    $modal.find('input[name=Parent_Function_ID]').val(data.Parent_Function_ID);
+                    $modal.find('input[name=Parent_Function_Name]').val(data.Parent_Function_Name).attr("disabled");
+                    $modal.find('input[name=Function_ID]').val(data.Function_ID).attr("disabled");
+                    $modal.find('input[name=Function_Name]').val(data.Function_Name).attr("disabled");
+                    $modal.find('input[name=Function_Desc]').val(data.Function_Desc).attr("disabled");
+                    $modal.find('input[name=Order_Index]').val(data.Order_Index).attr("disabled");
+                    $modal.find('input[name=Icon_ClassName]').val(data.Icon_ClassName).attr("disabled");
+                    $modal.find('input[name=URL]').val(data.URL).attr("disabled");
+                    $modal.find('select[name=Is_Show]').val(data.Is_Show ? "true" : "false");
+                    $modal.find('input[name=Mobile_URL]').val(data.Mobile_URL);
+                    
+                    var subTable = $('#js_sub_func_table_view').DataTable({
+                        columns: FunctionMaintenance.SubColumnsForView,
+                        ordering: false,
+                        data: data.FunctionSubs,
+                        destroy: true
+                    });
+                    $('#js_view_modal').modal('show');
+                });
+
+
+            });
+
+            //Grid中Delete按钮
+            $('body').on('click', '.js-grid-delete', function () {
+
+                var uid = $(this).data('id');
+
+                PDMS.Utility.MessageBox.confirm(
+                    "Are you sure to delete this item?"
+                    , function () {
+                        var url = FunctionMaintenanceUrls.deleteFunction;
+                        $.post(url, { uid: uid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                FunctionMaintenance.QueryFunctions(true);
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    });
+            });
+
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //#endregion
+        });
+
+    </script>
+}
+
+

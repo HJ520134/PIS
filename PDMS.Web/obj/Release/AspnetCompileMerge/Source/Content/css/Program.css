@@ -1,0 +1,206 @@
+﻿@charset "utf-8";
+
+/*====== datatables======*/
+.table-col-checkbox {
+    width: 30px !important;
+    padding-left: 5px !important;
+    text-align: center;
+}
+
+.table-col-action {
+    padding-left: 5px !important;
+}
+
+.table-col-seq {
+    width: 30px !important;
+    padding-left: 5px !important;
+}
+
+.datatable-bottom .dataTables_paginate {
+    float: right;
+}
+
+.datatable-bottom .dataTables_length {
+    float: right;
+    margin: 3px 15px 0 0;
+}
+
+td.details-control {
+    width: 30px !important;
+    text-align: center;
+}
+
+table.dataTable.table-condensed > thead > tr > th.sorting_disabled {
+padding:5px;
+}
+
+/*====== page-login  ======*/
+.app-download-btn {
+    padding-left: 5px;
+    padding-right: 12px;
+    padding-top: inherit;
+    padding-bottom: inherit;
+}
+
+.app-download-img {
+    width: auto;
+    height: 30px;
+    padding: 5px;
+}
+
+/*====== jquery validate  ======*/
+ul.list-group.form-validate-error, ul.list-group.validate-error {
+    margin-bottom: 0;
+}
+
+.list-group.form-validate-error > li, .list-group.validate-error > li {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+}
+
+#js_criteria_alert_cnt .alert {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+}
+/*====== jquery pagination  ======*/
+
+.m-pagination {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 38px;
+}
+
+.m-pagination-page,
+.m-pagination-size,
+.m-pagination-jump {
+    float: right;
+    margin-top: 2px;
+    padding-right: 10px;
+}
+
+    /* font */
+    .m-pagination-page > li > a,
+    .m-pagination-size > select,
+    .m-pagination-group > input,
+    .m-pagination-group > button,
+    .m-pagination-info {
+        font-size: 14px;
+        color: #888;
+    }
+
+    /* border */
+    .m-pagination-page > li > a,
+    .m-pagination-size > select,
+    .m-pagination-group > input,
+    .m-pagination-group > button {
+        outline: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        -khtml-user-select: none;
+        border: 1px solid #ddd;
+    }
+
+    /* button */
+    .m-pagination-page > li > a,
+    .m-pagination-group > button {
+        cursor: pointer;
+        background-color: #fff;
+    }
+
+        .m-pagination-page > li:hover > a,
+        .m-pagination-group > button:hover {
+            background-color: #eee;
+            border-color: #ddd;
+        }
+
+
+
+    /*************  pagination-page  *************/
+
+    .m-pagination-page > li {
+        list-style: none;
+        float: left;
+    }
+
+        .m-pagination-page > li > a {
+            height: 30px;
+            line-height: 30px;
+            margin-left: -1px;
+            display: inline-block;
+            padding: 0 12px;
+            text-decoration: none;
+            box-sizing: content-box;
+        }
+
+        .m-pagination-page > li.active > a {
+            color: #fff;
+            background-color: #394F59;
+            border-color: #394F59;
+        }
+
+        .m-pagination-page > li:first-child > a {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .m-pagination-page > li:last-child > a {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+
+
+    /*************  pagination-perpage  *************/
+
+    .m-pagination-size > select {
+        cursor: pointer;
+        height: 32px;
+        padding: 0px 7px;
+        border-radius: 4px;
+    }
+
+
+/*************  pagination-go   *************/
+
+.m-pagination-group > input,
+.m-pagination-group > button {
+    float: left;
+}
+
+.m-pagination-group > input {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    width: 40px;
+    height: 30px;
+    padding: 0px;
+    text-align: center;
+    box-sizing: content-box;
+}
+
+.m-pagination-group > button {
+    border-left: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    height: 32px;
+    padding: 0px 10px;
+}
+
+
+/************  pagination-info   *************/
+
+.m-pagination-info {
+    height: 32px;
+    line-height: 32px;
+}
+
+
+.padding-l-5-i {
+    padding-left:5px !important;
+}

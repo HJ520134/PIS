@@ -1,0 +1,392 @@
+﻿<!-- Main content -->
+@{
+    ViewBag.ApproveSuccess = T("Common.ApproveSuccess").Text;
+    ViewBag.Exporting = T("QA.Exporting").Text;
+    ViewBag.UploadExcel = T("Common.UploadExcel").Text;
+    ViewBag.Manpowerdetails = T("QA.Manpowerdetails").Text;
+    ViewBag.Imported = T("QA.Imported").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.Byproject = T("QA.Byproject").Text;
+    ViewBag.Byfunctionfactory = T("QA.Byfunctionfactory").Text;
+    ViewBag.Project = T("QA.Project").Text;
+    ViewBag.Func = T("QA.Functionfactory").Text;
+    ViewBag.Mondays = T("QA.Mondays").Text;
+    ViewBag.Tuesdays = T("QA.Tuesdays").Text;
+    ViewBag.Wednesdays = T("QA.Wednesdays").Text;
+    ViewBag.Thursdays = T("QA.Thursdays").Text;
+    ViewBag.Fridays = T("QA.Fridays").Text;
+    ViewBag.Saturdays = T("QA.Saturdays").Text;
+    ViewBag.Sundays = T("QA.Sundays").Text;
+    ViewBag.Functionfactory = T("QA.Functionfactory").Text;
+    ViewBag.Byprocess = T("QA.Byprocess").Text;
+    ViewBag.First = T("QA.First").Text;
+    ViewBag.Weeks = T("QA.Weeks").Text;
+    ViewBag.MPmanpower = T("QA.MPmanpower").Text;
+    ViewBag.NPImanpower = T("QA.NPImanpower").Text;
+    ViewBag.Differencemanpower = T("QA.Differencemanpower").Text;
+    ViewBag.Differenceratio = T("QA.Differenceratio").Text;
+    ViewBag.Pleaseparts = T("QA.Pleaseparts").Text;
+}
+
+<section class="content portal-content">
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("QA.Inquire")</a>
+            @*<a id="btn_export" class="btn btn-primary btn-sm" role="button">
+                    <i class="glyphicon glyphicon-save"></i> @T("Common.Export")
+                </a>*@
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+    <!--內容 表格列-->
+
+    <div id="div_table" class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            @T("QA.Mainscheduleinput")
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_rpt_project">
+            <thead>
+                <tr id="js_rpt_project_tr"></tr>
+            </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+    <br />
+    <div>
+        <ul id="twoTab" class="nav nav-tabs"></ul>
+        <div id="twoTabContent" class="tab-content">
+        </div>
+    </div>
+    <div id="div_table" class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_rpt_One">
+                <thead>
+                    <tr id="js_rpt_One_tr"></tr>
+                </thead>
+            </table>
+            <div id="page2" class="row"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Inquire")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="True">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_plant" name="PlantUID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> plantItem in ViewBag.Plant)
+                                        {
+                                            if (plantItem.Key == 1)
+                                            {
+                                                <option value=@plantItem.Key selected>@plantItem.Value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value=@plantItem.Key>@plantItem.Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_group">@T("QA.BusinessGroup")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_group" name="OpTypeUID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> opTypeItem in ViewBag.OPType)
+                                        {
+                                            <option value=@opTypeItem.Key selected="selected">@opTypeItem.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_project" name="ProjectUID" class="form-control input-sm">
+                                        <option value=0 selected="selected">All</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_parttypes">@T("QA.Part")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_parttypes" name="PartTypeUID" class="form-control input-sm">
+                                        <option value=0 selected="selected">All</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Startingtime")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Reference_Date" class="form-control input-sm date" id="js_s_input_date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+                            <input type="hidden" id="hidTab" name="hidTab" />
+                            <input type="hidden" id="hidTab" name="hidSubTab" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="js_btn_clear" type="button" class="btn btn-primary"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button id="js_btn_query" type="button" class="btn btn-primary"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+<script type="text/javascript" src="~/Scripts/PDMSJS/ManPowerRequestJS/ClickEvent.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        var EquRPT = (function () {
+            var urls = {
+                queryRPTS: '@Url.Action("QueryManPowerRequestRPT", "ProductionPlanningReport")',
+                queryProject: '@Url.Action("QueryManPowerProject", "ProductionPlanningReport")',
+                queryByProjectOne: '@Url.Action("QueryManPowerRequestByProjectOne", "ProductionPlanningReport")',
+                queryByProjectTwo: '@Url.Action("QueryManPowerRequestByProjectTwo", "ProductionPlanningReport")'
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    //GetFormatDate();
+                    PDMS.Utility.Criteria.Init();
+                    //_queryFLS(true);
+                },
+                QueryEquRPTs: function (selectTable) {
+                    _queryRPTS(false, selectTable);
+                }
+            }
+        })();
+
+        EquRPT.Init();
+        $('#js_btn_query').click(function () {
+            $('#js_search_modal').modal('hide');
+            $("#myTab li").remove();
+            var projectValue = $('#js_s_input_project').val();
+            //根据条件判断显示哪一个Table
+            var selectOptype = $('#js_s_input_group').val();
+            var selectProject = $('#js_s_input_project').val();
+            var selectPartsType = $('#js_s_input_parttypes').val();
+            if (selectProject != '0' && selectPartsType == '0') {
+                PDMS.Utility.MessageBox.info('@ViewBag.Pleaseparts');
+            }
+            else {
+                var url = EquRPT.urls.queryRPTS;
+                var params = {};
+                params['PlantUID'] = $('#js_s_input_plant').val();
+                params['OpTypeUID'] = $('#js_s_input_group').val();
+                params['ProjectUID'] = $('#js_s_input_project').val();
+                params['PartTypeUID'] = $('#js_s_input_parttypes').val();
+                params['DateFrom'] = $('#js_s_input_date').val();
+
+
+                $.post(url, params, function (data) {
+                    if (data) {
+                        var array = JSON.parse(data);
+                        for (i = 0; i < array.length; i++) {
+                            $("#myTab").append('<li class="ppchecktab" ><a href="#" data-toggle="tab">' + array[i].StartDate + '~' + array[i].EndDate + '</a></li>');
+                        }
+                        //默认选中最后一个标签
+                        $('#myTab a:first').tab('show');
+                        var activeTab = $('#myTab a:first').text();
+                        $('#hidTab').val(activeTab);
+                        params['hidTab'] = $('#hidTab').val();
+                        var projecturl = EquRPT.urls.queryProject;
+                        BindProject(projecturl, params);
+
+                        //点击Tab查询值,必须写在Search方法里面才能触发
+                        $('#myTab a').click(function (e) {
+                            var activeTab = $(e.target).text();
+                            $('#hidTab').val(activeTab);
+                            params['hidTab'] = $('#hidTab').val();
+                            BindProject(projecturl, params);
+                        });
+                    }
+                });
+            }
+        });
+
+        var BindProject = function (projecturl, params) {
+            $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+            $.post(projecturl, params, function (projectData) {
+                $('#js_rpt_project_tr').empty();
+                $('#js_rpt_project').DataTable().clear();
+
+                var columns = [];
+
+                var dynamicName = projectData.columnList;
+                $.each(dynamicName, function (i, item) {
+                    var obj = {};
+                    obj['data'] = item;
+                    if (item == 'ProjectTypes') {
+                        $('#js_rpt_project_tr').append("<th>" + '@ViewBag.Project' + "</th>");
+                        obj['className'] = "min-col-xs";
+                    }
+                    else {
+                        $('#js_rpt_project_tr').append("<th>" + item + "</th>");
+                        obj['className'] = "min-col-xs text-right";
+                    }
+                    columns.push(obj);
+                });
+
+                var config = {};
+                config["destroy"] = true;
+                config["scrollX"] = true;
+                config["scrollY"] = 200;
+                config["data"] = projectData.data;
+                config["columns"] = columns;
+                if (projectData.data.length > 0) {
+                    config["columnDefs"] = [{
+                        orderable: false,
+                        targets: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }]
+                }
+                var dt = $('#js_rpt_project').DataTable(config);
+
+                //继续绑定下级标签页
+                if (projectData.data.length > 0) {
+                    BindTabInfo(params);
+                }
+
+                $.unblockUI();
+            });
+        }
+
+        var BindTabInfo = function (params) {
+            $("#twoTab li").remove();
+            $("#twoTab").append('<li class="ppchecktab" ><a href="#" data-toggle="tab">' + '@ViewBag.Byproject' + '</a></li>');
+            $("#twoTab").append('<li class="ppchecktab" ><a href="#" data-toggle="tab">' + '@ViewBag.Functionfactory' + '</a></li>');
+            $('#twoTab a:first').tab('show');
+            var url = EquRPT.urls.queryByProjectOne;
+            BindSubTabInfo(url, params);
+            @*$.post(url, params, function (data) {
+                $('#js_rpt_One_tr').empty();
+                $('#js_rpt_One').DataTable().clear();
+
+                var columns = [];
+
+                var dynamicName = data.columnList;
+                $.each(dynamicName, function (i, item) {
+                    var obj = {};
+                    obj['data'] = item;
+                    $('#js_rpt_One_tr').append("<th>" + item + "</th>");
+                    if (item == '@ViewBag.Project') {
+
+                        obj['className'] = "min-col-xs";
+                    }
+                    else {
+                        obj['className'] = "min-col-xs text-right";
+                    }
+                    columns.push(obj);
+                });
+
+                var config = {};
+                config["destroy"] = true;
+                config["scrollX"] = true;
+                config["scrollY"] = 200;
+                config["data"] = data.data;
+                config["columns"] = columns;
+                if (data.data.length > 0) {
+                    config["columnDefs"] = [{
+                        orderable: false,
+                        targets: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }]
+                }
+                var dt = $('#js_rpt_One').DataTable(config);
+            });*@
+
+            //点击Tab查询值,必须写在Search方法里面才能触发
+            $('#twoTab a').click(function (e) {
+                var activeTab = $(e.target).text();
+                $('#hidSubTab').val(activeTab);
+                params['hidSubTab'] = $('#hidSubTab').val();
+                var subUrl = ''
+                if (activeTab == '@ViewBag.Byproject') {
+                    subUrl = EquRPT.urls.queryByProjectOne;
+                }
+                else {
+                    subUrl = EquRPT.urls.queryByProjectTwo;
+                }
+                BindSubTabInfo(subUrl, params);
+            });
+
+        }
+
+        var BindSubTabInfo = function (url, params) {
+            $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+            $.post(url, params, function (data) {
+                $('#js_rpt_One_tr').empty();
+                $('#js_rpt_One').DataTable().clear();
+
+                var columns = [];
+
+                var dynamicName = data.columnList;
+                $.each(dynamicName, function (i, item) {
+                    var obj = {};
+                    obj['data'] = item;
+                    $('#js_rpt_One_tr').append("<th>" + item + "</th>");
+                    if (item == '@ViewBag.Project' || item == '@ViewBag.Func') {
+                        obj['className'] = "min-col-xs";
+                    }
+                    else {
+                        obj['className'] = "min-col-xs text-right";
+                    }
+                    columns.push(obj);
+                });
+
+                var config = {};
+                config["destroy"] = true;
+                config["scrollX"] = true;
+                config["scrollY"] = 200;
+                config["data"] = data.data;
+                config["columns"] = columns;
+                if (data.data.length > 0) {
+                    config["columnDefs"] = [{
+                        orderable: false,
+                        targets: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }]
+                }
+                var dt = $('#js_rpt_One').DataTable(config);
+                $.unblockUI();
+            });
+        }
+
+    });
+
+
+
+</script>
+}
+
+
+
+

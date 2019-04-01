@@ -1,0 +1,450 @@
+﻿
+@model PDMS.Model.EntityDTO.GL_StationDTO
+@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+}
+
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+
+        <div class="col-md-9">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>@Model.ProjectName - @Model.LineName  - @Model.StationName</h4>
+            @using (Html.BeginForm("ImportExcel", "GoldenLine", FormMethod.Post, new { id = "js_form_excel_add" }))
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class=" pull-left">
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download">@T("QA.Templatedownload")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">@T("Common.AddNew")</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_line_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>                  
+                        <th>@T("Common.Seq")</th>
+                        <th>Station Name</th>
+                        <th>MES Station Name</th>
+                        <th>WIP</th>
+                        <th>Scan IN Station Name</th>
+                        <th>Scan OUT Station Name</th>
+                        <th>Scan NG Station Name</th>
+                        <th>Scan Rework Station Name</th>                                   
+                        <th>IsEnabled</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div>
+    </div>
+</section>
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain BU Detail</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditGL_QADetectionPoint", "GLQAReport", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="StationName" placeholder="StationName"
+                                           required data-msg-required="Station Name is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">WIP</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" name="WIP">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Scan IN Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="ScanIN" placeholder="Scan IN  Station Name"
+                                           required data-msg-required="Scan IN  Station Name ">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Scan OUT Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="ScanOUT" placeholder="Scan OUT Station Name"
+                                           required data-msg-required="Scan OUT Station Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Scan NG Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="ScanNG" placeholder="Scan NG Station Name"
+                                           required data-msg-required="Scan NG Station Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Scan BACK Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="ScanBACK" placeholder="Scan Rework Station Name"
+                                           required data-msg-required="Scan Rework Station Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_input_Is_Enable_Add">@T("Common.Published")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm required" id="js_input_Is_Enable" name="IsEnabled" data-live-search="true">
+                                        <option value="true">启用</option>
+                                        <option value="false">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="QADetectionPointID" value="0" />        
+                            <input type="hidden" name="StationID" value="@Model.StationID" />               
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">File Upload</h4>
+                </div>
+                @using (Html.BeginForm("UploadFlowChartNewFile", "GoldenLine", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_updateall" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">Select an Excel file</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadfile" placeholder="ExcelFile"
+                                       required data-msg-required="Please select an Excel file" />
+                                <input type="hidden" name="Plant_Organization_UID" value="@Model.Plant_Organization_UID" />
+                                <input type="hidden" name="BG_Organization_UID" value="@Model.BG_Organization_UID" />
+                                <input type="hidden" name="FunPlant_Organization_UID" value="@Model.FunPlant_Organization_UID" />
+                                <input type="hidden" name="LineID" value="@Model.LineID" />
+                                <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_UpdateAll">@T("Common.Cancel")</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_updateAll">@T("QA.Submit")</button>
+                        @*<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>Cancel</button>
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i>Submit</button>*@
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var dataSource = (function () {
+                var urls = {
+                    getStations: '@Url.Action("GetGLQADetectionPoint", "GLQAReport")',
+                    getStationsByID: '@Url.Action("GetGLQADetectionPointByID", "GLQAReport")',
+                    backFL: '@Url.Action("LineSetup", "GoldenLine")',
+                    removeStationByID: '@Url.Action("RemoveGLQADetectionPointByID", "GLQAReport")'
+                }
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.StationID + '">@ViewBag.Edit</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.StationID + '">@ViewBag.Delete</button>' +
+                                '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            $(td).html(result);
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        className: "table-col-seq"
+                    }, {
+                        data: 'Seq',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'StationName',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'MESStationName',
+                        className: "min-col-xs text-center"
+                    },{
+                        data: 'WIP',
+                        className: "min-col-xs text-center"
+                    },{
+                        data: 'ScanIN',
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: 'ScanOUT',
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: 'ScanNG',
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: 'ScanBACK',
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                         data: "IsEnabled",
+                         render: function (data, type, full, meta) {
+                             return data ? 'Y' : 'N';
+                         },
+                         className: "text-center"
+                     },
+                    {
+                        data: 'System_Users.User_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs text-center"
+                    }]
+                var getStations = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_line_datatable",
+                        searchParams: { LineID: @Model.StationID},
+                        remoteUrl: urls.getStations,
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        getStations();
+                        $(".text-center").removeClass("sorting");
+                        $('.text-center').removeAttr('onclick');
+                    },
+                    getStations: function () {
+                        $('#page').page('destroy');
+                        getStations();
+                    }
+                }
+            })();
+
+
+
+            dataSource.Init();
+            $('#btn_back').on('click', function () {
+                var url = dataSource.urls.backFL;
+                window.location.href = url;
+            });
+
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.removeStationByID;
+                if (id) {
+                    PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                        $.post(url, { id: id }, function (data) {
+                            if (data && data.Result)
+                                dataSource.getStations();
+                            else
+                                PDMS.Utility.MessageBox.error("站点已在使用中或者使用过因此不能删除，如果不用此站点，请在编辑中禁用！");
+                               
+                        });
+                    });
+                }
+            });
+            $('#js_btn_add').click(function () {
+                $('#isEdit').val(false);
+                Seteditadd();
+               // $('#js_edit_modal').find('input[name=StationName]').val(@Model.StationName);
+            });
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+              
+                        if ($('#js_edit_modal').find('input[name=WIP]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写WIP');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('input[name=ScanIN]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanIN站点名称');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=ScanOUT]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanOUT站点名称');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=ScanNG]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanNG站点名称');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=ScanBACK]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写ScanBACK站点名称');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+
+                        if (data.length > 4) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            dataSource.getStations();
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            //$('body').on('click', '.js-grid-edit', function () {
+            //    var id = $(this).attr('data-id'),
+            //        url = dataSource.urls.getStationsByID;
+            //    if (id) {
+            //        var form = $('#js_edit_modal');
+            //        $.post(url, { id: id }, function (data) {
+            //            if (data) {
+            //                data.isEdit = true;
+            //                $('#js_edit_modal').data('entity', data).modal('show', $(this));
+            //            }
+            //        });
+            //    }
+            //});
+
+            $('body').on('click', '.js-grid-edit', function () {
+
+                $('#js_edit_modal').modal('show', $(this));
+                $('#isEdit').val(true);
+                $('#js_edit_modal').find('input[name=QADetectionPointID]').val(data.QADetectionPointID);
+                
+                var id = $(this).attr('data-id'),
+                 url = dataSource.urls.getStationsByID;
+                $.post(url, { id: id }, function (data) {
+                    $('#js_edit_modal').find('input[name=StationName]').val(data.StationName);
+                    $('#js_edit_modal').find('input[name=WIP]').val(data.WIP);
+                    $('#js_edit_modal').find('input[name=ScanIN]').val(data.ScanIN);
+                    $('#js_edit_modal').find('input[name=ScanOUT]').val(data.ScanOUT);
+                    $('#js_edit_modal').find('input[name=ScanNG]').val(data.ScanNG);
+                    $('#js_edit_modal').find('input[name=ScanBACK]').val(data.ScanBACK);
+
+                    var isenable = '' + data.IsEnabled;
+                    $('#js_input_Is_Enable').selectpicker('val', isenable);
+                    $("#js_input_Is_Enable").trigger("liszt:updated");
+                    $('#js_edit_modal').find('input[name=StationID]').val(data.StationID);
+
+                });
+            });
+
+            function Seteditadd() {
+                $('#js_edit_modal').find('input[name=StationID]').val('');
+                $('#js_edit_modal').find('input[name=StationName]').val('');
+                $('#js_edit_modal').find('input[name=WIP]').val('');
+                $('#js_edit_modal').find('input[name=ScanIN]').val('');
+                $('#js_edit_modal').find('input[name=ScanOUT]').val('');
+                $('#js_edit_modal').find('input[name=ScanNG]').val('');   
+                $('#js_edit_modal').find('input[name=ScanBACK]').val('');   
+            }
+
+            $('#js_btn_download').on('click', function () {
+                debugger;
+                var url = '@Html.Raw(Url.Action("DownloadStationExcel", "GoldenLine", new { id = @Model.LineID}))';
+                this.form.action = url;
+                $('#js_form_excel_add').submit();
+            });
+
+            $('#btn_import_fl').on('click', function () {
+                $('#js_importExcel_modal').modal('show');
+            });
+
+            $('#js_btn_clear_Updateall').click(function () {
+                $('#js_s_input_import').val('');
+            });
+
+            $('#js_btn_excel_updateAll').on('click', function () {
+                debugger;
+                $('#js_importExcel_modalAll').modal('hide');
+                $.blockUI({ message: "<h1>请等待...</h1>" });
+                $('#js_form_excel_updateall').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_excel_updateall').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('保存成功！');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+        });
+
+    </script>
+}

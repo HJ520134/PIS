@@ -1,0 +1,965 @@
+﻿
+@model PDMS.Model.ViewModels.Fixture_PartVM
+<style type="text/css">
+    /*#lineId, #datetimepicker {
+        width: 120px;
+    }*/
+     .titlewhite {
+        /*font-size: 12px;
+        background-color: #546a74;
+        border-color: #C6C6C6;
+        border-top-left-radius: 3px;
+        border: 1px ;
+        padding: 6px 12px;*/
+        font-size: 13px;
+        background-color: #3c8dbc;
+        border-top-left-radius: 3px;
+        border: 1px solid #546a74;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+    }
+    .textbox {
+        background-color: gold;
+        text-align: center;
+        margin: 2px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    #UtilizationRate, #BalanceRate {
+        border: 40px solid green;
+        background-color: green;
+        font-size: 3.5em;
+    }
+
+    #tbl * {
+        text-align: center;
+    }
+
+    .row {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .btn {
+        font-size: 12px;
+    }
+
+    #tbl1 > tbody > tr > th, #tbl1 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #tbl2 > tbody > tr > th, #tbl2 > tbody > tr > td {
+        line-height: 1;
+    }
+</style>
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+        $(".navbar-static-top").hide();
+    }
+
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        $(".navbar-static-top").show();
+    }
+</script>
+<section class="content portal-content"  style="background-color:#ecf0f5">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+
+            <button id="view-fullscreen" class="titlewhite" onclick="fullSr()">@T("Common.FullScreen")</button>
+            <button id="cancel-fullscreen" class="titlewhite" onclick="cancFullSr()">@T("Common.CancelFullScreen")</button>
+        </div>
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 search-field col-lg-12">
+                @*<a class="fa fa-search btn btn-primary" data-toggle="modal" id="bt_search" data-target="#js_search_modal"> 查询</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="js_btn_Add"> 新增</a>*@
+            </div>
+
+        </div>
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <form class="form-inline">
+                <div class='form-group'>
+                    <label for="js_select_factory_query" class="titlewhite"><strong>@T("GL.Site")</strong></label>
+                    <select class="btn btn-default" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                        <option></option>
+                        @foreach (var item in Model.Plants)
+                        {
+                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                        }
+                    </select>
+                </div>
+                <div class='form-group'>
+                    <label class="titlewhite" for="js_select_optype_query"><strong>@T("GL.BG")</strong></label>
+                    <select class="btn btn-default" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                </div>
+                <div class='form-group' style="display:none">
+                    <label class="titlewhite" for="js_select_funplant_query"><strong>@T("GL.FunctionPlant")</strong></label>
+                    <select class="btn btn-default" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                </div>
+                <div class='form-group'>
+                    <label class="titlewhite" ><strong>@T("GL.Project")</strong></label>                  
+                        <select id="customerId" class="btn btn-default" name="Project_UID" data-live-search="true"> </select>                                    
+                </div>
+                <div class='form-group '>
+                    <label class="titlewhite"><strong>@T("GL.Line")</strong></label>                
+                        <select id="lineName" class="btn btn-default"  name="LineID" data-live-search="true"></select>
+                    
+                </div>
+                <div class='form-group'>
+                    <label class="titlewhite"><strong>@T("GL.Station")</strong></label>            
+                    <select id="stationName" class="btn btn-default"  name="StationID" data-live-search="true">  </select>
+                  
+                </div>
+                <div class='form-group '>
+                    <label class="titlewhite"><strong>@T("GL.Date")</strong></label>                
+                    <div class='input-group date' id='datetimepicker'>
+                        <input type='text' class="form-control" id="myRetriveDate" name="myRetriveDate" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class='form-group '>
+                    <label class="titlewhite"><strong>@T("GL.Shift")</strong></label>
+              
+                        <select id="myRetriveShift" class="btn btn-default"   name="ShiftTimeID" data-live-search="true" >  </select>
+                    
+                </div>
+         
+                    <input type="button" value="@T("Common.Search")" id="searchbtn" class="btn btn-primary" />
+              
+            </form>
+        </div>
+    </div>
+        <hr class="hr-custom">
+        <div class="row" style="background-color:#ecf0f5">
+            <div class="col-md-12 table-container">
+
+                <!---------------------------Search Bar End-------------------------->
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="panel panelbg">
+                            <div class="panel-body">
+                                <div @*class="table-responsive"*@ style="width:100%;height:150px;">
+                                    <table class="table table-condensed" id="tbl1">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th>&nbsp;</th>
+                                           
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="height:20px;">
+                                                <td>@T("GL.Project"):</td>
+                                                <td id="tb1_model"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.Line"):</td>
+                                                <td id="tb1_line"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.Station"):</td>
+                                                <td id="tb1_station"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.Start"):</td>
+                                                <td id="tb1_start"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.PlanQty"):</td>
+                                                <td id="tb1_planqty"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="panel panelbg">
+                            <div class="panel-body">
+                                <div @*class="table-responsive"*@ style="width:100%;height:150px;">
+                                    <table class="table table-condensed" id="tbl2">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>@T("GL.ShiftlyOutput")</th>
+                                                @*<th>Loading</th>*@
+                                                <th title="L/B=∑(CycleTime)/(Max(CycleTime)*∑(Station))">@T("GL.LB")</th>
+                                                <th >@T("GL.UPH")</th>
+                                                <th>@T("GL.HC")</th>
+                                                <th title="UPPH=3600/(CycleTime*HC)">@T("GL.UPPH")</th>
+                                                <th title="VAOLE=(Output * SMH) / (HC *∑(ShiftTime))">@T("GL.VAOLE")</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>@T("GL.IEDB")</td>
+                                                <td id="iedbOutput"></td>
+                                                @*<td>/</td>*@
+                                                <td id="iedbLB"></td>
+                                                <td id="iedbSMH"></td>
+                                                <td id="iedbHC"></td>
+                                                <td id="iedbUPPH"></td>
+                                                <td id="iedbVAOLE">/</td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.Actual")</td>
+                                                <td id="actualOutput"></td>
+                                                @*<td id="actualLoading"></td>*@
+                                                <td id="actualLB"></td>
+                                                <td id="actualSMH"></td>
+                                                <td id="actualHC"></td>
+                                                <td id="actualUPPH"></td>
+                                                <td id="actualVAOLE"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@T("GL.BuildPlan")</td>
+                                                <td id="buildplanOutput"></td>
+                                                @*<td>/</td>*@
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="background-color:#546a74">
+                                <i class="fa fa-bar-chart"></i>@T("GL.IEDBCT")
+                            </div>
+                            <div class="panel-body panelbg">
+                                <div class="img-responsive" id="myShowStationCTChart" style="width:100%;height:250%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-xs-6">
+                        <div class="panel panel-primary">
+                            <div  class="panel-heading" style="background-color:#546a74">
+                                <i class="fa fa-bar-chart-o"></i>@T("GL.BatchHourOutput")
+                            </div>
+                            <div class="panel-body panelbg">
+                                <div class="img-responsive" id="myShowHourOutputChart" style="width:100%;height:250%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3" style="color:darkgreen;">
+                    Latest Refresh: <span id="js-LatestRefersh"></span>
+                </div>
+            </div><!--/表格-->
+        </div>
+
+</section>
+
+@section ViewScripts{    
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+
+<script src="~/Scripts/underscore.js"></script>
+<script src="~/Scripts/ECharts/echarts-3.8.4.js"></script>
+<script src="~/Scripts/ECharts/echarts-3.8.4.min.js"></script>
+@*<script src="~/Scripts/ECharts/echarts.min.js"></script>*@
+<script type="text/javascript">
+    var bhoItvId = 0;
+    var customerId;
+    var lineId;
+    var stationId;
+    var outputDate;
+    var shiftIndex;
+    // var BatchId;
+    // var wsoId;
+    var actualOutput;
+    var runtime;
+    var planDownTime;
+    var unPlanDownTime;
+    var lineStartTime;
+    var lineStationEndTime;
+    var modelname;
+    var maxActualCT = 0;
+    var shiftHour;
+    $(function () {
+
+        //Initial Date
+        $('#datetimepicker').datetimepicker('setDate', (new Date()));
+
+        debugger;
+        SetSelectShow();
+        refreshshow();
+        @*ShowLatestLineBatch(@ViewBag.RETRIVE_CID, @ViewBag.RETRIVE_LID, @ViewBag.RETRIVE_SID, '@ViewBag.RETRIVE_DT', @ViewBag.RETRIVE_SI);
+        ShowHourOutputChart(@ViewBag.RETRIVE_CID, @ViewBag.RETRIVE_LID, @ViewBag.RETRIVE_SID, '@ViewBag.RETRIVE_DT', @ViewBag.RETRIVE_SI);*@
+
+        @*bhoItvId = setInterval(function () {
+            ShowLatestLineBatch(@ViewBag.RETRIVE_CID, @ViewBag.RETRIVE_LID, @ViewBag.RETRIVE_SID, '@ViewBag.RETRIVE_DT', @ViewBag.RETRIVE_SI);
+            ShowHourOutputChart(@ViewBag.RETRIVE_CID, @ViewBag.RETRIVE_LID, @ViewBag.RETRIVE_SID, '@ViewBag.RETRIVE_DT', @ViewBag.RETRIVE_SI);
+        }, 60000);*@
+        //bhoItvId = setInterval(function () {
+        //     refreshshow();
+        //}, 60000)
+        $('#searchbtn').click(function () {
+            refreshshow();
+            bhoItvId = setInterval(function () {
+                refreshshow();
+            }, 60000)
+        });
+    });
+
+    var WorkStationMaintenance = (function () {
+        var urls =
+            {
+                backFL: '@Url.Action("Customer", "GoldenLine")',
+                //根据厂区取得OP类型
+                getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                //根据OP类型取得功能厂
+                getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                getLineDTOs: '@Url.Action("GetLineDTOs", "GoldenLine")',
+                //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                getStationDTOs: '@Url.Action("GetONOMESStationDTOs", "GoldenLine")',
+
+            };
+        return {
+            urls: urls
+
+        };
+
+    })();
+    $('#btn_back').on('click', function () {
+        var url = WorkStationMaintenance.urls.backFL;
+        window.location.href = url;
+    });
+    //$('#datetimepicker').datetimepicker({
+    //    defaultDate: new Date(),
+    //    format: 'YYYY-MM-DD',
+    //});
+    //查询界面厂区是OP类型变化
+    $('#js_select_factory_query').change(function () {
+        GetOPTypes();
+    })
+    function GetOPTypes() {
+        debugger;
+        var oporgid = $('#js_select_factory_query option:selected').val();
+        url = WorkStationMaintenance.urls.getCurrentOPType;
+        $('#js_select_optype_query').empty();
+        $('#js_select_optype_query').html('<option></option>');
+        $('#js_select_funplant_query').empty();
+        $('#js_select_funplant_query').html('<option></option>');
+        $('#lineName').empty();
+        $('#lineName').html('<option></option>');
+        $('#stationName').empty();
+        $('#stationName').html('<option></option>');
+        if (oporgid != 0) {
+            $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                        $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                    }
+                }
+            });
+        }
+        //$('#js_select_optype_query').selectpicker('refresh');
+    }
+    //OP类型变更  start
+    $('#js_select_optype_query').change(function () {
+        refreshSearchFuncPlantSelect();
+        refreshSearchProjectSelect();
+        refreshShiftTimeSelect();
+    })
+    //加载功能厂
+    function refreshSearchFuncPlantSelect() {
+        $('#js_select_funplant_query').empty();
+        $('#js_select_funplant_query').html('<option></option>');
+        var url = WorkStationMaintenance.urls.getFunPlantByOPTypes;
+        $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+            }
+        });
+        //$('#js_select_funplant_query').selectpicker('refresh');
+    }
+
+    //加载专案
+    function refreshSearchProjectSelect() {
+        debugger;
+        $('#customerId').empty();
+        $('#customerId').html('<option></option>');
+        var getProjectByOPTypeUrl = WorkStationMaintenance.urls.getCustomerDTOs;
+        var optypeUid = $('#js_select_optype_query').val();       
+        $.get(getProjectByOPTypeUrl, {  BG_Organization_UID: optypeUid}, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+            }
+        });
+        //$('#js_select_project_query').selectpicker('refresh');
+    }
+    //加载班别
+    function refreshShiftTimeSelect() {
+        debugger;
+        $('#myRetriveShift').empty();
+        $('#myRetriveShift').html('<option></option>');
+        var getProjectByOPTypeUrl = WorkStationMaintenance.urls.getShiftTimeDTOs;
+        var optypeUid = $('#js_select_optype_query').val();
+        var oporgid = $('#js_select_factory_query option:selected').val();
+        // Plant_Organization_UID, int BG_Organization_UID
+        $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid}, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+            }
+        });
+        //$('#js_select_project_query').selectpicker('refresh');
+    }
+    //根据专案获取线别
+    $('#customerId').change(function () {
+        $('#lineName').empty();
+        $('#lineName').html('<option></option>');
+        $('#stationName').empty();
+        $('#stationName').html('<option></option>');
+        var getProjectByOPTypeUrl = WorkStationMaintenance.urls.getLineDTOs;
+        var customerId = $('#customerId option:selected').val();
+        $.get(getProjectByOPTypeUrl, { CustomerID: customerId}, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+            }
+        });
+    })
+    //根据线获取站点
+    $('#lineName').change(function () {
+        $('#stationName').empty();
+        $('#stationName').html('<option></option>');
+        var getProjectByOPTypeUrl = WorkStationMaintenance.urls.getStationDTOs;
+        var LineId = $('#lineName option:selected').val();
+        $.get(getProjectByOPTypeUrl, { LineId: LineId}, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+            }
+        });
+    })
+
+
+    function SetSelectShow() {
+        debugger;
+
+        $('#js_select_factory_query').val(@ViewBag.Plant_UID);
+        if(@ViewBag.Plant_UID!=0)
+        {
+            $('#js_select_factory_query').trigger('change');
+        }
+
+
+        $('#js_select_optype_query').val(@ViewBag.BG_UID);
+        if(@ViewBag.BG_UID!=0)
+        {
+            $('#js_select_optype_query').trigger('change');
+        }
+
+        $('#js_select_funplant_query').val(@ViewBag.FunPlant_UID);
+
+        $('#customerId').val(@ViewBag.RETRIVE_CID);
+
+        if(@ViewBag.RETRIVE_CID!=0)
+        {
+            $('#customerId').trigger('change');
+        }
+        $('#lineName').val(@ViewBag.RETRIVE_LID);
+
+        if(@ViewBag.RETRIVE_LID!=0)
+        {
+            $('#lineName').trigger('change');
+        }
+        $('#stationName').val(@ViewBag.RETRIVE_SID);
+
+        if(@ViewBag.RETRIVE_SID!=0)
+        {
+            $('#stationName').trigger('change');
+        }
+        $('#myRetriveShift').val(@ViewBag.RETRIVE_SI);
+
+        if(@ViewBag.RETRIVE_SI!=0)
+        {
+            $('#myRetriveShift').trigger('change');
+        }
+
+        $('#myRetriveDate').val(new Date('@ViewBag.RETRIVE_DT').format("yyyy-MM-dd"));
+
+    }
+
+    Date.prototype.format = function(format) {
+        var date = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S+": this.getMilliseconds()
+        };
+        if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in date) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                       ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+            }
+        }
+        return format;
+    }
+
+
+    //refresh show page data
+    function refreshshow() {
+        debugger;
+        clearInterval(bhoItvId);
+        customerId = $('#customerId').val();
+        lineId = $('#lineName').val();
+        stationId = $('#stationName').val();
+        outputDate = $('#myRetriveDate').val();
+        shiftIndex = $('#myRetriveShift').val();
+        ShowLatestLineBatch(customerId, lineId, stationId, outputDate, shiftIndex);
+        ShowHourOutputChart(customerId, lineId, stationId, outputDate, shiftIndex);
+        //getShiftHour(customerId, lineId, stationId, outputDate, shiftIndex);
+        bhoItvId = setInterval(function () {
+            ShowLatestLineBatch(customerId, lineId, stationId, outputDate, shiftIndex);
+            ShowHourOutputChart(customerId, lineId, stationId, outputDate, shiftIndex);
+        }, 60000);
+    };
+
+
+
+
+    //ShowLatestLineBatch
+    function ShowLatestLineBatch(customerId, lineId, stationId, outputDate, shiftTimeID) {
+        debugger;
+        $('#tb1_model').text('/');
+        $('#tb1_line').text('/');
+        $('#tb1_station').text('/');
+        $('#tb1_start').text('/');
+        $('#tb1_planqty').text('/');
+        //BatchId = 0;
+        $.ajax({
+            url: '@Url.Content("~/GoldenLine/GetLatestLineStationInfo")',
+            type: 'post',
+            data: { 'customerId': customerId, 'lineId': lineId, 'stationId': stationId, 'outputDate': outputDate, 'shiftTimeID': shiftTimeID },
+            dataType: 'json',
+            success: function (result) {
+                debugger;
+                if(  result!=null)
+                {
+
+                $('#tb1_model').text(_.isString(result.ProjectName) ? result.ProjectName : '/');
+                $('#tb1_line').text(_.isString(result.LineName) ? result.LineName : '/');
+                $('#tb1_station').text(_.isString(result.StationName) ? result.StationName : '/');
+               // $('#tb1_start').text(_.isString(result.LineStartTime) ? result.LineStartTime.replace(/T/, ' ') : '/');
+                //new Date(rowData.Applicant_Date).format("yyyy-MM-dd hh:mm:ss")
+                $('#tb1_start').text(new Date(result.LineStartTime).format("yyyy-MM-dd hh:mm:ss"));
+                $('#tb1_planqty').text(_.isNumber(result.Planqty) ? result.Planqty : '/');
+                $('#buildplanOutput').text(_.isNumber(result.Planqty) ? result.Planqty : '/');
+                debugger;
+                ShowStationCTChart(customerId, lineId,stationId, outputDate, shiftTimeID);
+
+                }
+            },
+            error: function () {
+                debugger;
+                console.log('ShowLatestLineBatch error!');
+            }
+        });
+    }
+    //数字四舍五入（保留n位小数）
+     function getFloat (number, n) { 
+        n = n ? parseInt(n) : 0; 
+        if (n <= 0) return Math.round(number); 
+        number = Math.round(number * Math.pow(10, n)) / Math.pow(10, n); 
+        debugger;
+        if(number==0||number=='0')
+        {
+            number= 0.0;
+
+        }
+            return number; 
+       
+
+     
+    };
+    //GetLineShiftActPlan
+    function GetLineShiftActPlan(customerId, lineId, stationId, outputDate,shiftTimeID) {
+        $('#iedbOutput').text(0);
+        $('#actualOutput').text(0);
+        $('#iedbHC').html(0);
+        $('#actualHC').html(0);
+        $('#iedbUPPH').text(0);
+        $('#actualUPPH').html(0);
+        $('#iedbLB').text(0);
+        $('#actualLB').text(0);
+        $('#iedbSMH').text(0);
+        $('#actualSMH').text(0);
+        $('#actualVAOLE').text(0);
+        debugger;
+        $.ajax({
+            url: '@Url.Content("~/GoldenLine/GetLineShiftPlanActInfo")',
+            type: 'post',
+            data: { 'customerId': customerId, 'lineId': lineId, 'stationId': stationId, 'outputDate': outputDate, 'shiftTimeID': shiftTimeID},
+            dataType: 'json',
+            success: function (result) {
+                debugger;
+        
+                $('#iedbOutput').text(result.PlanOutPut);
+                $('#iedbLB').text(getFloat(result.PlanLB*100,1)==0?'0.0':getFloat(result.PlanLB*100,1)+"%");
+                //$('#iedbSMH').text(getFloat(result.PlanOutPut/10,1));
+                $('#iedbSMH').text(getFloat(result.PlanOutPut/10,1)==0?'0.0':getFloat(result.PlanOutPut/10,1));
+                //$('#iedbUPPH').text(getFloat(result.PlanUPPH,1));
+                $('#iedbUPPH').text(getFloat(result.PlanUPPH,1)==0?'0.0':getFloat(result.PlanUPPH,1));
+               // $('#iedbLB').text((result.PlanLB*100).toFixed(2)+"%");
+               // $('#iedbSMH').text((result.PlanOutPut/10).toFixed(2));
+                $('#iedbHC').html(result.PlanHC);
+               // $('#iedbUPPH').text(result.PlanUPPH.toFixed(2));
+               // $('#iedbVAOLE').text(0);
+
+                
+
+                $('#actualOutput').text(result.ActualOutPut);
+               // $('#actualLB').text((result.ActualLB*100).toFixed(2)+"%");
+                //$('#actualLB').text(getFloat(result.ActualLB*100,1)+"%");
+                $('#actualLB').text((getFloat(result.ActualLB*100,1)==0?'0.0':getFloat(result.ActualLB*100,1))+"%");
+
+               // $('#actualSMH').text((result.ActualSMH).toFixed(2));
+               // $('#actualSMH').text(getFloat(result.ActualSMH,1));
+                $('#actualSMH').text(getFloat(result.ActualSMH,1)==0?'0.0':getFloat(result.ActualSMH,1));
+                $('#actualHC').text(result.ActualHC);
+                // $('#actualUPPH').text(result.ActualUPPH.toFixed(2));
+               // $('#actualUPPH').text(getFloat(result.ActualUPPH,1));
+                $('#actualUPPH').text(getFloat(result.ActualUPPH,1)==0?'0.0':getFloat(result.ActualUPPH,1));
+
+               // $('#actualVAOLE').text(getFloat(result.ActualVAOLE * 100,1)+"%");
+                $('#actualVAOLE').text((getFloat(result.ActualVAOLE * 100,1)==0?'0.0':getFloat(result.ActualVAOLE*100,1))+"%");
+
+                $("#js-LatestRefersh")[0].innerText = result.DateTimeNOW;
+                
+            },
+            error: function () {
+                console.log("GetLineShiftActPlan error");
+            }
+        });
+    }
+
+    //ShowStationCTChart
+    function ShowStationCTChart(customerId, lineId,stationId, outputDate, shiftTimeID) {
+        debugger;
+        var myShowStationCTChart = echarts.init(document.getElementById('myShowStationCTChart'));
+        myShowStationCTChart.showLoading({ text: 'Trying to read the data...', maskcolor: 'transparent' });
+        $.ajax({
+            url: '@Url.Content("~/GoldenLine/GetStationStdActCT")',
+            type: 'post',
+            async:'false',
+            data: { 'customerId': customerId, 'lineId': lineId, 'outputDate': outputDate, 'shiftTimeID': shiftTimeID},
+            dataType: 'json',
+            success: function (result) {
+                debugger;
+                maxActualCT = _.max(result, function (value) { return value.CycleTime }).CycleTime;
+                listbatchStationStdActInfo = result;
+                GetLineShiftActPlan(customerId, lineId, stationId, outputDate,shiftTimeID);
+
+
+                var myShowStationCTChart = echarts.init(document.getElementById('myShowStationCTChart'));
+                var option = {
+                    //title: {
+                    //    text: 'Batch Hour Output'
+                    //},
+                    color: ['#3aa112', '#5793f3'],
+                    textStyle: {
+                        fontWeight: 'bolder',
+                        fontSize: 12,
+                        color: '#575757'
+                    },
+                    tooltip: {
+                        trigger:'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            dataView: { show: true, readOnly: false },
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: { show: true }
+                        }
+                    },
+                    calculable: true,
+                    legend: {
+                        data: ['IEDB CT', 'Actual CT'],
+                        y: 'top',
+                        textStyle: { color: '#575757' },
+                        left:'0'
+                    },
+                    grid:{
+                        y2: 40
+                    },
+                    xAxis: {
+                        type: "category",
+                        data: [],
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 20,
+                            fontSize: 10
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        axisLabel: {
+                            fontSize: 10
+                        }
+                    }
+                    ,
+                    series: [{
+                        name: 'IEDB CT',
+                        type: 'bar',
+                        data: [],
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'max' }
+                            ]
+                        }
+                        ,
+                        markLine: {
+                            data: [
+                                { type: 'max', name: 'max' }
+                            ]
+                        }
+                    }, {
+                        name: 'Actual CT',
+                        type: 'bar',
+                        data: [],
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'max' }
+                            ]
+                        }
+                    }]
+                };
+
+                option.xAxis.data = _.pluck(result, 'StationName');
+                option.series[0].data = _.pluck(result, 'CycleTime');
+                option.series[1].data = _.pluck(result, 'StdRouteCT');           
+                myShowStationCTChart.setOption(option, true);
+                myShowStationCTChart.hideLoading();
+            },
+            error: function () {
+                console.log('ShowStationCTChart error');
+            }
+        });
+    }
+
+
+    //ShowHourOutputChart
+    function ShowHourOutputChart(customerId, lineId, stationId, currDate, currShiftIndex) {
+        debugger;
+        $.ajax({
+            url: '@Url.Content("~/GoldenLine/GetShiftHourOutput")',
+            type: 'POST',
+            data: { 'customerId': customerId, 'lineId': lineId, 'stationId': stationId, 'outputDate': currDate, 'shiftTimeID': currShiftIndex},
+            dateType: 'json',
+            success: function (result) {
+                result = JSON.parse(result);
+                var myShowHourOutputChart = echarts.init(document.getElementById('myShowHourOutputChart'));
+                myShowHourOutputChart.showLoading({ text: 'Trying to read the data...', maskcolor: 'transparent' });
+
+                var option = {
+                    //title: {
+                    //    text: 'Batch Hour Output'
+                    //},
+                    color: ['#5793f3', '#3aa112'],
+                    textStyle: {
+                        fontWeight: 'bolder',
+                        fontSize: 12,
+                        color: '#575757'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: { show: true, readOnly: false },
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: { show: true }
+                        }
+                    },
+                    calculable: true,
+                    legend: {
+                        data: [],
+                        y: 'top',
+                        textStyle: {
+                            fontSize: 7,
+                            color: '#575757'
+                        }
+                    },
+                    grid: {
+                        y2: 40
+                    },
+                    xAxis: {
+                        type: "category",
+                        data: [],
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 20,
+                            fontSize: 10
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        axisLabel: {
+                            fontSize: 10
+                        }
+                    },
+                    series: [{
+                        name: '',
+                        type: 'bar',
+                        data: [],
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'max' }
+                            ]
+                        },
+                        //markLine: {
+                        //    data: [
+                        //        { type: 'max', name: 'max' }
+                        //    ]
+                        //}
+                    },
+                    {
+                        name: '',
+                        type: 'line',
+                        data: (function () {
+                            var result2 = [];
+                            debugger;
+                            for (var i = 0; i < result.length; i++) {                          
+                                result2.push(result[i].StationSMH.toFixed(0));
+                            }
+                            return result2;
+                        })(),
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'max' }
+                            ]
+                        },
+                        stack: 'plan',
+                      
+                    },
+                    
+                    ]
+                };
+
+                option.xAxis.data = _.pluck(result, 'HourQuantum');
+                option.series[0].data = _.pluck(result, 'ActualOutput');
+                myShowHourOutputChart.setOption(option, true);            
+                myShowHourOutputChart.hideLoading();
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+
+    };
+
+
+</script>
+
+}

@@ -1,0 +1,522 @@
+﻿<!-- Main content -->
+@{
+
+    ViewBag.Edit = T("QA.Edit").Text;
+    ViewBag.Successfullymodified = T("QA.Successfullymodified").Text;
+    ViewBag.Nobaddetails = T("QA.Nobaddetails").Text;
+    ViewBag.Naturalnumber = T("QA.Naturalnumber").Text;
+    ViewBag.Pleaseproduction = T("QA.Pleaseproduction").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+}
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+</style>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-2" id="js_save_status_div">
+                <h4 class="margin-td-5" id="js_save_status"></h4>
+            </div>
+            <div class="col-md-12 col-lg-10"></div>
+        </div>
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+
+        </div> <!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+
+    <div id="day_label_th">
+        <label>@T("QA.Date"):</label><label id="js_datetime"></label>&<label>@T("QA.Timeperiod"):</label><label id="js_time_interval"></label>&
+        <label>@T("QA.OPType"):</label><label id="js_OPType"></label>&<label>@T("QA.Project"):</label><label id="js_project"></label>&<label>@T("QA.Checkpoint"):</label><label id="js_process"></label>&<label>@T("QA.Materialtypes"):</label><label id="js_meterialType"></label>&
+        <label>@T("QA.Factorybuilding"):</label><label id="js_place"></label>&<label>@T("QA.Colour"):</label><label id="js_color"></label>
+    </div>
+
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_qaMasterdata_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("QA.Numberinputs")</th>
+                        <th>@T("QA.Numbertests")</th>
+                        <th>@T("QA.OnceOK")</th>
+                        <th>@T("QA.Abadrate")</th>
+                        <th>@T("QA.NGnumber")</th>
+                        <th>@T("QA.Exterior")</th>
+                        <th>@T("QA.Sizenumber")</th>
+                        <th>@T("QA.Numberrework")</th>
+                        <th>@T("QA.Reworkreturned")</th>
+                        <th>@T("QA.Exportquantity")</th>
+                        <th>@T("QA.WIPchecked")</th>
+                        <th>@T("QA.Replacement")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+    <button id="btn-excetionType" type="button" class="btn btn-primary ">@T("QA.Baddetail")</button>
+
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Plant" name="Plant"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_OPType">@T("QA.OPType")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_OPType" name="OPType">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_Type">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_Part_Type" name="FlowChart_Master_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant">
+                                        <option value="IPQC" selected="selected">IPQC</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="ProductDate" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtype")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color" id="js_s_input_color_label">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Checkpointname")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_process" name="FlowChart_Detail_UID"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_place">@T("QA.Factorybuilding")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_place" name="Place"></select>
+                                </div>
+                            </div>
+                  
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_interval"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="btn-cancel" type="button"><i class="fa fa-eraser"></i> @T("QA.Emptied")</button>
+                    <button class="btn btn-primary btn-sm" id="btn-search" type="button"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+<script type="text/javascript" src="~/Scripts/PDMSJS/QAReportJS/ClickEvent.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var subDatatable = null;
+            //#region 预设reference_date
+            var myDate = new Date();
+            $("#js_s_input_date").val(myDate.toLocaleDateString());
+            //#endregion
+            var QAMasterUrls = {
+                GetIntervalTime: '@Url.Action("GetIntervalTime","EventReportManager")',
+                QueryQAExistsData: '@Url.Action("QueryQAHistroyDatas","Quality")',
+                PrepareForQADetail: '@Url.Action("QAInputDetail", "Quality")',
+                QueryCheckPointByProject: '@Url.Action("QueryCheckPointByProjectName", "Quality")'
+            };
+            //#region 查询条件的五级联动
+            //初始化数据
+            QueryPlant();
+            GetInterval();
+            GetProcessBasicInfo();
+            $("#js_s_input_color").change(function ff() {
+                GetProcess();
+            });
+            $("#js_s_input_date").change(function ff() {
+                QueryColor();
+            });
+            $("#js_s_input_MaterialType").change(function ff() {
+                QueryColor();
+            });
+            //#endregion
+            var QAMasterData = (function() {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.FlowChart_Detail_UID != null && rowData.FlowChart_Detail_UID != 0) {
+                                $('#inputData_FlowchartDetailUID').val(rowData.FlowChart_Detail_UID);
+                            }
+                            if (rowData.QualityAssurance_InputMaster_UID == 0 || rowData.QualityAssurance_InputMaster_UID == null) {
+                                $(td).html('<button type="button"  disabled = "disabled" name="grid_edit" class="btn btn-primary btn-xs js-grid-edit" data-toggle="modal" data-target="#js_edit_modal" data-id="' + "" + '">@ViewBag.Edit</button>');
+                            }
+                            else {
+                                $('#inputData_New_QualityAssurance_InputMaster_UID').val(rowData.QualityAssurance_InputMaster_UID);
+                                if (rowData.CanModify)
+                                    $(td).html('<button type="button" name="grid_edit" disabled = "disabled" class="btn btn-primary btn-xs js-grid-edit" data-toggle="modal" data-target="#js_edit_modal" data-id="' + rowData.QualityAssurance_InputMaster_UID + '">@ViewBag.Edit</button>');
+                                else {
+                                    $(td).html('<button type="button" name="grid_edit" disabled = "disabled"  class="btn btn-primary btn-xs js-grid-edit" data-toggle="modal" data-target="#js_edit_modal" data-id="' + rowData.QualityAssurance_InputMaster_UID + '">@ViewBag.Edit</button>');
+                                }
+                            }
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Input == null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" style="width:70%" name="Input" value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" style="width:70%" disabled="disabled" name="Input"  value="' + rowData.Input + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.FirstCheck_Qty == null)
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" name="FirstCheck_Qty" style="width:70%" value="' + "" + '">');
+                            }
+                            else if (!rowData.FirstCheckFlag)
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="FirstCheck_Qty"  value="' + rowData.FirstCheck_Qty + '">');
+                            }
+                            else
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="background-color: red;width:70%" name="FirstCheck_Qty"  value="' + rowData.FirstCheck_Qty + '">');
+                            }
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.FirstOK_Qty ==null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" name="FirstOK_Qty" style="width:70%" value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="FirstOK_Qty"  value="' + rowData.FirstOK_Qty + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.FirstRejectionRate == null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%"  name="FirstRejectionRate"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%"  name="FirstRejectionRate"  value="' + rowData.FirstRejectionRate + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.NG_Qty == null)
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" name="NG_Qty" style="width:70%"  value="' + "" + '">');
+                            }
+
+                            else if (!rowData.NGFlag)
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%"  name="NG_Qty"  value="' + rowData.NG_Qty + '">');
+                            }
+                            else
+                            {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="background-color: red;width:70%"  name="NG_Qty"  value="' + rowData.NG_Qty + '">');
+                            }
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.SurfaceSA_Qty ==null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="SurfaceSA_Qty"  onchange="changeValue()"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="SurfaceSA_Qty"  value="' + rowData.SurfaceSA_Qty + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.SizeSA_Qty ==null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="SizeSA_Qty"  onchange="changeValue()"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="SizeSA_Qty"  value="' + rowData.SizeSA_Qty + '">');
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.RepairCheck_Qty == null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="RepairCheck_Qty"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="RepairCheck_Qty"  value="' + rowData.RepairCheck_Qty + '">');
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.RepairOK_Qty ==null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center"  name="RepairOK_Qty" style="width:70%" onchange="changeValue()"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%"  name="RepairOK_Qty"  value="' + rowData.RepairOK_Qty + '">');
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Shipment_Qty ==null)
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="Shipment_Qty"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="Shipment_Qty"  value="' + rowData.Shipment_Qty + '">');
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.WIPForCheck_Qty ==null )
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="WIPForCheck_Qty"  value="' + "" + '">');
+                            else
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="WIPForCheck_Qty"  value="' + rowData.WIPForCheck_Qty + '">');
+
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (!rowData.DisplaceFlag) {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="width:70%" name="Displace_Qty"  value="' + rowData.Displace_Qty + '">');
+                            }
+                            else {
+                                $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled" style="background-color: red;width:70%" name="Displace_Qty"  value="' + rowData.Displace_Qty + '">');
+                            }
+                        },
+                        className: "min-col-xs"
+                    }
+                ];
+                var _getParams = function () {
+                        return  $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryQAMasterData
+                var _queryQAMasterData = function (firstLoad) {
+                    //Search history
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_qaMasterdata_datatable",
+                        remoteUrl: QAMasterUrls.QueryQAExistsData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+                };
+                var _setHidden = function () {
+                    var DisplaceFlag = $('#inputData_DisplaceFlag').val();
+                    if(DisplaceFlag==true)
+                    {
+                        $('#DisplaceFlag').attr({ "readonly": "readonly" });
+                    }
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _setHidden();
+                        _queryQAMasterData(true);
+                    },
+                    QueryQAMasterDatas: function() {
+                        _queryQAMasterData(false);
+                    }
+                }
+            })();
+            QAMasterData.Init();
+            function CreateTab() {
+                $("#myTab li").remove();
+                $("#js_s_input_interval_time option").each(function(index) {
+                    if (this.selected == true) {
+                        var tabText = $(this).text();
+                        $("#myTab").append('<li class="ppchecktab" ><a href="#" data-toggle="tab">' + tabText + '</a></li>');
+                    }
+                });
+            }
+            //不良明细页面跳转事件
+            $('#btn-excetionType').click(function () {
+                var criteriaInfo = $('#day_label_th').text().replace(/[\r\n]/ig, '').replace(/[ ]/g, "").trim();
+                criteriaInfo = criteriaInfo.replace(/&/g, "_")
+                var QAMasterUID = $('.js-grid-edit').attr('data-id');
+                var FlowChart_Master_UID = $('#js_s_input_Part_Type').val();
+                var project = $("#js_s_input_project").find("option:selected").text();
+                var FlowChart_Detail_UID = $("#js_s_input_process").val();
+                var ProductDate = $("#js_datetime").text();
+                var Time_interval = $('#js_time_interval').text();
+
+                var Color = $("#js_color").text();
+                var MaterialType = $("#js_meterialType").text();
+
+                if (QAMasterUID == null)
+                {
+                    PDMS.Utility.MessageBox.info("@ViewBag.Nobaddetails");
+                    return;
+                }
+                if (QAMasterUID == "")
+                {
+                    QAMasterUID = 0;
+                }
+                var url = QAMasterUrls.PrepareForQADetail + '?QAMasterUID=' + QAMasterUID + '&&criteriaInfo=' + criteriaInfo + '&&FlowChart_Master_UID=' + FlowChart_Master_UID + '&&CanModify=' + false + '&&Project=' + project + '&&FlowChart_Detail_UID=' + FlowChart_Detail_UID + "&&ProductDate=" + ProductDate + "&&Time_interval=" + Time_interval
+                + "&&MaterialType=" + MaterialType + "&&Color=" + Color + "&&FromQAMasterHistory=" + true;
+                window.location.href = url;
+            });
+            //#region 查询
+            //按条件查询
+            $('#btn-search').click(function() {
+                CreateTab();
+                //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                PDMS.Utility.Criteria.Build();
+                $('#js_search_modal').modal('hide');
+                //点击Tab查询值
+                $('#myTab a').click(function(e) {
+                    //为日期、时段赋值
+                    var str = $("#js_s_input_date").val();
+                    var activeTab = $(e.target).text();
+                    var mtype = $("#js_s_input_MaterialType").val();
+                    var color = $("#js_s_input_color").val();
+                    var place = $("#js_s_input_place").val();
+                    var process = $('#js_s_input_process').find("option:selected").text();
+                    var optype = $("#js_s_input_OPType").val();
+                    var process_Seq = $('#js_s_input_process').val();
+                    $("#js_s_input_process").val(process_Seq);
+                    var project = $("#js_s_input_project").find("option:selected").text();
+                    $("#js_OPType").text(optype);
+                    $("#js_project").text(project);
+                    $("#js_color").text(color);
+                    $("#js_place").text(place);
+                    $("#js_meterialType").text(mtype);
+                    $("#js_process").text(process);
+                    $("#js_datetime").text(str);
+                    $("#js_time_interval").text(activeTab);
+                    $("#js_tab_select_text").val(activeTab);
+                    if ($("#js_form_query").valid()) {
+                        QAMasterData.QueryQAMasterDatas();
+                        if (activeTab == "全天" || activeTab == "白班小计" || activeTab == "夜班小计") {
+                            $(".js-grid-edit").attr({ "disabled": "disabled" });
+                        }
+                    }
+                });
+                //#region 默认最后一个页签被选中
+                $('#myTab a:last').tab('show');
+                var mydate = new Date();
+                var str = $("#js_s_input_date").val();
+                var activeTab = $('#myTab a:last').text();
+                //-------------
+                var mtype = $("#js_s_input_MaterialType").val();
+                var color = $("#js_s_input_color").val();
+                var place = $("#js_s_input_place").val();
+                var process = $('#js_s_input_process').find("option:selected").text();
+                var optype = $("#js_s_input_OPType").val();
+                var process_Seq = $('#js_s_input_process').val();
+                $("#js_s_input_process").val(process_Seq);
+                var project = $("#js_s_input_project").find("option:selected").text();
+                $("#js_OPType").text(optype);
+                $("#js_project").text(project);
+                $("#js_color").text(color);
+                $("#js_place").text(place);
+                $("#js_meterialType").text(mtype);
+                $("#js_process").text(process);
+                //------------
+                $("#js_datetime").text(str);
+                $("#js_time_interval").text(activeTab);
+                $("#js_tab_select_text").val(activeTab);
+                if ($("#js_form_query").valid()) {
+                    QAMasterData.QueryQAMasterDatas();
+                }
+                //#endregion
+            });
+            //清空查询条件
+            $('#btn-cancel').click(function () {
+                PDMS.Utility.Criteria.Clear();
+                $('#js_search_modal').modal('hide');
+            });
+            //#endregion
+        });
+    </script>
+}

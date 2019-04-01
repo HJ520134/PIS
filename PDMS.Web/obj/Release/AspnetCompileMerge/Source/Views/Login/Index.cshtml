@@ -1,0 +1,180 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Login - PIS(M)";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>PIS(M)</title>
+
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/skins/skin-blue-light.min.css">
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="Content/img/logo-icon/apple-icon-57x57-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="Content/img/logo-icon/apple-icon-60x60-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="Content/img/logo-icon/apple-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="Content/img/logo-icon/apple-icon-76x76-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="Content/img/logo-icon/apple-icon-114x114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="Content/img/logo-icon/apple-icon-120x120-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="Content/img/logo-icon/apple-icon-144x144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="Content/img/logo-icon/apple-icon-152x152-precomposed.png" />
+
+
+    @Styles.Render("~/Content/basic_framework")
+    @Styles.Render("~/Content/AdminLTE_Theme")
+    @Styles.Render("~/Content/css/css")
+
+    <link rel="stylesheet" href="~/Content/css/portal-xs.css" media="screen and (max-width: 768px)">
+    <link rel="stylesheet" href="~/Content/css/portal-sm.css" media="screen and (min-width: 768px) and (max-width: 992px)">
+    <link rel="stylesheet" href="~/Content/css/portal-md.css" media="screen and (min-width: 992px) and (max-width: 1200px)">
+    <link rel="stylesheet" href="~/Content/css/Portal-lg.css" media="screen and (min-width: 1200px)">
+
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="hold-transition login-page">
+
+    <div class="login-box margin-bottom-none">
+        <div class="login-logo">
+            <img src="~/Content/img/logo/PIS-M-Login-Logo.png" style="height: 100px;" class="login-logo-logoimg" />
+        </div><!-- /.login-logo -->
+        <div style="padding:40px" class="login-box-body">
+            @{
+                Html.BeginForm("SignIn", "Login", FormMethod.Post);
+
+                var hasErrorStyle = "has-error";
+                var accountNotExist = string.Equals(ViewBag.InvalidCode, "ACCOUNTNOTEXIST");
+                var wrongPassWord = string.Equals(ViewBag.InvalidCode, "WRONGPASSWORD");
+                var Forbidden = string.Equals(ViewBag.InvalidCode, "ACCOUNTNOTENABLED");
+            }
+            <p class="login-box-msg" id="js-login-msg">Welcome</p>
+            <div class="form-group has-feedback @(accountNotExist?hasErrorStyle:string.Empty) @(Forbidden?hasErrorStyle:string.Empty)">
+                @if (accountNotExist)
+                {
+                    <label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i>您的账号不存在！</label>
+                }
+                @if (Forbidden)
+                {
+                    <label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i>该账号超过两个月未登陆，系统已经锁定该账号！</label>
+                }
+                <input type="text" class="form-control" autocomplete="OFF" name="UserName" placeholder="NT ID" >
+                <span class="fa fa-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback @(wrongPassWord?hasErrorStyle:string.Empty)">
+                @if (wrongPassWord)
+                {
+                    <label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> 您的密码不正确！</label>
+                }
+                <input type="password" class="form-control" name="Password" placeholder="密码">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group text-right @(wrongPassWord?hasErrorStyle:string.Empty)">
+                <span>使用工号登录/Use the job number </span>&nbsp;&nbsp;<input type="checkbox" name="IsEmployee" class="js-checkbox-all" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-flat" id="js-sign-in">登录/Login</button>
+            @{Html.EndForm();}
+        </div><!-- /.login-box-body -->
+    </div><!-- /.login-box -->
+    <!--App Download BOX-->
+    @*<div class="login-box margin-td-5">
+            <div class="login-box-body">
+
+                <!--App Download-->
+                <div class="social-auth-links text-center no-margin">
+                    <p>- App Download -</p>
+                </div>
+
+                <div class="row margin-t-10">
+                    <div class="col-xs-12">
+                        <div class=" btn-group btn-block">
+                            <div class="row-height">
+                                <a class="col-xs-2 col-height btn btn-sm btn-default btn-flat col-middle app-download-btn " data-toggle="modal" data-target="#app-qrcode" role="button">
+                                    <span title="QR Code" data-toggle="tooltip" data-placement="bottom">
+                                        <p class=" margin-bottom-none">
+                                            <img src="~/Content/img/app-ios-Non-AD-Integration.png" class="app-download-img">
+                                            <i class="fa fa-caret-down"></i>
+                                        </p>
+                                    </span>
+                                </a>
+                                <a class="col-xs-10 col-height btn btn-sm btn-default btn-flat col-middle padding-lr-5" data-toggle="modal" data-target="#app-install" role="button">
+                                    <span title="Install" data-toggle="tooltip" data-placement="bottom">
+                                        <h6 class="text-left no-margin padding-l-5"><b> Apple - iOS 8.3 <i class="glyphicon glyphicon-save pull-right padding-r-5"></i></b></h6>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!--/App Download-->
+
+            </div><!-- /.login-box-body -->
+        </div><!-- /.login-box -->*@
+    <!--/App Download BOX-->
+    <!-- Modal-app-qrcode -->
+    <div class="modal fade" id="app-qrcode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+                    <h4 class="modal-title"><b>Apple - iOS 8.3</b></h4>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="~/Content/img/app-ios-AD-Integration.png">
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal-app-qrcode -->
+    <!-- Modal-請使用手機來安裝 -->
+    <div class="modal fade modal-danger" id="app-install" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+                    <h4 class="modal-title"><b><i class="fa fa-exclamation-circle"></i> APP安装错误</b></h4>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="margin-td-10">请使用智能手机安装.</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal-app-qrcode -->
+    <!-- REQUIRED JS SCRIPTS -->
+    @Scripts.Render("~/bundles/basic_framework")
+
+    <script type="text/javascript">
+        $('#js-sign-in').on('click', function () {
+            var $account = $('input[name="UserName"]');
+            var $password = $('input[name="Password"]');
+
+            if ($('input[name="IsEmployee"]')[0].checked == true) {
+                $('input[name="IsEmployee"]').val(1);
+            } else {
+                $('input[name="IsEmployee"]').val(0);
+            }
+            if ($.trim($account.val()) === "") {
+                $account.focus();
+                return false;
+            }
+
+            //if ($.trim($password.val()) === "") {
+            //    $password.focus();
+            //    return false;
+            //}
+        })
+
+    </script>
+</body>
+</html>

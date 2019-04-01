@@ -1,0 +1,1379 @@
+﻿@model PDMS.Model.ViewModels.Exception.ExceptionVM
+<section class="content portal-content">
+    @*查询条件*@
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                @using (Html.BeginForm("BomExcel", "Exception", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                <button id="bt_search" type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> @T("Exception.Query")</button>
+                @*<button type="button" class="fa fa-plus btn btn-primary" id="btn_add">添加部门</button>*@
+                <button type="button" class="fa fa-plus btn btn-primary" id="btn_code_add"> @T("Exception.AddCode")</button>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        @*<th>功能厂</th>*@
+                        <th>@T("Exception.DeptName")</th>
+                        <th>@T("Exception.Code")</th>
+                        <th>@T("Exception.CodeDes")</th>
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        <th>@T("Exception.ModifyUser")</th>
+                        <th>@T("Exception.ModifyTime")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        @*<th>功能厂</th>*@
+                        <th>@T("Exception.DeptName")</th>
+                        <th>@T("Exception.Code")</th>
+                        <th>@T("Exception.CodeDes")</th>
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        <th>@T("Exception.ModifyUser")</th>
+                        <th>@T("Exception.ModifyTime")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+
+    <div class="modal fade" id="js_edit_dept_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">异常部门添加</h4>
+                </div>
+                @using (Html.BeginForm("AddExceptionDept", "Exception", FormMethod.Post, new { id = "js_form_dept" }))
+                    {
+                <input type="hidden" name="fixturelist" id="fixturelist" />
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>基本信息</b>
+                        </h4>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_plant_dept">厂区</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_plant_dept" name="Plant_Organization_UID">
+                                @*@if (Model.Plants.Count > 1)
+                                    {*@
+
+                                <option value=0></option>
+                                @*}*@
+                                @foreach (var item in Model.Plants)
+                                        {
+                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_op_types_dept">OP类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_op_types_dept" name="BG_Organization_UID">
+                                @if (Model.optypes != null)
+                                        {
+                                <option value=0></option>
+
+                                            foreach (var item in Model.optypes)
+                                            {
+                                                if (item.BG != "Support team")
+                                                {
+                                <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                }
+                                            }
+                                        }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6 hidden">
+                        <label class="col-sm-4 control-label" for="js_select_funplant_dept">功能厂</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_funplant_dept" name="FunPlant_Organization_UID">
+                                @if (Model.funplants != null)
+                                        {
+                                <option value=0></option>
+                                            foreach (var item in Model.funplants)
+                                            {
+                                <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                            }
+                                        }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Dept_Name">部门名称</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Dept_Name" name="Exception_Dept_Name" placeholder="部门名称"
+                                   required data-msg-required="请输入[部门名称]."
+                                   data-rule-maxlength="20" data-msg-maxlength="部门名称不能超过 {0} 个字符.">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_dept_save" type="button"><i class="fa fa-save"></i> 保存</button>
+                </div>
+                    }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_code_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.AddCode")</h4>
+                </div>
+                @using (Html.BeginForm("AddExceptionCode", "Exception", FormMethod.Post, new { id = "js_form_code" }))
+                {
+                <input type="hidden" name="fixturelist" id="fixturelist" />
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>@T("Exception.BaseInfo")</b>
+                        </h4>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_plant_code">@T("Exception.Site")</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_plant_code" name="Plant_Organization_UID">
+                                <option value=0></option>
+                                @foreach (var item in Model.Plants)
+                                        {
+                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_op_types_code">@T("Exception.BG")</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_op_types_code" name="BG_Organization_UID">
+                                @if (Model.optypes != null)
+                                        {
+                                <option value=0></option>
+
+                                            foreach (var item in Model.optypes)
+                                            {
+                                                if (item.BG != "Support team")
+                                                {
+                                <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                }
+                                            }
+                                        }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6 hidden">
+                        <label class="col-sm-4 control-label" for="js_select_funplant_code">功能厂</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_funplant_code" name="FunPlant_Organization_UID">
+                                @if (Model.funplants != null)
+                                    {
+                                <option value=0></option>
+                                        foreach (var item in Model.funplants)
+                                        {
+                                <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                        }
+                                    }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_Exception_Dept_UID">@T("Exception.DeptName")</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_Exception_Dept_UID" name="Exception_Dept_UID"
+                                    data-live-search="true">
+                                @*@if (Model.ExceDepts != null)
+                                    {
+                                <option value=0></option>
+                                        foreach (var item in Model.ExceDepts)
+                                        {
+                                <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                        }
+                                    }*@
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Nub">@T("Exception.Code")</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Nub" name="Exception_Nub" placeholder="Exception Code"
+                                   required data-msg-required="Please type [Exception Code]."
+                                   data-rule-maxlength="20" data-msg-maxlength="The length of Exception Code need less than {0} characters.">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Name">@T("Exception.CodeDes")</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Name" name="Exception_Name" placeholder="Exception Name"
+                                   required data-msg-required="Please type [Exception Name]."
+                                   data-rule-maxlength="100" data-msg-maxlength="The length of Exception Name need less than {0} characters.">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-bottom:0px">
+
+
+                    <div class="row" style="padding-left:0px;padding-top:5px;margin-bottom:10px;">
+
+                        <div class="pull-right" style="margin-right:15px;">
+                            <button type="button" class="fa fa-times btn btn-primary" id="bt_remove_code"> @T("Common.Delete")</button>
+                        </div>
+                        <div class="pull-right" style="margin-right:15px;">
+                            <button type="button" class="fa fa-plus btn btn-primary" id="bt_add_code"> @T("Exception.AddSave")</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>@T("Exception.AddedFiledInfo")</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-12 col-lg-12" style="padding-right:0px">
+                        <table class="table table-condensed col-sm-9" id="table_exception2" name="table_exception2">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-checkbox nosort">
+                                        <input type="checkbox" class="js-checkbox-all" />
+                                    </th>
+                                    <th class="padding-1-5-i text-center">System ID</th>
+                                    <th class="padding-1-5-i text-center">@T("Exception.Site")</th>
+                                    <th class="padding-1-5-i text-center">@T("Exception.BG")</th>
+                                    <th class="padding-1-5-i text-center">@T("Exception.DeptName")</th>
+                                    <th class="padding-1-5-i text-center">@T("Exception.Code")</th>
+                                    <th class="padding-1-5-i text-center">@T("Exception.CodeDes")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_dept_modal_2">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">异常部门修改</h4>
+                </div>
+                @using (Html.BeginForm("UpdateExceptionDept", "Exception", FormMethod.Post, new { id = "js_form_dept_2" }))
+                {
+                <input type="hidden" name="fixturelist" id="fixturelist" />
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>基本信息</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Dept_UID_2">部门ID(old)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Dept_UID_2" name="Exception_Dept_UID" placeholder="部门名称" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Dept_Name_2">部门名称(old)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Dept_Name_2_old" name="Exception_Dept_Name_2" placeholder="部门名称"
+                                   required data-msg-required="请输入[部门名称]."
+                                   data-rule-maxlength="20" data-msg-maxlength="部门名称不能超过 {0} 个字符." disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Exception_Dept_Name">部门名称(new)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Exception_Dept_Name_2" name="Exception_Dept_Name" placeholder="部门名称"
+                                   required data-msg-required="请输入[部门名称]."
+                                   data-rule-maxlength="20" data-msg-maxlength="部门名称不能超过 {0} 个字符.">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_dept_save_2" type="button"><i class="fa fa-save"></i> 保存</button>
+                </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="js_edit_code_modal_2" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.Code")</h4>
+                </div>
+                @using (Html.BeginForm("UpdateExceptionCode", "Exception", FormMethod.Post, new { id = "js_form_code_2" }))
+            {
+            <input type="hidden" name="fixturelist" id="fixturelist" />
+            <div class="modal-footer" style="padding-bottom:0px">
+                <div class="col-sm-12" style="text-align:left">
+                    <h4>
+                        <b>@T("Exception.BaseInfo")</b>
+                    </h4>
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-6 hidden">
+                    <label class="col-sm-4 control-label" for="js_input_Exception_Code_UID">异常ID</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm required" id="js_input_Exception_Code_UID" name="Exception_Code_UID" readonly>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                    <label class="col-sm-4 control-label" for="js_input_Exception_Code_2_old">@T("Exception.Code").ToString() (old)</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm required" id="js_input_Exception_Code_2_old" name="Exception_Code_2" placeholder="Exception Code" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                    <label class="col-sm-4 control-label" for="js_input_Exception_Name">@T("Exception.CodeDes").ToString() (old)</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm required" id="js_input_Exception_Name_2_old" name="Exception_Name_2" placeholder="Exception Name" readonly>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                    <label class="col-sm-4 control-label" for="js_input_Exception_Code_2">@T("Exception.Code").ToString() (new)</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm required" id="js_input_Exception_Code_2" name="Exception_Nub" placeholder="Exception Code"
+                               required data-msg-required="Please type [Exception Code]."
+                               data-rule-maxlength="20" data-msg-maxlength="Lenght of Exception Code need less than {0} characters.">
+                    </div>
+                </div>
+
+                <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                    <label class="col-sm-4 control-label" for="js_input_Exception_Name">@T("Exception.CodeDes").ToString() (new)</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm required" id="js_input_Exception_Name_2" name="Exception_Name" placeholder="Exception Name"
+                               required data-msg-required="Please type [Exception Name]."
+                               data-rule-maxlength="50" data-msg-maxlength="Lenght of Exception Name need less than {0} characters.">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel").</button>
+                <button class="btn btn-primary btn-sm" id="js_btn_code_save_2" type="button"><i class="fa fa-save"></i> @T("Common.Save").</button>
+            </div>
+            }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.Query")</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_plant_search">@T("Exception.Site")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_plant_search" name="Plant_Organization_UID">
+                                            @if (Model.Plants.Count > 1)
+                                            {
+                                                <option value=0></option>
+                                            }
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_op_types_search">@T("Exception.BG")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_op_types_search" name="BG_Organization_UID">
+                                            @if (Model.optypes != null)
+                                            {
+                                                <option value=0></option>
+                                                foreach (var item in Model.optypes)
+                                                {
+                                                    if (item.BG != "Support team")
+                                                    {
+                                                        <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 hidden">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_funplant_search">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_funplant_search" name="FunPlant_Organization_UID">
+                                            @if (Model.funplants != null)
+                                            {
+                                                <option value=0></option>
+                                                foreach (var item in Model.funplants)
+                                                {
+                                                    <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_Exception_Dept_Name_search">@T("Exception.DeptName")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_Exception_Dept_Name_search" name="Exception_Dept_Name" placeholder="Exception_Dept_Name"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_Exception_Code_search">@T("Exception.Code")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_Exception_Code_search" name="Exception_Nub" placeholder="Exception_Nub">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_Exception_Name_search">@T("Exception.CodeDes")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-sm" id="js_input_Exception_Name_search" name="Exception_Name" placeholder="Exception_Name">
+                                    </div>
+                                </div>
+                            </div>
+
+         
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_User_NTID_search">@T("Exception.ModifyUser")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_UserNTID" class="form-control input-sm" id="js_s_input_User_NTID_search" placeholder="Modified_UserNTID">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">@T("Exception.ModifyTime")</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_from" class="form-control input-sm date" id="js_s_input_Modified_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_to" class="form-control input-sm date" id="js_s_input_Modified_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Exception.Query")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        })
+
+        $('#js_btn_clear').click(function () {
+            $('#js_select_plant_search').val(0);
+            $('#js_select_op_types_search').val(0);
+            $('#js_select_funplant_search').val(0);
+            $('#js_select_Account_UID_search').val(0);
+            $('#js_select_Workshop_ID_search').val(0);
+            $('#js_select_Workshop_UID_search').val(0);
+            $('#js_select_Account_UID_search').selectpicker('val', '');
+            $("#js_select_Account_UID_search").trigger("liszt:updated");
+            PDMS.Utility.Criteria.Clear();
+        });
+
+        //#endregion
+        $(function () {
+            var ExceptionRul = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryExceptionCode: '@Url.Action("QueryExceptionCode", "Exception")',
+                    getOrgByParant: '@Url.Action("GetOrgByParant", "Fixture")',
+                    queryFixtureTotakeByUid: '@Url.Action("QueryFixtureTotakeByUid", "Fixture")',
+                    queryFixtureByUid: '@Url.Action("QueryFixtureByUid", "Fixture")',
+                    //导出excel
+                    doExportFunction: '@Url.Action("DoFTExportFunction", "Fixture")',
+                    getFixtureByWorkshop: '@Url.Action("GetFixtureByWorkshop", "Fixture")',
+                    viewFixtureTotakeDetails: '@Url.Action("FixtureTotakeDetail", "Fixture")',
+                    getUserByOp: '@Url.Action("GetUserByOpLY", "Fixture")',
+                    getUserByWorkshop: '@Url.Action("GetUserByWorkshop", "Fixture")',
+
+                    doAllExportFunction: '@Url.Action("DoAllFTExportFunction", "Fixture")',
+
+                    //添加异常部门
+                    addExceptionDept: '@Url.Action("AddExceptionDept", "Exception")',
+                    //添加异常编码
+                    addExceptionCode: '@Url.Action("AddExceptionCode", "Exception")',
+                    //根据Plant,BG获取Depts
+                    fetchExceptionDepts: '@Url.Action("FetchExceptionDepts", "Exception")',
+                    //删除异常编码信息
+                    deleExceptionCode: '@Url.Action("DeleExceptionCode", "Exception")',
+                    //获取部门
+                    fetchExceptionDept: '@Url.Action("FetchExceptionDept", "Exception")',
+                    //获取异常
+                    fetchExceptionCode: '@Url.Action("FetchExceptionCode", "Exception")',
+                    //删除异常部门
+                    deleExceptionDept: '@Url.Action("DeleExceptionDept", "Exception")',
+                };
+
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Code_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                               '<button type="button" class="btn btn-primary btn-xs js-grid-code-edit" data-id="' + rowData.Exception_Code_UID + '"style="margin-top:5px">Edit Exception</button>' +
+                                                     '<button type="button" class="btn btn-primary btn-xs js-grid-code-dele" data-id="' + rowData.Exception_Code_UID + '"style="margin-top:5px">Delete Exception</button>' +
+                                        '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                     {
+                         data: "Plant",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "BG",
+                         className: "min-col-xs text-center"
+                     },
+                    //{
+                    //    data: "FunPlant",
+                    //    className: "min-col-xs"
+                    //},
+                    {
+                        data: "Exception_Dept_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Nub",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Created_User",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Created_Date",
+                        className: "min-col-xs text-center"
+                    },
+                {
+                    data: "Modified_UserName",
+                    className: "min-col-xs text-center"
+                },
+                {
+                    data: "Modified_Date",
+                    className: "min-col-xs text-center"
+                }
+                ];
+
+                var fixtureDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Code_UID + '">').addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                },
+                 {
+                     data: "Exception_Code_UID",
+                     className: "min-col-xs text-center"
+                 },
+                {
+                    data: "Plant",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "BG",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Exception_Dept_Name",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Exception_Nub",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Exception_Name",
+                    className: "min-col-xs text-center"
+                }];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                };
+
+                var _queryExceptionCode = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryExceptionCode,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryExceptionCode(true, false);
+                    },
+                    queryExceptionCode: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryExceptionCode(false, true);
+                    },
+                    GetExceptionDatatable: function () {
+                        fixtureDatatable = $('#table_exception2').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: fixtureDatatableColumns
+                        });
+                        return fixtureDatatable;
+                    },
+                    SetFixtureDatatable: function (datatable) {
+                        fixtureDatatable = datatable;
+                    },
+                    FixtureColumns: fixtureDatatableColumns
+                }
+            })();
+
+            ExceptionRul.Init();
+
+            // 异常部门添加
+            $('#js_btn_dept_save').click(function () {
+                $('#js_form_dept').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var isValid = true;
+                        var errorMsg = "";
+                        var plant = $('#js_form_dept').find('select[name=Plant_Organization_UID] option:selected').text();
+                        var bg = $('#js_form_dept').find('select[name=BG_Organization_UID] option:selected').text();
+                        if ((plant != '' && bg == '') || (plant == '' && bg != '')) {
+                            errorMsg += '请同时选择[厂区]和[OP类型],或者不选默认为示范线';
+                            isValid = false;
+                        }
+                        if ($('#js_form_dept').find('input[name=Exception_Dept_Name]').val() == "") {
+                            errorMsg += '请填写[部门名称];  ';
+                            isValid = false;
+                        }
+                        if (!isValid) {
+                            if (errorMsg != "") {
+                                PDMS.Utility.MessageBox.info(errorMsg);
+                            }
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success > 0) {
+                            $('#js_form_dept').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            //window.location.reload();
+                            //查询刷新的
+                            ExceptionRul.queryExceptionCode();
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("保存失败！");
+                        }
+                    }
+                });
+            })
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_dept_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //为新增或修改Modal，注册事件-------START
+            $('#js_edit_dept_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+            });
+
+            $('#btn_add').click(function () {
+                $('#js_edit_dept_modal').modal('show', $(this));
+            })
+
+            $('#btn_code_add').click(function () {
+                $('#js_edit_code_modal').modal('show', $(this));
+                //加载部门--省略不加载部门，必须选择BG后才能加载
+                //var url = ExceptionRul.urls.fetchExceptionDepts;
+                //$.post(url, { BG_Organization_UID: 0, Plant_Organization_UID: 0 }, function (data) {
+                //    $('#js_select_Exception_Dept_UID').html('<option value=0></option>');
+                //    for (var i = 0; i < data.length; i++) {
+                //        $('#js_select_Exception_Dept_UID').append('<option value="' + data[i].Exception_Dept_UID + '">' + data[i].Exception_Dept_Name + '</option>');
+                //    }
+                //    $("#js_select_Exception_Dept_UID").selectpicker('refresh');
+                //    $("#js_select_Exception_Dept_UID").trigger('change');
+                //});
+            })
+
+            //隐藏编辑框时清空值
+            $('#js_edit_dept_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_dept_modal').find('input').val('');//清空所有input
+                $('#js_edit_dept_modal').find('select').find('option:first').attr("selected", true);//下拉框默认选择第一项空
+
+                //$('#js_select_Shiper_UID').selectpicker('val', '');//选择值为空的选项
+                //$("#js_select_Shiper_UID").trigger("liszt:updated");//出发change事件
+
+            });
+            //$('#js_btn_dept_save').mouseover(function () {
+            //    var fixturedata = ExceptionRul.GetExceptionDatatable();
+            //    var FunctionFixtures = [];
+            //    fixturedata.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            //        var sub = {};
+            //        var row = $('#table_exception2>tbody>tr').eq(rowIdx);
+            //        sub["Fixture_M_UID"] = $.trim(row.find('input[name=cktrans]').val());
+            //        FunctionFixtures.push(sub);
+            //    });
+            //    $('#fixturelist').val(JSON.stringify(FunctionFixtures));
+            //})
+
+
+            //异常编码----厂区变更-----BG变更
+            $('#js_select_plant_code').change(function () {
+                var plantuid = $('#js_select_plant_code option:selected').val();
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_code').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantCode(plantuid, 0);
+            });
+            function SetOpByPlantCode(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_code').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_code').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_code').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_code,#js_select_plant_code').change(function () {
+                var bgorg = $('#js_select_op_types_code option:selected').val();
+                SetFunPlantByOpCode(bgorg, 0);
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_code').val();
+                BG_Organization_UID = bgorg;
+
+                var url = ExceptionRul.urls.fetchExceptionDepts;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                }
+                $.post(url, { BG_Organization_UID: BG_Organization_UID, Plant_Organization_UID: Plant_Organization_UID }, function (data) {
+                    $('#js_select_Exception_Dept_UID').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Exception_Dept_UID').append('<option value="' + data[i].Exception_Dept_UID + '">' + data[i].Exception_Dept_Name + '</option>');
+                    }
+                    $("#js_select_Exception_Dept_UID").selectpicker('refresh');
+                    $("#js_select_Exception_Dept_UID").trigger('change');
+                });
+
+            })
+            function SetFunPlantByOpCode(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant_code').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_code').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant_code').val(FunPlant_Organization_UID);
+                    });
+                }
+
+
+
+            }
+            //异常部门----厂区变更----BG变更
+            $('#js_select_plant_dept').change(function () {
+                var plantuid = $('#js_select_plant_dept option:selected').val();
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_dept').html('<option value=0></option>');
+                    $('#js_select_op_types_dept').val(0);
+                    $('#js_select_funplant_dept').html('<option value=0></option>');
+                    $('#js_select_funplant_dept').val(0);
+                    return
+                }
+                SetOpByPlantDept(plantuid, 0);
+            });
+            function SetOpByPlantDept(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_dept').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_dept').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_dept').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_dept').change(function () {
+                var bgorg = $('#js_select_op_types_dept option:selected').val();
+                SetFunPlantByOpDept(bgorg, 0);
+
+            })
+            function SetFunPlantByOpDept(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant_dept').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_dept').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant_dept').val(FunPlant_Organization_UID);
+                    });
+                }
+
+
+
+            }
+
+
+            //$('#js_select_plant_code,#js_select_op_types_code').change(function () {
+            //    var url = ExceptionRul.urls.fetchExceptionDepts,
+            //        BG_Organization_UID = $('#js_select_op_types').val(),
+            //        Plant_Organization_UID = $('#js_select_plant_code').val();
+            //    if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+            //        BG_Organization_UID = 0;
+            //    }
+            //    if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+            //        Plant_Organization_UID = 0;
+            //    }
+            //    $.post(url, { BG_Organization_UID: BG_Organization_UID, Plant_Organization_UID: Plant_Organization_UID }, function (data) {
+            //        $('#js_select_Exception_Dept_UID').append('<option ></option>');
+            //        for (var i = 0; i < data.length; i++) {
+            //            $('#js_select_Exception_Dept_UID').append('<option value="' + data[i].Exception_Dept_UID + '">' + data[i].Exception_Dept_Name + '</option>');
+            //        }
+            //        $("#js_select_Exception_Dept_UID").selectpicker('refresh');
+            //        $("#js_select_Exception_Dept_UID").trigger('change');
+            //    });
+            //})
+
+            //新增异常编码，此事就直接插入数据库，成功添加到表格，不成则提示
+            $('#bt_add_code').click(function () {
+                var deptUID = $('#js_select_Exception_Dept_UID').val();
+                if (deptUID == 0) {
+                    PDMS.Utility.MessageBox.info('请选择部门');
+                    return false;
+                }
+                var exce_code = $('#js_input_Exception_Nub').val();
+                if (exce_code == "") {
+                    PDMS.Utility.MessageBox.info('请输入异常编码');
+                    return false;
+                }
+                var exce_name = $('#js_input_Exception_Name').val();
+                if (exce_name == "") {
+                    PDMS.Utility.MessageBox.info('请输入异常名称');
+                    return false;
+                }
+
+                var url = ExceptionRul.urls.addExceptionCode;
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                $.post(url, { deptUID: deptUID, exce_code: exce_code, exce_name: exce_name }, function (data) {
+                    if (data != null) {
+                        $('#js_form_code input').val('');
+                        //--判读重复值
+                        if (data.Repeat == 1) {
+                            if (JudgeFixExist(data.Exception_Code_UID) == true) {
+                                var row = dataTable.row.add({
+                                    "Exception_Code_UID": data.Exception_Code_UID,
+                                    "Exception_Code_UID": data.Exception_Code_UID,
+                                    "Plant": data.Plant,
+                                    "BG": data.BG,
+                                    "Exception_Dept_Name": data.Exception_Dept_Name,
+                                    "Exception_Nub": data.Exception_Nub,
+                                    "Exception_Name": data.Exception_Name
+                                }).draw();
+                            }
+                            PDMS.Utility.MessageBox.info("Add failed, exception code already exists !");
+                        } else if(data.Repeat == 0) {
+                            PDMS.Utility.MessageBox.info("Add code successfully ! ");
+                            var row = dataTable.row.add({
+                                "Exception_Code_UID":data.Exception_Code_UID,
+                                "Exception_Code_UID": data.Exception_Code_UID,
+                                "Plant": data.Plant,
+                                "BG": data.BG,
+                                "Exception_Dept_Name": data.Exception_Dept_Name,
+                                "Exception_Nub": data.Exception_Nub,
+                                "Exception_Name": data.Exception_Name
+                            }).draw();
+                        } else {
+                            PDMS.Utility.MessageBox.info("Save failed !");
+                        }
+
+                        //对行进行排序
+                        //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                        //});
+                    }
+                })
+                ExceptionRul.queryExceptionCode();
+            })
+
+            $('#bt_remove_code').click(function () {
+                //1.轮询checkbox,2.Delete
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    //1.先从数据库删除，2.在刷新表
+                    var delIDs = [];
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var Exception_UID = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var Exception_UID = $('#table_exception2 tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+                        delIDs.push(Exception_UID);
+                    });
+                    var url = ExceptionRul.urls.deleExceptionCode;
+                    $.post(url, { IDs: delIDs.join() }, function (data) {
+                        if (data.success > 0) {
+                            PDMS.Utility.MessageBox.info("delete data successfully");
+                            $.map($checkedItems, function (checkbox) {
+                                var $sender = $(checkbox);
+                                var Exception_UID = $sender.val();
+                                var $tr = $sender.closest('tr');
+                                var trIndex = $tr.index();
+                                dataTable.row($tr).remove().draw();
+                            });
+                            //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                            //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                            //});
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("delete data failed");
+                        }
+                    });
+                }
+                //暂时取消隐藏
+                //if ($('#table_exception2 tbody th td').length <= 1)
+                //    $('#bt_remove_fixture').hide();
+
+            })
+
+            //部门-Code-修改删除
+            $('body').on('click', '.js-grid-dept-edit', function () {
+                var uid = $(this).data('id');
+                $('#js_edit_dept_modal_2').modal('show', $(this));
+                $('#js_input_Exception_Dept_UID_2').val(uid);
+                var url = ExceptionRul.urls.fetchExceptionDept;
+                //拿部门名称
+                $.post(url, { uid: uid }, function (data) {
+                    $('#js_input_Exception_Dept_Name_2_old').val(data.Exception_Dept_Name);
+                })
+
+            });
+            $('#js_btn_dept_save_2').click(function () {
+                $('#js_form_dept_2').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var isValid = true;
+                        var errorMsg = "";
+                        var deptName = $('#js_input_Exception_Dept_Name_2').val();
+                        if (deptName == '') {
+                            errorMsg += '请填写新的部门名称';
+                            isValid = false;
+                        }
+                        if (!isValid) {
+                            if (errorMsg != "") {
+                                PDMS.Utility.MessageBox.info(errorMsg);
+                            }
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success == 1) {
+                            $('#js_form_dept_2').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            //查询刷新的
+                            ExceptionRul.queryExceptionCode();
+                        } else if (data.success == 2)
+                        {
+                            PDMS.Utility.MessageBox.info('存在相同部门名称！');
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("保存失败！");
+                        }
+                    }
+                });
+            })
+
+            $('body').on('click', '.js-grid-dept-dele', function () {
+                var uid = $(this).data('id')
+                var url = ExceptionRul.urls.deleExceptionDept;
+                $.post(url, { uid: uid }, function (data) {
+                    PDMS.Utility.MessageBox.info(data.Msg);
+                    ExceptionRul.queryExceptionCode();
+                })
+            });
+            $('body').on('click', '.js-grid-code-edit', function () {
+                var uid = $(this).data('id');
+                $('#js_edit_code_modal_2').modal('show', $(this));
+                $('#js_input_Exception_Code_UID').val(uid);
+                var url = ExceptionRul.urls.fetchExceptionCode;
+                //编码名称
+                $.post(url, { uid: uid }, function (data) {
+                    $('#js_input_Exception_Code_2_old').val(data.Exception_Nub);
+                    $('#js_input_Exception_Name_2_old').val(data.Exception_Name);
+                    $('#js_input_Exception_Code_2').val(data.Exception_Nub);
+                    $('#js_input_Exception_Name_2').val(data.Exception_Name);
+                })
+
+            });
+            $('#js_btn_code_save_2').click(function () {
+                $('#js_form_code_2').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var isValid = true;
+                        var errorMsg = "";
+                        var codeNub = $('#js_input_Exception_Code_2').val();
+                        var codeName = $('#js_input_Exception_Name_2').val();
+                        if (codeNub == '') {
+                            errorMsg += '请填写新异常编号';
+                            isValid = false;
+                        }
+                        if (codeName == '') {
+                            errorMsg += '请填写新的异常名称';
+                            isValid = false;
+                        }
+                        if (!isValid) {
+                            if (errorMsg != "") {
+                                PDMS.Utility.MessageBox.info(errorMsg);
+                            }
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success > 0) {
+                            $('#js_edit_code_modal_2').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            //查询刷新的
+                            ExceptionRul.queryExceptionCode();
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("保存失败！");
+                        }
+                    }
+                });
+
+            });
+
+            $('body').on('click', '.js-grid-code-dele', function () {
+                var uid = $(this).data('id')
+                var url = ExceptionRul.urls.deleExceptionCode;
+                $.post(url, { IDs: uid }, function (data) {
+                    PDMS.Utility.MessageBox.info(data.Msg);
+                    ExceptionRul.queryExceptionCode();
+                })
+            });
+
+
+
+            //隐藏查询框时清空值
+            $('#js_search_modal').on('hidden.bs.modal', function (e) {
+                $('#js_search_modal').find('input').val('');
+            });
+            //编辑异常modal异常删除所有输入
+            $('#js_edit_code_modal_2').on('hidden.bs.modal', function (e) {
+                $('#js_edit_code_modal_2').find('input').val('');
+            });
+            $('#js_edit_dept_modal_2').on('hidden.bs.modal', function (e) {
+                $('#js_edit_dept_modal_2').find('input').val('');
+            });
+            $('#js_edit_code_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_code_modal').find('input').val('');
+                //清空表格
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                ExceptionRul.queryExceptionCode();//刷新一下数据
+            });
+
+
+            $('#js_select_Account_UID,#js_select_Account_UID_search').selectpicker({ 'selectedText': 'cat' });
+
+
+
+            //根据厂区设定OP,并设定初始值---------START
+            function SetOpByPlant2(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types').val(BG_Organization_UID);
+                    });
+                }
+            }
+            //根据厂区设定OP,并设定初始值-----------END
+
+
+
+            //根据OP设定功能厂,并设定初始值---------START
+            function SetFunPlantByOp2(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant').val(FunPlant_Organization_UID);
+                    });
+                }
+            }
+            //根据OP设定功能厂,并设定初始值-----------END
+
+
+
+
+
+            //搜索下面的联动========================================================================
+            //====================================================================================
+            //厂区变更--------start
+            $('#js_select_plant_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                SetOpByPlant(plantuid, 0);
+            })
+            function SetOpByPlant(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_search').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_search').val(BG_Organization_UID);
+                    });
+                }
+            }
+
+            //BG变更----------START
+            $('#js_select_op_types_search').change(function () {
+                var bgorg = $('#js_select_op_types_search option:selected').val();
+                SetFunPlantByOp(bgorg, 0);
+            })
+            function SetFunPlantByOp(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant_search').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant_search').val(FunPlant_Organization_UID);
+                    });
+                }
+            }
+
+            //BG变更----------START
+            $('#js_select_op_types').change(function () {
+                var bgorg = $('#js_select_op_types option:selected').val();
+                SetFunPlantByOp2(bgorg, 0);
+            })
+            //BG变更------------END
+
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    ExceptionRul.queryExceptionCode();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+
+            //导出----------START
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = ExceptionRul.urls.doAllExportFunction;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                    //PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = ExceptionRul.urls.doExportFunction;
+                    url += "?uids=" + uids.toString() + '';
+                    window.location.href = url;
+                }
+            });
+            //导出------------END
+
+            $('#s_input_Ship_Date,#s_input_Totake_Date').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii'
+            })
+
+
+            //判断这个治具是不是已经在表格中了
+            function JudgeFixExist(data) {
+                var ret = true;
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                if ($checkedItems.length > 0) {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var value = $('#table_exception2 tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+                        if (value == data)
+                            ret = false;
+                    });
+                }
+                return ret;
+            }
+        })
+
+
+
+    </script>
+}

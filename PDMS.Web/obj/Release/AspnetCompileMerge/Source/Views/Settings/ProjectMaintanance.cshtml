@@ -1,0 +1,597 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            @*<h4 class="margin-td-5" id="js_search_keywords"></h4>*@
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> 查询</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">
+                <i class="fa fa-plus"></i> 新增
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_project_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>专案名称</th>
+                        <th>MES专案名称</th>
+                        <th>客户</th>
+                        <th>生产阶段</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>专案名称</th>
+                        <th>MES专案名称</th>
+                        <th>客户</th>
+                        <th>生产阶段</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section><!-- /.content -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询专案</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_plant_search">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select name="Organization_Name" class="form-control input-sm" id="js_select_plant_search" placeholder="厂区">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_op_types">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select name="Organization_UID" class="form-control input-sm" id="js_s_input_op_types" placeholder="OP类型"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_project">专案名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Project" class="form-control input-sm" id="js_s_input_project" placeholder="专案名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_MESProject">MES专案名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MESProject" class="form-control input-sm" id="js_s_input_MESProject" placeholder="MES专案名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_customer">客户</label>
+                                    <div class="col-sm-8">
+                                        <select name="Customer" class="form-control input-sm" id="js_s_input_customer" placeholder="客户"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_Product_Phase">生产阶段</label>
+                                    <div class="col-sm-8">
+                                        <select name="Product_Phase" class="form-control input-sm" id="js_s_input_Product_Phase" placeholder="生产阶段"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">专案维护</h4>
+                </div>
+                <form id="js_form_project_edit" class="form-horizontal clearfix">
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="Project_UID" id="js_hidden_project_uid" value="0" />
+                            <input  type="hidden" name="OP_TYPES" id="js_hidden_optype" />
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_plant">厂区</label>
+                                    <div class="col-sm-7">
+                                        <select name="Organization_Name" class="form-control input-sm" id="js_select_plant" placeholder="厂区"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_op_types">OP类型</label>
+                                    <div class="col-sm-7">
+                                        <select name="Organization_UID" class="form-control input-sm" id="js_input_op_types" placeholder="OP类型"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_project">专案名称</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm required" id="js_input_project" name="Project" placeholder="专案名称"
+                                               required data-msg-required="请输入专案名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_MESProject">MES专案名称</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm " id="js_input_MESProject" name="MESProject" placeholder="MES专案名称(可空)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_customer">客户</label>
+                                    <div class="col-sm-7">
+                                        <select name="Customer" class="form-control input-sm" id="js_input_customer" placeholder="客户"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_product_phase">生产阶段</label>
+                                    <div class="col-sm-7">
+                                        <select name="Product_Phase" class="form-control input-sm" id="js_input_product_phase" placeholder="生产阶段"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_product_phase">系统类型</label>
+                                    <div class="col-sm-7">
+                                        <select name="Project_Type" class="form-control input-sm" id="js_input_Project_Type" placeholder="系统类型">
+                                            <option value="PIS">PIS</option>
+                                            <option value="PIS&eTransfer">PIS&eTransfer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_project"><i class="fa fa-save"></i> 保存</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_project"><i class="fa fa-save"></i> 保存修改</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+
+            var ProjectMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                {
+                    EditProject: '@Url.Action("EditProject", "Settings")',
+                    AddProject: '@Url.Action("AddProject", "Settings")',
+                    queryProjects: '@Url.Action("QueryProjects", "Settings")',
+                    queryProject: '@Url.Action("QueryProjectByUID", "Settings")',
+                    deleteProject: '@Url.Action("DeleteProject", "Settings")',
+                    getCustomer: '@Url.Action("GetCustomer", "Settings")',
+                    getProductPhase: '@Url.Action("GetProductPhase", "Settings")',
+                    getOpTypes: '@Url.Action("GetOpTypes", "Settings")',
+                    getPlants: '@Url.Action("GetPlants", "Settings")'
+                };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Project_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Project_UID + '">修改</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Project_UID + '" data-project="' + rowData.Project + '">删除</button>' +
+                                '</div>');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Plant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OP_TYPES",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Project",
+                        className: "min-col-xs"
+                    }, {
+                        data: "MESProject",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Customer",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Product_Phase",
+                        className: "min-col-xs"
+                    },{
+                        data: "Modified_User",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-lg"
+                    }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    } else {
+                        return null;
+                    }
+                };
+
+                var _queryProjects = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_project_datatable",
+                        remoteUrl: urls.queryProjects,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                var getCustomer = function () {
+                    var url = urls.getCustomer;
+                    $.post(url, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_input_customer"));
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_customer"));
+                            });
+                            $("<option></option>")
+                                    .val("")
+                                    .text("")
+                                    .appendTo($("#js_s_input_customer"));
+                        };
+                    });
+
+                };
+                var getProductPhase = function () {
+                    var url = urls.getProductPhase;
+                    $.post(url, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_input_product_phase"));
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_Product_Phase"));
+                            });
+                            $("<option></option>")
+                                    .val("")
+                                    .text("")
+                                    .appendTo($("#js_s_input_Product_Phase"));
+                        };
+                    });
+                };
+
+                var getPlants = function () {
+                    var url = urls.getPlants;
+                    $.post(url, function (data) {
+                        if (data != null) {                            
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item.Organization_UID)
+                                    .text(item.Organization_Name)
+                                    .appendTo($("#js_select_plant"));
+                                $("<option></option>")
+                                    .val(item.Organization_UID)
+                                    .text(item.Organization_Name)
+                                    .appendTo($("#js_select_plant_search"));
+                            })
+                        }
+                    })
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryProjects(true);
+                    },
+                    queryProjects: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryProjects(false);
+                    },
+                    getCustomer: getCustomer(),
+                    getProductPhase: getProductPhase(),
+                    getPlants: getPlants()
+                }
+
+            }
+    )();
+            ProjectMaintenance.Init();
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    ProjectMaintenance.queryProjects(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+
+            //厂区变更
+            $('#js_select_plant').change(function () {
+                var url = ProjectMaintenance.urls.getOpTypes,
+                    plant = $('#js_select_plant option:selected').val();
+                $('#js_input_op_types').html('');
+                $.post(url, { plantuid: plant }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_input_op_types').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_input_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                    }
+                })
+            })
+
+            //查询界面厂区变更
+            $('#js_select_plant_search').change(function () {
+                var url = ProjectMaintenance.urls.getOpTypes,
+                    plant = $(this).val();
+                $('#js_s_input_op_types').html('<option></option>');
+                $.post(url, { plantuid: plant }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_s_input_op_types').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_s_input_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                    }
+                })
+            })
+
+            //extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_project_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format('YYYY-MM-DD'));
+                });
+                $('#js_s_input_op_types').val(''); 
+                $('#js_s_input_customer').val('');
+                $('#js_s_input_Product_Phase').val('')
+            });
+
+            $('#js_search_modal').on('show.bs.modal', function (event) {
+                if ($('#js_s_input_op_types').find('option').length ==0) {
+                    $('#js_select_plant_search').trigger('change');
+                }
+            });
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+                if (button.hasClass('js-grid-edit')) {
+                    title.text("修改专案");
+
+                    $('#js_btn_save_new_project').hide();
+                    $('#js_btn_save_edit_project').show();
+                    $("#js_hidden_edit_id").val(0);
+
+                } else if (button.attr('id') == 'js_btn_add') {
+                    $('#js_select_plant').trigger('change');
+                    title.text("新增专案");
+                    $('#js_input_project').data('original', '');
+                    $('#js_btn_save_new_project').show();
+                    $('#js_btn_save_edit_project').hide();
+                }
+            });
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //edit button in grid
+            $('body').on('click', '.js-grid-edit', function () {
+                var $sender = $(this);
+                if ($sender.hasClass('disabled')) {
+                    PDMS.Utility.MessageBox.error("project already expired, can't edit!");
+                    return;
+                }
+
+                $("#js_hidden_edit_id").val(1);
+                var uuid = $(this).attr('data-id');
+                    url = ProjectMaintenance.urls.queryProject;
+                    $.post(url, { uuid: uuid }, function (data) {
+                    $('#js_hidden_project_uid').val(uuid);
+                    $('#js_input_project').val(data.Project);
+                    $('#js_input_MESProject').val(data.MESProject);
+                    $('#js_input_customer').val(data.Customer);
+                    $('#js_input_product_phase').val(data.Product_Phase);
+                    $('#js_input_Project_Type').val(data.Project_Type);
+                    $('#js_select_plant').val(data.Organization_Name);
+                    $('#js_input_op_types').html('');
+                    $('#js_select_plant').trigger('change');
+                    $('#js_input_op_types').append('<option value="' + data.Organization_UID + '">' + data.OP_TYPES + '</option>');
+                    $('#js_input_op_types').val(data.Organization_UID);
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+
+            });
+
+            //delete button in grid
+            $('body').on('click', '.js-grid-delete', function () {
+
+                var uuid = $(this).attr('data-id');
+                var projectName = $(this).attr('data-project');
+
+                PDMS.Utility.MessageBox.confirm(
+
+                    "是否确认删除专案:[" + projectName + "]?", function () {
+                        var url = ProjectMaintenance.urls.deleteProject;
+                        $.post(url, { Project_UID: uuid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                ProjectMaintenance.queryProjects();
+                            } else {
+                                PDMS.Utility.MessageBox.error("专案已经被使用/指派!");
+                            }
+                        });
+                    });
+            });
+
+            //Form Validate
+            $('#js_form_project_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //新增保存project按钮
+            $("#js_btn_save_new_project").click('click', function () {
+                //$("#js_input_project").val(0);
+                var editform = $('#js_form_project_edit');
+                $('#js_hidden_optype').val($('#js_input_op_types option:selected').text());
+                if (editform.valid()) {
+                    var submitJson = editform.serializeObject();
+                    $.post(ProjectMaintenance.urls.AddProject, { jsonAddProject: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'SUCCESS') {
+
+                            PDMS.Utility.MessageBox.info("新增专案成功！");
+                            editform.find("input").val("");
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            //新增修改project按钮
+            $("#js_btn_save_edit_project").click('click', function () {
+
+                var $editform = $('#js_form_project_edit');
+                $('#js_hidden_optype').val($('#js_input_op_types option:selected').text());
+                if ($editform.valid()) {
+                    var submitJson = $editform.serializeObject();
+                    $.post(ProjectMaintenance.urls.EditProject, { jsonEditProject: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("修改专案成功！");
+                            $('#js_edit_modal').modal('hide');
+
+                            ProjectMaintenance.queryProjects();
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+}
+

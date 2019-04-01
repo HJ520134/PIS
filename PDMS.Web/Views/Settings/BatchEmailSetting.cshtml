@@ -1,0 +1,552 @@
+﻿
+@model PDMS.Model.ViewModels.FixtureVM
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題 與 搜尋-->
+        <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+        </div><!--/次標題 與 搜尋-->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-7">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-5 search-field col-lg-5">
+            <a class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal">搜索</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_bu">
+                新增
+            </a>
+            @*<button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">导出</button>*@
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_BatchEmail_datatable">
+                <thead>
+                    <tr id="js_FL_tr">
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>模组编号</th>
+                        <th>模组名称</th>
+                        <th>功能编号</th>
+                        <th>功能名称</th>
+                        <th>User NTID</th>
+                        <th>中文名</th>
+                        <th>英文名</th>
+                        <th>邮箱</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_FL_foot">
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>模组编号</th>
+                        <th>模组名称</th>
+                        <th>功能编号</th>
+                        <th>功能名称</th>
+                        <th>User NTID</th>
+                        <th>中文名</th>
+                        <th>英文名</th>
+                        <th>邮箱</th>
+                        <th>状态</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+@section ViewModals{
+<div class="modal fade" id="js_search_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">搜索</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_plant">厂区</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_plant" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_group">OP类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_group" name="BG_Organization_UID" data-live-search="true"></select>
+
+                            </div>
+                        </div>
+                        @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_FunPlant">功能厂</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_FunPlant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+
+                            </div>
+                        </div>*@
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_function_id">功能名称</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_function_id" name="System_Schedule_UID" data-live-search="true">
+                                    @foreach (var item in ViewBag.FunctionList)
+                                    {
+                                        <option value=@item.System_Schedule_UID>@item.Plant_Name @item.Function_ID @item.Function_Name</option>
+                                    }
+
+                                </select>
+
+                                @*<input type="text" name="Function_ID" class="form-control input-sm" id="js_s_function_id" required data-msg-required="模组编号不能为空">*@
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_Email">邮箱</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Email" class="form-control input-sm" id="js_Email" placeholder="邮箱">
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-12">
+                            <ul class="list-group validate-error"></ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn_search"><i class="fa fa-search"></i> 搜索</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_edit_modal" role="dialog">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">排程邮件编辑</h4>
+            </div>
+            @using (Html.BeginForm("EditEmailInfo", "FlowChart", FormMethod.Post, new { id = "js_form_edit_email" }))
+            {
+                <div class="modal-body form-horizontal">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_plant_edit">厂区</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_plant_edit" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_group_edit">OP类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_group_edit" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_function_id_edit">功能名称</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_function_id_edit" name="Function_ID" data-live-search="true">
+                                    @foreach (var item in ViewBag.FunctionList)
+                                    {
+                                        <option value=@item.System_Schedule_UID>@item.Plant_Name @item.Function_ID @item.Function_Name</option>
+                                    }
+
+                                </select>
+
+                                @*<input type="text" name="Function_ID" class="form-control input-sm" id="js_s_function_id" required data-msg-required="模组编号不能为空">*@                            
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_ntid">User NTID</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="User_NTID" class="form-control input-sm" id="js_s_ntid">
+                                <input type="hidden" id="hidNTID" />
+                            </div>
+                        </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_input_Email">邮箱</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Email" class="form-control input-sm" id="js_input_Email" required data-msg-required="邮箱不能为空">
+                        </div>
+                    </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_input_User_Name_CN">中文名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="User_Name_CN" class="form-control input-sm" id="js_input_User_Name_CN" required data-msg-required="中文名称不能为空">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_input_User_Name_EN">英文名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="User_Name_EN" class="form-control input-sm" id="js_input_User_Name_EN">
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_select_Is_Enable">状态</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_select_Is_Enable" name="Is_Enable" data-live-search="true">
+                                    <option value="1" selected>是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-times btn btn-primary" id="js_btn_createclear" data-dismiss="modal">取消</button>
+                    <button type="button" class="fa fa-save btn btn-primary" id="js_btn_saveEdit">保存</button>
+                </div>
+                <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                <input type="hidden" id="hidDelivery_UID" name="System_Email_Delivery_UID" />
+            }
+        </div>
+    </div>
+</div>
+
+
+}
+
+
+@section ViewScripts{
+<script type="text/javascript" src="~/Scripts/PDMSJS/Common.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var FunctionEmail = (function () {
+            var urls = {
+                queryEmail: '@Html.Raw(Url.Action("QueryBatchEmailSetting", "Settings"))',
+                queryEmailByEdit: '@Html.Raw(Url.Action("QueryBatchEmailSettingByEdit", "Settings"))',
+                changeNTID: '@Html.Raw(Url.Action("ChangeNTID", "Settings"))',
+                checkValid: '@Html.Raw(Url.Action("CheckEmailIsError", "Settings"))',
+                saveInfo: '@Html.Raw(Url.Action("SaveBatchEmailSetting", "Settings"))'
+        };
+
+        var columns = [
+    {
+        data: null,
+        createdCell: function (td, cellData, rowData, row, col) {
+            var buttonEdit = '<button type="button" class="btn btn-default btn-sm"  data-nid=' + rowData.System_Email_Delivery_UID + '>编辑</button>';
+            //var buttonDelete = '<button type="button" class="btn btn-default btn-sm"  data-nid=' + rowData.System_Module_Email_UID + '>删除</button>';
+
+            var hidUid = '<input type="hidden" id=hidUid value=' + rowData.System_Email_Delivery_UID + '>';
+            var hidPlant = '<input type="hidden" id=hidPlant value=' + rowData.PlantName + '>';
+            var hidOptype = '<input type="hidden" id=hidOptype value=' + rowData.OpType_Name + '>';
+            var hidFunc = '<input type="hidden" id=hidFunc value=' + rowData.Func_Name + '>';
+            var hidFixUID = '<input type="hidden" id=hidFixUID value=' + rowData.Fixture_M_UID + '>';
+
+
+            //var result = buttonEdit + hidPlant + hidOptype + hidFunc + hidFixUID + hidFixUnique_ID + hidFixture_NO + hidVersion +
+            //    hidStatus + hidResume_Notes + hidFixture_Name + hidShortCode + hidProcess_Name + hidWorkStation_Name + hidShortCode +
+            //    hidProcess_Name + hidWorkStation_Name + hidEquipment_No + hidVendor_Name + hidLine_Name + hidModified_Date +
+            //    hidFixture_Resume_UID + hidSourceNo + hidFixture_M_UID;
+
+            //var result = '<button type="button" class="btn btn-default btn-xs" rel="action-popover">' +
+            //             '<i class="fa fa-reorder text-info"></i>' +
+            //             '</button>' +
+            //             '<div class="hidden popover-content">' + buttonEdit + buttonDelete
+
+            var result = buttonEdit + hidUid + hidPlant + hidOptype + hidFunc;
+            $(td).html(result);
+
+
+
+        },
+        className: "js-grid-edit"
+    }, {
+        data: null,
+        className: "table-col-seq"
+    }, {
+        data: "PlantName",
+        className: "min-col-xs"
+    }, {
+        data: "OpType_Name",
+        className: "min-col-xs"
+    }, {
+        data: "Module_ID",
+        className: "min-col-xs"
+    }, {
+        data: "Module_Name",
+        className: "min-col-xs"
+    },{
+        data: "Function_ID",
+        className: "min-col-xs"
+    }, {
+        data: "Function_Name",
+        className: "min-col-xs"
+    }, {
+        data: "User_NTID",
+        className: "min-col-xs"
+    },{
+        data: "User_Name_CN",
+        className: "min-col-xs"
+    }, {
+        data: "User_Name_EN",
+        className: "min-col-xs"
+    }, {
+        data: "Email",
+        className: "min-col-xs"
+    }, {
+        data: null,
+        render: function (data, type, row, rowIndex) {
+            if(data.Is_Enable){
+                return '启用';
+            }
+            else{
+                return '禁用';
+            }
+        },
+        //data: "Is_Enable",
+        className: "min-col-xs"
+    }];
+
+        var _getParams = function () {
+            PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+            return $('#js_form_query').serialize().replace(/\+/g, " ");
+        };
+
+        var _queryFunctionEmail = function (firstLoad) {
+            var config = {
+                pageId: "#page",
+                tableId: "#js_BatchEmail_datatable",
+                remoteUrl: urls.queryEmail,
+                searchParams: _getParams(),
+                tableOptions: {
+                    scrollX: true,
+                    autoWidth: true,
+                    columns: columns
+                }
+            };
+
+            if (!firstLoad) {
+                $('#page').page('destroy');
+                PDMS.Utility.Criteria.Build();
+            }
+
+            var chk_value = [];
+            table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+        }
+
+
+        return {
+            urls: urls,
+            Init: function () {
+                PDMS.Utility.Criteria.Init();
+                RefreshOPTypesQuery();
+                _queryFunctionEmail(true);
+            },
+            QueryFunctionEmail: function () {
+                _queryFunctionEmail(false);
+            }
+        }
+    })();
+
+    FunctionEmail.Init();
+
+    $('#js_form_edit_email').validate({
+        errorContainer: $('ul.validate-error'),
+        errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+        wrapper: 'li'
+    });
+
+    $('#btn_search').click(function () {
+        FunctionEmail.QueryFunctionEmail();
+        $('#js_search_modal').modal('hide');
+    });
+
+    $('body').on("click", ".js-grid-edit", function () {
+        $('#js_edit_modal').find(".modal-title").html('排程邮件编辑');
+        RefreshOPTypesQueryByEdit();
+
+        var uid = $(this).find('#hidUid').val();
+        var hidPlant = $(this).find('#hidPlant').val();
+        var hidOptype = $(this).find('#hidOptype').val();
+
+        var url = FunctionEmail.urls.queryEmailByEdit;
+        $.post(url, { System_Email_Delivery_UID: uid }, function (data) {
+
+            var obj = jQuery.parseJSON(data);
+
+            //加载厂区
+            $('#js_s_input_plant_edit').selectpicker('refresh');
+            $('#js_s_input_plant_edit').selectpicker('val', obj.Plant_Organization_UID);
+
+            //加载op
+            $('#js_s_input_group_edit').selectpicker('refresh');
+            $('#js_s_input_group_edit').selectpicker('val', obj.BG_Organization_UID);
+
+            $('#js_s_function_id_edit').selectpicker('refresh');
+            $('#js_s_function_id_edit').selectpicker('val', obj.System_Schedule_UID);
+            $('#js_s_ntid').val(obj.User_NTID);
+            $('#js_input_User_Name_CN').val(obj.User_Name_CN);
+            $('#js_input_User_Name_EN').val(obj.User_Name_EN);
+            $('#js_input_Email').val(obj.Email);
+            $('#hidNTID').val(obj.Account_UID);
+
+            $('#js_s_select_Is_Enable').selectpicker('refresh');
+            if (obj.Is_Enable) {
+                $('#js_s_select_Is_Enable').selectpicker('val', 1);
+            }
+            else {
+                $('#js_s_select_Is_Enable').selectpicker('val', 0);
+            }
+            $('#hidDelivery_UID').val(obj.System_Email_Delivery_UID);
+
+            $('#js_edit_modal').modal('show');
+        });
+    });
+
+
+    $('#js_s_ntid').change(function () {
+        var value = $('#js_s_ntid').val();
+        var url = FunctionEmail.urls.changeNTID;
+        $.get(url, { User_NTID: value }, function (data) {
+            var dto = jQuery.parseJSON(data);
+            if (dto != null) {
+                $('#js_input_Email').val(dto.Email);
+                $('#hidNTID').val(dto.Account_UID);
+            }
+            else {
+                $('#js_input_Email').val('');
+                $('#hidNTID').val('');
+            }
+        });
+    });
+
+
+    $('#js_btn_saveEdit').on('click', function () {
+        var uid = $('#hidDelivery_UID').val();
+        var validUrl = FunctionEmail.urls.checkValid;
+        var url = FunctionEmail.urls.saveInfo;
+
+        var titleVal = $('#js_edit_modal').find(".modal-title").html();
+        if ($('#js_form_edit_email').valid()) {
+            var param = {};
+            if (titleVal == '排程邮件编辑') {
+                param["IsEdit"] = true;
+                param["System_Email_Delivery_UID"] = uid;
+            }
+            else {
+                param["IsEdit"] = false;
+
+            }
+            param["Plant_Organization_UID"] = $('#js_s_input_plant_edit').val();
+            param["BG_Organization_UID"] = $('#js_s_input_group_edit').val();
+            param["System_Schedule_UID"] = $('#js_s_function_id_edit').val();
+            param["User_Name_CN"] = $('#js_input_User_Name_CN').val();
+            param["User_Name_EN"] = $('#js_input_User_Name_EN').val();
+            param["Email"] = $('#js_input_Email').val();
+            param["Account_UID"] = $('#hidNTID').val();
+            if ($('#js_s_select_Is_Enable').val() == 1) {
+                param["Is_Enable"] = true;
+            }
+            else {
+                param["Is_Enable"] = false;
+            }
+
+            $.post(validUrl, param, function (data) {
+                if (data.length > 0) {
+                    PDMS.Utility.MessageBox.error(data);
+                }
+                else {
+                    $.post(url, param, function (data) {
+                        if (data.length > 0) {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            FunctionEmail.QueryFunctionEmail();
+                            $('#js_edit_modal').modal('hide');
+                        }
+                    });
+                }
+            });
+        }
+
+    });
+
+
+    $('#js_btn_add_bu').click(function () {
+        $('#js_edit_modal').find(".modal-title").html('排程邮件新增');
+        RefreshOPTypesQueryByEdit();
+    });
+
+
+    $('#js_btn_clear').on('click', function (e) {
+
+        $('#js_search_modal').find('input').val('');
+        $('#js_search_modal').find('textarea').val('');
+        var $searchform = $('#js_form_query');
+        $searchform.find("select").each(function () {
+            $(this).find("option").attr("selected", false);
+            //$(this).find("option").first().attr("selected", true);
+            $(this).selectpicker('refresh');
+        });
+        PDMS.Utility.Criteria.Clear();
+
+    });
+
+    //隐藏modal框时清空值
+    $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+        $('#js_edit_modal').find('input').val('');
+        $('.list-group.validate-error').empty();
+    });
+    //#endregion 隐藏modal框时清空值
+
+
+    });
+</script>
+
+}

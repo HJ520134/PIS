@@ -1,0 +1,545 @@
+﻿
+
+@{
+    ViewBag.ApproveSuccess = T("Common.ApproveSuccess").Text;
+    ViewBag.Exporting = T("QA.Exporting").Text;
+    ViewBag.UploadExcel = T("Common.UploadExcel").Text;
+    ViewBag.Manpowerdetails = T("QA.Manpowerdetails").Text;
+    ViewBag.Imported = T("QA.Imported").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.First = T("QA.First").Text;
+    ViewBag.Seedetails = T("QA.Seedetails").Text;
+    ViewBag.Systemnumber = T("QA.Systemnumber").Text;
+    ViewBag.Process = T("QA.Process").Text;
+    ViewBag.EquipName = T("Production.EquipName").Text;
+    ViewBag.MoreThanDate = T("Production.MoreThanDate").Text;
+    ViewBag.BusinessGroupnotALL = T("QA.BusinessGroupnotALL").Text;
+    ViewBag.ProjectnotALL = T("QA.ProjectnotALL").Text;
+    ViewBag.ComponentnotALL = T("QA.ComponentnotALL").Text;
+    ViewBag.Searchingwait = T("QA.Searchingwait").Text;
+}
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-9">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-3 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> @T("QA.Inquire")</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <div id="divManPower">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_ppcheckdata_week">
+                    <thead>
+                        <tr id="trId">
+                        </tr>
+                    </thead>
+
+                </table>
+
+            </div>
+
+            <div id="divEquip" hidden>
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_equip_datatable">
+                    <thead>
+                        <tr id="js_rpt_equip_tr">
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+    </div><!-- / 內容 表格列 -->
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Inquire")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_plant" name="PlantUID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> plantItem in ViewBag.Plant)
+                                        {
+                                            if (plantItem.Key == 1)
+                                            {
+                                                <option value=@plantItem.Key selected>@plantItem.Value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value=@plantItem.Key>@plantItem.Value</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_group">@T("QA.BusinessGroup")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_group" name="OpTypeUID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> opTypeItem in ViewBag.OPType)
+                                        {
+                                            <option value=@opTypeItem.Key selected="selected">@opTypeItem.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_project" name="ProjectUID" class="form-control input-sm">
+                                        <option value=0 selected="selected">All</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_parttypes">@T("QA.Part")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_parttypes" name="PartTypeUID" class="form-control input-sm">
+                                        <option value=0 selected="selected">All</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_modified_from">@T("Common.StartDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="StartDate" class="form-control input-sm date" id="js_s_input_modified_from" placeholder="@T("Common.StartDate")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_modified_to">@T("Common.EndDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="EndDate" class="form-control input-sm date" id="js_s_input_modified_to" placeholder="@T("Common.EndDate")">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_querytype">@T("QA.Querymode")<</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_querytype" name="QueryMode" class="form-control input-sm">
+                                        <option value=1 selected="selected">人力对比</option>
+                                        <option value=2>设备对比</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_search"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Viewdetails")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <!--表格-->
+                        <div class="col-md-12 table-container">
+
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_ppcheckdata">
+                                <thead>
+                                    <tr id="trDetail">
+                                    </tr>
+                                </thead>
+
+                            </table>
+                            <div id="page" class="row"></div>
+
+                        </div><!--/表格-->
+
+                    </div><!-- / 內容 表格列 -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("QA.Return")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/PlanAndActualReportJS/ClickEvent.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/PDMSJS/PlanAndActualReportJS/DataBind.js"></script>*@
+    <script type="text/javascript">
+        var SearchEquip = function (url) {
+            PDMS.Utility.Criteria.Build();
+            $('#js_rpt_equip_tr').empty();
+            $('#js_equip_datatable').DataTable().clear();
+            var selectOptype = $('#js_s_input_group').val();
+            var selectProject = $('#js_s_input_project').val();
+            var selectPartsType = $('#js_s_input_parttypes').val();
+            if (selectOptype == '0') {
+                PDMS.Utility.MessageBox.info("@ViewBag.BusinessGroupnotALL");
+                return false;
+            }
+            if (selectProject == '0') {
+                PDMS.Utility.MessageBox.info("@ViewBag.ProjectnotALL"); 
+                return false;
+            }
+            if (selectPartsType == '0') {
+                PDMS.Utility.MessageBox.info("@ViewBag.ComponentnotALL");
+                return false;
+            }
+            if (new Date($('#js_s_input_modified_from').val()) > new Date($('#js_s_input_modified_to').val())) {
+                PDMS.Utility.MessageBox.error("@ViewBag.MoreThanDate");
+                return false;
+            }
+            var _getParams = function () {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+            $('#js_rpt_equip_tr').append("<th>@ViewBag.Systemnumber</th>");
+            $('#js_rpt_equip_tr').append("<th>@ViewBag.Process</th>");
+            $('#js_rpt_equip_tr').append("<th>@ViewBag.EquipName</th>"); 
+            var columns = [
+                {
+                    data: "Process_Seq",
+                    className: "min-col-xs text-right"
+                },
+                {
+                    data: "Process",
+                    className: "min-col-xs"
+                }, {
+                    data: "Equipment_Name",
+                    className: "min-col-xs"
+                }];
+            var params = {};
+            params['PlantUID'] = $('#js_s_input_plant').val();
+            params['OpTypeUID'] = $('#js_s_input_group').val();
+            params['ProjectUID'] = $('#js_s_input_project').val();
+            params['PartTypeUID'] = $('#js_s_input_parttypes').val();
+            params['StartDate'] = $('#js_s_input_modified_from').val();
+            params['EndDate'] = $('#js_s_input_modified_to').val();
+            $.blockUI({ message: "<h1>@ViewBag.Searchingwait</h1>" }); 
+            $.post(url, params, function (data) {
+                var dynamicName = data.columnList;
+                $.each(dynamicName, function (i, item) {
+                    $('#js_rpt_equip_tr').append("<th>" + item + "</th>");
+                    var obj = {};
+                    obj['data'] = item;
+                    obj['className'] = "min-col-xs text-right";
+                    columns.push(obj);
+                });
+                var dt = $('#js_equip_datatable').DataTable({
+                    destroy: true,
+                    scrollX: true,
+                    scrollY: 500,
+                    data: data.data,
+                    columns: columns
+                });
+                new $.fn.dataTable.FixedColumns(dt, { "iLeftColumns": 3 });
+                $('#js_rpt_equip_tr th').removeClass('text-right')
+                $.unblockUI();
+            });
+        }
+        $(function () {
+            var humanDatatable = null;
+            var humanProcessDatatable = null;
+            var humanColumns = [];
+            var humanProcessColumns = [];
+            var EquRPT = (function () {
+                var urls = {
+                    queryRPTS: '@Url.Action("QueryEquipRPT", "ProductionPlanningReport")',
+                    getColumnName: '@Url.Action("GetRPTColumnName", "ProductionPlanningReport")',
+                    downloadExcel: '@Url.Action("DownloadExcel", "FlowChart")',
+                    queryFL: '@Url.Action("QueryFlowChart", "FlowChart")',
+                    queryHistoryFL: '@Url.Action("QueryHistoryFlowChart", "FlowChart")',
+                    checkFLExcelExist: '@Url.Action("CheckFLExcelExist", "FlowChart")',
+                    closeFL: '@Url.Action("ClosedFlowChart", "FlowChart")',
+                    deleteFLTemp: '@Url.Action("DeleteFlowChartTemp", "FlowChart")',
+                    queryActualAndEstimateHuman: '@Url.Action("GetActualAndEstimateHumanInfoByProject", "ProductionPlanningReport")',
+                    GetActualAndEstimateHumanInfoForProcess: '@Url.Action("GetActualAndEstimateHumanInfoForProcess", "ProductionPlanningReport")', 
+                    getHumanColumnInfo: '@Url.Action("GetHumanColumnInfo", "ProductionPlanningReport")'
+                };
+                var GetFormatDate = function () {
+                    var myDate = new Date();
+                    var month = myDate.getMonth() + 1;
+                    if (month.toString().length < 2) {
+                        month = '0' + month;
+                    }
+                    var date = myDate.getDate();
+                    if (date.toString().length < 2) {
+                        date = '0' + date;
+                    }
+                    var formatDate = myDate.getFullYear() + '-' + month + '-' + date;
+                    $('#js_s_input_modified_from').val(formatDate);
+                    $('#js_s_input_modified_to').val(formatDate);
+                };
+
+                var columns = [{
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                }, {
+                    data: "Equipment_Name",
+                    className: "min-col-xs"
+
+                }, {
+                    data: "OP1",
+                    className: "min-col-xs"
+
+                }, {
+                    data: "OP2",
+                    className: "min-col-xs"
+
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.OP1 + rowData.OP2;
+                        $(td).html(result);
+                    }
+                }, {
+                    data: "Request_OP1",
+                    className: "min-col-xs"
+                }, {
+                    data: "Request_OP2",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.Request_OP1 + rowData.Request_OP2;
+                        $(td).html(result);
+                    }
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.OP1 - rowData.Request_OP1;
+                        $(td).html(result);
+                    }
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.OP2 - rowData.Request_OP2;
+                        $(td).html(result);
+                    }
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.OP1 + rowData.OP2 - (rowData.Request_OP1 + rowData.Request_OP2);
+                        $(td).html(result);
+                    }
+                }];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRPTS = function (firstLoad) {
+                    if (!firstLoad) {
+                        //PDMS.Utility.Criteria.Build();
+                    }
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        GetFormatDate();
+                        PDMS.Utility.Criteria.Init();
+                        _queryRPTS(true);
+                    },
+                    QueryEquRPTs: function () {
+                        _queryRPTS(false);
+                    },
+                    GetHumanDatatable: function () {
+                        if (humanDatatable == null) {
+                            humanDatatable = $('#js_ppcheckdata_week').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: humanColumns,
+                            });
+                        }
+                        return humanDatatable;
+                    },
+                    SetHumanDatatable: function (datatable) {
+                        humanDatatable = datatable;
+                    },
+                    DestroyHumanTable: function () {
+                        if (humanDatatable != null) {
+                            humanDatatable.destroy();
+                        }
+                    },
+                    HumanColumns: humanColumns,
+                    GetHumanProcessDatatable: function () {
+
+                        if (humanProcessDatatable == null) {
+
+                            humanProcessDatatable = $('#js_ppcheckdata').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: humanProcessColumns,
+                            });
+                        }
+                        return humanProcessDatatable;
+                    },
+                    SetHumanProcessDatatable: function (datatable) {
+                        humanProcessDatatable = datatable;
+                    },
+                    DestroyHumanProcessTable: function () {
+                        if (humanProcessDatatable != null) {
+                            humanProcessDatatable.destroy();
+                        }
+                    },                    
+                    HumanProcessColumns: humanProcessColumns,
+                }
+            })();
+            EquRPT.Init();
+            $('#btn_search').click(function () {
+                $('#js_search_modal').modal('hide');
+                var QueryMode = $('#js_s_input_querytype').val();
+                if (QueryMode == '1') { //人力查询
+                    $('#divManPower').show();
+                    $('#divEquip').hide();
+                    SearchManPow();
+                }
+                else { //设备查询
+                    $('#divManPower').hide();
+                    $('#divEquip').show();
+                    var url = '@Url.Action("QueryPlanAndActualReportInfo", "ProductionPlanningReport")';
+                    SearchEquip(url);
+                }
+            });
+            $('body').on('click', '.js-grid-edit', function () {
+                var id = $('#js_s_input_project').val();
+                var uuid = $(this).attr('data-id');
+                var begin = $("#js_s_input_modified_from").val();
+                var end = $("#js_s_input_modified_to").val();
+                var url = EquRPT.urls.queryActualAndEstimateHuman;
+                $.post(EquRPT.urls.getHumanColumnInfo, { project: id, begin: begin, end: end, flag: 2}, function (data) {
+                    var col = data
+                    var strCol = '';
+                    humanProcessColumns.splice(0, humanProcessColumns.length);
+                    for (var i = 0; i < col.length; i++) {
+                        var str = '<th>' + col[i] + '</th>';
+                        strCol += str;
+                        var obj = {};
+                        obj['data'] = col[i];
+                        obj['className'] = "min-col-xs text-right";
+                        humanProcessColumns.push(obj);
+                    } 
+                    $("#trDetail").html(strCol);
+                    url = EquRPT.urls.GetActualAndEstimateHumanInfoForProcess;
+                    $.post(url, { flowchat: uuid, begin: begin, end: end }, function (data) {
+                        var dataTable1 = $('#js_ppcheckdata').DataTable({
+                            columns: EquRPT.HumanProcessColumns,
+                            scrollX: true,
+                            autoWidth: true,
+                            ordering: false,
+                            data: data.data,
+                            destroy: true
+                        });
+                        PDMS.Utility.Criteria.Build();
+                        EquRPT.SetHumanProcessDatatable(dataTable1);
+                    });
+                    $('#js_view_modal').modal('show', $(this));
+                });
+            });
+
+            var SearchManPow = function () {
+                //人力资源部分查询
+                var id = $('#js_s_input_project').val();
+                var begin = $("#js_s_input_modified_from").val();
+                var end = $("#js_s_input_modified_to").val();
+                var url = EquRPT.urls.queryActualAndEstimateHuman;
+                $.post(EquRPT.urls.getHumanColumnInfo, { project: id, begin: begin, end: end,flag:3 }, function (data) {
+                    var col = data
+                    var strCol = '';
+                    if (col.length >1) {
+                        humanColumns.splice(0, humanColumns.length);
+                        for (var i = 0; i < col.length; i++) {
+                            var str = '<th>' + col[i] + '</th>';
+                            strCol += str;
+                            var obj = {};
+                            obj['data'] = col[i];
+                            obj['className'] = "min-col-xs text-right";
+                            humanColumns.push(obj);
+                        }
+                        var tp = {
+                            data: null,
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                var html = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                                '<i class="fa fa-reorder"></i>' +
+                                            '</button>' +
+                                            '<div class="hidden popover-content">' +
+                                                '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.FlowChart_Master_UID + '">@ViewBag.Seedetails</button>' +
+                                            '</div>';
+                                $(td).html(html);
+                            },
+                            className: "min-col-md text-center"
+                        };
+                        humanColumns.push(tp);
+                        $("#trId").html(strCol + '<th>@ViewBag.Seedetails</th>');
+                        $.post(url, { project: id, begin: begin, end: end }, function (data) {
+                            var dataTable1 = $('#js_ppcheckdata_week').DataTable({
+                                columns: humanColumns,
+                                scrollX: true,
+                                autoWidth: true,
+                                ordering: false,
+                                data: data.data,
+                                destroy: true
+                            });
+                            PDMS.Utility.Criteria.Build();
+                            EquRPT.SetHumanDatatable(dataTable1);
+                        });
+                    }
+
+                    
+                });
+            }
+        });
+    </script>
+}

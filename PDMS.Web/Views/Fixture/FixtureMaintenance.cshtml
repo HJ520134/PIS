@@ -1,0 +1,2449 @@
+﻿@model PDMS.Model.ViewModels.FixtureVM
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-5">
+            </div>
+            <div class="col-md-12 search-field col-lg-7">
+
+                <a class="fa fa-search btn btn-primary" data-toggle="modal" id="bt_search" data-target="#js_search_modal"> 查询</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_createMaintenance"> 产生日常保养记录</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_maintenance"> 保养</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_confirm"> 确认</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_Nomain"> 未保养记录取消</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export"> 导出</button>
+
+            </div>
+
+        </div>
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort"><input type="checkbox" id="checkbox-all" class="js-checkbox-all" /></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>治具保养单编号</th>
+                        <th>治具唯一编号</th>
+                        <th>线别</th>                      
+                        <th>工站</th>                        
+                        <th>机台编码</th>
+                        <th>治具编号(图号)</th>
+                        <th>治具短码</th>
+                        <th>周期类别</th>
+                        <th>保养状态</th>
+                        <th>保养者工号</th>
+                        <th>保养者名称</th>
+                        <th>确认状态</th>
+                        <th>确认者</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>治具保养单编号</th>
+                        <th>治具唯一编号</th>
+                        <th>线别</th>                      
+                        <th>工站</th>                    
+                        <th>机台编码</th>
+                        <th>治具编号(图号)</th>
+                        <th>治具短码</th>
+                        <th>周期类别</th>
+                        <th>保养状态</th>
+                        <th>保养者工号</th>
+                        <th>保养者名称</th>
+                        <th>确认状态</th>
+                        <th>确认者</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+@section ViewModals{
+    @* 查询 *@
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_query">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_query">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_query">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Production_Line_query">线别</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Production_Line_query" name="Production_Line_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Process_Info_UID_query">制程</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Process_Info_UID_query" name="Process_Info_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Workstation_UID_query">工站</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Workstation_UID_query" name="Workstation_UID" data-live-search="true"></select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Workshop_UID_query">生产地点</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Workshop_UID_query" name="Workshop_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Fixture_Machine_UID_query">机台编号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Fixture_Machine_UID_query" name="Fixture_Machine_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_NO_query">治具编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_NO_query" name="Fixture_NO" placeholder="Fixture_NO">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Version_query">版本</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Version_query" name="Version" placeholder="Version">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Maintenance_Record_NO_query">治具保养单编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Maintenance_Record_NO_query" name="Maintenance_Record_NO" placeholder="Maintenance_Record_NO">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Vendor_query">供应商</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Vendor_query" name="Vendor_Info_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_Name_query">治具名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_Name_query" name="Fixture_Name" placeholder="Fixture Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_ShortCode_query">治具短码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_ShortCode_query" name="ShortCode" placeholder="Fixture ShortCode">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Fixture_Status_query">治具状态</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Fixture_Status_query" name="Status" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.FixtureStatus)
+                                        {
+                                            <option value=@item.Status>@item.StatuName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Maintenance_Type_query">週期類別</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Maintenance_Type_query" name="Maintenance_Type" data-live-search="true">
+                                        <option></option>
+                                        <option value="D">日常保养</option>
+                                        <option value="P">周期保养</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Maintenance_Status_query">保养状态</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Maintenance_Status_query" name="Maintenance_Status" data-live-search="true">
+                                        <option></option>
+                                        <option value=0>未保养</option>
+                                        <option value=1>保养完成</option>
+                                        <option value=2>免保养Waiver</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Confirm_Status_query">确认状态</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Confirm_Status_query" name="Confirm_Status" data-live-search="true">
+                                        <option></option>
+                                        <option value=0>未确认</option>
+                                        <option value=1>确认完成</option>
+                                        @*<option value=2>免確認Waiver</option>*@
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Modified_UID_query">最后修改者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Modified_UID_query" name="Modifieder" placeholder="Modifieder">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">修改日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="End_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="End_Date_To" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>               
+                            <div class="col-xs-12">
+                                <ul class="list-group validate-error"></ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 查看 *@
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查看保养信息</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_factory_view">厂区</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_factory_view" name="Plant_Organization_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_optype_view">OP类型</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_optype_view" name="BG_Organization_UID" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_funplant_view">功能厂</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_funplant_view" name="FunPlant_Organization_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_NO_view">治具编号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_NO_view" name="Fixture_NO" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Version_view">版本</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Version_view" name="Version" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Vendor_view">供应商</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Vendor_view" name="Vendor" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Production_Line_view">线别</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Production_Line_view" name="Production_Line" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Process_Info_view">制程</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Process_Info_view" name="Process_Info" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Workstation_view">工站</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Workstation_view" name="Workstation_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Workshop_view">生产地点</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Workshop_view" name="Workshop_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Fixture_Machine_UID_view">机台编号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Fixture_Machine_UID_view" name="Fixture_Machine_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_Machine_Type_view">机台类型</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_Machine_Type_view" name="Fixture_Machine_Type" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_Name_view">治具名称</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_Name_view" name="Fixture_Name" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_ShortCode_view">治具短码</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_ShortCode_view" name="Fixture_ShortCode" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_2D_Barcode_view">二维码</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_2D_Barcode_view" name="Fixture_2D_Barcode" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_Seq_view">治具流水号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_Seq_view" name="Fixture_Seq" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="s_input_Fixture_Unique_ID_view">治具唯一编号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="s_input_Fixture_Unique_ID_view" name="Fixture_Unique_ID" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Maintenance_Status_view">保养类别</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Maintenance_Status_view" name="Maintenance_Status" readonly>
+                      </div>
+                    </div>                 
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Maintenance_Person_Number_query">保养者工号</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Maintenance_Person_Number_query" name="Maintenance_Person_Number" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Maintenance_Person_Name_query">保养者名称</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Maintenance_Person_Name_query" name="Maintenance_Person_Name" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Maintenance_Date_view">保养时间</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Maintenance_Date_view" name="Maintenance_Date" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Confirmor_UID_query">确认者</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Confirmor_UID_view" name="Confirmor_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Confirm_Date_view">确认时间</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Confirm_Date_view" name="Confirm_Date" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Fixture_Status_view">治具状态</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm" id="js_select_Fixture_Status_view" name="Fixture_Status" readonly>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <ul class="list-group validate-error"></ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 产生日常保养数据 *@
+    <div class="modal fade" id="js_create_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">产生日常保养记录</h4>
+            </div>
+@using (Html.BeginForm("CreateFixture_Maintenance_Records", "Fixture", FormMethod.Post, new { id = "js_form_user_edit" }))
+{
+            <div class="modal-body">
+                @*<form id="js_form_create" class="form-horizontal" data-need-validate="true">*@
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_factory_create">厂区</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_factory_create" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_optype_create">OP类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_optype_create" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_funplant_create">功能厂</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_funplant_create" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Fixture_Machine_UID_create">机台编号</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Fixture_Machine_UID_create" name="Fixture_Machine_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Fixture_NO_create">治具编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Fixture_NO_create" name="Fixture_NO" placeholder="Fixture_NO">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Version_create">版本</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Version_create" name="Version" placeholder="Version">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Production_Line_create">线别</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Production_Line_create" name="Production_Line_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Project_UID_create">专案</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="s_input_Project_UID_create" name="Project" data-live-search="true"></select>
+                            </div>
+                        </div>*@
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Process_Info_create">制程</label>
+                            <div class="col-sm-7">                               
+                                <select class="selectpicker form-control input-sm" id="s_input_Process_Info_create" name="Process_Info_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Workstation_create">工站</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="s_input_Workstation_create" name="Workstation_UID" data-live-search="true"></select>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Workshop_create">生产地点</label>
+                            <div class="col-sm-7">                              
+                                <select class="selectpicker form-control input-sm" id="s_input_Workshop_create" name="Workshop_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Vendor_create">供应商</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Vendor_create" name="Vendor_Info_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Maintenance_Plan_create">保养周期类别</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Maintenance_Plan_create" name="Maintenance_Plan_UID" data-live-search="true"></select>
+                            </div>
+                        </div>             
+                        <div class="col-xs-12">
+                            <ul class="list-group validate-error"></ul>
+                        </div>
+                    </div>
+                @*</form>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_create"><i class="fa fa-save"></i> 存档</button>
+            </div>
+}
+        </div>
+    </div>
+</div>
+@* 保养*@
+<div class="modal fade" id="js_main_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">保养</h4>
+            </div>
+            <div class="modal-body" >
+                <div class="form-horizontal">
+          
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Fixture_Unique_ID_main">治具唯一编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Fixture_Unique_ID_main" name="Fixture_Unique_ID" placeholder="Fixture Unique" >
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-1 control-label"> </label>
+                            <div class="col-sm-5">
+                                <button class="btn btn-primary btn-sm" id="js_btn_query_main"> 查询</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <hr class="no-margin" />
+                        </div>
+                    </div>   
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_personNumber">保养者工号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_personNumber" name="Maintenance_Person_Number" placeholder="保养者工号">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_personName">保养者名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_personName" name="Maintenance_Person_Name" placeholder="保养者名称">
+                                </div>
+                            </div>               
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Time_main">保养时间</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date_time required" id="s_input_Time_main" name="Created_Date" placeholder="Created Date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                                <hr class="no-margin" />
+                            </div>
+                        </div>               
+                                <table id="js_main_table_by" class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-seq nosort">序号</th>                                          
+                                            <th class="nosort">治具短码</th>
+                                            <th class="nosort">治具唯一编码</th>
+                                            <th class="nosort">保养类别</th>
+                                            <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th>                                           
+                                            <th class="nosort">完成保养</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                </table>                    
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_main_by"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                </div>
+    </div>
+</div>
+
+@* 确认*@
+<div class="modal fade" id="js_confirm_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">确认</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Fixture_Unique_ID_confirm">治具唯一编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Fixture_Unique_ID_confirm" name="Fixture_Unique_ID" placeholder="Fixture Unique">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-1 control-label"> </label>
+                            <div class="col-sm-5">
+                                <button class="btn btn-primary btn-sm" id="js_btn_query_confirm"> 查询</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <hr class="no-margin" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_confirm">确认者</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="s_input_confirm" name="Account_UID" data-live-search="true"></select>
+                            </div>
+                        </div>               
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Time_main_confirm">确认时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm date_time required" id="s_input_Time_main_confirm" name="Created_Date" placeholder="Created Date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <hr class="no-margin" />
+                        </div>
+                    </div>
+                    <table id="js_confirm_table_qr" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="table-col-seq nosort">序号</th>
+                                <th class="nosort">治具短码</th>
+                                <th class="nosort">治具唯一编码</th>
+                                <th class="nosort">保养类别</th>
+                                <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th> 
+                                <th class="nosort">确认保养</th>
+                            </tr>
+                        </thead>
+                    </table>              
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_main_qr"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* 未保养记录取消 *@
+<div class="modal fade" id="js_Nomain_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">取消未保养</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Fixture_Unique_ID_main">治具唯一编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Fixture_Unique_ID_main" name="Fixture_Unique_ID" placeholder="Fixture Unique">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-1 control-label"> </label>
+                            <div class="col-sm-5">
+                                <button class="btn btn-primary btn-sm" id="js_btn_query_main"> 查询</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <hr class="no-margin" />
+                        </div>
+                    </div>
+                    <div class="row">   
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_personNumber_main_Nomain">取消保养者工号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_personNumber_main_Nomain" name="Maintenance_Person_Number" placeholder="取消保养者工号">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_personName_main_Nomain">取消保养者名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_personName_main_Nomain" name="Maintenance_Person_Name" placeholder="取消保养者名称">
+                            </div>
+                        </div>           
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Time_main_Nomain">取消保养时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date_time required" id="s_input_Time_main_Nomain" name="Created_Date" placeholder="Created Date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <hr class="no-margin" />
+                        </div>
+                    </div>
+
+                    <table id="js_Nomain_table_qx" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="table-col-seq nosort">序号</th>
+                                <th class="nosort">治具短码</th>
+                                <th class="nosort">治具唯一编码</th>
+                                <th class="nosort">保养类别</th>
+                                <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th>
+                                <th class="nosort">取消未保养</th>
+                             </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_main_qx"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $('#js_btn_clear').click(function () {
+            var $searchform = $('#js_form_query');
+            $searchform.find("select").each(function() {
+                $(this).find("option").attr("selected", false);
+                $(this).find("option").first().attr("selected", true);
+                $(this).selectpicker('refresh');
+            });
+            PDMS.Utility.Criteria.Clear();
+        });
+       $(function () {
+
+           var StorageReportSetting = (function () {
+               var urls = {
+                   //画面初始化加载
+                   queryFixtureMaintenance: '@Url.Action("QueryFixtureMaintenance", "Fixture")',
+
+                   //根据厂区取得OP类型
+                   getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                   //根据OP类型取得功能厂
+                   getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                   //根据FixtureUid获取治具信息
+
+                   queryFixtureMaintenanceByID: '@Url.Action("QueryFixtureMaintenanceByUid", "Fixture")',
+                   //获取供应商的信息
+                   getVendorInfoList: '@Url.Action("GetVendorInfoList", "Fixture")',
+                   //获取产线信息
+                   getProductionLineList: '@Url.Action("GetProductionLineList", "Fixture")',
+                   //根据Production_Line_UID获取对应的制程，专案，工站，生产地点信息
+                   getProductionLineByUid: '@Url.Action("GetProductionLineByUid", "Fixture")',
+                   //获取治具机台信息
+                   getFixtureMachineDTOList: '@Url.Action("GetFixtureMachineDTOList", "Fixture")',
+                   //设置机台类型数据
+                   getFixtureMachineByUid:'@Url.Action("GetFixtureMachineByUid", "Fixture")',
+                   //获取生产地点
+                   getWorkshopList:'@Url.Action("GetWorkshopList", "Fixture")',
+                   //获取工站
+                   getWorkstationList:'@Url.Action("GetWorkstationList", "Fixture")',
+                   //获取制程
+                   getProcess_InfoList:'@Url.Action("GetProcess_InfoList", "Fixture")',
+                   //获取专案
+                   getProjectList:'@Url.Action("GetProjectList", "Fixture")',
+                   //根据ID列表获取保养信息
+                   getFixtureMaintenance:'@Url.Action("GetFixtureMaintenance", "Fixture")',
+                   //根据查询条件获取保养信息
+                   getFixtureMaintenanceList:'@Url.Action("GetFixtureMaintenanceList", "Fixture")',
+                   //保养，确认，取消调用的方法
+                   updateFixture_Maintenance_Record: '@Url.Action("UpdateFixture_Maintenance_Record", "Fixture")',
+
+                   //获取当前有权限的用户  要初始化绑定 治具保养，确认，取消保养 的用户下拉框。
+                   getFixtureSystemUser: '@Url.Action("getFixtureSystemUser", "Fixture")',
+                   //获取治具计划
+                   getFixtureMaintenance_Plan: '@Url.Action("GetFixtureMaintenance_Plan", "Fixture")',
+                   //删除治具信息
+                   //deleteFixtureM:'@Url.Action("DeleteFixtureM", "Fixture")',
+                   //导出excel
+                   doExportFunction: '@Url.Action("DoExportFixtureMaintenanceReprot", "Fixture")',
+
+                   doAllExportFunction: '@Url.Action("DoAllExportFixtureMaintenanceReprot", "Fixture")',
+
+               };
+               //#region 定义字段列
+               var columns = [{
+                   createdCell: function (td, cellData, rowData, row, col) {
+                       $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Maintenance_Record_UID + '">')
+                       .addClass('table-col-checkbox');
+                   },
+                   className: "text-center"
+               }, {
+                   data: null,
+                   className: "table-col-seq"
+               },
+               {
+                   createdCell: function (td, cellData, rowData, row, col) {
+                     var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                   '<i class="fa fa-reorder"></i>' +
+                                   '</button>' +
+                                   '<div class="hidden popover-content">' +
+                                       '{0}' +
+                                   '</div>';
+                     var buttonview = '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Fixture_Maintenance_Record_UID + '">查看</button>';
+                       result = result.replace('{0}', buttonview);
+                       $(td).html(result);
+                   },
+                   className: "text-center"
+               },
+               {
+                   data: "PlantName",
+                   className: "min-col-xs"
+               }, {
+                   data: "OPName",
+                   className: "min-col-xs"
+               }, {
+                   data: "FunPlantName",
+                   className: "min-col-xs"
+               },
+                {
+                    data: "Maintenance_Record_NO",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Fixture_Unique_ID",
+                    className: "min-col-xs"
+                },
+               {
+                   data: "Line_Name",
+                   className: "min-col-xs"
+               },
+               {
+                   data: "Workstation",
+                   className: "min-col-xs"
+               },
+                {
+                   data: "WorkStation_ID",
+                   className: "min-col-xs text-right"
+               }, {
+                   data: "Fixture_NO",
+                   className: "min-col-xs text-right"
+               },
+               {
+                   data: "ShortCode",
+                   className: "min-col-xs text-right"
+               },
+                {
+                      data: "Cycle_ALL",
+                      className: "min-col-xs text-right"
+               },
+               {
+                   data: "Maintenance_Status",
+                   render: function (data, type, full, meta) {
+
+                       //  return data ? "启用" : "禁用";
+                       if(data==0)
+                       {
+                        return "未保养";
+                       }
+                       else if(data==1)
+                       {
+                           return "保养完成";
+                       }
+                       else if(data==2)
+                       {
+                           return "免保养Waiver";
+                       }else
+                       {
+                           return "";
+                       }
+                   },
+                   className: "min-col-xs"
+               },
+               {
+                   data: "Maintenance_Person_Number",
+                   className: "min-col-xs text-right"
+               },
+               {
+                   data: "Maintenance_Person_Name",
+                   className: "min-col-xs text-right"
+               },
+               {
+                   data: "Confirm_Status",
+                   render: function (data, type, full, meta) {
+                       //return data ? "启用" : "禁用";
+                      // 
+                       if(data==0)
+                       {
+                           return "未确认";
+                       }
+                       else if(data==1)
+                       {
+                           return "确认完成";
+                       }else
+                       {
+                           return "";
+                       }
+                   },
+                   className: "min-col-xs"
+               },
+               {
+                   data: "Confirmor",
+                   className: "min-col-xs text-right"
+               }
+               ];
+
+
+               var funcEditColumns = [
+                   //{
+               //    data: null,
+               //    className: "table-col-seq"
+               //}
+                {
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }
+               , {
+                   data: "ShortCode",
+                   className: "min-col-lg"
+               }, {
+                   data: "Fixture_Unique_ID",
+                   className: "min-col-lg"
+               },  {
+                   data: "Maintenance_Type",
+                   render: function (data, type, full, meta) {
+
+                       //  return data ? "启用" : "禁用";
+                       if(data=='D')
+                       {
+                           return "日常保养";
+                       }
+                       else if(data=='P')
+                       {
+                           return "周期保养";
+                       }
+
+                   },
+                   className: "min-col-lg"
+               },{
+                   data:null,
+                   createdCell: function (td, cellData, rowData, row, col) {
+                       $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Maintenance_Record_UID + '">')
+                       .addClass('table-col-checkbox');
+                   },
+                   className: "text-center"
+               }
+               ];
+
+               var _getParams = function () {
+                   PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                   return $('#js_form_query').serialize().replace(/\+/g, " ");
+               };
+               var _queryStorageReports = function (firstLoad, buildCriteria) {
+
+                   var config = {
+                       pageId: "#page",
+                       tableId: "#js_Bom_datatable",
+                       remoteUrl: urls.queryFixtureMaintenance,
+                       searchParams: _getParams(),
+                       tableOptions: {
+                           scrollX: true,
+                           autoWidth: true,
+                           columns: columns
+                       }
+                   };
+                   if (!firstLoad) {
+                       $('#page').page('destroy');
+                   }
+                   if (buildCriteria) {
+                       PDMS.Utility.Criteria.Build();
+                   }
+                   PDMS.Utility.Pages.Set(config);
+                   $('#js_Bom_datatable tbody tr td').addClass('text-center');
+               };
+               return {
+                   urls: urls,
+                   Init: function () {
+                       PDMS.Utility.Criteria.Init();
+                       _queryStorageReports(true, false);
+                       GetOPTypes();
+                   },
+                   queryStorageReports: function (buildCriteria) {
+                       if (!buildCriteria) {
+                           buildCriteria = false;
+                       }
+                       _queryStorageReports(false, buildCriteria);
+                   },
+                   GetDatatable: function () {
+                       if (subDatatable == null) {
+                           subDatatable = $('#js_Bom_datatable').DataTable({
+                               paging: false,
+                               searching: false,
+                               ordering: false,
+                               retrieve: true,
+                               columns: columns
+                           });
+                       }
+                       return subDatatable;
+                   },
+                   EditColumns: { funcEdit: funcEditColumns },
+               }
+           })();
+           StorageReportSetting.Init();
+
+
+
+           //查询--开始
+           $('#bt_search').click(function () {
+               Setsearchbtn();
+               $('#js_select_factory_query').trigger('change');
+
+           })
+           //查询按钮
+           $('#js_btn_query').click(function () {
+               if ($('#js_form_query').valid()) {
+                   StorageReportSetting.queryStorageReports(true);
+                   $('#js_search_modal').modal('hide');
+                 //  Setsearchbtn();
+               }
+           });
+           //查询界面厂区是OP类型变化
+           $('#js_select_factory_query').change(function () {
+               GetOPTypes();
+              // Setsearchbtn();
+           })
+
+           function GetOPTypes() {
+               
+               var oporgid = $('#js_select_factory_query option:selected').val();
+               url = StorageReportSetting.urls.getCurrentOPType;
+               $('#js_select_optype_query').html('<option></option>');
+               $('#js_select_optype_query').selectpicker('refresh');
+               $('#js_select_funplant_query').html('<option></option>');
+               $('#js_select_funplant_query').selectpicker('refresh');
+               $('#js_select_Vendor_query').html('<option></option>');
+               $('#js_select_Vendor_query').selectpicker('refresh');
+               $('#js_select_Production_Line_query').html('<option></option>');
+               $('#js_select_Production_Line_query').selectpicker('refresh');
+               $('#js_select_Fixture_Machine_UID_query').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+               $('#js_select_Workstation_UID_query').html('<option></option>');
+               $('#js_select_Workstation_UID_query').selectpicker('refresh');
+               $('#js_select_Process_Info_UID_query').html('<option></option>');
+               $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+               $('#js_select_Workshop_UID_query').html('<option></option>');
+               $('#js_select_Workshop_UID_query').selectpicker('refresh');
+               if (oporgid != 0) {
+                   //设置OP
+                   $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                               if(@Model.OptypeID!=0)
+                               {
+                                   if(@Model.OptypeID==data[i].Organization_UID )
+                                   {
+                                       $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                   }
+                               }else
+                               {
+                                   $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                               }
+                           }
+                       }
+                       $('#js_select_optype_query').selectpicker('refresh');
+
+
+                   });
+                   //设置厂商
+                   url=StorageReportSetting.urls.getVendorInfoList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           $('#js_select_Vendor_query').append('<option value="' + data[i].Vendor_Info_UID + '">' +data[i].Vendor_ID+"_"+ data[i].Vendor_Name + '</option>');
+
+                       }
+                       $('#js_select_Vendor_query').selectpicker('refresh');
+                   });
+                   //设置产线
+                   url=StorageReportSetting.urls.getProductionLineList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           $('#js_select_Production_Line_query').append('<option value="' + data[i].Production_Line_UID + '">' +data[i].Line_ID+"_"+ data[i].Line_Name + '</option>');
+
+                       }
+                       $('#js_select_Production_Line_query').selectpicker('refresh');
+                   });
+                   //设置机台
+                   url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Fixture_Machine_UID_query').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                       }
+                       $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+                   });
+
+                   //设置工站
+                   url=StorageReportSetting.urls.getWorkstationList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Workstation_UID_query').append('<option value="' + data[i].WorkStation_UID + '">' +data[i].WorkStation_ID+"_"+ data[i].WorkStation_Name + '</option>');
+
+                       }
+                       $('#js_select_Workstation_UID_query').selectpicker('refresh');
+                   });
+                   //设置制程
+                   url=StorageReportSetting.urls.getProcess_InfoList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Process_Info_UID_query').append('<option value="' + data[i].Process_Info_UID + '">' +data[i].Process_ID+"_"+  data[i].Process_Name + '</option>');
+
+                       }
+                       $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+                   });
+                   //设置生产地点
+                   url=StorageReportSetting.urls.getWorkshopList;
+                   $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Workshop_UID_query').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID+"_"+data[i].Workshop_Name + '</option>');
+
+                       }
+                       $('#js_select_Workshop_UID_query').selectpicker('refresh');
+                   });
+               }
+           }
+           //OP类型变更  start
+           $('#js_select_optype_query').change(function () {
+               var url = StorageReportSetting.urls.getFunPlantByOPTypes;
+               $('#js_select_funplant_query').html('<option></option>');
+               $('#js_select_funplant_query').selectpicker('refresh');
+               $('#js_select_Vendor_query').html('<option></option>');
+               $('#js_select_Vendor_query').selectpicker('refresh');
+               $('#js_select_Production_Line_query').html('<option></option>');
+               $('#js_select_Production_Line_query').selectpicker('refresh');
+               $('#js_select_Fixture_Machine_UID_query').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+               $('#js_select_Workstation_UID_query').html('<option></option>');
+               $('#js_select_Workstation_UID_query').selectpicker('refresh');
+               $('#js_select_Process_Info_UID_query').html('<option></option>');
+               $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+               $('#js_select_Workshop_UID_query').html('<option></option>');
+               $('#js_select_Workshop_UID_query').selectpicker('refresh');
+               if ($('#js_select_optype_query option:selected').text() != "") {
+                   //设置功能厂
+                   $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           if(@Model.FunPlantID!=0)
+                           {
+                               if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                               {
+                                   $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                               }
+                           }else
+                           {
+                               $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                           }
+                       }
+                       $('#js_select_funplant_query').selectpicker('refresh');
+                   });
+
+                   //设置供应商
+                   var plant_OrganizationUID = $('#js_select_factory_query option:selected').val();
+                   url=StorageReportSetting.urls.getVendorInfoList;
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val()}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           $('#js_select_Vendor_query').append('<option value="' + data[i].Vendor_Info_UID + '">' +data[i].Vendor_ID+"_"+ data[i].Vendor_Name + '</option>');
+
+                       }
+                       $('#js_select_Vendor_query').selectpicker('refresh');
+                   });
+                   //设置产线
+                   url=StorageReportSetting.urls.getProductionLineList;
+                   var plant_OrganizationUID = $('#js_select_factory_query option:selected').val();
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+                           $('#js_select_Production_Line_query').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_ID+"_"+ data[i].Line_Name + '</option>');
+
+
+                       }
+                       $('#js_select_Production_Line_query').selectpicker('refresh');
+                   });
+                   //设置机台
+
+                   url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Fixture_Machine_UID_query').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                       }
+                       $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+                   });
+
+                   //设置工站
+                   url=StorageReportSetting.urls.getWorkstationList;
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Workstation_UID_query').append('<option value="' + data[i].WorkStation_UID + '">' +data[i].WorkStation_ID+"_"+ data[i].WorkStation_Name + '</option>');
+
+                       }
+                       $('#js_select_Workstation_UID_query').selectpicker('refresh');
+                   });
+                   //设置制程
+                   url=StorageReportSetting.urls.getProcess_InfoList;
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Process_Info_UID_query').append('<option value="' + data[i].Process_Info_UID + '">' +data[i].Process_ID+"_"+  data[i].Process_Name + '</option>');
+
+                       }
+                       $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+                   });
+                   //设置生产地点
+                   url=StorageReportSetting.urls.getWorkshopList;
+                   $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                           $('#js_select_Workshop_UID_query').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID+"_"+data[i].Workshop_Name + '</option>');
+
+                       }
+                       $('#js_select_Workshop_UID_query').selectpicker('refresh');
+                   });
+               }
+           });
+
+           $('#js_select_funplant_query').change(function () {
+               $('#js_select_Production_Line_query').html('<option></option>');
+               $('#js_select_Production_Line_query').selectpicker('refresh');
+               $('#js_select_Fixture_Machine_UID_query').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+               $('#js_select_Workstation_UID_query').html('<option></option>');
+               $('#js_select_Workstation_UID_query').selectpicker('refresh');
+               $('#js_select_Process_Info_UID_query').html('<option></option>');
+               $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+               $('#js_select_Workshop_UID_query').html('<option></option>');
+               $('#js_select_Workshop_UID_query').selectpicker('refresh');
+
+               //设置产线
+              var plant_OrganizationUID = $('#js_select_factory_query option:selected').val();
+              var  url=StorageReportSetting.urls.getProductionLineList;
+              $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query  option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_query  option:selected').val()}, function (data) {
+                   for (var i = 0; i < data.length; i++) {
+                       $('#js_select_Production_Line_query').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_Name + '</option>');
+                       $('#js_select_Production_Line_query').selectpicker('refresh');
+                   }
+               });
+               //设置机台
+              url=StorageReportSetting.urls.getFixtureMachineDTOList;
+              $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_query  option:selected').val(),Production_Line_UID:0}, function (data) {
+                  for (var i = 0; i < data.length; i++) {
+
+                      $('#js_select_Fixture_Machine_UID_query').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                  }
+                  $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+              });
+
+               //设置工站
+              url=StorageReportSetting.urls.getWorkstationList;
+              $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_query  option:selected').val()}, function (data) {
+                  for (var i = 0; i < data.length; i++) {
+
+                      $('#js_select_Workstation_UID_query').append('<option value="' + data[i].WorkStation_UID + '">' +data[i].WorkStation_ID+"_"+ data[i].WorkStation_Name + '</option>');
+
+                  }
+                  $('#js_select_Workstation_UID_query').selectpicker('refresh');
+              });
+               //设置制程
+              url=StorageReportSetting.urls.getProcess_InfoList;
+              $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_query  option:selected').val()}, function (data) {
+                  for (var i = 0; i < data.length; i++) {
+
+                      $('#js_select_Process_Info_UID_query').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID+"_"+ data[i].Process_Name + '</option>');
+
+                  }
+                  $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+              });
+               //设置生产地点
+              url=StorageReportSetting.urls.getWorkshopList;
+              $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_query  option:selected').val()}, function (data) {
+                  for (var i = 0; i < data.length; i++) {
+
+                      $('#js_select_Workshop_UID_query').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID+"_"+data[i].Workshop_Name + '</option>');
+
+                  }
+                  $('#js_select_Workshop_UID_query').selectpicker('refresh');
+              });
+           });
+
+
+           function Setsearchbtn(){
+               $('#js_search_modal').find('input[name=Maintenance_Record_NO]').val("");
+               $('#js_search_modal').find('input[name=Fixture_NO]').val("");
+               $('#js_search_modal').find('input[name=Version]').val("");
+               $('#js_search_modal').find('input[name=Fixture_Name]').val("");
+               $('#js_search_modal').find('input[name=ShortCode]').val("");
+               $('#js_search_modal').find('input[name=Created_Date]').val("");
+               $('#js_search_modal').find('input[name=Modifieder]').val("");
+               $('#js_search_modal').find('input[name=End_Date_From]').val("");
+               $('#js_search_modal').find('input[name=End_Date_To]').val("");
+               $('#js_select_optype_query').html('<option></option>');
+               $('#js_select_optype_query').selectpicker('refresh');
+               $('#js_select_funplant_query').html('<option></option>');
+               $('#js_select_funplant_query').selectpicker('refresh');
+               $('#js_select_Vendor_query').html('<option></option>');
+               $('#js_select_Vendor_query').selectpicker('refresh');
+               $('#js_select_Production_Line_query').html('<option></option>');
+               $('#js_select_Production_Line_query').selectpicker('refresh');
+               $('#js_select_Fixture_Machine_UID_query').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_query').selectpicker('refresh');
+               $('#js_select_Workstation_UID_query').html('<option></option>');
+               $('#js_select_Workstation_UID_query').selectpicker('refresh');
+               $('#js_select_Process_Info_UID_query').html('<option></option>');
+               $('#js_select_Process_Info_UID_query').selectpicker('refresh');
+               $('#js_select_Workshop_UID_query').html('<option></option>');
+               $('#js_select_Workshop_UID_query').selectpicker('refresh');
+               $('#js_select_Fixture_Status_query').find("option").attr("selected", false);
+               $('#js_select_Fixture_Status_query').find("option").first().attr("selected", true);
+               $('#js_select_Fixture_Status_query').selectpicker('refresh');
+
+           }
+           //查询--结束
+
+
+
+           //点击查看的时候的加载的界面--开始
+                   $('body').on('click', '.js-grid-view', function () {
+                       $('#js_view_modal').modal('show', $(this));
+                       $('#isEdit').val(true);
+                       var Fixture_Maintenance_Record_UID = $(this).attr('data-id'),
+                       url = StorageReportSetting.urls.queryFixtureMaintenanceByID;
+                      $.post(url, { Fixture_Maintenance_Record_UID: Fixture_Maintenance_Record_UID }, function (data) {
+
+
+                           $('#js_view_modal').find('input[name=Plant_Organization_UID]').val(data.PlantName);
+                           $('#js_view_modal').find('input[name=BG_Organization_UID]').val(data.OPName);
+                           $('#js_view_modal').find('input[name=FunPlant_Organization_UID]').val(data.FunPlantName);
+                           $('#js_view_modal').find('input[name=Fixture_NO]').val(data.Fixture_NO);
+                           $('#js_view_modal').find('input[name=Version]').val(data.Version);
+                           $('#js_view_modal').find('input[name=Vendor]').val(data.Vendor_Name);
+                           $('#js_view_modal').find('input[name=Production_Line]').val(data.Line_Name);
+                           $('#js_view_modal').find('input[name=Project_UID]').val(data.Project);
+                           $('#js_view_modal').find('input[name=Process_Info]').val(data.Process_Info);
+                           $('#js_view_modal').find('input[name=Workstation_UID]').val(data.Workstation);
+                           $('#js_view_modal').find('input[name=Workshop_UID]').val(data.Workshop);
+                           $('#js_view_modal').find('input[name=Fixture_Machine_UID]').val(data.Equipment_No);
+                           $('#js_view_modal').find('input[name=Fixture_Machine_Type]').val(data.Machine_Type);
+                           $('#js_view_modal').find('input[name=Fixture_Name]').val(data.Fixture_Name);
+                           $('#js_view_modal').find('input[name=Fixture_ShortCode]').val(data.ShortCode);
+                           $('#js_view_modal').find('input[name=Fixture_2D_Barcode]').val(data.TwoD_Barcode);
+                           $('#js_view_modal').find('input[name=Fixture_Seq]').val(data.Fixture_Seq);
+                           $('#js_view_modal').find('input[name=Fixture_Unique_ID]').val(data.Fixture_Unique_ID);
+                           var Maintenance="";
+                           if(data.Maintenance_Status==0)
+                           {
+                               Maintenance= "未保养";
+                           }
+                           else if(data.Maintenance_Status==1)
+                           {
+                               Maintenance="保养完成";
+                           }
+                           else if(data.Maintenance_Status==2)
+                           {
+                               Maintenance="免保养Waiver";
+                           }
+                           $('#js_view_modal').find('input[name=Maintenance_Status]').val(Maintenance);
+                           $('#js_view_modal').find('input[name=Fixture_Status]').val(data.StatuName);
+                           //$('#js_view_modal').find('input[name=Maintenance_Person_UID]').val(data.Maintenance_Person);
+                           $('#js_view_modal').find('input[name=Maintenance_Person_Number]').val(data.Maintenance_Person_Number);
+                           $('#js_view_modal').find('input[name=Maintenance_Person_Name]').val(data.Maintenance_Person_Name);
+                           $('#js_view_modal').find('input[name=Maintenance_Date]').val(data.Maintenance_Date);
+                           $('#js_view_modal').find('input[name=Confirmor_UID]').val(data.Confirmor);
+                           $('#js_view_modal').find('input[name=Confirm_Date]').val(data.Confirm_Date);
+
+                       });
+                   });
+           //点击查看的时候的加载的界面--结束
+
+           //产生日常保养记录 --开始
+                   $('#btn_createMaintenance').click(function () {
+                       $('#js_create_modal').modal('hide');
+                       $('#js_create_modal').modal('show', $(this));
+                       $('#js_select_factory_create').trigger('change');
+
+                   });
+
+              //查询界面厂区是OP类型变化
+                   $('#js_select_factory_create').change(function () {
+                       
+                       GetOPTypesadd();
+
+                   })
+
+                   function GetOPTypesadd() {
+                       
+                       var oporgid = $('#js_select_factory_create option:selected').val();
+                       url = StorageReportSetting.urls.getCurrentOPType;
+                       $('#js_select_optype_create').html('<option></option>');
+                       $('#js_select_optype_create').selectpicker('refresh');
+                       $('#js_select_funplant_create').html('<option></option>');
+                       $('#js_select_funplant_create').selectpicker('refresh');
+                       $('#js_select_Vendor_create').html('<option></option>');
+                       $('#js_select_Vendor_create').selectpicker('refresh');
+                       $('#js_select_Production_Line_create').html('<option></option>');
+                       $('#js_select_Production_Line_create').selectpicker('refresh');
+                       $('#js_select_Fixture_Machine_UID_create').html('<option></option>');
+                       $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                       $('#s_input_Workstation_create').html('<option></option>');
+                       $('#s_input_Workstation_create').selectpicker('refresh');
+                       $('#s_input_Process_Info_create').html('<option></option>');
+                       $('#s_input_Process_Info_create').selectpicker('refresh');
+                       $('#s_input_Workshop_create').html('<option></option>');
+                       $('#s_input_Workshop_create').selectpicker('refresh');
+                       $('#js_select_Maintenance_Plan_create').html('<option></option>');
+                       $('#js_select_Maintenance_Plan_create').selectpicker('refresh');
+                       if (oporgid != 0) {
+                           //设置OP
+                           $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   if ($('#js_select_optype_create').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                       if(@Model.OptypeID!=0)
+                                       {
+                                           if(@Model.OptypeID==data[i].Organization_UID )
+                                           {
+                                               $('#js_select_optype_create').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                           }
+                                       }else
+                                       {
+                                           $('#js_select_optype_create').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                       }
+                                   }
+                               }
+                               $('#js_select_optype_create').selectpicker('refresh');
+
+                           });
+                           //设置供应商
+                           url=StorageReportSetting.urls.getVendorInfoList;
+                           $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Vendor_create').append('<option value="' + data[i].Vendor_Info_UID + '">' + data[i].Vendor_ID+"_"+data[i].Vendor_Name + '</option>');
+
+                               }
+                               $('#js_select_Vendor_create').selectpicker('refresh');
+                           });
+                           //设置产线
+                           url=StorageReportSetting.urls.getProductionLineList;
+                           $.post(url, { Plant_Organization_UID:oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Production_Line_create').append('<option value="' + data[i].Production_Line_UID + '">' +data[i].Line_ID+"_"+  data[i].Line_Name + '</option>');
+
+                               }
+                               $('#js_select_Production_Line_create').selectpicker('refresh');
+                           });
+
+                           //设置工站
+                           url=StorageReportSetting.urls.getWorkstationList;
+                           $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Workstation_create').append('<option value="' + data[i].WorkStation_UID + '">' +data[i].WorkStation_ID+"_"+ data[i].WorkStation_Name + '</option>');
+
+                               }
+                               $('#s_input_Workstation_create').selectpicker('refresh');
+                           });
+                           //设置制程
+                           url=StorageReportSetting.urls.getProcess_InfoList;
+                           $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Process_Info_create').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID+"_"+ data[i].Process_Name + '</option>');
+
+                               }
+                               $('#s_input_Process_Info_create').selectpicker('refresh');
+                           });
+                           //设置生产地点
+                           url=StorageReportSetting.urls.getWorkshopList;
+                           $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Workshop_create').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID+"_"+data[i].Workshop_Name + '</option>');
+
+                               }
+                               $('#s_input_Workshop_create').selectpicker('refresh');
+                           });
+
+                           //设置机台
+
+                           url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                           $.post(url, { Plant_Organization_UID:oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Fixture_Machine_UID_create').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                               }
+                               $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                           });
+
+                       }
+
+                   }
+           //OP类型变更  start
+           $('#js_select_optype_create').change(function () {
+                       
+                       var url = StorageReportSetting.urls.getFunPlantByOPTypes;
+                       $('#js_select_funplant_create').html('<option></option>');
+                       $('#js_select_funplant_create').selectpicker('refresh');
+                       $('#js_select_Vendor_create').html('<option></option>');
+                       $('#js_select_Vendor_create').selectpicker('refresh');
+                       $('#js_select_Production_Line_create').html('<option></option>');
+                       $('#js_select_Production_Line_create').selectpicker('refresh');
+                       $('#js_select_Fixture_Machine_UID_create').html('<option></option>');
+                       $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                       $('#s_input_Workstation_create').html('<option></option>');
+                       $('#s_input_Workstation_create').selectpicker('refresh');
+                       $('#s_input_Process_Info_create').html('<option></option>');
+                       $('#s_input_Process_Info_create').selectpicker('refresh');
+                       $('#s_input_Workshop_create').html('<option></option>');
+                       $('#s_input_Workshop_create').selectpicker('refresh');
+                       $('#js_select_Maintenance_Plan_create').html('<option></option>');
+                       $('#js_select_Maintenance_Plan_create').selectpicker('refresh');
+
+                       if ($('#js_select_optype_create option:selected').text() != "") {
+                           //设置功能厂
+                           $.post(url, { Optype: $('#js_select_optype_create option:selected').val() }, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   if(@Model.FunPlantID!=0)
+                                   {
+                                       if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                       {
+                                           $('#js_select_funplant_create').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                       }
+                                   }else
+                                   {
+                                       $('#js_select_funplant_create').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                   }
+                               }
+                               $('#js_select_funplant_create').selectpicker('refresh');
+                           });
+                           //设置供应商
+                           var plant_OrganizationUID = $('#js_select_factory_create option:selected').val();
+                           url=StorageReportSetting.urls.getVendorInfoList;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val()}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Vendor_create').append('<option value="' + data[i].Vendor_Info_UID + '">' + data[i].Vendor_ID+"_"+data[i].Vendor_Name + '</option>');
+
+                               }
+                               $('#js_select_Vendor_create').selectpicker('refresh');
+                           });
+
+                           //设置产线
+                           url=StorageReportSetting.urls.getProductionLineList;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Production_Line_create').append('<option value="' + data[i].Production_Line_UID + '">' +data[i].Line_ID+"_"+  data[i].Line_Name + '</option>');
+
+                               }
+                               $('#js_select_Production_Line_create').selectpicker('refresh');
+                           });
+
+                           //设置机台
+                           url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                           $.post(url, { Plant_Organization_UID:plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#js_select_Fixture_Machine_UID_create').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                               }
+                               $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                           });
+
+                           //设置工站
+                           url=StorageReportSetting.urls.getWorkstationList;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Workstation_create').append('<option value="' + data[i].WorkStation_UID + '">' + data[i].WorkStation_ID+"_"+data[i].WorkStation_Name + '</option>');
+
+                               }
+                               $('#s_input_Workstation_create').selectpicker('refresh');
+                           });
+                           //设置制程
+                           url=StorageReportSetting.urls.getProcess_InfoList;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Process_Info_create').append('<option value="' + data[i].Process_Info_UID + '">' +data[i].Process_ID+"_"+  data[i].Process_Name + '</option>');
+
+                               }
+                               $('#s_input_Process_Info_create').selectpicker('refresh');
+                           });
+                           //设置生产地点
+                           url=StorageReportSetting.urls.getWorkshopList;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#s_input_Workshop_create').append('<option value="' + data[i].Workshop_UID + '">' +data[i].Workshop_ID+"_"+ data[i].Workshop_Name + '</option>');
+
+                               }
+                               $('#s_input_Workshop_create').selectpicker('refresh');
+                           });
+                           //设置计划类型
+                           url=StorageReportSetting.urls.getFixtureMaintenance_Plan;
+                           $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:0,Maintenance_Type:"D"}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+
+                                   $('#js_select_Maintenance_Plan_create').append('<option value="' + data[i].Maintenance_Plan_UID + '">' + data[i].Cycle_ALL + '</option>');
+
+                               }
+                               $('#js_select_Maintenance_Plan_create').selectpicker('refresh');
+                           });
+
+
+
+                       }
+                   })
+
+
+           $('#js_select_funplant_create').change(function () {
+                       //设置产线
+               $('#js_select_Production_Line_create').html('<option></option>');
+               $('#js_select_Production_Line_create').selectpicker('refresh');
+               $('#js_select_Fixture_Machine_UID_create').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+               $('#s_input_Workstation_create').html('<option></option>');
+               $('#s_input_Workstation_create').selectpicker('refresh');
+               $('#s_input_Process_Info_create').html('<option></option>');
+               $('#s_input_Process_Info_create').selectpicker('refresh');
+               $('#s_input_Workshop_create').html('<option></option>');
+               $('#s_input_Workshop_create').selectpicker('refresh');
+               $('#js_select_Maintenance_Plan_create').html('<option></option>');
+               $('#js_select_Maintenance_Plan_create').selectpicker('refresh');
+               var plant_OrganizationUID = $('#js_select_factory_create option:selected').val();
+                       var url=StorageReportSetting.urls.getProductionLineList;
+                       $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val()}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+                               $('#js_select_Production_Line_create').append('<option value="' + data[i].Production_Line_UID + '">' +data[i].Line_ID+"_"+  data[i].Line_Name + '</option>');
+
+                           }
+                           $('#js_select_Production_Line_create').selectpicker('refresh');
+                       });
+
+               //设置机台
+                       url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                       $.post(url, { Plant_Organization_UID:plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val(),Production_Line_UID:0}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+                               $('#js_select_Fixture_Machine_UID_create').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Equipment_No + '</option>');
+
+                           }
+                           $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                       });
+               //设置工站
+                       url=StorageReportSetting.urls.getWorkstationList;
+                       $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val()}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+
+                               $('#s_input_Workstation_create').append('<option value="' + data[i].WorkStation_UID + '">' +data[i].WorkStation_ID+"_"+ data[i].WorkStation_Name + '</option>');
+
+                           }
+                           $('#s_input_Workstation_create').selectpicker('refresh');
+                       });
+               //设置制程
+                       url=StorageReportSetting.urls.getProcess_InfoList;
+                       $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val()}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+
+                               $('#s_input_Process_Info_create').append('<option value="' + data[i].Process_Info_UID + '">' +data[i].Process_ID+"_"+  data[i].Process_Name + '</option>');
+
+                           }
+                           $('#s_input_Process_Info_create').selectpicker('refresh');
+                       });
+               //设置生产地点
+                       url=StorageReportSetting.urls.getWorkshopList;
+                       $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val()}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+
+                               $('#s_input_Workshop_create').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID+"_"+data[i].Workshop_Name + '</option>');
+
+                           }
+                           $('#s_input_Workshop_create').selectpicker('refresh');
+                       });
+               //设置计划类型
+                       url=StorageReportSetting.urls.getFixtureMaintenance_Plan;
+                       $.post(url, { Plant_Organization_UID: plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:$('#js_select_funplant_create  option:selected').val(),Maintenance_Type:"D"}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+
+                               $('#js_select_Maintenance_Plan_create').append('<option value="' + data[i].Maintenance_Plan_UID + '">' + data[i].Cycle_ALL + '</option>');
+
+                           }
+                           $('#js_select_Maintenance_Plan_create').selectpicker('refresh');
+                       });
+
+                   });
+
+           $('#js_select_Production_Line_create').change(function () {
+               $('#js_select_Fixture_Machine_UID_create').html('<option></option>');
+               $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+               
+               //设置机台
+               var plant_OrganizationUID = $('#js_select_factory_create option:selected').val();
+               var funPlant_Organization_UID=  $('#js_select_funplant_create  option:selected').val()
+               if(funPlant_Organization_UID=="")
+               {
+                   funPlant_Organization_UID=0;
+               }
+                       url=StorageReportSetting.urls.getFixtureMachineDTOList;
+                       $.post(url, { Plant_Organization_UID:plant_OrganizationUID ,BG_Organization_UID:$('#js_select_optype_create option:selected').val(),FunPlant_Organization_UID:funPlant_Organization_UID,Production_Line_UID:$('#js_select_Production_Line_create option:selected').val()}, function (data) {
+                           for (var i = 0; i < data.length; i++) {
+                               $('#js_select_Fixture_Machine_UID_create').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_IDandName + '</option>');
+
+                           }
+                           $('#js_select_Fixture_Machine_UID_create').selectpicker('refresh');
+                       });
+
+           });
+
+           //产生日常保养记录的按钮功能
+           $('#js_btn_create').on('click', function () {
+               if ($("#js_form_user_edit").valid()) {
+                   $('#js_form_user_edit').ajaxSubmit({
+                       beforeSubmit: function () {
+
+                           if ($('#js_select_factory_create option:selected').text() == "") {
+                               PDMS.Utility.MessageBox.info('请选择厂区');
+                               return false;
+                           }
+
+                           if ($('#js_select_optype_create option:selected').text() == "") {
+                               PDMS.Utility.MessageBox.info('请选择OP');
+                               return false;
+                           }
+                           if ($('#js_select_Maintenance_Plan_create option:selected').text() == "") {
+                               PDMS.Utility.MessageBox.info('请选择保养周期类别');
+                               return false;
+                           }
+                       },
+                       success: function (data) {
+                         //  if (data.length > 2) {
+                            //   PDMS.Utility.MessageBox.info(data);
+                          // }
+                         //  else {
+                               $('#js_create_modal').modal('hide');
+                               StorageReportSetting.queryStorageReports();
+                              // PDMS.Utility.MessageBox.info('更新成功');
+                               PDMS.Utility.MessageBox.info(data);
+                          //}
+                       }
+                   });
+               }
+           });
+
+
+
+
+           //产生日常保养记录 --结束
+
+
+
+           //保养--开始
+
+
+                   $('#btn_maintenance').click(function () {
+                       $('#js_main_modal').modal('hide');
+                       $('#js_main_modal').modal('show', $(this));
+
+
+                       var  straus=1;
+                       var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       if (len == 0) {
+                           //这里是没有选择的时候的查询加载
+                           //PDMS.Utility.MessageBox.info('please select datas!');
+                           if ($('#checkbox-all').is(':checked')) {
+                               
+                               var objd=    function paramString2obj () {
+                                   serializedParams=$('#js_form_query').serialize().replace(/\+/g, " ");
+                                   
+                                   var obj={};
+                                   function evalThem (str) {
+                                       var strAry = new Array();
+                                       strAry = str.split("=");
+                                       //使用decodeURIComponent解析uri 组件编码
+                                       for(var i = 0; i < strAry.length; i++){
+                                           strAry[i] = decodeURIComponent(strAry[i]);
+                                       }
+                                       var attributeName = strAry[0];
+                                       var attributeValue = strAry[1].trim();
+                                       if(attributeValue=="undefined")
+                                       {
+                                           attributeValue="";
+                                       }
+                                       //如果值中包含"="符号，需要合并值
+                                       if(strAry.length > 2){
+                                           for(var i = 2;i<strAry.length;i++){
+                                               attributeValue += "="+strAry[i].trim();
+                                           }
+                                       }
+                                       if(!attributeValue){
+                                           return null;
+                                       }
+
+                                       var attriNames = attributeName.split("."),
+                                           curObj = obj;
+                                       for(var i = 0; i < (attriNames.length - 1); i++){
+                                           curObj[attriNames[i]]?"":(curObj[attriNames[i]] = {});
+
+                                           curObj = curObj[attriNames[i]];
+                                       }
+
+                                       //使用赋值方式obj[attributeName] = attributeValue.trim();替换
+                                       //eval("obj."+attributeName+"=\""+attributeValue.trim()+"\";");
+                                       //解决值attributeValue中包含单引号、双引号时无法处理的问题
+                                       //这里可能存在一个种情况：多个checkbox同一个name的时候需要使用","来分割
+                                       curObj[attriNames[i]] = curObj[attriNames[i]]?
+                                       (curObj[attriNames[i]] + "," + attributeValue.trim()):
+                                       attributeValue.trim();
+                                   };
+                                   
+                                   var properties = serializedParams.split("&");
+                                   for (var i = 0; i < properties.length; i++) {
+                                       //处理每一个键值对
+                                       evalThem(properties[i]);
+                                   };
+                                   return JSON.stringify(obj);;
+                               }
+
+                               if ($('#js_form_query').valid()) {
+
+                                   var url = StorageReportSetting.urls.getFixtureMaintenanceList;
+                                   $.ajax({
+                                       type: "post",
+                                       url: url,
+                                       async: false,
+                                       data: { fixture_Maintenance_RecordDTO: objd, straus: straus },
+                                       success: function (data) {
+                                           debugger;
+                                           $('#js_main_table_by').DataTable({
+                                               columns: StorageReportSetting.EditColumns.funcEdit,
+                                               ordering: false,
+                                               data: data,
+                                               destroy: true
+                                           });
+                                       }
+                                   });
+                               }
+                           }else
+                           {
+                               PDMS.Utility.MessageBox.info('请选择数据!');
+                           }
+
+                       } else {
+                           //有选择的时候的查询加载
+
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.getFixtureMaintenance;
+
+                           
+                           $.ajax({
+                               type: "get",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(), straus: straus },
+                               success: function (data) {
+
+                                   $('#js_main_table_by').DataTable({
+
+                                       columns: StorageReportSetting.EditColumns.funcEdit,
+                                       ordering: false,
+                                       data: data,
+                                       destroy: true
+                                   });
+                               }
+                           });
+
+                       }
+                       
+
+                   });
+
+
+
+           //#region 执行保养数据
+                   $('#js_btn_main_by').on('click', function () {
+
+                       var  straus=1;
+                       var $selectList = $('#js_main_table_by').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       //var NTID=$('#s_input_main option:selected').val();
+                       var personNumber=$('#s_input_personNumber').val();
+                       var personName=$('#s_input_personName').val();
+                       var date=$('#s_input_Time_main').val();
+                       
+                       //if (NTID == '')
+                       //{
+                       //    
+                       //       PDMS.Utility.MessageBox.info('填写保养者');
+                       //       return false;
+                       //}
+                       if (personNumber == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请填写保养者工号');
+                              return false;
+                       }
+                       if (personName == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请填写保养者名称');
+                           return false;
+                       }
+                       else if (date == '')
+                       {
+                              PDMS.Utility.MessageBox.info('请选择保养时间');
+                              return false;
+                       }
+                       else if (len == 0)
+                       {
+                           //这里是没有选择的时候的查询加载
+                           PDMS.Utility.MessageBox.info('请选择数据！');
+                           return false;
+                       }
+                       else
+                       {
+                           //有选择的时候的查询加载
+
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.updateFixture_Maintenance_Record;
+
+                           
+                           $.ajax({
+                               type: "post",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(),NTID:0, personNumber:personNumber, personName:personName, date: date, straus: straus },
+                               success: function (data) {
+                                   if (data.length > 2) {
+                                       PDMS.Utility.MessageBox.info(data);
+
+                                   }else {
+                                       $('#js_main_modal').modal('hide');
+                                       StorageReportSetting.queryStorageReports();
+                                       PDMS.Utility.MessageBox.info('保养成功');
+                                   }
+
+                               }
+                           });
+
+                       }
+
+                   });
+           //#endregion 执行保养数据
+           //保养--结束
+           //确认--开始
+                   $('#btn_confirm').click(function () {
+                       
+                       $('#js_confirm_modal').modal('hide');
+                       $('#js_confirm_modal').modal('show', $(this));
+                       $('#s_input_confirm').html('<option></option>');
+                       $('#s_input_confirm').selectpicker('refresh');
+                       var  straus=2;
+                       var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       if (len == 0) {
+                           //这里是没有选择的时候的查询加载
+                           //PDMS.Utility.MessageBox.info('please select datas!');
+                           if ($('#checkbox-all').is(':checked')) {
+                               var objd=    function paramString2obj () {
+                                   serializedParams=$('#js_form_query').serialize().replace(/\+/g, " ");
+                                   
+                                   var obj={};
+                                   function evalThem (str) {
+                                       var strAry = new Array();
+                                       strAry = str.split("=");
+                                       //使用decodeURIComponent解析uri 组件编码
+                                       for(var i = 0; i < strAry.length; i++){
+                                           strAry[i] = decodeURIComponent(strAry[i]);
+                                       }
+                                       var attributeName = strAry[0];
+                                       var attributeValue = strAry[1].trim();
+                                       if(attributeValue=="undefined")
+                                       {
+                                           attributeValue="";
+                                       }
+                                       //如果值中包含"="符号，需要合并值
+                                       if(strAry.length > 2){
+                                           for(var i = 2;i<strAry.length;i++){
+                                               attributeValue += "="+strAry[i].trim();
+                                           }
+                                       }
+                                       if(!attributeValue){
+                                           return null;
+                                       }
+
+                                       var attriNames = attributeName.split("."),
+                                           curObj = obj;
+                                       for(var i = 0; i < (attriNames.length - 1); i++){
+                                           curObj[attriNames[i]]?"":(curObj[attriNames[i]] = {});
+
+                                           curObj = curObj[attriNames[i]];
+                                       }
+
+                                       //使用赋值方式obj[attributeName] = attributeValue.trim();替换
+                                       //eval("obj."+attributeName+"=\""+attributeValue.trim()+"\";");
+                                       //解决值attributeValue中包含单引号、双引号时无法处理的问题
+                                       //这里可能存在一个种情况：多个checkbox同一个name的时候需要使用","来分割
+                                       curObj[attriNames[i]] = curObj[attriNames[i]]?
+                                       (curObj[attriNames[i]] + "," + attributeValue.trim()):
+                                       attributeValue.trim();
+                                   };
+                                   
+                                   var properties = serializedParams.split("&");
+                                   for (var i = 0; i < properties.length; i++) {
+                                       //处理每一个键值对
+                                       evalThem(properties[i]);
+                                   };
+                                   return JSON.stringify(obj);;
+                               }
+
+                               if ($('#js_form_query').valid()) {
+                                   var url = StorageReportSetting.urls.getFixtureMaintenanceList;
+                                   $.ajax({
+                                       type: "post",
+                                       url: url,
+                                       async: false,
+                                       data: { fixture_Maintenance_RecordDTO: objd, straus: straus },
+                                        success: function (data) {
+                                           
+                                           $('#js_confirm_table_qr').DataTable({
+                                               columns: StorageReportSetting.EditColumns.funcEdit,
+                                               ordering: false,
+                                               data: data,
+                                               destroy: true
+                                           });
+                                       }
+                                   });
+                               }
+                               url=StorageReportSetting.urls.getFixtureSystemUser;
+                               $.post(url, { Plant_Organization_UID:0 ,BG_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                                   for (var i = 0; i < data.length; i++) {
+                                       $('#s_input_confirm').append('<option value="' + data[i].Account_UID + '">' + data[i].User_NTID_Name + '</option>');
+                                   }
+                                   $('#s_input_confirm').selectpicker('refresh');
+                               });
+                           }else
+                           {
+                               PDMS.Utility.MessageBox.info('请选择数据！');
+                           }
+
+                       } else {
+                           //有选择的时候的查询加载
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.getFixtureMaintenance;
+                           $.ajax({
+                               type: "get",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(), straus: straus },
+                               success: function (data) {
+                                   $('#js_confirm_table_qr').DataTable({
+
+                                       columns: StorageReportSetting.EditColumns.funcEdit,
+                                       ordering: false,
+                                       data: data,
+                                       destroy: true
+                                   });
+                               }
+                           });
+
+                           url=StorageReportSetting.urls.getFixtureSystemUser;
+                           $.post(url, { Plant_Organization_UID:0 ,BG_Organization_UID:0,Production_Line_UID:0}, function (data) {
+                               for (var i = 0; i < data.length; i++) {
+                                   $('#s_input_confirm').append('<option value="' + data[i].Account_UID + '">' + data[i].User_NTID_Name + '</option>');
+                               }
+                               $('#s_input_confirm').selectpicker('refresh');
+                           });
+
+                       }
+
+
+                   });
+
+           //#region 执行确认数据
+                   $('#js_btn_main_qr').on('click', function () {
+
+                       var  straus=2;
+                       var $selectList = $('#js_confirm_table_qr').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       var NTID=$('#s_input_confirm option:selected').val();
+                       var date=$('#s_input_Time_main_confirm').val();
+                       if ($('#s_input_confirm').val() == '')
+                       {
+                           PDMS.Utility.MessageBox.info('填写确认者');
+                           return false;
+                       }
+                       else if ($('#s_input_Time_main_confirm').val() == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请选择确认时间');
+                           return false;
+                       }
+                       else if (len == 0)
+                       {
+                           //这里是没有选择的时候的查询加载
+                           PDMS.Utility.MessageBox.info('请选择数据！');
+                           return false;
+                       }
+                       else
+                       {
+                           //有选择的时候的查询加载
+
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.updateFixture_Maintenance_Record;
+
+                           
+                           $.ajax({
+                               type: "post",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(), NTID: NTID, personNumber: 0, personName: 0, date: date, straus: straus },
+                               success: function (data) {
+                                   if (data.length > 2) {
+                                       PDMS.Utility.MessageBox.info(data);
+
+                                   }else {
+                                       $('#js_confirm_modal').modal('hide');
+                                       StorageReportSetting.queryStorageReports();
+                                       PDMS.Utility.MessageBox.info('确认成功');
+                                   }
+
+                               }
+                           });
+
+                       }
+
+                   });
+           //#endregion 执行确认数据
+           //确认--结束
+
+
+
+           //取消未保养记录--开始
+
+                   $('#btn_Nomain').click(function () {
+                       //
+                       $('#js_Nomain_modal').modal('hide');
+                       $('#js_Nomain_modal').modal('show', $(this));
+
+                       var  straus=3;
+                       var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       if (len == 0) {
+                           if ($('#checkbox-all').is(':checked')) {
+                               //这里是没有选择的时候的查询加载
+                               var objd=    function paramString2obj () {
+                                   serializedParams=$('#js_form_query').serialize().replace(/\+/g, " ");
+                                   
+                                   var obj={};
+                                   function evalThem (str) {
+                                       var strAry = new Array();
+                                       strAry = str.split("=");
+                                       //使用decodeURIComponent解析uri 组件编码
+                                       for(var i = 0; i < strAry.length; i++){
+                                           strAry[i] = decodeURIComponent(strAry[i]);
+                                       }
+                                       var attributeName = strAry[0];
+                                       var attributeValue = strAry[1].trim();
+                                       if(attributeValue=="undefined")
+                                       {
+                                           attributeValue="";
+                                       }
+                                       //如果值中包含"="符号，需要合并值
+                                       if(strAry.length > 2){
+                                           for(var i = 2;i<strAry.length;i++){
+                                               attributeValue += "="+strAry[i].trim();
+                                           }
+                                       }
+                                       if(!attributeValue){
+                                           return null;
+                                       }
+
+                                       var attriNames = attributeName.split("."),
+                                           curObj = obj;
+                                       for(var i = 0; i < (attriNames.length - 1); i++){
+                                           curObj[attriNames[i]]?"":(curObj[attriNames[i]] = {});
+
+                                           curObj = curObj[attriNames[i]];
+                                       }
+
+                                       //使用赋值方式obj[attributeName] = attributeValue.trim();替换
+                                       //eval("obj."+attributeName+"=\""+attributeValue.trim()+"\";");
+                                       //解决值attributeValue中包含单引号、双引号时无法处理的问题
+                                       //这里可能存在一个种情况：多个checkbox同一个name的时候需要使用","来分割
+                                       curObj[attriNames[i]] = curObj[attriNames[i]]?
+                                       (curObj[attriNames[i]] + "," + attributeValue.trim()):
+                                       attributeValue.trim();
+                                   };
+                                   
+                                   var properties = serializedParams.split("&");
+                                   for (var i = 0; i < properties.length; i++) {
+                                       //处理每一个键值对
+                                       evalThem(properties[i]);
+                                   };
+                                   return JSON.stringify(obj);;
+                               }
+
+                               if ($('#js_form_query').valid()) {
+
+                                   var url = StorageReportSetting.urls.getFixtureMaintenanceList;
+                                   $.ajax({
+                                       type: "get",
+                                       url: url,
+                                       async: false,
+                                       data: { fixture_Maintenance_RecordDTO: objd, straus: straus },
+                                        success: function (data) {
+                                           
+                                           $('#js_Nomain_table_qx').DataTable({
+                                               columns: StorageReportSetting.EditColumns.funcEdit,
+                                               ordering: false,
+                                               data: data,
+                                               destroy: true
+                                           });
+                                       }
+                                   });
+                               }
+                           }else
+                           {
+                               PDMS.Utility.MessageBox.info('请选择数据！');
+                           }
+
+                       } else {
+                           //有选择的时候的查询加载
+
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.getFixtureMaintenance;
+
+                           
+                           $.ajax({
+                               type: "get",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(), straus: straus },
+                               success: function (data) {
+                                   //$('#js_main_table').dataTable().fnDestroy();
+                                   
+                                   $('#js_Nomain_table_qx').DataTable({
+
+                                       columns: StorageReportSetting.EditColumns.funcEdit,
+                                       ordering: false,
+                                       data: data,
+                                       destroy: true
+                                   });
+                               }
+                           });
+
+                       }
+                   });
+           //#region 执行取消未保养数据
+                   $('#js_btn_main_qx').on('click', function () {
+
+                       var  straus=3;
+                       var $selectList = $('#js_Nomain_table_qx').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       //var NTID=$('#s_input_main_Nomain option:selected').val();
+                       var personNumber= $('#s_input_personNumber_main_Nomain').val();
+                       var personName=$('#s_input_personName_main_Nomain').val();
+                       var date=$('#s_input_Time_main_Nomain').val();
+
+                       if (personNumber == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请填写取消保养者工号');
+                           return false;
+                       }
+                       else if (personName == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请填写取消保养者名称');
+                           return false;
+                       }
+                       else if ($('#s_input_Time_main_Nomain').val() == '')
+                       {
+                           PDMS.Utility.MessageBox.info('请选择保养时间');
+                           return false;
+                       }
+                       else if (len == 0)
+                       {
+                           //这里是没有选择的时候的查询加载
+                           PDMS.Utility.MessageBox.info('请选择数据！');
+                           return false;
+                       }
+                       else
+                       {
+                           //有选择的时候的查询加载
+
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           var url = StorageReportSetting.urls.updateFixture_Maintenance_Record;
+
+                           
+                           $.ajax({
+                               type: "post",
+                               url: url,
+                               async: false,
+                               data: { Fixture_Maintenance_Record_UIDs: Fixture_Maintenance_Record_UIDs.toString(),NTID: 0, personNumber:personNumber, personName:personName, date: date, straus: straus },
+                               success: function (data) {
+                                   if (data.length > 2) {
+                                       PDMS.Utility.MessageBox.info(data);
+
+                                   }else {
+                                       $('#js_Nomain_modal').modal('hide');
+                                       StorageReportSetting.queryStorageReports();
+                                       PDMS.Utility.MessageBox.info('取消保养成功');
+                                   }
+
+                               }
+                           });
+
+                       }
+
+                   });
+           //#endregion 执行取消未保养数据
+
+           //取消未保养记录--结束
+           //导出按钮--开始
+                   $('#js_btn_export').click(function () {
+
+                       
+                       var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                       var len = $selectList.length;
+                       if (len == 0) {
+                          
+                           //全部导出
+                           var url = StorageReportSetting.urls.doAllExportFunction;
+                           //没有查询条件的情况，从查询页面获取
+                           if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                               PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                           }
+                           url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                           window.location.href = url;
+                           
+                           //PDMS.Utility.MessageBox.info('please select datas to export!');
+                       } else {
+                           var Fixture_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                               return row.value;
+                           });
+                           $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                           var url = StorageReportSetting.urls.doExportFunction;
+                           url += "?Fixture_Maintenance_Record_UIDs=" + Fixture_Maintenance_Record_UIDs.toString();
+                           window.location.href = url;
+                       }
+                   });
+           //导出按钮--结束
+
+
+               });
+    </script>
+}

@@ -1,0 +1,777 @@
+﻿@{
+//ViewBag.Edit = T("Common.Edit").Text;
+//ViewBag.Imported = T("QA.Imported").Text;
+//ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+//ViewBag.MoreThanDate = T("Production.MoreThanDate").Text;
+//ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+//Layout = null;
+}
+
+<!-- Main content -->
+<section class="content-header portal-content-header">
+    <h1>MES-PIS制程信息配置</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-12">
+                <a href="~/ExcelTemplate/PIS-MES-ProcessTraConfig.xlsx" class="fa fa-download btn btn-primary" target="_blank">@T("Common.TeampleDownload")</a>
+                <a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal"> @T("Common.Import")</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="btn_Exprot">导出</button>
+                <button id="js_btn_search" type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal">查询</button>
+                <a id="js_btn_delete" class="fa fa-times btn btn-primary" role="button"> 删除</a>
+
+                @*<a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_add"> @T("Common.AddNew")</a>
+                    <a class="fa fa-search btn btn-primary" data-toggle="modal" id="btn_search_Query" data-target="#js_search_modal"> @T("Common.Search")</a>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_turnover_datatable">
+                <thead>
+                    <tr id="js_rpt_tr">
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>PIS-绑定序号</th>
+                        <th>PIS-制程流水号</th>
+                        <th>PIS-制程名字</th>
+                        <th>MES-不良数流水号</th>
+                        <th>MES-领料数流水号</th>
+                        <th>MES-良品数流水号</th>
+                        <th>MES-返工返修流水号</th>
+                        <th>部件类型</th>
+                        <th>是否启用</th>
+                        <th>是否同步NG</th>
+                        <th>创建人</th>
+                        <th>创建时间</th>
+                        <th>备注信息</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_rpt_tr_foot">
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>PIS-绑定序号</th>
+                        <th>PIS-制程流水号</th>
+                        <th>PIS-制程名字</th>
+                        <th>MES-不良数流水号</th>
+                        <th>MES-领料数流水号</th>
+                        <th>MES-良品数流水号</th>
+                        <th>MES-返工返修流水号</th>
+                        <th>部件类型</th>
+                        <th>是否启用</th>
+                        <th>是否同步NG</th>
+                        <th>创建人</th>
+                        <th>创建时间</th>
+                        <th>备注信息</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+    </div><!-- / 內容 表格列 -->
+
+</section>
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_Binding_Seq">PIS-绑定序号</label>
+                                <div class="col-sm-7 ">
+                                    <input class="form-control input-sm" id="js_s_Binding_Seq" name="Binding_Seq">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_PIS_ProcessID">PIS-制程流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_PIS_ProcessID" name="PIS_ProcessID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_PIS_ProcessName">PIS-制程名字</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_PIS_ProcessName" name="PIS_ProcessName">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_MES_NgID">MES-不良数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_MES_NgID" name="MES_NgID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_MES_PickingID">MES-领料数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_MES_PickingID" name="MES_PickingID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_MES_GoodProductID">MES-良品数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_MES_GoodProductID" name="MES_GoodProductID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_MES_ReworkID">MES-返工返修流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_MES_ReworkID" name="MES_ReworkID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_Color">部件类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_Color" name="Color">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_IsEnabled">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_IsEnabled" name="VM_IsEnabled" class="form-control input-sm">
+                                        <option value="全部" selected="selected">全部</option>
+                                        <option value=1>是</option>
+                                        <option value=0>否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_IsSyncNG">是否同步NG</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_IsSyncNG" name="VM_IsSyncNG" class="form-control input-sm">
+                                        <option value="全部" selected="selected">全部</option>
+                                        <option value=1>是</option>
+                                        <option value=0>否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_Modified_UID">创建人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_s_Modified_UID" name="Modified_UID">
+                                </div>
+                            </div>
+
+                            @*<div class="form-group col-xs-12 col-md-6">
+                                    <label class="col-sm-5 control-label" for="js_s_Modified_Date">创建时间</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="Modified_Date" class="form-control input-sm date" id="js_s_Modified_Date">
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" class="btn btn-primary btn-query">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Inquire")
+                    </button>
+                    <button id="btn-export" type="button" class="btn btn-primary btn-query" style="display:none">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Inquire")
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Import")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        @using (Html.BeginForm("ImportProcessIDTraConfig", "ProcessIDTraConfig", FormMethod.Post, new { id = "js_form_excel_Turnover" }))
+                        {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="control-label" for="js_s_input_upload">@T("QA.SelecttheExcelfile")</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="file" class="form-control" id="js_s_input_upload" name="uploadName" placeholder="@T("QA.SelecttheExcelfile")" />
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">制程配置明细</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditProcessInfo", "ProcessIDTraConfig", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_e_Binding_Seq">PIS-绑定序号</label>
+                                <div class="col-sm-7 ">
+                                    <input class="form-control input-sm" readonly="readonly" id="js_e_Binding_Seq" name="Binding_Seq">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_PIS_ProcessID">PIS-制程流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" readonly="readonly" id="js_e_PIS_ProcessID" name="PIS_ProcessID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_PIS_ProcessName">PIS-制程名字</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_PIS_ProcessName" name="PIS_ProcessName">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_MES_NgID">MES-不良数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_MES_NgID" name="MES_NgID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_MES_PickingID">MES-领料数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_MES_PickingID" name="MES_PickingID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_MES_GoodProductID">MES-良品数流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_MES_GoodProductID" name="MES_GoodProductID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_MES_ReworkID">MES-返工返修流水号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_MES_ReworkID" name="MES_ReworkID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_Color">部件类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_Color" name="Color">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_IsEnabled">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select id="js_e_IsEnabled" name="VM_IsEnabled" class="form-control input-sm">
+                                        <option value=1>是</option>
+                                        <option value=0>否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_IsSyncNG">是否同步NG</label>
+                                <div class="col-sm-7">
+                                    <select id="js_e_IsSyncNG" name="VM_IsSyncNG" class="form-control input-sm">
+                                        <option value=1>是</option>
+                                        <option value=0>否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_e_Remark">备注信息</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_Remark" name="Remark">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                                <input type="hidden" id="ProcessTransformConfig_UID" name="ProcessTransformConfig_UID" />
+                                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_bu"><i class="fa fa-save"></i> 保存</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var DemissionRate = (function () {
+                var urls = {
+                    GetProcessIDConfigData: '@Html.Raw(Url.Action("GetDemissionInfoByID", "ProcessIDTraConfig"))',
+                    //批量删除
+                    DeleteSelectPart: '@Html.Raw(Url.Action("DeleteMES_PISProcessConfig", "ProcessIDTraConfig"))',
+                    //查询
+                    GetProcessDataByUID: '@Html.Raw(Url.Action("GetProcessDataByUID", "ProcessIDTraConfig"))',
+                    //单个删除
+                    DeleteProcessByUID: '@Html.Raw(Url.Action("DeleteProcessByUID", "ProcessIDTraConfig"))',
+
+                    //全部导出
+                    ExportAllProcessData: '@Html.Raw(Url.Action("ExportAllProcessData", "ProcessIDTraConfig"))',
+
+                    //勾选导出
+                    ExportPartProcessData: '@Html.Raw(Url.Action("ExportPartProcessData", "ProcessIDTraConfig"))',
+                };
+
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.ProcessTransformConfig_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        className: "min-col-xs"
+                    },
+                     {
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.ProcessTransformConfig_UID + '">编辑</button>';
+                             var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                         '<i class="fa fa-reorder"></i>' +
+                                         '</button>' +
+                                         '<div class="hidden popover-content">' +
+                                             '{0}' +
+                                             '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.ProcessTransformConfig_UID + '">删除</button>' +
+                                         '</div>';
+                             result = result.replace('{0}', buttonEdit);
+                             $(td).html(result);
+                         },
+                         className: "text-center"
+                     },
+                {
+                    data: "Binding_Seq",
+                    className: "text-center"
+                }, {
+                    data: "PIS_ProcessID",
+                    className: "min-col-xs"
+                }, {
+                    data: "PIS_ProcessName",
+                    className: "min-col-xs"
+                }, {
+                    data: "MES_NgID",
+                    className: "min-col-xs"
+                }, {
+                    data: "MES_PickingID",
+                    className: "min-col-xs"
+                },
+                 {
+                     //data: "MES_GoodProductID",
+                     //className: "min-col-xs"
+                     data: null,
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         if (rowData.MES_GoodProductID == "" || rowData.MES_GoodProductID == null) {
+                             $(td).html(0);
+                         } else {
+                             $(td).html(rowData.MES_GoodProductID);
+                         }
+                     },
+                 },
+                {
+                    data: "MES_ReworkID",
+                    className: "min-col-xs"
+                }
+                , {
+                    data: "Color",
+                    className: "min-col-xs"
+                }, {
+                    //data: "IsEnabled",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IsEnabled) {
+                            $(td).html("是");
+                        } else {
+                            $(td).html('<label  style="width:30px;background-color:#f90404bd">' + "否" + '</label>');
+                        }
+                    },
+                    className: "min-col-xs"
+                }
+                , {
+                    //data: "IsSyncNG",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IsSyncNG) {
+                            $(td).html('<label  style="width:30px;background-color:lightgreen">' + "是" + '</label>');
+                        } else {
+                            $(td).html("否");
+                        }
+                    },
+                }
+                , {
+                    data: "Modified_UID",
+                    className: "min-col-xs"
+                }, {
+                    //data: "Modified_Date",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Modified_Date).Format("yyyy-MM-dd hh:mm"));
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "ReMark",
+                    className: "min-col-xs"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryDemissionRate = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_turnover_datatable",
+                        remoteUrl: urls.GetProcessIDConfigData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _queryDemissionRate(true);
+                    },
+                    QueryStuffs: function () {
+                        _queryDemissionRate(false);
+                    }
+                }
+
+            })();
+
+            DemissionRate.Init();
+
+            //清空
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //#region 点击GridView上的Edit按钮事件
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+                $('#isEdit').val(true);
+                var ProcessTransformConfig_UID = $(this).attr('data-id'),
+                    url = DemissionRate.urls.GetProcessDataByUID;
+                $.post(url, { ProcessTransformConfig_UID: ProcessTransformConfig_UID }, function (data) {
+                    $('#ProcessTransformConfig_UID').val(data.ProcessTransformConfig_UID);
+                    $('#js_e_Binding_Seq').val(data.Binding_Seq);
+                    $('#js_e_PIS_ProcessID').val(data.PIS_ProcessID);
+                    $('#js_e_PIS_ProcessName').val(data.PIS_ProcessName);
+                    $('#js_e_MES_NgID').val(data.MES_NgID);
+                    $('#js_e_MES_PickingID').val(data.MES_PickingID);
+                    $('#js_e_MES_GoodProductID').val(data.MES_GoodProductID);
+                    $('#js_e_MES_ReworkID').val(data.MES_ReworkID);
+                    $('#js_e_Remark').val(data.ReMark);
+                    $('#js_e_Color').val(data.Color);
+
+                    $("#js_e_IsEnabled option[text='jQuery']").attr("selected", true);
+                    //$('#js_e_IsEnabled').val(data.IsEnabled);
+                    //$('#js_e_IsSyncNG').val(data.IsSyncNG);
+                    if (data.IsEnabled) {
+                        $('#js_e_IsEnabled').val(1);
+                    } else {
+                        $('#js_e_IsEnabled').val(0);
+                    }
+                    if (data.IsSyncNG) {
+                        $('#js_e_IsSyncNG').val(1);
+                    } else {
+                        $('#js_e_IsSyncNG').val(0);
+                    }
+                });
+            });
+
+            //删除事件
+            $('body').on('click', '.js-grid-delete', function () {
+                var ProcessTransformConfig_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var deleteUrl = DemissionRate.urls.DeleteProcessByUID;
+                    $.post(deleteUrl, { Process_UID: ProcessTransformConfig_UID }, function (data) {
+                        if (data == "SUCCESS") {
+                            PDMS.Utility.MessageBox.info("删除成功！")
+                            DemissionRate.QueryStuffs();
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                });
+            });
+            //保存修改的数据
+            $('#js_btn_save_new_bu').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_e_Binding_Seq').find('input[name=Binding_Seq]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入绑定序号');
+                            return false;
+                        }
+
+                        if ($('#js_e_PIS_ProcessID').find('input[name=PIS_ProcessID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入制程ID');
+                            return false;
+                        }
+
+                        if ($('#js_e_PIS_ProcessName').find('input[name=PIS_ProcessName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入制程名称');
+                            return false;
+                        }
+
+                        if ($('#js_e_MES_NgID').find('input[input=MES_NgID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入NG工站');
+                            return false;
+                        }
+
+                        if ($('#js_e_MES_PickingID').find('input[name=MES_PickingID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入领料工站');
+                            return false;
+                        }
+
+                        if ($('#js_e_MES_GoodProductID').find('input[name=MES_GoodProductID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入良品数工站');
+                            return false;
+                        }
+
+                        if ($('#js_e_MES_ReworkID').find('input[name=MES_ReworkID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入返工返修工站');
+                            return false;
+                        }
+
+                        if ($('#js_e_Color').find('input[name=Color]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入部件类型');
+                            return false;
+                        }
+
+                        if ($('#js_e_IsEnabled').find('option:selected').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入是否启用栏位');
+                            return false;
+                        }
+
+                        if ($('#js_e_IsSyncNG').find('option:selected').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入是否同步NG栏位');
+                            return false;
+                        }
+                        if ($('#js_e_IsEnabled').find('option:selected').val() == 1) {
+                            $('#js_e_IsEnabled').val(true)
+                        } else {
+                            $('#js_e_IsEnabled').val(false)
+                        }
+
+                        if ($('#js_e_IsSyncNG').find('option:selected').val() == 1) {
+                            $('#js_e_IsSyncNG').val(true)
+                        } else {
+                            $('#js_e_IsSyncNG').val(false)
+                        }
+                    },
+
+                    success: function (data) {
+                        if (data == "SUCCESS") {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('更新成功');
+                            DemissionRate.QueryStuffs();
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    }
+                });
+            })
+
+            $('#btn_search_Query').click(function () {
+                $('#js_select_factory_query').trigger('change');
+            });
+
+            $('#btn-search').click(function () {
+                if ($('#js_form_query').valid()) {
+                    DemissionRate.QueryStuffs();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+
+            $('#js_btn_delete').click(function () {
+                var array = new Array();
+                $(".js-checkbox-item").each(function () {
+                    if ($(this).is(':checked')) {
+                        var value = $(this).val();
+                        array.push(value);
+                    }
+                });
+                if (array.length == 0) {
+                    PDMS.Utility.MessageBox.info("请选中一条信息");
+                    return false;
+                }
+
+                var url = DemissionRate.urls.DeleteSelectPart;
+                var json = JSON.stringify(array);
+                PDMS.Utility.MessageBox.confirm('确定要删除吗？', function () {
+                    $.post(url, { json }, function (data) {
+                        if (data.length > 0) {
+                            PDMS.Utility.MessageBox.info(data, function () {
+                                window.location.reload();
+                    });
+                    }
+                    else {
+                            PDMS.Utility.MessageBox.info("删除成功", function () {
+                                Purchase.QueryPurchase();
+                            });
+                        }
+                    });
+
+                });
+            });
+
+            $('#btn_Exprot').click(function () {
+                var $selectList = $('#js_turnover_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = DemissionRate.urls.ExportAllProcessData;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = DemissionRate.urls.ExportPartProcessData;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //导入
+            $('#btn_import_fl').on('click', function () {
+                $('#js_import_modal').modal('hide');
+                $.blockUI({ message: "<h1>@ViewBag.Imported</h1>" });
+                $('#js_form_excel_Turnover').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var input1 = $('#js_s_input_upload').val();
+                        if (input1 == '') {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseselectExcelfile');
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data == "SUCCESS") {
+                            PDMS.Utility.MessageBox.info('导入成功', function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            PDMS.Utility.MessageBox.error(data, function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+} 

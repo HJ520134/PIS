@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Exception/ExceptionInfoIndex.cshtml" hash="1626a5ce" filehash="17fb9db6e3a4" flags="110000" assembly="App_Web_iy054vfa" type="ASP._Page_Views_Exception_ExceptionInfoIndex_cshtml">
+    <filedeps>
+        <filedep name="/Views/Exception/ExceptionInfoIndex.cshtml" />
+    </filedeps>
+</preserve>

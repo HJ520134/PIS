@@ -1,0 +1,524 @@
+﻿@{
+}
+
+@{
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Suredelete = T("QA.Suredelete").Text;
+}
+
+<section class="content portal-content">
+    <div class="row">
+        @*<div class="col-lg-12">
+                <section class="content-header portal-content-header">
+                    <h1>@T("OEE.StationMachineNGList")</h1>
+                </section>
+            </div>*@
+        <form id="js_form_query" data-need-validate="true">
+            <div class="row hidden">
+                <input type="hidden" id="id_EQP_UID" name="EQP_Uid" value="@ViewBag.EQP_Uid" />
+                <input type="hidden" id="id_Plant_Organization_UID" name="Plant_Organization_UID" value="@ViewBag.Plant_Organization_UID" />
+                <input type="hidden" id="id_BG_Organization_UID" name="BG_Organization_UID" value="@ViewBag.BG_Organization_UID" />
+                <input type="hidden" id="id_FunPlant_Organization_UID" name="FunPlant_Organization_UID" value="@ViewBag.FunPlant_Organization_UID" />
+                <input type="hidden" id="id_OEE_MachineInfo_UID" name="OEE_MachineInfo_UID" value="@ViewBag.OEE_MachineInfo_UID" />
+                <input type="hidden" id="id_currentShiftID" name="ShiftTimeID" value="@ViewBag.currentShiftID" />
+                <input type="hidden" id="id_LineID" name="LineID" value="@ViewBag.LineID" />
+                <input type="hidden" id="id_StationID" name="StationID" value="@ViewBag.StationID" />
+                <input type="hidden" id="id_Project_UID" name="Project_UID" value="@ViewBag.Project_UID" />
+
+                <input type="hidden" id="id_currentDate" name="currentDate" value="@ViewBag.currentDate" />
+                <input type="hidden" id="id_currentTimeInterval" name="currentTimeInterval" value="@ViewBag.currentTimeInterval" />
+                <input type="hidden" id="id_MachineName" name="MachineName" value="@ViewBag.MachineName" />
+
+                <input type="hidden" id="id_LeavePagePrompt" name="LeavePagePrompt" value="true" />
+            </div>
+        </form>
+        <hr style="margin: 0px; height: 1px; border: 0px; background-color: #D5D5D5; color: #D5D5D5;" />
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <label class="col-xs-2 col-md-2" id="currentDate">@T("Common.Date"):@ViewBag.currentDate</label>
+            <label class="col-xs-2 col-md-3" id="currentTimeInterval">@T("QA.Timeperiod"): @ViewBag.currentTimeInterval</label>
+            <label class="col-xs-2 col-md-3" id="MachineName">@T("OEE.MachineName"):@ViewBag.MachineName</label>
+        </div>
+        @*<div class="col-md-12 search-field col-lg-12">
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_oee_Machine"> @T("Common.AddNew")</a>
+        </div>*@
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_OEE_Default_datatable">
+                <thead>
+                    <tr id="js_rpt_tr">
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="">@T("OEE.DefectCode")</th>
+                        <th class="">@T("OEE.DefectEnglishName")</th>
+                        <th class="">@T("OEE.DefectChineseName")</th>
+                        <th class="">QTY</th>
+                        <th class="nosort">@T("Common.Action")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+        <hr class="hr-custom">
+        <div class="col-md-2  pull-right">
+            <button id="btn-submit-inner" type="button" class="btn btn-primary ">@T("QA.Submit")</button>
+            <button id="btn-return" type="button" class="btn btn-primary ">@T("QA.Return")</button>
+        </div>
+    </div><!-- / 內容 表格列 -->
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("OEE.StationMachineNGList")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">@T("OEE.DefectCode")</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Defect_Code" class="form-control input-sm" id="js_Add_Defect_Code" placeholder="@T("OEE.DefectCode")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_Add_DefectEnglishName">@T("OEE.DefectEnglishName")</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="DefectEnglishName" class="form-control input-sm" id="js_Add_DefectEnglishName" placeholder="@T("OEE.DefectEnglishName")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_Add_DefecChinesetName">@T("OEE.DefectChineseName")</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="DefecChinesetName" class="form-control input-sm" id="js_Add_DefecChinesetName" placeholder="@T("OEE.DefectChineseName")">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_Add_DefectNum">QTY</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="DefectNum" class="form-control input-sm" id="js_Add_DefectNum" onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" placeholder="QTY">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style type="text/css">
+    .defaultDowntime {
+        background-color: #c0b3b3;
+        opacity: 0.9;
+    }
+</style>
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            //$("#id_LeavePagePrompt").val(true);
+            var subDatatable = null;
+            var StationDefectCode = (function () {
+                var urls = {
+                    QueryStationDefectCode: '@Html.Raw(Url.Action("QueryStationDefectCode", "OEE"))',
+                    QueryStationDataMaintence: '@Url.Action("StationDataMaintence", "OEE")',
+                    SaveStationDefectcode: '@Url.Action("SaveDefectCodeDailyNum", "OEE")',
+                    GetDefectCodeIID: '@Url.Action("GetDefectCodeIID", "OEE")',
+                    DeleteDefect: '@Url.Action("DeleteDefect", "OEE")',
+                };
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                var columns = [
+                 {
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                             var hiddenHtml = '<input type="hidden"  name="OEE_StationDefectCode_UID" value=' + rowData.OEE_StationDefectCode_UID + '>'
+                                + '<input type="hidden" name="OEE_DefectCodeDailyNum_UID" value="' + rowData.OEE_DefectCodeDailyNum_UID + '">'
+                                + '<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.OEE_StationDefectCode_UID + '">'
+                             ;
+                             $(td).html(hiddenHtml)
+                                  .addClass('table-col-checkbox');
+                         } else {
+                             var hiddenHtml = '<input type="hidden"  name="OEE_StationDefectCode_UID" value=' + rowData.OEE_StationDefectCode_UID + '>'
+                            + '<input type="hidden" name="OEE_DefectCodeDailyNum_UID" value="' + rowData.OEE_DefectCodeDailyNum_UID + '">'
+                            + '<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.OEE_StationDefectCode_UID + '">'
+                             ;
+                             $(td).html(hiddenHtml)
+                                  .addClass('table-col-checkbox').addClass("defaultDowntime");
+                         }
+                     },
+                     className: "text-center"
+                 },
+                 {
+                     data: null,
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                             $(td).html();
+                         } else {
+                             $(td).html("").addClass("defaultDowntime");
+                         }
+                     },
+                     className: "table-col-seq"
+                 }, {
+                     data: null,
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                             $(td).html(rowData.Defect_Code);
+                         } else {
+                             $(td).html(rowData.Defect_Code).addClass("defaultDowntime");
+                         }
+                     },
+                     className: "min-col-xs"
+                 },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                            $(td).html(rowData.DefectEnglishName);
+                        } else {
+                            $(td).html(rowData.DefectEnglishName).addClass("defaultDowntime");
+                        }
+                    },
+                    className: "min-col-xs"
+                },
+                  {
+                      data: null,
+                      createdCell: function (td, cellData, rowData, row, col) {
+                          if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                              $(td).html(rowData.DefecChinesetName);
+                          } else {
+                              $(td).html(rowData.DefecChinesetName).addClass("defaultDowntime");
+                          }
+                      },
+                      className: "min-col-xs"
+                  },
+                  {
+                      data: null,
+                      createdCell: function (td, cellData, rowData, row, col) {
+                          if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                              $(td).html('<input type="text" class="form-control input-xs text-center" style="width:70%" name="DefectNum" value="' + "" + '">');
+                          }
+                          else {
+                              $("#id_LeavePagePrompt").val(false);
+                              $(td).html('<input type="text" class="form-control input-xs text-center" style="width:70%"  name="DefectNum"  value="' + rowData.DefectNum + '">').addClass("defaultDowntime");
+                          }
+                      },
+                      className: "min-col-xs"
+                  }, {
+                      data: null,
+                      createdCell: function (td, cellData, rowData, row, col) {
+                          if (rowData.DefectNum == null || rowData.DefectNum == 0) {
+                              $(td).html("");
+                          }
+                          else {
+                              var buttonHtml = '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.OEE_DefectCodeDailyNum_UID + '">@ViewBag.Delete</button>'
+                              $(td).html(buttonHtml).addClass("defaultDowntime");
+                          }
+                      },
+                      className: "min-col-xs"
+                  }
+                ];
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _StationDefectCode = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_OEE_Default_datatable",
+                        remoteUrl: urls.QueryStationDefectCode,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    //var chk_value = [];
+                    //table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _StationDefectCode(true);
+                    },
+                    QueryStuffs: function () {
+                        _StationDefectCode(false);
+                    },
+
+                    GetStationDefectDatatable: function () {
+                        if (subDatatable == null) {
+                            subDatatable = $('#js_OEE_Default_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        }
+                        return subDatatable;
+                    }
+                }
+            })();
+            StationDefectCode.Init();
+
+            var flagLeavePagePrompt = ($("#id_LeavePagePrompt").val() == "true");
+
+            if (flagLeavePagePrompt) {
+                onbeforeunload();
+            }
+
+            function onbeforeunload() {
+                window.onbeforeunload = function (e) {
+                    if ($("#id_LeavePagePrompt").val() == "true") {
+                        return (e).returnValue = "离开此页面，请确保填写数据已保存";
+                    }
+                }
+            }
+
+            //返回按钮
+            $('#btn-return').click(function () {
+                var Part_Types = $('#js_Part_Types').val();
+                var url = StationDefectCode.urls.QueryStationDataMaintence;
+                window.location.href = url;
+            });
+
+            ////显示修改的界面
+            //$('body').on('click', '.js-grid-edit', function () {
+            //    $('#js_StationList_modal').modal('show', $(this));
+            //});
+
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id');
+                var url = StationDefectCode.urls.DeleteDefect;
+                PDMS.Utility.MessageBox.confirm("@ViewBag.Suredelete", function () {
+                    $.post(url, { dailynnum_uid: id }, function (data) {
+                        if (data == "SUCCESS") {
+                            PDMS.Utility.MessageBox.info("SUCCESS", function () {
+                                window.location.reload()
+                            });
+                            return false;
+                        } else {
+                            PDMS.Utility.MessageBox.error("删除失败");
+                            return false;
+                        }
+                    });
+
+                });
+            });
+
+            //保存资料按钮
+            $('#btn-submit-inner').click('click', function () {
+                var dataTable = StationDefectCode.GetStationDefectDatatable();
+                var QAMasterValue = {};
+                var IsCheckOK = true;
+                var flag = true;
+                // 首先检查用户输入的数字是否为 自然数
+                function checkRate(input) {
+                    if (!flag)
+                    { return; }
+                    var re = /^[0-9]+[0-9]*]*$/;
+                    if (!re.test(input)) {
+                        PDMS.Utility.MessageBox.error("@ViewBag.Naturalnumber");
+                        flag = false;
+                    }
+                }
+                var SaveStationValue = [];
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var sub = {};
+                        var row = $('#js_OEE_Default_datatable>tbody>tr').eq(rowIdx);
+                        var QualityAssuranceInputMasterUID = $('.js-grid-edit').attr('data-id');
+                        var OEE_StationDefectCode_UID = $.trim(row.find('input[name=OEE_StationDefectCode_UID]').val());
+                        var OEE_DefectCodeDailyNum_UID = $.trim(row.find('input[name=OEE_DefectCodeDailyNum_UID]').val());
+
+                        sub["OEE_DefectCodeDailyNum_UID"] = (OEE_DefectCodeDailyNum_UID == "" || OEE_DefectCodeDailyNum_UID == "undefined") ? 0 : OEE_DefectCodeDailyNum_UID;
+                        sub["Plant_Organization_UID"] = $("#id_Plant_Organization_UID").val();
+                        sub["BG_Organization_UID"] = $("#id_BG_Organization_UID").val();
+                        sub["FunPlant_Organization_UID"] = $("#id_FunPlant_Organization_UID").val();
+                        sub["OEE_MachineInfo_UID"] = $("#id_OEE_MachineInfo_UID").val();
+                        sub["OEE_StationDefectCode_UID"] = OEE_StationDefectCode_UID == "" ? 0 : OEE_StationDefectCode_UID;
+                        sub["ProductDate"] = $("#id_currentDate").val();
+                        sub["TimeInterval"] = $("#id_currentTimeInterval").val();
+                        var DefectNum = $.trim(row.find('input[name=DefectNum]').val());
+                        sub["DefectNum"] = DefectNum
+                        sub["ShiftTimeID"] = $("#id_currentShiftID").val();
+                        sub["Modify_UID"] = 90014;  // 在后台代码中会自动修改该值为当前修改人的UID，这里赋值只为该值为必填
+                        sub["Modify_Date"] = new Date().toLocaleDateString();
+                        if (DefectNum != "" && DefectNum != null) {
+                            SaveStationValue.push(sub);
+                        }
+                    })
+
+                if (SaveStationValue == null || SaveStationValue.length == 0) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("Please Fill In The Data Correctly ");
+                    return false;
+                }
+
+                if (flag) {
+                    $.post(StationDefectCode.urls.SaveStationDefectcode, { jsonWithProduct: JSON.stringify(SaveStationValue) }, function (data) {
+                        if (data != "SUCCESS") {
+                            $("#id_LeavePagePrompt").val(false);
+                            PDMS.Utility.MessageBox.error(data.Message);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info(data, function () {
+                                $("#id_LeavePagePrompt").val(false);
+                                RefreshDataView();
+                                $("#id_LeavePagePrompt").val(false);
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#js_btn_save_new').click(function () {
+                var defectStationValue = [];
+                var sub = {};
+                var defaectNum = {};
+                var flag = true;
+
+                //检查输入的数据
+                if ($("#js_Add_Defect_Code").val() == "" || $("#js_Add_Defect_Code").val() == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("请输入不良名称代码！");
+                    return false;
+                }
+
+                if ($("#js_Add_DefectEnglishName").val() == "" || $("#js_Add_DefectEnglishName").val() == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("请输入不良名称英文名！");
+                    return false;
+                }
+
+                if ($("#js_Add_DefecChinesetName").val() == "" || $("#js_Add_DefecChinesetName").val() == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("请输入不良名称中文名！");
+                    return false;
+                }
+
+                if ($("#js_Add_DefectNum").val() == "" || $("#js_Add_DefectNum").val() == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("请输入不良数量！");
+                    return false;
+                }
+
+                ///判断填写是否正确
+                defaectNum["Defect_Code"] = $("#js_Add_Defect_Code").val();
+                defaectNum["DefectEnglishName"] = $("#js_Add_DefectEnglishName").val();
+                defaectNum["DefecChinesetName"] = $("#js_Add_DefecChinesetName").val();
+                defaectNum["Plant_Organization_UID"] = $("#id_Plant_Organization_UID").val();
+                defaectNum["BG_Organization_UID"] = $("#id_BG_Organization_UID").val();
+                defaectNum["Project_UID"] = $("#id_Project_UID").val();
+                defaectNum["LineID"] = $("#id_LineID").val();
+                defaectNum["StationID"] = $("#id_StationID").val();
+                defaectNum["DefectNum"] = $("#js_Add_DefectNum").val();
+                var OEE_StationDefectCode_UID = 0;
+                $.post(StationDefectCode.urls.GetDefectCodeIID, { defaectNumModel: defaectNum }, function (data) {
+                    OEE_StationDefectCode_UID = data["OEE_StationDefectCode_UID"];
+                    if (OEE_StationDefectCode_UID == 0 || OEE_StationDefectCode_UID == undefined) {
+                        flag = false;
+                        PDMS.Utility.MessageBox.error("没有该机台的不良名称，请检查");
+                        return false;
+                    }
+                });
+
+                var sub = {};
+                sub["OEE_DefectCodeDailyNum_UID"] = 0;
+                sub["Plant_Organization_UID"] = $("#id_Plant_Organization_UID").val();
+                sub["BG_Organization_UID"] = $("#id_BG_Organization_UID").val();
+                sub["FunPlant_Organization_UID"] = $("#id_FunPlant_Organization_UID").val();
+                sub["OEE_MachineInfo_UID"] = $("#id_OEE_MachineInfo_UID").val();
+                sub["OEE_StationDefectCode_UID"] = OEE_StationDefectCode_UID == "" ? 0 : OEE_StationDefectCode_UID;
+                sub["ProductDate"] = $("#id_currentDate").val();
+                sub["TimeInterval"] = $("#id_currentTimeInterval").val();
+                sub["DefectNum"] = $("#js_Add_DefectNum").val();
+                sub["ShiftTimeID"] = $("#id_currentShiftID").val();
+                sub["Modify_UID"] = 90014;  // 在后台代码中会自动修改该值为当前修改人的UID，这里赋值只为该值为必填
+                sub["Modify_Date"] = new Date().toLocaleDateString();
+                defectStationValue.push(sub);
+
+                if (defectStationValue == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("@ViewBag.Pleaseproduction");
+                }
+                if (flag) {
+                    $.post(StationDefectCode.urls.SaveStationDefectcode, { jsonWithProduct: JSON.stringify(defectStationValue) }, function (data) {
+                        if (data != "SUCCESS") {
+                            $("#id_LeavePagePrompt").val(false);
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info(data, function () {
+                                $("#id_LeavePagePrompt").val(false);
+                                RefreshDataView();
+                                $("#id_LeavePagePrompt").val(false);
+                            });
+                        }
+                    });
+                }
+            });
+
+            function RefreshDataView() {
+                var Plant_UID = $("input[name='Plant_Organization_UID']").val();
+                var BG_UID = $("input[name='BG_Organization_UID']").val();
+                var Fun_UID = $("input[name='FunPlant_Organization_UID']").val();
+                var EQP_Uid = $("input[name='EQP_Uid']").val();
+                var LineID = $("input[name='LineID']").val();
+                var StationID = $("input[name='StationID']").val();
+                var Project_UID = $("input[name='Project_UID']").val();
+                var MachineName = $("input[name='MachineName']").val();
+                var id = $("input[name='OEE_MachineInfo_UID']").val();
+                url = '@Url.Action("DefectCodeMaintence", "OEE")';
+                var MachineName = MachineName.replace(/\%/g, "%25").replace(/\#/g, "%23").replace(/\&/g, "%26").replace(/\+/g, "%2B");
+                window.location.href = url + "?MachineInfo_UID=" + id + "&&Plant_UID=" + Plant_UID + "&&BG_UID=" + BG_UID + "&&Fun_UID=" + Fun_UID + "&&EQP_Uid=" + EQP_Uid + "&&MachineName=" + MachineName + "&&LineID=" + LineID + "&&StationID=" + StationID + "&&Project_UID=" + Project_UID;
+            }
+        });
+    </script>
+} 

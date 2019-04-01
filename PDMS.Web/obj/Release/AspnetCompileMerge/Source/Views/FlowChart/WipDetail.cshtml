@@ -1,0 +1,357 @@
+﻿
+@{
+    ViewBag.Title = "WIPDetail";
+}
+
+<!DOCTYPE html>
+<div id="PIS">
+    <div id="head_text" style="border-color:darkgray;background-color: #ecf0f5;font-size: X-large">
+        @*<form id="js_form_query">
+                <input type="hidden" id="selectProjects" name="selectProjects" value=@ViewBag.Projects />
+                <input type="hidden" id="selectFunplants" name="selectFunplants" value=@ViewBag.Parts />
+                <input type="hidden" id="Part_Types" name="Part_Types" value=@ViewBag.Parts />
+                <input type="hidden" id="opType1" name="Optype" value="@ViewBag.opType" />
+            </form>*@
+        <div id="main_content" style="font-size: medium; margin-left:+10px">
+            <div class="row">
+                <div class="col-lg-8">
+                    <section class="content-header portal-content-header">
+                        <h1>
+                            WIP修改记录详情
+                        </h1>
+                    </section>
+                </div>
+            </div>
+            <hr style="margin: 0px; height: 1px; border: 0px; background-color: #D5D5D5; color: #D5D5D5;" />
+            <div class="col-lg-offset-11" style="margin-top:+10px">
+                <button id="js_btn_search" type="button" class="btn btn-primary btn-query" data-toggle="modal" data-target="#js_search_modal">
+                    <i class="fa fa-search"></i>查询条件
+                </button>
+            </div>
+            <div class="row">
+                <!--表格-->
+                <div class="col-md-12 table-container">
+                    <table class="table table-striped table-hover table-condensed nowrap" style="margin-top: +10px;" id="js_WIPDetail_datatable">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>OP类型</th>
+                                <th>专案</th>
+                                <th>功能厂</th>
+                                <th>制程</th>
+                                <th>颜色</>
+                                <th>楼栋</>
+                                <th>修改前WIP</th>
+                                <th>修改后WIP</>
+                                <th>修改人</th>
+                                <th>修改类型</th>
+                                <th>修改日期</th>
+                                <th>备注信息</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>序号</th>
+                                <th>OP类型</th>
+                                <th>专案</th>
+                                <th>功能厂</th>
+                                <th>制程</th>
+                                <th>颜色</>
+                                <th>楼栋</>
+                                <th>修改前WIP</th>
+                                <th>修改后WIP</>
+                                <th>修改人</th>
+                                <th>修改类型</th>
+                                <th>修改日期</th>
+                                <th>备注信息</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div style="margin-top:+20px"></div>
+                    <div class="form-group" style="display:none">
+                        <button class="btn  btn-lg" style="margin-left: 20px;" id="showTableVBG"> <b>TOP</b> </button>
+                        <button class="btn  btn-lg" style="margin-left: 20px;" id="QE"> <b>QE</b> </button>
+                    </div>
+                    <div id="page" class="row"></div>
+                    <input type="hidden" id="CurrentLocation" value="0" />
+                </div><!--/表格-->
+            </div><!-- / 內容 表格列 -->
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <input type="hidden" name="ProjectName" id="js_s_input_ProjectName" value="0" />
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Plant">@T("QA.Plantarea")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_Plant" name="Plant"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_OPType">@T("QA.OPType")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_OPType" name="OPType"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_project" name="Project_UID"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Part_Type">@T("QA.Part")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_Part_Type" name="FlowChart_Master_UID"></select>
+                            </div>
+                        </div>
+
+                        @*<div class="form-group col-xs-12 col-md-6" style="display:none">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtypes")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType">
+                                        <option value="正常料" selected="selected">@T("QA.Normalmaterial")</option>
+                                        <option value="非正常料">@T("QA.Abormalmaterial")</option>
+                                    </select>
+                                </div>
+                            </div>*@
+
+                        <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant">
+                                    <option value="IPQC" selected="selected">IPQC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_select_type">@T("QA.Querytype")</label>
+                            <div class="col-sm-7">
+                                <select id="js_s_select_type" name="Select_Type" class="form-control input-sm">
+                                    <option value="daily" selected="selected">@T("QA.Daily")</option>
+                                    @*<option value="weekly">周报</option>
+                                        <option value="monthly">月报</option>*@
+                                </select>
+                            </div>
+                        </div>
+                        @*日报选项*@
+                        <div class="form-group col-xs-12 col-md-6" >
+                            <label class="col-sm-5 control-label" for="js_s_input_StartDate">开始日期</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="StartDate" class="form-control input-sm date" id="js_s_input_StartDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" >
+                            <label class="col-sm-5 control-label" for="js_s_input_EndDate">结束日期</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="EndDate" class="form-control input-sm date" id="js_s_input_EndDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="day_time_select" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                            <div class="col-sm-7">
+                                <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_interval">
+                                    <option value="ALL" selected="selected">@T("QA.Allday")</option>
+                                    <option value="Daily_Sum">@T("QA.Dayshift")</option>
+                                    <option value="Night_Sum">@T("QA.Nightshift")</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-search" type="button" class="btn btn-primary btn-query">
+                    <i class="fa fa-search"></i>
+                    @T("QA.Inquire")
+                </button>
+                <button id="btn-export" type="button" class="btn btn-primary btn-query" style="display:none">
+                    <i class="fa fa-search"></i>
+                    @T("QA.Inquire")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/QAReportJS/WIPAlterDetial.js"></script>
+    <script type="text/javascript">
+        var RoleMaintenance = null;
+        $(function () {
+            $(document).ready(function () {
+                var date = new Date();
+                var preDate = new Date(date.getTime()).Format("yyyy-MM-dd");
+                $('#js_s_input_date').val(preDate);
+                QueryPlant();
+            });
+          
+            Date.prototype.Format = function (fmt) { //author: meizz 
+                var o = {
+                    "M+": this.getMonth() + 1, //月份 
+                    "d+": this.getDate(), //日 
+                    "h+": this.getHours(), //小时 
+                    "m+": this.getMinutes(), //分 
+                    "s+": this.getSeconds(), //秒 
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+                    "S": this.getMilliseconds() //毫秒 
+                };
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            }
+          
+           
+           
+            var urls = {
+                GetWIPAlterRecordDetial: '@Url.Action("GetWIPAlterRecordDetial", "FlowChart")',
+            };
+
+            //获取汇总数据
+            var QEboardData = (function () {
+                var columns = [
+
+                     {
+                         data: null,
+                         className: "table-col-seq text-center",
+                         render: function (data, type, full, meta) {
+                             return ++meta.row;
+                         }
+                     },
+                    {
+                        data: "OP_Types",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Project_Name",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Process",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Color",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Place",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "WIP_Old",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "WIP_Add",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "User_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Change_Type",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "alterTime",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Comment",
+                        className: "min-col-xs text-center"
+                    },
+                ];
+
+                var _getParams = function () {
+                    //return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    var Plant = $("#js_s_input_Plant").find("option:selected").text();
+                    var OPType = $("#js_s_input_OPType").find("option:selected").text();
+                    var ProjectName = $("#js_s_input_project").find("option:selected").text();
+                    var PartType = $("#js_s_input_Part_Type").find("option:selected").text();
+                    //var FunPlant = $("#js_s_input_FunPlant").find("option:selected").text();
+                    var StartDate = $("#js_s_input_StartDate").val();
+                    var EndDate = $("#js_s_input_EndDate").val();
+                    var FunPlant = "";
+
+                    return "ProjectName=" + ProjectName + "&" + "Plant=" + Plant + "&" + "OPType=" + OPType
+                        + "&" + "PartType=" + PartType + "&" + "FunPlant=" + FunPlant
+                        + "&" + "StartDate=" + StartDate + "&" + "EndDate=" + EndDate
+                    //var searchParam = $('#js_form_query').serializeObject();
+                    //return  JSON.stringify(searchParam);
+                };
+
+                var _queryRoles = function (firstLoad) {
+                    var config1 = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_WIPDetail_datatable",
+                        remoteUrl: urls.GetWIPAlterRecordDetial,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.CustomSet(config1);
+                    $('#js_search_modal').modal('hide');
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+            QEboardData.Init();
+
+            $("#btn-search").click(function () {
+                QEboardData.QueryRoles();
+            })
+        });
+    </script>
+}

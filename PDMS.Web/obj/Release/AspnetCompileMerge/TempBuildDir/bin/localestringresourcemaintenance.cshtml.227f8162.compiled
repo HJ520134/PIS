@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Settings/LocaleStringResourceMaintenance.cshtml" hash="1626a5ce" filehash="2688191fd61f" flags="110000" assembly="App_Web_oh1yuaka" type="ASP._Page_Views_Settings_LocaleStringResourceMaintenance_cshtml">
+    <filedeps>
+        <filedep name="/Views/Settings/LocaleStringResourceMaintenance.cshtml" />
+    </filedeps>
+</preserve>

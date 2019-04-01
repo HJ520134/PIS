@@ -1,0 +1,967 @@
+﻿'
+@{
+    ViewBag.Title = "ProductData";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header portal-content-header">
+    <h1>
+        生产数据录入/修改 -<span id="js_input_flowChartName"></span>
+        <small></small>
+    </h1>
+</section>
+
+<style >
+   .table tr:hover {background-color: greenyellow !important; color: red}
+</style>
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+
+            <a class="btn btn-default btn-lg" data-toggle="modal" data-target="#js_search_modal" id="btn-search"><i class="fa fa-search"></i>查询</a>
+
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-xs-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_plant_datatable">
+                <thead>
+                    <tr>
+                        @*<th class="table-col-checkbox nosort">
+                                <input type="checkbox" class="js-checkbox-all" />
+                            </th>*@
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>制程序号</th>
+                        <th>制程</th>
+                        <th>颜色</th>
+                        <th>领料数</th>
+                        <th>良品数</th>
+                        <th>NG数</th>
+                        <th>仓库领料数</th>
+                        <th>调机试制数</th>
+                        <th>入库数</th>
+                    </tr>
+                </thead>
+
+            </table>
+            <div id="page" class="row" style="visibility: hidden;"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+    <div class="bottom_btn">
+        <div class="col-xs-12" style="padding-top:20px">
+            <div class="col-xs-10"></div>
+            <div class="col-xs-1">
+                <button id="btn-return-inner" type="button" onclick="javascript:history.go(-1)" class="btn btn-primary btn-query">返回</button>
+
+            </div>
+            <div class="col-xs-1">
+                <button id="btn-submit-inner" type="button" class="btn btn-primary btn-query">提交</button>
+
+            </div>
+        </div><!-- /col-次標題與Search keyword -->
+
+    </div>
+
+</section><!-- /.content -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title">查询</h2>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_customer">客户</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_customer" name="Customer"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">专案</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">生产阶段</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_part_types">部件类型</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_part_types" name="Part_Types"></select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">日期</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Date" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">时段选择</label>
+                                <div class="col-sm-7">
+
+                                    <select class="form-control input-sm " id="js_s_input_interval_time" name="Time"></select>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-clear">Clear</button>
+                    <button id="btn-search-inner" type="button" class="btn btn-primary btn-query">Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">数据修改</h4>
+                </div>
+
+                <form id="js_form_data_edit" class="form-horizontal clearfix">
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-xs-5 control-label" for="s_input_Picking_QTY">领料数</label>
+                                <input type="hidden" id="Edit_Product_UID" name="Product_UID" />
+                                <input type="hidden" id="Page_Statue" />
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs" id="s_input_Picking_QTY" name="Picking_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-xs-5 control-label" for="s_input_WH_Picking_QTY">仓库领料数</label>
+                                <div class="col-xs-7">
+
+                                    <input type="text" class="form-control input-xs" id="s_input_WH_Picking_QTY" name="WH_Picking_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Good_QTY">良品数</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs required" id="s_input_Good_QTY" name="Good_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_Adjust_QTY">调制试机数</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_Adjust_QTY" name="Adjust_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_NG_QTY">NG数</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_NG_QTY" name="NG_QTY" data-rule-digits="true" data-msg-digits="请输入自然数">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 ">
+                                <label class="col-xs-5 control-label" for="s_input_WH_QTY">入库数</label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control input-xs " id="s_input_WH_QTY" name="WH_QTY" data-rule-digits="true" data-msg-digits="请输入整数">
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="isEdit" value="false" />
+
+
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+
+                        <button type="button" class="btn btn-primary " id="js_btn_save_edit_ReportBom"><i class="fa fa-save"></i>保存</button>
+                    </div>
+                </form>
+                <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_alert_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">异常信息提醒</h4>
+                </div>
+
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="s_input_FuncPlant_Name">影响功能厂名：</label>
+
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="s_input_FuncPlant_Name" name="FuncPlant_Name">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-xs-5 control-label" for="s_input_FuncPlant_Tel">影响功能厂联系方式：</label>
+                            <div class="col-xs-7">
+
+                                <input type="text" class="form-control input-xs" disabled="disabled" id="s_input_FuncPlant_Tel" name="FuncPlant_Tel">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+}
+<style>
+    .popover {
+        max-width: 500px;
+    }
+
+    .popover-content .btn + .btn {
+        margin-left: 2px;
+    }
+</style>
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var subDatatable = null;
+            //获取当前功能厂
+            var getCurrentUid = function () {
+                url = ProductData.urls.GetCurrentFuncPlant;
+                $.post(url, function (data) {
+
+                    $('#js_input_func_plant').val(data);
+                });
+            }
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+
+                $('#js_form_data_edit li').hide();
+            });
+
+            //查询Product_Input表数据，将数据有错的在页面上标注出来
+            var checkAbnomalDate = function () {
+                url = ProductData.urls.GetWarringData;
+                $.post(url, function (data) {
+
+                    $('#js_input_func_plant').val(data);
+                });
+            }
+
+
+            var ProductData = (function () {
+                var urls =
+                    {
+                         GetCustomerSource: '@Url.Action("GetCustomerSource", "EventReportManager")',
+                    GetProjectSource: '@Url.Action("GetProjectSource", "EventReportManager")',
+                    GetProductPhaseSource: '@Url.Action("GetProductPhaseSource", "EventReportManager")',
+                    GetPartTypesSource: '@Url.Action("GetPartTypesSource", "EventReportManager")',
+                    GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")',
+
+
+                    QueryProductData: '@Url.Action("QueryProductDataBackUp", "ProductInput")',
+
+                        QueryProductSingelData: '@Url.Action("QueryProductData", "ProductInput")',
+                        ModifyProduct: '@Url.Action("ModifyProductDataRorEmergency", "ProductInput")',
+                        GetCurrentFuncPlant: '@Url.Action("getCurrentPlantName", "ProductInput")',
+                        SaveDatas: '@Url.Action("SaveDatas", "ProductInput")',
+                       QueryFuncPlantInfo: '@Url.Action("QueryFuncPlantInfo", "ProductInput")',
+                    };
+                var columns = [
+
+                  {
+                      data: null,
+                      className: "min-col-xs table-col-seq"
+                  },
+                  {
+                      data: null,
+                      createdCell: function (td, cellData, rowData, row, col) {
+                          if (rowData.Product_UID == 0)
+                              $(td).html('');
+                          else
+                              $(td).html('<button type="button" class="btn btn-default btn-sm js-grid-edit" data-id="' + rowData.Product_UID + '">编辑</button>');
+                      },
+                      className: "text-center min-col-xs"
+                  },
+
+                   {
+                       data:null,
+                       createdCell: function (td, cellData, rowData, row, col) {
+
+                           $(td).html(' <label>' + rowData.Process_Seq + '</label>' +
+                               '<input type="text"class="form-control input-xs" style="display:none;"  disabled="disabled"  name="Process_Seq"  value="' + rowData.Process_Seq + '">' +
+             '<input type="text" class="form-control input-xs" style="display:none;"  name="Product_Stage"  value="' + rowData.Product_Stage + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Material_No"  value="' + rowData.Material_No + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Wip_Qty"  value="' + rowData.Wip_Qty + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Version"  value="' + rowData.FlowChart_Version + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_Phase"  value="' + rowData.Product_Phase + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="FunPlant_Manager"  value="' + rowData.FunPlant_Manager + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Part_Types"  value="' + rowData.Part_Types + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Project"  value="' + rowData.Project + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Customer"  value="' + rowData.Customer + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_Date"  value="' + rowData.Product_Date + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Time_Interval"  value="' + rowData.Time_Interval + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Target_Yield"  value="' + rowData.Target_Yield + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Prouct_Plan"  value="' + rowData.Prouct_Plan + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Master_UID"  value="' + rowData.FlowChart_Master_UID + '">' +
+               '  <input type="text" class="form-control input-xs" style="display:none;"  name="Product_UID"  value="' + rowData.Product_UID + '">' +
+                '  <input type="text" class="form-control input-xs" style="display:none;"  name="DRI"  value="' + rowData.DRI + '">' +
+                 '  <input type="text" class="form-control input-xs" style="display:none;"  name="FlowChart_Detail_UID"  value="' + rowData.FlowChart_Detail_UID + '">' +
+            '  <input type="text" class="form-control input-xs" style="display:none;"  name="Place"  value="' + rowData.Place + '">');
+                       },
+                       className: "text-center min-col-xs"
+                   },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td).html(' <label>' + rowData.Process + '</label>' +
+                                '<input type="text"class="form-control input-xs" style="display:none;" disabled="disabled"  name="Process"  value="' + rowData.Process + '">');
+
+                        },
+                        className: "text-center min-col-xs"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td).html(' <label>' + rowData.Color + '</label>' +
+                                '<input type="text"class="form-control input-xs"  style="display:none;" disabled="disabled"  name="Color"  value="' + rowData.Color + '">');
+
+                        },
+                        className: "text-center min-col-xs"
+                    },
+
+            {
+                data: null,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    if (rowData.Product_UID == 0)
+                        $(td).html('<input type="text" class="form-control input-xs text-center" name="Picking_QTY"  value="' + "" + '">');
+                    if (rowData.Product_UID != 0 && rowData.Picking_MismatchFlag == undefined)
+                        $(td).html('<input type="text"class="form-control input-xs text-center" disabled="disabled"  name="Picking_QTY"  value="' + rowData.Picking_QTY + '">');
+                    if (rowData.Picking_MismatchFlag != undefined)
+                        $(td).html('<input type="text"class="form-control input-xs forAlertInput text-center"  style="background-color: red;" name="Picking_QTY"  value="' + rowData.Picking_QTY + '">' +
+                                 ' <input type="text" class="form-control input-xs" style="display:none;"  name="Picking_MismatchFlag"  value="' + rowData.Picking_MismatchFlag + '">' +
+                                  '  <input type="text" class="form-control input-xs" style="display:none;"  name="Picking_Contact"  value="' + rowData.Picking_Contact + '">');
+
+                },
+                className: "text-center min-col-xs"
+            },
+
+
+
+              {
+                  data: null,
+                  createdCell: function (td, cellData, rowData, row, col) {
+                      var tdHTML = '<div>';
+                      if (rowData.Product_UID == 0)
+                          tdHTML += '<input type="text"class="form-control  text-center  product-input-text" id="' + rowData.Product_UID + '"  name="Normal_Good_QTY"  value="' + "" + '">';
+                      if (rowData.Product_UID != 0 && rowData.Good_MismatchFlag == undefined)
+                          tdHTML += '<input type="text"class="form-control  text-center  product-input-text" disabled="disabled" id="' + rowData.Product_UID + '" name="Normal_Good_QTY"  value="' + rowData.Normal_Good_QTY + '">';
+                      if (rowData.Good_MismatchFlag != undefined)
+                          tdHTML += '<input type="text"class="form-control forAlertInput text-center product-input-text"  style="background-color: red;" id="' + rowData.Product_UID + '"  name="Good_QTY"  value="' + rowData.Normal_Good_QTY + '">' +
+                              ' <input type="text" class="form-control  product-input-text" style="display:none;"  name="Good_MismatchFlag"  value="' + rowData.Good_MismatchFlag + '">' +
+                              '  <input type="text" class="form-control  product-input-text" style="display:none;"  name="Good_Contact"  value="' + rowData.Good_Contact + '">';
+                      tdHTML += '</div>';
+                      $(td).html(tdHTML);
+                      ///再加两个隐藏的Input分别存放对方功能厂和联系方式，用户点击红框时候用modal显示相关信息。
+                  },
+                  className: "text-center "
+              },
+
+
+  {
+      data: null,
+      createdCell: function (td, cellData, rowData, row, col) {
+          var tdHTML = '<div>';
+          if (rowData.Product_UID == 0)
+              tdHTML += '  <input type="text" class="form-control product-input-text text-center"  name="Normal_NG_QTY"  value="' + "" + '">';
+          else
+              tdHTML += '  <input type="text" class="form-control product-input-text text-center" disabled="disabled"   name="Normal_NG_QTY"  value="' + rowData.Normal_NG_QTY + '">';
+          tdHTML += '</div>';
+          $(td).html(tdHTML);
+      },
+      className: "text-center "
+  },
+
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Product_UID == 0)
+                                $(td).html('  <input type="text" class="form-control input-xs text-center"  name="WH_Picking_QTY"  value="' + "" + '">');
+                            else
+                                $(td).html('  <input type="text" class="form-control input-xs text-center" disabled="disabled" l name="WH_Picking_QTY"  value="' + rowData.WH_Picking_QTY + '">');
+                        },
+                        className: "text-center min-col-xs"
+                    },
+
+                        {
+                            data: null,
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (rowData.Product_UID == 0)
+                                    $(td).html('  <input type="text" class="form-control input-xs text-center"  name="Adjust_QTY"  value="' + "" + '">');
+                                else
+                                    $(td).html('  <input type="text" class="form-control input-xs text-center" disabled="disabled" name="Adjust_QTY"   value="' + rowData.Adjust_QTY + '">');
+                            },
+                            className: "text-center min-col-xs"
+                        },
+
+    {
+        data: null,
+        createdCell: function (td, cellData, rowData, row, col) {
+            if (rowData.Product_UID == 0)
+                $(td).html('  <input type="text" class="form-control input-xs text-center"  name="WH_QTY"  value="' + "" + '">');
+            else
+                $(td).html('  <input type="text" class="form-control input-xs text-center" disabled="disabled"  name="WH_QTY"  value="' + rowData.WH_QTY + '">');
+        },
+        className: "text-center min-col-xs"
+    }
+
+                ];
+
+                ///根据条件隐藏提交按钮
+                var SetSubmitButton = function () {
+
+                    var dataTable = ProductData.GetSubDatatable();
+                    dataTable
+                      .rows()
+                        .every(function (rowIdx, tableLoop, rowLoop) {
+                            var row = $('#js_plant_datatable>tbody>tr').eq(rowIdx);
+
+                            if (rowIdx == 0)  //用数据的第一行判断是否为新建 并给页面标题赋值
+                            {
+                                var flag = $.trim(row.find('input[name=Product_UID]').val());
+                                var Customer = $.trim(row.find('input[name=Customer]').val());
+                                var Project = $.trim(row.find('input[name=Project]').val());
+                                var Part_Types = $.trim(row.find('input[name=Part_Types]').val());
+                                var Product_Phase = $.trim(row.find('input[name=Product_Phase]').val());
+
+                                var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                                document.getElementById('js_input_flowChartName').innerHTML = Customer + '_' + Project + '_' + Part_Types + '_' + Product_Phase + '_' + FunPlant;
+                                if (flag != "" && flag != "0") {
+                                    $('#btn-submit-inner').hide();
+                                }
+                                else {
+                                    return;
+                                }
+
+                            }
+
+                        });
+
+                };
+
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _queryPlants = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_plant_datatable",
+                        remoteUrl: urls.QueryProductData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_plant_datatable",
+                        remoteUrl: urls.QueryProductData,
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+
+
+                    }
+                    PDMS.Utility.Criteria.Build();
+                    PDMS.Utility.Pages.Set(config);
+                    SetSubmitButton();
+                    $('.forAlertInput').on('click', function () {
+                        var funcPlant = $(this).next().val();
+                        var FunPlant_Contact = $(this).next().next().val();
+                        $('#js_alert_modal').find('input[name=FuncPlant_Tel]').val(FunPlant_Contact);
+                        $('#js_alert_modal').find('input[name=FuncPlant_Name]').val(funcPlant);
+
+                        $('#js_alert_modal').modal('show');
+                    });
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _queryPlants(true);
+                        SetSubmitButton();
+                    },
+                    QueryProductData: function () {
+                        _queryPlants(false);
+
+                    }
+                    ,
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_plant_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                scrollX: true,
+                                autoWidth: true,
+                                columns: columns,
+                            });
+                        }
+                        return subDatatable;
+                    },
+                }
+
+            })();
+            ProductData.Init();
+
+            GetCustomer();
+            GetInterval();
+            $("#js_s_input_customer")
+                .change(function ff() {
+                    GetProject();
+                });
+            $("#js_s_input_project")
+                .change(function ff() {
+                    GetProductPhase();
+                });
+            $("#js_s_input_Product_Phase")
+                .change(function ff() {
+                    GetPartTypes();
+                });
+
+
+            //获取数据
+            function GetCustomer() {
+                $("#js_s_input_customer").empty();
+                $.post(ProductData.urls.GetCustomerSource,
+                    function (data) {
+                        if (data != "") {
+                            $.each(data,
+                                function (i, item) {
+                                    $("<option></option>")
+                                        .val(item)
+                                        .text(item)
+                                        .appendTo($("#js_s_input_customer"));
+                                });
+                            GetProject();
+                        }
+                    });
+            }
+
+            function GetProject() {
+                $("#js_s_input_project").empty();
+                var temp = $("#js_s_input_customer").val();
+                $.post(ProductData.urls.GetProjectSource,
+                    { "CustomerName": temp },
+                    function (data) {
+                        if (data != "") {
+                            $.each(data,
+                                function (i, item) {
+                                    $("<option></option>")
+                                        .val(item)
+                                        .text(item)
+                                        .appendTo($("#js_s_input_project"));
+                                });
+                            GetProductPhase();
+                        }
+                    });
+            }
+
+            function GetProductPhase() {
+                $("#js_s_input_Product_Phase").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                $.post(ProductData.urls.GetProductPhaseSource,
+                    { "CustomerName": tempCustomer, "ProjectName": tempProject },
+                    function (data) {
+                        if (data != "") {
+                            $.each(data,
+                                function (i, item) {
+
+                                    $("<option></option>")
+                                        .val(item)
+                                        .text(item)
+                                        .appendTo($("#js_s_input_Product_Phase"));
+                                });
+                            GetPartTypes();
+                        }
+                    });
+            }
+
+            function GetPartTypes() {
+                $("#js_s_input_part_types").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                $.post(ProductData.urls.GetPartTypesSource,
+                    { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName },
+                    function (data) {
+                        if (data != "") {
+                            $.each(data,
+                                function (i, item) {
+
+                                    $("<option></option>")
+                                        .val(item)
+                                        .text(item)
+                                        .appendTo($("#js_s_input_part_types"));
+                                });
+
+                        }
+                    });
+            }
+
+            function GetInterval() {
+                $("#js_s_input_interval_time").empty();
+                $.post(ProductData.urls.GetIntervalTime,
+                    { "PageName": "ProductReport" },
+                    function (data) {
+                        if (data != "") {
+                            $.each(data,
+                                function (i, item) {
+
+                                    $("<option></option>")
+                                        .val(item["Enum_Value"])
+                                        .text(item["Enum_Value"])
+                                        .appendTo($("#js_s_input_interval_time"));
+
+                                });
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+            }
+
+            ///点击查询时候执行   目前未使用
+            $('#btn-search-inner').click(function () {
+                if ($("#js_form_query").valid()) {
+                    ProductData.QueryProductData();
+                    $('#js_search_modal').modal('hide');
+                    $('#js_s_input_QuertFlag').val("Search");
+                    $('.forAlertInput').on('click', function () {
+                        var funcPlant = $(this).next().val();
+                        var FunPlant_Contact = $(this).next().next().val();
+                        $('#js_alert_modal').find('input[name=FuncPlant_Tel]').val(FunPlant_Contact);
+                        $('#js_alert_modal').find('input[name=FuncPlant_Name]').val(funcPlant);
+
+                        $('#js_alert_modal').modal('show');
+                    });
+                }
+            });
+
+
+
+            // 编辑页面的验证
+            $('#js_form_data_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_form_data_edit ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            ///红框弹出提示
+            $('.forAlertInput').on('click', function () {
+                if ($('#js_s_input_QuertFlag') == "Search")
+                {
+                    return;
+                }
+                var funcPlant = $(this).next().val();
+                var FunPlant_Contact = $(this).next().next().val();
+                $('#js_alert_modal').find('input[name=FuncPlant_Tel]').val(FunPlant_Contact);
+                $('#js_alert_modal').find('input[name=FuncPlant_Name]').val(funcPlant);
+
+                $('#js_alert_modal').modal('show');
+            });
+
+
+            //保存资料按钮
+            $('#btn-submit-inner').click('click', function () {
+
+                var dataTable = $('#js_plant_datatable').DataTable();
+                var PPCheckValue = {};
+                var PPCheckList = [];
+                var IsCheckOK = true;
+                var flag = true;
+                // 首先检查用户输入的数字是否为 自然数
+                function checkRate(input)
+                {
+                    if (!flag)
+                    { return;}
+                    var re = /^[0-9]+[0-9]*]*$/;
+
+                    if (!re.test(input))
+                    {
+                        PDMS.Utility.MessageBox.error("请输入自然数");
+
+                        flag = false;
+
+                    }
+                }
+
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var sub = {};
+                        var subRework = null;
+
+                        var row = $('#js_plant_datatable>tbody>tr').eq(rowIdx);
+                        var Process_Seq = $.trim(row.find('input[name=Process_Seq]').val());
+                        var Process = $.trim(row.find('input[name=Process]').val());
+                        var Color = $.trim(row.find('input[name=Color]').val());
+                        // 用户未输入值时候，系统默认为"0"，输入值提交时 需要验证用户输入的值是否为自然数。
+                        var WH_Picking_QTY = 0;
+                        if ($.trim(row.find('input[name=WH_Picking_QTY]').val()) != "") {
+                            WH_Picking_QTY = $.trim(row.find('input[name=WH_Picking_QTY]').val());
+                            checkRate(WH_Picking_QTY);
+                        }
+                        var Picking_QTY = 0;
+                        if ($.trim(row.find('input[name=Picking_QTY]').val()) != "") {
+                            Picking_QTY = $.trim(row.find('input[name=Picking_QTY]').val());
+                            checkRate(Picking_QTY);
+                        }
+                        var Good_QTY = 0;
+                        if ($.trim(row.find('input[name=Good_QTY]').val()) != "") {
+                            Good_QTY = $.trim(row.find('input[name=Good_QTY]').val());
+                            checkRate(Good_QTY);
+                        }
+                        var Adjust_QTY = 0;
+                        if ($.trim(row.find('input[name=Adjust_QTY]').val()) != "") {
+                            Adjust_QTY = $.trim(row.find('input[name=Adjust_QTY]').val());
+                            checkRate(Adjust_QTY);
+                        }
+                        var NG_QTY = 0;
+                        if ($.trim(row.find('input[name=NG_QTY]').val()) != "") {
+                            NG_QTY = $.trim(row.find('input[name=NG_QTY]').val());
+                            checkRate(NG_QTY);
+                        }
+                        var WH_QTY = 0;
+                        if ($.trim(row.find('input[name=WH_QTY]').val()) != "") {
+                            WH_QTY = $.trim(row.find('input[name=WH_QTY]').val());
+                            checkRate(WH_QTY);
+                        }
+                        //Q报表数据准备
+                        var Normal_Good_QTY = 0;
+                        if ($.trim(row.find('input[name=Normal_Good_QTY]').val()) != "") {
+                            Normal_Good_QTY = $.trim(row.find('input[name=Normal_Good_QTY]').val());
+                            checkRate(Normal_Good_QTY);
+                        }
+                        var Abnormal_Good_QTY = 0;
+                        if ($.trim(row.find('input[name=Abnormal_Good_QTY]').val()) != "") {
+                            Abnormal_Good_QTY = $.trim(row.find('input[name=Abnormal_Good_QTY]').val());
+                            checkRate(Abnormal_Good_QTY);
+                        }
+                        var Normal_NG_QTY = 0;
+                        if ($.trim(row.find('input[name=Normal_NG_QTY]').val()) != "") {
+                            Normal_NG_QTY = $.trim(row.find('input[name=Normal_NG_QTY]').val());
+                            checkRate(Normal_NG_QTY);
+                        }
+                        var Abnormal_NG_QTY = 0;
+                        if ($.trim(row.find('input[name=Abnormal_NG_QTY]').val()) != "") {
+                            Abnormal_NG_QTY = $.trim(row.find('input[name=Abnormal_NG_QTY]').val());
+                            checkRate(Abnormal_NG_QTY);
+                        }
+
+                        var Place = $.trim(row.find('input[name=Place]').val());
+                        var Prouct_Plan = $.trim(row.find('input[name=Prouct_Plan]').val());
+                        var Product_Stage = $.trim(row.find('input[name=Product_Stage]').val());
+                        var Target_Yield = $.trim(row.find('input[name=Target_Yield]').val());
+                        ///先直接将 当前的wip数量存为0 然后用 sp计算
+                        sub["Wip_Qty"] = 0;
+                        sub["Is_Comfirm"] = false;
+                        sub["Product_Date"] = $.trim(row.find('input[name=Product_Date]').val());
+                        sub["Time_Interval"] = $.trim(row.find('input[name=Time_Interval]').val());
+                        sub["Customer"] = $.trim(row.find('input[name=Customer]').val());
+                        sub["Project"] = $.trim(row.find('input[name=Project]').val());
+                        sub["Part_Types"] = $.trim(row.find('input[name=Part_Types]').val());
+                        sub["FunPlant"] = $.trim(row.find('input[name=FunPlant]').val());
+                        sub["DRI"] = $.trim(row.find('input[name=DRI]').val());
+                        sub["FlowChart_Detail_UID"] = $.trim(row.find('input[name=FlowChart_Detail_UID]').val());
+                        sub["FunPlant_Manager"] = $.trim(row.find('input[name=FunPlant_Manager]').val());
+                        sub["Product_Phase"] = $.trim(row.find('input[name=Product_Phase]').val());
+                        sub["Process_Seq"] = $.trim(row.find('input[name=Process_Seq]').val());
+                        sub["Place"] = Place;
+                        sub["Process"] = Process;
+                        sub["FlowChart_Master_UID"] = $.trim(row.find('input[name=FlowChart_Master_UID]').val());
+                        sub["FlowChart_Version"] = $.trim(row.find('input[name=FlowChart_Version]').val());
+                        sub["Color"] = Color;
+                        sub["Prouct_Plan"] = Prouct_Plan;
+                        sub["Product_Stage"] = Product_Stage;
+                        sub["Target_Yield"] = Target_Yield;
+
+                        //Q报表数据准备
+                        //sub["Good_QTY"] = Good_QTY;
+                        sub["Normal_Good_QTY"] = Normal_Good_QTY;
+                        sub["Abnormal_Good_QTY"] = Abnormal_Good_QTY;
+                        sub["Normal_NG_QTY"] = Normal_NG_QTY;
+                        sub["Abnormal_NG_QTY"] = Abnormal_NG_QTY;
+
+
+                        sub["Picking_QTY"] = Picking_QTY;
+                        sub["WH_Picking_QTY"] = WH_Picking_QTY;
+                        //sub["NG_QTY"] = NG_QTY;
+                        sub["WH_QTY"] = WH_QTY;
+                        sub["Adjust_QTY"] = Adjust_QTY;
+                        sub["Creator_UID"] = 90014; // 在后台代码中会自动修改该值为当前修改人的UID，这里赋值只为该值为必填
+                        sub["Create_Date"] = new Date().toLocaleDateString();
+                        sub["Modified_UID"] = 90014; // 在后台代码中会自动修改该值为当前修改人的UID，这里赋值只为该值为必填
+                        sub["Modified_Date"] = new Date().toLocaleDateString();
+
+                        //添加Rework Info
+                        //if ($.trim(row.find('input[name=Rework_QTY]').val()) == "")
+                        //    sub["Rework_QTY"] = "NA";
+                        //else
+                        //    sub["Rework_QTY"] = $.trim(row.find('input[name=Rework_QTY]').val());
+
+
+                            sub["INum"] = "-1";
+
+
+
+                            sub["ONum"] = "-1";
+
+
+
+                        PPCheckList.push(sub);
+                    });
+                PPCheckValue.ProductLists = PPCheckList;
+                if (PPCheckList.length==0) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("制程信息不存在或当日生产计划未维护，请再次检查！");
+                }
+                if (flag) {
+                    $.post(ProductData.urls.SaveDatas, { jsonWithProduct: JSON.stringify(PPCheckValue) }, function (data) {
+                        if (data == '') {
+                            PDMS.Utility.MessageBox.info("保存成功！");
+                            //$('#Page_Statue').val("edit");
+                            ProductData.QueryProductData(); //提交成功后，重新刷新页面。
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            //新增修改Data按钮
+            $("#js_btn_save_edit_ReportBom").click('click', function () {
+                var flag = true;
+                function checkRate(input) {
+                    if (!flag)
+                    { return; }
+                    var re = /^[0-9]+[0-9]*]*$/;
+
+                    if (!re.test(input)) {
+                        PDMS.Utility.MessageBox.error("请输入自然数");
+
+                        flag = false;
+
+                    }
+                }
+                var submitJson = $('#js_form_data_edit').serializeObject();
+                var inputVal = $('#s_input_Picking_QTY').val();
+                checkRate(inputVal);
+                inputVal = $('#s_input_WH_Picking_QTY').val(); checkRate(inputVal);
+                inputVal = $('#s_input_Good_QTY').val(); checkRate(inputVal);
+                inputVal = $('#s_input_Adjust_QTY').val(); checkRate(inputVal);
+                inputVal = $('#s_input_NG_QTY').val(); checkRate(inputVal);
+                inputVal = $('#s_input_WH_QTY').val(); checkRate(inputVal);
+                //用户修改数据提交前 需要验证数据的合法性
+                if (flag) {
+                    $.post(ProductData.urls.ModifyProduct, { jsonWithProduct: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'success') {
+                            PDMS.Utility.MessageBox.info("修改成功");
+                            $('#js_edit_modal').modal('hide');
+                            ProductData.QueryProductData();
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+
+                }
+            });
+            //点击编辑的时触发事件 更具用户选择的UID，查询出值来绑定数值
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var uuid = $(this).attr('data-id'),
+                    url = ProductData.urls.QueryProductSingelData;
+
+                $.post(url, { uuid: uuid }, function (data) {
+
+                    $('#Edit_Product_UID').val(uuid);
+                    $('#js_edit_modal').find('input[name=Picking_QTY]').val(data.Picking_QTY);
+                    $('#js_edit_modal').find('input[name=WH_Picking_QTY]').val(data.WH_Picking_QTY);
+                    $('#js_edit_modal').find('input[name=Good_QTY]').val(data.Good_QTY);
+                    $('#js_edit_modal').find('input[name=Adjust_QTY]').val(data.Adjust_QTY);
+                    $('#js_edit_modal').find('input[name=NG_QTY]').val(data.NG_QTY);
+
+                    $('#js_edit_modal').find('input[name=WH_QTY]').val(data.WH_QTY);
+
+                    $('#js_edit_modal').modal('show');
+                });
+
+
+
+            });
+
+        });
+    </script>
+}

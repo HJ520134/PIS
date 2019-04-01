@@ -1,0 +1,57 @@
+2016-08-24 13:38:12.3808 | Error | System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 
+ QualityService.SaveQaMasterData => QualityAssuranceInputMasterRepository.SaveQaMasterData => Logger.Error 
+
+2016-08-24 13:38:48.5909 | Error | System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 
+ QualityService.SaveQaMasterData => QualityAssuranceInputMasterRepository.SaveQaMasterData => Logger.Error 
+
+2016-08-24 13:41:00.2244 | Error | System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 System.InvalidOperationException: The specified cast from a materialized 'System.String' type to the 'System.Int32' type is not valid.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   ì¶ System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) ì¶ D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: ÐÐ 135 
+ QualityService.SaveQaMasterData => QualityAssuranceInputMasterRepository.SaveQaMasterData => Logger.Error 
+

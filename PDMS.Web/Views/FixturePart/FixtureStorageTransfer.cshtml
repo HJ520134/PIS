@@ -1,0 +1,1373 @@
+﻿@model PDMS.Model.ViewModels.FixtureStorageTransferVM
+<section class="content-header portal-content-header">
+    <h1>储位移转维护作业</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">模板下载</button>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">上传</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">新增</button>
+                    <button type="button" class="fa fa-save btn btn-primary" data-toggle="modal" id="btn_approves"> 批量审核</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="bt_search">查询</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>储位移转单编号</th>
+                        <th>状态</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>转出仓</th>
+                        <th>转出料架</th>
+                        <th>转出储位</th>
+                        <th>转入仓</th>
+                        <th>转入料架</th>
+                        <th>转入储位</th>
+                        <th>移转数量</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>储位移转单编号</th>
+                        <th>状态</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>转出仓</th>
+                        <th>转出料架</th>
+                        <th>转出储位</th>
+                        <th>转入仓</th>
+                        <th>转入料架</th>
+                        <th>转入储位</th>
+                        <th>移转数量</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">储位移转单申请</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditStorageTransfer", "FixturePart", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_Add">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_Add" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_Add">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_Add" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_Add">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_Add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_material_uid">料号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_material_uid" name="Fixture_Part_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                         
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Out_Warehouse_Storage_UID">转出储位</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Out_Warehouse_Storage_UID" name="Out_Fixture_Warehouse_Storage_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Inventory_Qty">库存数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_Inventory_Qty" name="Inventory_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_In_Warehouse_Storage_UID">转入储位</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_In_Warehouse_Storage_UID" name="In_Fixture_Warehouse_Storage_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_check_qty">移转数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_check_qty" name="Transfer_Qty">
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Fixture_Storage_Transfer_UID" />
+                            <input type="hidden" name="isEdit" id="isEdit" value=false />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 存档</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_approve_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">储位移转单审核</h4>
+                </div>
+                @using (Html.BeginForm("AddCreateBound", "FixturePart", FormMethod.Post, new { id = "js_form_bound_approve" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_approve">厂区</label>
+                                <div class="col-sm-7">
+                                   <input type="text" class="form-control input-sm" id="js_select_factory_approve" name="Plant" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_approve">OP类型</label>
+                                <div class="col-sm-7">
+                                  <input type="text" class="form-control input-sm" id="js_select_optype_approve" name="BG_Organization" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_approve">功能厂</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_select_funplant_approve" name="FunPlant_Organization" readonly>                                   
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_id">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_id" name="Part_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_name">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_name" name="Part_Name" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_types">型号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_types" name="Part_Spec" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Warehouse_ID">转出仓号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Out_Warehouse_ID" name="Out_Fixture_Warehouse_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Rack_ID">转出料架号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Out_Rack_ID" name="Out_Rack_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Storage_ID">转出储位</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Out_Storage_ID" name="Out_Storage_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Warehouse_ID">转入仓号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_In_Warehouse_ID" name="In_Fixture_Warehouse_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Rack_ID">转入料架号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_In_Rack_ID" name="In_Rack_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Out_Storage_ID">转入储位</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_In_Storage_ID" name="In_Storage_ID" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Inventory_Qty">库存数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Inventory_Qty" name="Inventory_Qty" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Transfer_Qty">移转数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Transfer_Qty" name="Transfer_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Status">状态</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Status" name="Status" readonly>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="currentID" id="currentID" />
+                            <input type="hidden" name="NeedShow" id="NeedShow" />
+                            <input type="hidden" name="Fixture_Storage_Transfer_UID" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="transfer_pre"><i class="fa"></i> 上一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="transfer_next"><i class="fa"></i> 下一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="transfer_close"><i class="fa fa-times"></i> 返回</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_approve_save"><i class="fa fa-save"></i> 审核</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_Storage_Transfer_ID_search">移转单编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_Storage_Transfer_ID_search" name="Fixture_Storage_Transfer_ID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_query">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_query">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_query">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Applicant_search">申请者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Applicant_search" name="Applicant">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Applicant_Date_search">申请日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Applicant_Date_search" name="Applicant_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Approver_search">审核者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Approver_search" name="Approver">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Approver_Date_search">审核日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Approver_Date_search" name="Approver_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_ID_search">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Part_ID_search" name="Part_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_Name_search">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm " id="s_input_Part_Name_search" name="Part_Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_Spec_search">型号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Part_Spec_search" name="Part_Spec">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_status_search">状态</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_status_search" name="Status_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.FixturePartCreateboundStatus)
+                                        {
+
+                                            <option value=@item.Status_UID>@item.Status</option>
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Out_Fixture_Warehouse_Storage_UID_search">转出储位</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_Out_Fixture_Warehouse_Storage_UID_search" name="Out_Fixture_Warehouse_Storage_UID">
+                                        <optgroup label="仓库_料架_储位">
+                                            <option></option>
+                                   
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_In_Fixture_Warehouse_Storage_UID_search">转入储位</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_In_Fixture_Warehouse_Storage_UID_search" name="In_Fixture_Warehouse_Storage_UID">
+                                        <optgroup label="仓库_料架_储位">
+                                            <option></option>
+                                     
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">导入储位移转作业</h4>
+                </div>
+                @using (Html.BeginForm("ImportStorageTransferExcel", "FixturePart", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#transfer_pre').hide();
+            $('#transfer_next').hide();
+        })
+        $('#js_btn_clear').click(function () {
+            PDMS.Utility.Criteria.Clear();
+            $('#js_search_modal').find('select').val('');
+
+        });
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+        $(function () {
+            var StorageTransferSetting = (function () {
+                var urls = {
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //画面初始化加载
+                    queryStorageTransfers: '@Url.Action("QueryStorageTransfers", "FixturePart")',
+                    //根据厂区，OP，功能厂 获取储位信息
+                    getFixturePartWarehouseStorages: '@Url.Action("GetFixturePartWarehouseStorages", "FixturePart")',
+                    //根据厂区 OP 功能厂获取料号。
+                    getFixturePartDTOList: '@Url.Action("GetFixturePartDTOList", "FixturePart")',                
+                    //根据料号UID获取所有的出库储位。
+                    getWarehouseStorageByFixtureUID: '@Url.Action("GetWarehouseStorageByFixtureUID", "FixturePart")',
+                    //根据主键获取储位移转数据
+                    queryStorageTransferByUid: '@Url.Action("QueryStorageTransferByUid", "FixturePart")',                                       
+                    //根据料号UID和储位UID取得可以出库的材料  的数量 
+                    getMatinventory: '@Url.Action("GetMatinventory", "FixturePart")', 
+                    //删除未审核的储位移转数据
+                    deleteStorageTransfer: '@Url.Action("DeleteStorageTransfer", "FixturePart")',
+                    //导出excel
+                    doExportStorageTransferReprot: '@Url.Action("DoExportStorageTransferReprot", "FixturePart")',
+                    doAllExportStorageTransferReprot: '@Url.Action("DoAllExportStorageTransferReprot", "FixturePart")',
+
+
+                    //根据主键审核储位移转数据                     
+                    approveStorageTransferByUid: '@Url.Action("ApproveStorageTransferByUid", "FixturePart")',
+                
+                  
+                };
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Status == "未审核") {
+                                $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Storage_Transfer_UID + '">')
+                                            .addClass('table-col-checkbox');
+                            } else {
+                                $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item2" value="' + rowData.Fixture_Storage_Transfer_UID + '">')
+                                            .addClass('table-col-checkbox');
+                            }
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-id="' + rowData.Fixture_Storage_Transfer_UID + '">编辑</button>';
+                            var buttonAppr = '<button type="button" class="btn btn-primary btn-xs js-grid-approve"  data-id="' + rowData.Fixture_Storage_Transfer_UID + '">审核</button>';
+                            var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete"   data-id="' + rowData.Fixture_Storage_Transfer_UID + '">删除</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '{1}' +
+                                            '{2}' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-view"  data-id="' + rowData.Fixture_Storage_Transfer_UID + '">查看</button>' +
+                                        '</div>';
+                            if (rowData.Status == "未审核") {
+                                result = result.replace('{0}', buttonEdit);
+                                result = result.replace('{1}', buttonAppr);
+                                if (rowData.Status == "已删除") {
+                                    result = result.replace('{2}', '');
+                                } else {
+                                    result = result.replace('{2}', buttonDelete);
+                                }
+                            } else {
+                                result = result.replace('{0}', '');
+                                result = result.replace('{1}', '');
+                                result = result.replace('{2}', '');
+                            }
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "Fixture_Storage_Transfer_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Status",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Part_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Part_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Part_Spec",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Out_Fixture_Warehouse_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Out_Rack_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Out_Storage_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "In_Fixture_Warehouse_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "In_Rack_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "In_Storage_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Transfer_Qty",
+                        className: "min-col-xs text-right"
+                    }, {
+                        data: "Applicant",
+                        className: "min-col-xs"
+                    }, {   
+                        data: null,
+                    createdCell:
+                function (td, cellData, rowData, row, col) {
+                    $(td).html(new Date(rowData.Applicant_Date).format("yyyy-MM-dd hh:mm:ss"));},
+                className: "min-col-xs"
+
+                    }, {
+                        data: "Approver",
+                        className: "min-col-xs"
+                    }, {
+
+                        data: null,
+                    createdCell:
+                function (td, cellData, rowData, row, col) {
+                    $(td).html(new Date(rowData.Approver_Date).format("yyyy-MM-dd hh:mm:ss"));},
+                className: "min-col-xs"
+                    }];
+
+                //#endregion 定义字段列
+                Date.prototype.format = function(format) {
+                    var date = {
+                        "M+": this.getMonth() + 1,
+                        "d+": this.getDate(),
+                        "h+": this.getHours(),
+                        "m+": this.getMinutes(),
+                        "s+": this.getSeconds(),
+                        "q+": Math.floor((this.getMonth() + 3) / 3),
+                        "S+": this.getMilliseconds()
+                    };
+                    if (/(y+)/i.test(format)) {
+                        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                    }
+                    for (var k in date) {
+                        if (new RegExp("(" + k + ")").test(format)) {
+                            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                                   ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                        }
+                    }
+                    return format;
+                }
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryStorageTransfers = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryStorageTransfers,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('table').find('.js-checkbox-all').prop('checked', false);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryStorageTransfers(true, false);
+                    },
+                    queryStorageTransfers: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryStorageTransfers(false, buildCriteria);
+                    }
+                }
+            })();
+
+            StorageTransferSetting.Init();
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    StorageTransferSetting.queryStorageTransfers(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            ///查询相关---START
+            $('#bt_search').click(function () {
+                debugger;
+                $('#js_select_factory_query').trigger('change');
+            });
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            });
+
+            function GetOPTypes() {
+                debugger;
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = StorageTransferSetting.urls.getCurrentOPType;
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_optype_query').selectpicker('refresh');
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_funplant_query').selectpicker('refresh');
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+                        $('#js_select_optype_query').selectpicker('refresh');
+                    });
+
+                }
+            }
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                var url = StorageTransferSetting.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_funplant_query').selectpicker('refresh');
+
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                if ($('#js_select_optype_query option:selected').text() != "") {
+                    //设置功能厂
+                    $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if(@Model.FunPlantID!=0)
+                            {
+                                if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                {
+                                    $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }
+                        $('#js_select_funplant_query').selectpicker('refresh');
+                    });
+
+                    url= StorageTransferSetting.urls.getFixturePartWarehouseStorages;
+                    var oporgid = $('#js_select_factory_query option:selected').val();
+                    $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                           $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">' +data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                        }
+                        $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                    });
+
+                    $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_In_Fixture_Warehouse_Storage_UID_search').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">' +data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                        }
+                        $('#js_select_In_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                    });
+
+                }
+            });
+
+            $('#js_select_funplant_query').change(function () {
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').html('<optgroup label="仓库_料架_储位"> <option></option> </optgroup>');
+                $('#js_select_In_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                 var   url= StorageTransferSetting.urls.getFixturePartWarehouseStorages;
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                var funtid= $('#js_select_funplant_query option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:funtid}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">' +data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                    }
+                    $('#js_select_Out_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                });
+
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_query option:selected').val(),FunPlant_Organization_UID:funtid}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_In_Fixture_Warehouse_Storage_UID_search').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">' +data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                    }
+                    $('#js_select_In_Fixture_Warehouse_Storage_UID_search').selectpicker('refresh');
+                });
+            });
+
+
+
+
+            //添加按钮
+            $('#js_btn_add').click(function () {
+               
+                $('#js_select_factory_Add').trigger('change');
+            })
+            //添加储位移转时
+            $('#js_select_factory_Add').change(function () {
+                GetOPType();
+            });
+
+            function GetOPType() {
+                debugger;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                url = StorageTransferSetting.urls.getCurrentOPType;
+                $('#js_select_optype_Add').html('<option></option>');
+                $('#js_select_optype_Add').selectpicker('refresh');
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+                $('#js_select_material_uid').html('<option></option>');
+                $('#js_select_material_uid').selectpicker('refresh');
+                $('#js_select_Out_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_select_In_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_edit_modal').find('input[name=Inventory_Qty]').val('');  
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_Add').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+                        $('#js_select_optype_Add').selectpicker('refresh');
+                    });
+
+                }
+            }
+            //OP类型变更  start
+            $('#js_select_optype_Add').change(function () {
+                var url = StorageTransferSetting.urls.getFunPlantByOPTypes;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+                $('#js_select_material_uid').html('<option></option>');
+                $('#js_select_material_uid').selectpicker('refresh');
+                $('#js_select_Out_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_select_In_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_edit_modal').find('input[name=Inventory_Qty]').val('');  
+                if ($('#js_select_optype_Add option:selected').text() != "") {
+                    //设置功能厂
+                    $.post(url, { Optype: $('#js_select_optype_Add').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if(@Model.FunPlantID!=0)
+                            {
+                                if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                {
+                                    $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }
+                        $('#js_select_funplant_Add').selectpicker('refresh');
+                    });
+
+                    //设置料号加载
+                    url=StorageTransferSetting.urls.getFixturePartDTOList;
+                    var oporgid = $('#js_select_factory_Add option:selected').val();
+                    $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_Add option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                        for (var i = 0; i < data.length; i++) {             
+                            $('#js_select_material_uid').append('<option value="' + data[i].Fixture_Part_UID + '">' +data[i].Part_ID+"_"+ data[i].Part_Name+"_"+ data[i].Part_Spec +  '</option>');
+                        }
+                        $('#js_select_material_uid').selectpicker('refresh');
+                    });
+
+                    //设置转入储位
+                    url=StorageTransferSetting.urls.getFixturePartWarehouseStorages;
+                    var oporgid = $('#js_select_factory_Add option:selected').val();
+                    $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_Add option:selected').val(),FunPlant_Organization_UID:0}, function (data) {
+                        for (var i = 0; i < data.length; i++) {             
+                            $('#js_select_In_Warehouse_Storage_UID').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">'+data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                        }
+                        $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+                    });
+                    
+                }      
+            });
+
+            $('#js_select_funplant_Add').change(function () {
+                $('#js_select_material_uid').html('<option></option>');
+                $('#js_select_material_uid').selectpicker('refresh');
+                $('#js_select_Out_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_select_In_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+                //设置料号加载
+                url=StorageTransferSetting.urls.getFixturePartDTOList;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                var funtid = $('#js_select_funplant_Add option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_Add option:selected').val(),FunPlant_Organization_UID:funtid}, function (data) {
+                    for (var i = 0; i < data.length; i++) {             
+                        $('#js_select_material_uid').append('<option value="' + data[i].Fixture_Part_UID + '">' +data[i].Part_ID+"_"+ data[i].Part_Name+"_"+ data[i].Part_Spec +  '</option>');
+                    }
+                    $('#js_select_material_uid').selectpicker('refresh');
+                });
+
+                //设置转入储位
+                url=StorageTransferSetting.urls.getFixturePartWarehouseStorages;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                var funtid = $('#js_select_funplant_Add option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_Add option:selected').val(),FunPlant_Organization_UID:funtid}, function (data) {
+                    for (var i = 0; i < data.length; i++) {             
+                        $('#js_select_In_Warehouse_Storage_UID').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">'+data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                    }
+                    $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+                });
+            });
+            //根据料号获取已有料号的出库储位
+            $('#js_select_material_uid').change(function () { 
+                
+                $('#js_select_Out_Warehouse_Storage_UID').html('<option></option>');
+                $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');
+                $('#js_edit_modal').find('input[name=Inventory_Qty]').val('');    
+                var oporgid = $('#js_select_material_uid option:selected').val();       
+                url=StorageTransferSetting.urls.getWarehouseStorageByFixtureUID;
+                $.post(url, { Fixture_Part_UID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {             
+                        $('#js_select_Out_Warehouse_Storage_UID').append('<option value="' + data[i].Fixture_Warehouse_Storage_UID + '">'+data[i].Fixture_Warehouse_ID+"_"+ data[i].Rack_ID+"_"+ data[i].Storage_ID + '</option>');
+                    }
+                    $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');                
+                });
+
+            });
+            //根据料号获取已有料号的出库储位
+            $('#js_select_Out_Warehouse_Storage_UID').change(function () { 
+                $('#js_edit_modal').find('input[name=Inventory_Qty]').val('');                
+                var url = StorageTransferSetting.urls.getMatinventory;
+                Fixture_Part_UID =  $('#js_select_material_uid option:selected').val();                
+                Fixture_Warehouse_Storage_UID = $('#js_select_Out_Warehouse_Storage_UID option:selected').val();               
+                $.post(url, { Fixture_Part_UID: Fixture_Part_UID, Fixture_Warehouse_Storage_UID: Fixture_Warehouse_Storage_UID }, function (data) {
+                    $('#js_edit_modal').find('input[name=Inventory_Qty]').val(data[0].Inventory_Qty);    
+                });
+
+            });           
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_edit_modal').find('select[name=Plant_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择厂区');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择OP');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Fixture_Part_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择料号');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Out_Fixture_Warehouse_Storage_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择转出储位');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=In_Fixture_Warehouse_Storage_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择转入储位');
+                            return false;
+                        } else {
+                            if ($('#js_edit_modal').find('select[name=Out_Fixture_Warehouse_Storage_UID]').val() == $('#js_edit_modal').find('select[name=In_Fixture_Warehouse_Storage_UID]').val()) {
+                                PDMS.Utility.MessageBox.info('不能转移到相同的储位');
+                                return false;
+                            }
+                            if ($('#js_edit_modal').find('input[name=Transfer_Qty]').val() =="") {
+                                PDMS.Utility.MessageBox.info('转移数量不能为空');
+                                return false;
+                            }
+                            if (Number($('#js_edit_modal').find('input[name=Transfer_Qty]').val()) > Number($('#js_edit_modal').find('input[name=Inventory_Qty]').val())) {
+                                PDMS.Utility.MessageBox.info('转移数量不能大于库存数量');
+                                return false;
+                            }
+                            if (Number($('#js_edit_modal').find('input[name=Transfer_Qty]').val()) < 0) {
+                                PDMS.Utility.MessageBox.info('转移数量不能小于0');
+                                return false;
+                            }
+                        }
+                        
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                            StorageTransferSetting.queryStorageTransfers();
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');                          
+                             PDMS.Utility.MessageBox.info('保存成功');                           
+                             StorageTransferSetting.queryStorageTransfers();
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            $('#js_select_In_Warehouse_Storage_UID,#js_select_Out_Warehouse_Storage_UID,#js_select_material_uid,#js_select_In_Warehouse_Storage_UID_search,' +
+                '#js_select_Out_Warehouse_Storage_UID_search').selectpicker({ 'selectedText': 'cat' });
+
+            //显示审核界面---START
+            function showStorageTransferApprove(Fixture_Storage_Transfer_UID) {
+                var url = StorageTransferSetting.urls.queryStorageTransferByUid;
+                $('#js_approve_modal').find('input[name=Fixture_Storage_Transfer_UID]').val(Fixture_Storage_Transfer_UID);
+                $.post(url, { Fixture_Storage_Transfer_UID: Fixture_Storage_Transfer_UID }, function (data) {
+                    $('#js_approve_modal').find('input[name=Plant]').val(data.Plant);
+                    $('#js_approve_modal').find('input[name=BG_Organization]').val(data.BG_Organization);
+                    $('#js_approve_modal').find('input[name=FunPlant_Organization]').val(data.FunPlant_Organization);                       
+                    $('#js_approve_modal').find('input[name=Part_ID]').val(data.Part_ID);
+                    $('#js_approve_modal').find('input[name=Part_Name]').val(data.Part_Name);
+                    $('#js_approve_modal').find('input[name=Part_Spec]').val(data.Part_Spec);
+                    $('#js_approve_modal').find('input[name=Out_Fixture_Warehouse_ID]').val(data.Out_Fixture_Warehouse_ID);
+                    $('#js_approve_modal').find('input[name=Out_Rack_ID]').val(data.Out_Rack_ID);
+                    $('#js_approve_modal').find('input[name=Out_Storage_ID]').val(data.Out_Storage_ID);
+                    $('#js_approve_modal').find('input[name=In_Fixture_Warehouse_ID]').val(data.In_Fixture_Warehouse_ID);
+                    $('#js_approve_modal').find('input[name=In_Rack_ID]').val(data.In_Rack_ID);
+                    $('#js_approve_modal').find('input[name=In_Storage_ID]').val(data.In_Storage_ID);
+                    $('#js_approve_modal').find('input[name=Transfer_Qty]').val(data.Transfer_Qty);
+                    $('#js_approve_modal').find('input[name=Status]').val(data.Status);
+                    $('#js_approve_modal').find('input[name=Inventory_Qty]').val(data.Inventory_Qty);
+                    if (data.Status == "未审核") {
+                        $('#btn_approve_save').removeAttr('disabled');
+                    } else {
+                        $('#btn_approve_save').attr('disabled', 'disabled');
+                    }
+                });
+            }
+            //显示审核界面-----END
+
+            //批量审核 ----START
+            $('#btn_approves').click(function () {
+                $('#NeedShow').val('1');
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('请先选择未审核的数据');
+                } else {
+                    $('#transfer_pre').show();
+                    $('#transfer_next').show();
+                    var Fixture_Storage_Transfer_UID = $('#js_Bom_datatable').find('.js-checkbox-item:checked:eq(0)').val();
+                    $('#js_approve_modal').find('input[name=Fixture_Storage_Transfer_UID]').val(Fixture_Storage_Transfer_UID);
+                    showStorageTransferApprove(Fixture_Storage_Transfer_UID);
+                    $('#js_approve_modal').modal('show');
+                    $('#currentID').val(0);
+
+                    $('#js_approve_modal h4').text('储位移转单审核');
+                    $('#btn_approve_save').show();
+                    $('#transfer_pre').attr('disabled', 'disabled');
+                    var Total = $('#js_Bom_datatable').find('.js-checkbox-item:checked').length;
+                    if (Total == 1)
+                        $('#transfer_next').attr('disabled', 'disabled');
+                    else
+                        $('#transfer_next').removeAttr('disabled');
+                }
+            })
+            //批量审核 -----END
+
+            //审核上一笔----START
+            $('#transfer_pre').click(function () {
+                $('#transfer_next').removeAttr('disabled', 'disabled');
+                var currentID = $('#currentID').val();
+                $('#currentID').val(parseInt(currentID) - 1);
+                if (parseInt(currentID) - 1 == 0)
+                    $('#transfer_pre').attr('disabled', 'disabled');
+                var currentID = $('#currentID').val();
+                var Fixture_Storage_Transfer_UID = $('#js_Bom_datatable').find('.js-checkbox-item:checked:eq(' + currentID + ')').val();
+                showStorageTransferApprove(Fixture_Storage_Transfer_UID);
+            })
+            //审核上一笔------END
+
+            //审核下一笔----START
+            $('#transfer_next').click(function () {
+                $('#transfer_pre').removeAttr('disabled', 'disabled');
+                var currentID = $('#currentID').val();
+                $('#currentID').val(parseInt(currentID) + 1);
+                var Total = $('#js_Bom_datatable').find('.js-checkbox-item:checked').length;
+                if (parseInt(currentID) + 2 == parseInt(Total)) {
+                    $('#transfer_next').attr('disabled', 'disabled');
+                }
+                var currentID = $('#currentID').val();
+                var Fixture_Storage_Transfer_UID = $('#js_Bom_datatable').find('.js-checkbox-item:checked:eq(' + currentID + ')').val();
+                showStorageTransferApprove(Fixture_Storage_Transfer_UID);
+            })
+            //审核下一笔------END
+
+            //审核返回----START
+            $('#transfer_close').click(function () {
+                var currentID = $('#js_Bom_datatable').find('.js-checkbox-item:checked').length;
+                $('#currentID').val(currentID);
+                $('#js_approve_modal').modal('hide');
+            })
+            //审核返回------END
+
+            //审核保存---START
+            $('#btn_approve_save').click(function () {
+                var Fixture_Storage_Transfer_UID = $('#js_approve_modal').find('input[name=Fixture_Storage_Transfer_UID]').val();
+                //做一个审核的判断
+                if (Number($('#js_approve_modal').find('input[name=Transfer_Qty]').val()) < Number($('#js_edit_modal').find('input[name=Inventory_Qty]').val())) {
+                    PDMS.Utility.MessageBox.info('转移数量不能大于库存数量');
+                    return false;
+                }
+                url = StorageTransferSetting.urls.approveStorageTransferByUid;
+                $.post(url, { Fixture_Storage_Transfer_UID: Fixture_Storage_Transfer_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info('审核成功');
+                        $('#js_approve_modal').find('input[name=Status]').val('已审核');
+                        $('#js_approve_modal #btn_approve_save').attr('disabled', 'disabled');
+                    }
+                })
+            })
+            //审核保存-----END
+
+            //审核界面隐藏---START
+            $('#js_approve_modal').on('hidden.bs.modal', function (e) {
+                $('#transfer_pre').hide();
+                $('#transfer_next').hide();
+                StorageTransferSetting.queryStorageTransfers();
+            })
+            //审核界面隐藏-----END
+
+            //编辑---START
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+                $('#js_edit_modal h4').text('盘点单编辑');
+                var Fixture_Storage_Transfer_UID = $(this).attr('data-id'),
+                    url = StorageTransferSetting.urls.queryStorageTransferByUid;
+                $('#js_edit_modal').find('input[name=Fixture_Storage_Transfer_UID]').val(Fixture_Storage_Transfer_UID);
+                $.post(url, { Fixture_Storage_Transfer_UID: Fixture_Storage_Transfer_UID }, function (data) {
+                    
+                    $('#js_select_factory_Add').selectpicker('val', data.Plant_Organization_UID);
+                    $("#js_select_factory_Add").trigger("liszt:updated");
+                    if(data.Plant_Organization_UID!=0)
+                    {
+                        $('#js_select_factory_Add').trigger('change');
+                    }
+                    $('#js_select_optype_Add').selectpicker('val', data.BG_Organization_UID);
+                    $("#js_select_optype_Add").trigger("liszt:updated");
+                    if(data.BG_Organization_UID!=0)
+                    {
+                        $('#js_select_optype_Add').trigger('change');
+                    }
+                    $('#js_select_funplant_Add').selectpicker('val', data.FunPlant_Organization_UID);
+                    $("#js_select_funplant_Add").trigger("liszt:updated");
+                    debugger;
+                    if(data.FunPlant_Organization!=null&&data.FunPlant_Organization_UID!=0)
+                    {
+                      //  $('#js_select_funplant_Add').trigger('change');
+                    }
+
+                    $('#js_select_material_uid').selectpicker('val', data.Fixture_Part_UID);
+                    $("#js_select_material_uid").trigger("liszt:updated");
+                    if(data.Fixture_Part_UID!=0)
+                    {
+                        $('#js_select_material_uid').trigger('change');
+                    }
+
+                    $('#js_select_Out_Warehouse_Storage_UID').selectpicker('val', data.Out_Fixture_Warehouse_Storage_UID);
+                    $("#js_select_Out_Warehouse_Storage_UID").trigger("liszt:updated");
+                    if(data.Out_Fixture_Warehouse_Storage_UID!=0)
+                    {
+                        $('#js_select_Out_Warehouse_Storage_UID').trigger('change');
+                    }
+                    $('#js_select_In_Warehouse_Storage_UID').selectpicker('val', data.In_Fixture_Warehouse_Storage_UID);
+                    $("#js_select_In_Warehouse_Storage_UID").trigger("liszt:updated");
+                   
+                    $('#js_edit_modal').find('input[name=Transfer_Qty]').val(data.Transfer_Qty);
+                });
+            });
+            //编辑----END
+
+            //查看--start
+            $('body').on('click', '.js-grid-view', function () {
+                $('#btn_approve_save').hide();
+                var Fixture_Storage_Transfer_UID = $(this).attr('data-id');
+                $('#js_approve_modal h4').text('储位移转单查看');
+                $('#js_approve_modal').find('input[name=Fixture_Storage_Transfer_UID]').val(Fixture_Storage_Transfer_UID);
+                showStorageTransferApprove(Fixture_Storage_Transfer_UID);
+                $('#js_approve_modal').modal('show');
+            });
+            //查看--end
+
+            //删除---START
+            $('body').on('click', '.js-grid-delete', function () {
+                var Fixture_Storage_Transfer_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var url = StorageTransferSetting.urls.deleteStorageTransfer;
+                    $.post(url, { Fixture_Storage_Transfer_UID: Fixture_Storage_Transfer_UID }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            StorageTransferSetting.queryStorageTransfers();
+                        }
+                    });
+                });
+            });
+            //删除----END
+
+            //审核--start
+            $('body').on('click', '.js-grid-approve', function () {
+                $('#btn_approve_save').show();
+                $('#js_approve_modal h4').text('储位移转单审核');
+                $('#transfer_pre').attr('disabled', 'disabled');
+                $('#transfer_next').attr('disabled', 'disabled');
+                var Fixture_Storage_Transfer_UID = $(this).attr('data-id');
+                $('#js_approve_modal').find('input[name=Fixture_Storage_Transfer_UID]').val(Fixture_Storage_Transfer_UID);
+                showStorageTransferApprove(Fixture_Storage_Transfer_UID);
+                $('#js_approve_modal').modal('show');
+            });
+            //审核--end
+
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('#js_edit_modal h4').text('盘点单申请');
+                $('#js_select_check_type_uid').val('');
+                $('#js_select_In_Warehouse_Storage_UID').html('<optgroup label="仓库_料架_储位"><option></option></optgroup>');
+                $('#js_select_In_Warehouse_Storage_UID').selectpicker('refresh');
+
+                $('#js_select_material_uid').html('<optgroup label="料号_品名_型号"><option></option></optgroup>');
+                $('#js_select_material_uid').selectpicker('refresh');
+
+                $('#js_select_Out_Warehouse_Storage_UID').html('<optgroup label="仓库_料架_储位"><option></option></optgroup>');
+                $('#js_select_Out_Warehouse_Storage_UID').selectpicker('refresh');
+
+                $('.list-group.validate-error').empty();
+            });
+            //导出按钮
+            $('#js_btn_export').click(function () {
+
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var $selectList2 = $('#js_Bom_datatable').find('.js-checkbox-item2:checked');
+                var len = $selectList.length;
+                var len2 = $selectList2.length;
+                if (len == 0 && len2 == 0) {
+                    //全部导出
+                    var url = StorageTransferSetting.urls.doAllExportStorageTransferReprot;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var uids2 = $.map($selectList2, function (row) {
+                        return row.value;
+                    });
+                    debugger;
+                    if (uids != null) {
+                        uids += "," + uids2
+                    }
+
+                    $('table').find('.js-checkbox-all,.js-checkbox-item,.js-checkbox-item2').prop('checked', false);
+
+                    var url = StorageTransferSetting.urls.doExportStorageTransferReprot;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //#region 下载Excel模板
+            $('#btn_download_fl').on('click', function () {
+                var url = '@Html.Raw(Url.Action("DownloadStorageTransferExcel", "FixturePart"))';
+                this.form.action = url;
+                $('#js_form_excel_download').submit();
+            });
+
+            $('#btn_excel_upload').on('click', function () {
+                $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+                $('#js_form_excel_upload').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('上传成功');
+                            StorageTransferSetting.queryStorageTransfers();                           
+                        }
+                    }
+                });
+            });
+
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+
+        })
+    </script>
+}

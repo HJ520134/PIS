@@ -1,0 +1,1149 @@
+﻿<!-- Main content -->
+
+@{
+
+    ViewBag.Naturalnumber = T("QA.Naturalnumber").Text;
+    ViewBag.NGnotsubmit = T("QA.NGnotsubmit").Text;
+    ViewBag.Pleaseproduction = T("QA.Pleaseproduction").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+    ViewBag.Cannotempty = T("QA.Cannotempty").Text;
+}
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+</style>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-2" id="js_save_status_div">
+                <h4 class="margin-td-5" id="js_save_status"></h4>
+            </div>
+            <div class="col-md-12 col-lg-10"></div>
+        </div>
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5">
+                <small>
+                    <strong>Criteria: </strong>
+                    <label>@T("QA.OPType"):</label><label id="js_OPtype">@ViewBag.OPType</label>&
+                    <label>@T("QA.Date"):</label><label id="js_datetime">@ViewBag.date</label>&
+                    <label>@T("QA.Timeperiod"):</label><label id="js_time_interval">@T("QA.Allday")</label>&
+                    <label>@T("QA.Project"):</label><label id="js_project">@ViewBag.project</label>&
+                    <label>@T("QA.Part"):</label><label id="js_PartType" name="PartType">@ViewBag.PartType</label>&
+                    <label>@T("QA.Checkpoint"):</label><label id="js_process">@ViewBag.process</label>&
+                    <label>@T("QA.Materialtypes"):</label><label id="js_meterialType">@ViewBag.materialType</label>&
+                    <label>@T("QA.Functionfactory"):</label><label id="js_Funplant">@ViewBag.Funplant</label>&
+                    <label>@T("QA.Colour"):</label><label id="js_color">@ViewBag.color</label>
+                    <input type="hidden" id="js_FlowChart_Master_UID" value=@ViewBag.FlowChart_Master_UID />
+                </small>
+            </h4>
+        </div> <!-- /col-次標題與Search keyword -->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> @T("QA.Search")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <form id="js_form_org_query" class="form-horizontal clearfix">
+            <br /><br />
+
+            <label class="hidden col-xs-12 col-md-6" id="js_s_input_OQCMasterUID"></label>
+            <label class="hidden col-xs-12 col-md-6" id="js_s_input_Project_UID"></label>
+            <label class="hidden col-xs-12 col-md-6" id="ModifyFlag"></label>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input">@T("QA.Numberinputs")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="input" class="form-control input-sm" id="js_s_input_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numberinputs")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_goodQty">@T("QA.Goodnumber")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="GoodQty" class="form-control input-sm" id="js_s_input_goodQty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Goodnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_NGParts_Qty">@T("QA.Badnumber")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="NGParts_Qty" class="form-control input-sm" id="js_s_input_NGParts_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Badnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input_Rework">@T("QA.Numberrework")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="Rework" class="form-control input-sm" id="js_s_input_Rework" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" @*placeholder="@T("QA.Productionrepair")"*@>
+                </div>
+            </div>
+            <br /><br />
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_ReworkQtyFromOQC">@T("QA.ReworkOK")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ReworkQtyFromOQC" class="form-control input-sm" id="js_s_input_ReworkQtyFromOQC" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input_ProductLineRework">@T("QA.ReworkBack")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ProductLineRework" class="form-control input-sm" id="js_s_input_ProductLineRework" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" @*placeholder="@T("QA.Backassembly")"*@>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_ReworkQtyFromAssemble">@T("QA.ReworkForward")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ReworkQtyFromAssemble" class="form-control input-sm" id="js_s_input_ReworkQtyFromAssemble" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="返前制程">
+                </div>
+            </div>
+
+
+
+
+
+            @*<div class="col-md-3"  style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_Storage_Qty">@T("QA.Numberwarehouses")</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="Storage_Qty" class="form-control input-sm" id="js_s_input_Storage_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numberwarehouses")">
+                    </div>
+                </div>
+
+                <div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_WaitStorage_Qty">@T("QA.Numbertorage")</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="WaitStorage_Qty" class="form-control input-sm" id="js_s_input_WaitStorage_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numbertorage")">
+                    </div>
+                </div>*@
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_WIP">@T("QA.WIPCrude")</label>
+                <div class="col-sm-7">
+                    <input type="text" @*disabled="disabled"*@ name="WIP" class="form-control input-sm" id="js_s_WIP" />
+                </div>
+            </div>
+
+
+            <br /><br />
+
+            @*<div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_NG_Yield">@T("QA.NGdefectrate")</label>
+                    <div class="col-sm-7">
+                        <input type="text" disabled="disabled" name="NG_Yield" class="form-control input-sm" id="js_s_NG_Yield" />
+                    </div>
+                </div>*@
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_NG_Qty">@T("QA.NGNumberdefects")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="NG_Qty" disabled="disabled" class="form-control input-sm" id="js_s_input_NG_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.NGNumberdefects")">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_RepairNG_Qty">@T("QA.Numberofdefects")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="RepairNG_Qty" class="form-control input-sm" id="js_s_RepairNG_Qty" />
+                </div>
+            </div>
+
+            @*<div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_RepairNG_Yield">@T("QA.Defectrate")</label>
+                    <div class="col-sm-7">
+                        <input type="text" disabled="disabled" name="RepairNG_Yield" class="form-control input-sm" id="js_s_RepairNG_Yield" />
+                    </div>
+                </div>
+
+                <br /><br />*@
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_FirstYieldRate">@T("QA.Ayield")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="FirstYieldRate" class="form-control input-sm" id="js_s_FirstYieldRate" />
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_SecondYieldRate">@T("QA.Secondaryyield")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="SecondYieldRate" class="form-control input-sm" id="js_s_SecondYieldRate" />
+                </div>
+            </div>
+
+
+
+            <br /><br />
+
+        </form>
+
+    </div>
+
+    <div class=" col-md-12 col-lg-9">
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button class="btn btn-primary" id="btn-RadioNGDetail" disabled="disabled">@T("QA.Baddetail")</button>
+            <button class="btn btn-primary" id="btn-RadioReworkDetail">@T("QA.Repairdetails")</button>
+        </div>
+    </div>
+
+    <div class="col-md-12  search-field  col-lg-3">
+        <button id="btn-return_top" type="button" class="btn btn-primary ReturnButtonClick">@T("QA.Return")</button>
+    </div>
+
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_NGDetail">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_NGDetail_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Type")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Exceptionname")</th>
+                        <th>@T("QA.Quantity")</th>
+                        <th>@T("QA.Defectrateallday")</th>
+                        <th>@T("QA.Defectratedayshift")</th>
+                        <th>@T("QA.Defectratenightshift")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="NGDetail_page" class="row" hidden="hidden"> </div>
+        </div><!--/表格-->
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_reworkDetail">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_reworkDetail_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Type")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Exceptionname")</th>
+                        <th>@T("QA.Quantity")</th>
+                        <th>@T("QA.Defectrateallday")</th>
+                        <th>@T("QA.Defectratedayshift")</th>
+                        <th>@T("QA.Defectratenightshift")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="reworkDetail_page" class="row" hidden="hidden"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+    <div class=" col-md-12 col-lg-9">
+        <label id="is_from" hidden="hidden">@ViewBag.From</label>
+        <label id="is_process_seq" hidden="hidden"></label>
+    </div>
+
+    <div class="col-md-12 search-field col-lg-3" id="modifySubmitButton" hidden="hidden">
+        <button id="btn-return_top" type="button" class="btn btn-primary ReturnButtonClick">@T("QA.Return")</button>
+        <button id="btn-submit-inner" type="button" class="btn btn-primary ">@T("QA.Submit")</button>
+    </div>
+
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <input type="hidden" id="js_search_FlowChart_Detail_UID" name="FlowChart_Detail_UID" value="@ViewBag.Flowchart_Detail_UID" />
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Plant" name="Plant"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_OPType">@T("QA.OPType")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_OPType" name="OPType">
+                                        <option value=@ViewBag.OPType selected="selected">@ViewBag.OPType</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project_UID">
+                                        <option value=@ViewBag.project selected="selected">@ViewBag.project</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_Type">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_Part_Type" name="FlowChart_Master_UID">
+                                        <option value=@ViewBag.FlowChart_Master_UID selected="selected">@ViewBag.FlowChart_Master_UIDt</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant">
+                                        <option value=@ViewBag.Funplant selected="selected">@ViewBag.Funplant</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="ProductDate" value=@ViewBag.date class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Checkpoint")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_process" name="Flowchart_Detail_UID">
+                                        <option value=@ViewBag.Flowchart_Detail_UID selected="selected">@ViewBag.process</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtypes")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType">
+                                        <option value=@ViewBag.materialType selected="selected">@ViewBag.materialType</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color">
+                                        <option value=@ViewBag.color selected="selected">@ViewBag.color</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            @*日报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_interval">
+                                        <option value="ALL" selected="selected">全天</option>
+                                        <option value="Daily_Sum">白班小计</option>
+                                        <option value="Night_Sum">夜班小计</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" class="btn btn-primary btn-query">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Inquire")
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/QAReportJS/ClickEvent.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var reworkDetailDatatable = null;
+            var NGDetailDatatable = null;
+            //#endregion
+            var QAMasterUrls = {
+                QueryOQCNGDetails: '@Url.Action("QueryOQCNGRecord", "OQCQuality")',
+                QueryOQCReworkDetails: '@Url.Action("QueryOQCReworkRecord", "OQCQuality")',
+                QueryOQCRecordData: '@Url.Action("QueryOQCRecordData", "OQCQuality")',
+                SaveOQCData: '@Url.Action("SaveOQCData", "OQCQuality")',
+                ReturnToHome: '@Url.Action("Index", "Home")',
+                ReturnToReport: '@Url.Action("OQCReportFromOQCHistoryBack", "OQCQuality")'
+            };
+
+            $("#js_s_input_FunPlant").change(function ff() {
+                GetProcess();
+            });
+            $("#js_s_input_date").change(function ff() {
+                GetProcess();
+            });
+            function GetFunPlant()
+            {
+                $("#js_s_input_FunPlant").empty();
+                $("<option></option>").val("OQC").text("OQC").appendTo($("#js_s_input_FunPlant"));
+                $("<option></option>").val("Assemble").text("Assemble").appendTo($("#js_s_input_FunPlant"));
+
+            }
+            //#endregion
+            var NGDetail = (function () {
+                var columns = [
+                {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                },
+                {
+                    data: "TypeClassify",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                }, {
+                    data: "ExcetionTypeName",
+                    className: "min-col-xs"
+                },  {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+
+                        $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled"   name="Qty"  value="' + rowData.Qty + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">');
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "DayDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "SunDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "NightDefectRate",
+                    className: "min-col-xs"
+                }
+                ];
+                var _queryQueryOQCNGDetails = function (firstLoad) {
+                    var config = {
+                        pageId: "#NGDetail_page",
+                        tableId: "#js_NGDetail_datatable",
+                        remoteUrl: QAMasterUrls.QueryOQCNGDetails,
+                        searchParams: getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#NGDetail_page').page('destroy');
+                        //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryQueryOQCNGDetails(true);
+                    },
+                    QueryQAMasterDatas: function() {
+                        _queryQueryOQCNGDetails(false);
+                    },
+                    GetNGDetailDatatable: function () {
+
+                            NGDetailDatatable = $('#js_NGDetail_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        return NGDetailDatatable;
+                    }
+                }
+            })();
+            var reworkDetail = (function () {
+                //#region columns
+                var columns = [
+                {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                },  {
+                    data: "TypeClassify",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                }, {
+                    data: "ExcetionTypeName",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled"     name="Qty"  value="' + rowData.Qty + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                    '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">');
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "DayDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "SunDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "NightDefectRate",
+                    className: "min-col-xs"
+                }
+                ];
+                //#region _queryQAMasterData
+                var _queryQueryOQCReworkDetails = function (firstLoad) {
+                    var config = {
+                        pageId: "#reworkDetail_page",
+                        tableId: "#js_reworkDetail_datatable",
+                        remoteUrl: QAMasterUrls.QueryOQCReworkDetails,
+                        searchParams: getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#reworkDetail_page').page('destroy');
+                        //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryQueryOQCReworkDetails(true);
+                    },
+                    QueryQAMasterDatas: function () {
+                        _queryQueryOQCReworkDetails(false);
+                    },
+                    GetreworkDetailDatatable: function () {
+                            reworkDetailDatatable = $('#js_reworkDetail_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        return reworkDetailDatatable;
+                    }
+                }
+            })();
+            function SetCanModify() {
+                //设置明细表 可编辑
+                var reworkDetailDatatable = reworkDetail.GetreworkDetailDatatable();
+                var NGDetailDatatable = NGDetail.GetNGDetailDatatable();
+                reworkDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var row = $('#js_reworkDetail_datatable>tbody>tr').eq(rowIdx);
+                    row.find('input[name=Qty]').removeAttr("disabled");
+                });
+                NGDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var row = $('#js_NGDetail_datatable>tbody>tr').eq(rowIdx);
+                    row.find('input[name=Qty]').removeAttr("disabled");
+                });
+                $("#modifySubmitButton").removeAttr("hidden");
+            }
+            function getDatePart(s1)
+            {
+                s1 = new Date(s1.replace(/-/g, "/"));
+                s2 = new Date();
+                var days = s2.getTime() - s1.getTime();
+                var time = Math.abs(parseInt(days / (1000 * 60 * 60 * 24)));
+                return time;
+            }
+            function Initial() {
+                if ($("#js_s_input_interval_time").val() == null || $("#js_s_input_interval_time").val()=="")
+                {
+                    $("#js_s_input_interval_time").val("全天");
+                }
+                var submitJson = getParams();
+                var Color = $('#js_s_input_color option:selected').text();
+                //if (Color == 'selected="selected"')
+                //{
+                //    return;
+                //}
+                $.post(QAMasterUrls.QueryOQCRecordData, { jsonWithData: JSON.stringify(submitJson) }, function (data) {
+                    if (data != "") {
+                        $('#js_s_input_Project_UID').val(data.Project_UID);
+                        $('#js_s_input_Qty').val(data.Input);
+                        $('#js_s_input_OQCMasterUID').val(data.OQCMater_UID);
+                        if (data.GoodParts_Qty != null) {
+                            $('#js_s_input_goodQty').val(data.GoodParts_Qty);
+                        }
+                        else $('#js_s_input_goodQty').val(0);
+                        if (data.NGParts_Qty != null) {
+                            $('#js_s_input_NGParts_Qty').val(data.NGParts_Qty);
+                        }
+                        else $('#js_s_input_NGParts_Qty').val(0);
+                        if (data.ReworkQtyFromAssemble != null) {
+                            $('#js_s_input_ReworkQtyFromAssemble').val(data.ReworkQtyFromAssemble);
+                        }
+                        else $('#js_s_input_ReworkQtyFromAssemble').val(0);
+                        if (data.Rework != null) {
+                            $('#js_s_input_Rework').val(data.Rework);
+                        }
+                        else $('#js_s_input_Rework').val(0);
+                        if (data.ReworkQtyFromOQC != null) {
+                            $('#js_s_input_ReworkQtyFromOQC').val(data.ReworkQtyFromOQC);
+                         }
+                        else $('#js_s_input_ReworkQtyFromOQC').val(0);
+                        if (data.ProductLineRework != null) {
+                            $('#js_s_input_ProductLineRework').val(data.ProductLineRework);
+                        }
+                        else $('#js_s_input_ProductLineRework').val(0);
+                        if (data.Storage_Qty != null) {
+                            $('#js_s_input_Storage_Qty').val(data.Storage_Qty);
+                        }
+                        else $('#js_s_input_Storage_Qty').val(0);
+                        if (data.WaitStorage_Qty != null) {
+                            $('#js_s_input_WaitStorage_Qty').val(data.WaitStorage_Qty);
+                        }
+                        else $('#js_s_input_WaitStorage_Qty').val(0);
+
+                        if (data.NG_Qty != null) {
+                            $('#js_s_input_NG_Qty').val(data.NG_Qty);
+                        }
+                        else $('#js_s_input_NG_Qty').val(0);
+                        if (data.SecondYieldRate != null) {
+                            $('#js_s_SecondYieldRate').val(data.SecondYieldRate);
+                        }
+                        else $('#js_s_SecondYieldRate').val(0);
+                        if (data.WIP != null) {
+                            $('#js_s_WIP').val(data.WIP);
+                        }
+                        else $('#js_s_WIP').val(0);
+                        if (data.FirstYieldRate != null) {
+                            $('#js_s_FirstYieldRate').val(data.FirstYieldRate);
+                        }
+                        else $('#js_s_FirstYieldRate').val(0);
+                        if (data.RepairNG_Yield != null) {
+                            $('#js_s_RepairNG_Yield').val(data.RepairNG_Yield);
+                        }
+                        else $('#js_s_RepairNG_Yield').val(0);
+                        if (data.RepairNG_Qty != null) {
+                            $('#js_s_RepairNG_Qty').val(data.RepairNG_Qty);
+                        }
+                        else $('#js_s_RepairNG_Qty').val(0);
+                        if (data.NG_Yield != null) {
+                            $('#js_s_NG_Yield').val(data.NG_Yield);
+                        }
+                        else $('#js_s_NG_Yield').val(0);
+                    }
+                });
+                NGDetail.QueryQAMasterDatas();
+                reworkDetail.QueryQAMasterDatas();
+                HiddenTableIntial();
+            if ($("#js_s_input_interval_time").val() != "全天" || $("#js_s_input_interval_time").val() != "白班小计" || $("#js_s_input_interval_time").val() != "晚班小计") {
+                    var searchDate = $("#js_s_input_date").val();
+                    if (getDatePart(searchDate) < 2) {
+                        SetCanModify();
+                    }
+                }
+            }
+            Initial();
+            function getParams()
+            {
+                var Time_interval = $("#js_time_interval").text();
+                var Color = $('#js_s_input_color option:selected').text();
+                if (Color == 'selected="selected"')
+                {
+                    Color='';
+                }
+                var Reference_Date = $("#js_s_input_date").val();
+                var MaterialType = $("#js_s_input_MaterialType").val();
+                var Flowchart_Detail_UID = $("#js_s_input_process").val();
+                var Project = $('#js_s_input_project').find("option:selected").text();
+                var Tab_Select_Text = $('#js_tab_select_text').val();
+                var Flowchart_Master_UID = $('#js_s_input_Part_Type').val();
+                var result = {};
+                result["FlowChart_Master_UID"] = Flowchart_Master_UID;
+                result["Tab_Select_Text"] = Tab_Select_Text;
+                result["Color"] = Color;
+                result["Flowchart_Detail_UID"] = Flowchart_Detail_UID;
+                result["Time_interval"] = Time_interval;
+                result["MaterialType"] = MaterialType;
+                result["ProductDate"] = Reference_Date;
+                if (Color == 'selected="selected"')
+                {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+                return result;
+            }
+            //保存资料按钮
+            $('#btn-submit-inner').click('click', function () {
+                var OQCData = {};
+                var MasterData = {};
+                var DetailsData = [];
+                var OQCMasterUID = $('#js_s_input_OQCMasterUID').val();
+                if (OQCMasterUID == null || OQCMasterUID == "") {
+                    OQCMasterUID = 0;
+                }
+                var flag = true;
+                // 首先检查用户输入的数字是否为 自然数
+                function checkRate(input) {
+                    if (!flag)
+                    { return; }
+                    var re = /^(-|\+)?\d+$/;
+                    if (!re.test(input)) {
+                        PDMS.Utility.MessageBox.error("@ViewBag.Naturalnumber");
+                        flag = false;
+                    }
+                }
+                //#region 主表数据
+                var sub = {};
+                if ($.trim($('#js_s_input_goodQty').val()) == "") {
+                    var goodQty = 0;
+                }
+                else {
+                    var goodQty = $.trim($('#js_s_input_goodQty').val());
+                    checkRate(goodQty);
+                }
+                if ($.trim($('#js_s_input_NGParts_Qty').val()) == "") {
+                    var NgPartsQty = 0;
+                }
+                else {
+                    var NgPartsQty = $.trim($('#js_s_input_NGParts_Qty').val());
+                    checkRate(NgPartsQty);
+                }
+                if ($.trim($('#js_s_input_ReworkQtyFromAssemble').val()) == "") {
+                    var ReworkQtyFromAssemble = 0;
+                }
+                else {
+                    var ReworkQtyFromAssemble = $.trim($('#js_s_input_ReworkQtyFromAssemble').val());
+                    checkRate(ReworkQtyFromAssemble);
+                }
+                if ($.trim($('#js_s_input_Rework').val()) == "") {
+                    var Rework = 0;
+                }
+                else {
+                    var Rework = $.trim($('#js_s_input_Rework').val());
+                    checkRate(Rework);
+                }
+                if ($.trim($('#js_s_input_ProductLineRework').val()) == "") {
+                    var ProductLineRework = 0;
+                }
+                else {
+                    var ProductLineRework = $.trim($('#js_s_input_ProductLineRework').val());
+                    checkRate(ProductLineRework);
+                }
+                if ($.trim($('#js_s_input_Storage_Qty').val()) == "") {
+                    var Storage_Qty = 0;
+                }
+                else {
+                    var Storage_Qty = $.trim($('#js_s_input_Storage_Qty').val());
+                    checkRate(Storage_Qty);
+                }
+                if ($.trim($('#js_s_input_WaitStorage_Qty').val()) == "") {
+                    var WaitStorage_Qty = 0;
+                }
+                else {
+                    var WaitStorage_Qty = $.trim($('#js_s_input_WaitStorage_Qty').val());
+                    checkRate(WaitStorage_Qty);
+                }
+                if ($.trim($('#js_s_input_Qty').val()) == "") {
+                    var Input = 0;
+                }
+                else {
+                    var Input = $.trim($('#js_s_input_Qty').val());
+                    checkRate(Input);
+                }
+                if ($.trim($('#js_s_input_NG_Qty').val()) == "") {
+                    var NG_Qty = 0;
+                }
+                else {
+                    var NG_Qty = $.trim($('#js_s_input_NG_Qty').val());
+                    checkRate(NG_Qty);
+                }
+                if ($.trim($('#js_s_input_ReworkQtyFromOQC').val()) == "") {
+                    var ReworkQtyFromOQC = 0;
+                }
+                else {
+                    var ReworkQtyFromOQC = $.trim($('#js_s_input_ReworkQtyFromOQC').val());
+                    checkRate(ReworkQtyFromOQC);
+                }
+                if ($.trim($('#js_s_WIP').val()) == "") {
+                    var WIP = 0;
+                }
+                else {
+                    var WIP = $.trim($('#js_s_WIP').val());
+                    checkRate(WIP);
+                }
+                sub["ReworkQtyFromOQC"] = ReworkQtyFromOQC;
+                sub["GoodParts_Qty"] = goodQty;
+                sub["NGParts_Qty"] = NgPartsQty;
+                sub["ReworkQtyFromAssemble"] = ReworkQtyFromAssemble;
+                sub["Rework"] = Rework;
+                sub["ProductLineRework"] = ProductLineRework;
+                sub["Storage_Qty"] = Storage_Qty;
+                sub["WaitStorage_Qty"] = WaitStorage_Qty;
+                sub["Input"] = Input;
+                sub["OQCMater_UID"] = OQCMasterUID;
+                sub["Project_UID"] = $('#js_s_input_Project_UID').val();
+                sub["NG_Qty"] = NG_Qty;
+                sub["FlowChart_Detail_UID"] = $('#js_search_FlowChart_Detail_UID').val();
+                sub["Color"] = $('#js_s_input_plant_Color').val();
+                sub["MaterialType"] = $('#js_s_input_plant_MaterialType').val();
+                sub["ProductDate"] = $('#js_s_input_date').val();
+                sub["Time_interval"] = $("#js_time_interval").text();
+                if ($("#js_time_interval").text() == "全天" || $("#js_time_interval").text() == "白班小计" || $("#js_time_interval").text() == "夜班小计")
+                {
+                    PDMS.Utility.MessageBox.error("汇总数据不可以修改。");
+                    flag = false;
+                }
+                sub["WIP"] = WIP;
+                MasterData = sub;
+                //#endregion
+                //#region 明细表录入
+                var sumNG=0;
+                var reworkDetailDatatable = reworkDetail.GetreworkDetailDatatable();
+                var NGDetailDatatable = NGDetail.GetNGDetailDatatable();
+                reworkDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var details = {};
+                    var row = $('#js_reworkDetail_datatable>tbody>tr').eq(rowIdx);
+                    if ($.trim(row.find('input[name=Qty]').val()) == "") {
+                        var Qty = 0;
+                    }
+                    else {
+                        var Qty = $.trim(row.find('input[name=Qty]').val());
+                        checkRate(Qty);
+                    }
+                    var ExceptionType_UID = $.trim(row.find('input[name=ExceptionType_UID]').val());
+                    var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                    var TypeClassify = $.trim(row.find('input[name=TypeClassify]').val());
+                    var OQCDetail_UID = $.trim(row.find('input[name=OQCDetail_UID]').val());
+                    if (Qty != 0 || OQCDetail_UID != 0) {
+                        details["OQCMater_UID"] = OQCMasterUID;
+                        details["TypeClassify"] = TypeClassify;
+                        details["FunPlant"] = FunPlant;
+                        details["ExceptionType_UID"] = ExceptionType_UID;
+                        details["Qty"] = Qty;
+                        details["OQCDetail_UID"] = OQCDetail_UID;
+                        DetailsData.push(details);
+                        sumNG += parseInt(Qty);
+                    }
+                });
+                NGDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var details = {};
+                    var row = $('#js_NGDetail_datatable>tbody>tr').eq(rowIdx);
+                    if ($.trim(row.find('input[name=Qty]').val()) == "") {
+                        var Qty = 0;
+                    }
+                    else {
+                        var Qty = $.trim(row.find('input[name=Qty]').val());
+                        checkRate(Qty);
+                    }
+                    var ExceptionType_UID = $.trim(row.find('input[name=ExceptionType_UID]').val());
+                    var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                    var TypeClassify = $.trim(row.find('input[name=TypeClassify]').val());
+                    var OQCDetail_UID = $.trim(row.find('input[name=OQCDetail_UID]').val());
+                    if (Qty != 0 || OQCDetail_UID != 0) {
+                        details["OQCMater_UID"] = OQCMasterUID;
+                        details["TypeClassify"] = TypeClassify;
+                        details["FunPlant"] = FunPlant;
+                        details["ExceptionType_UID"] = ExceptionType_UID;
+                        details["Qty"] = Qty;
+                        details["OQCDetail_UID"] = OQCDetail_UID;
+                        DetailsData.push(details);
+                        sumNG += parseInt(Qty);
+                    }
+                });
+                //#endregion
+                OQCData["MasterData"] = MasterData;
+                OQCData.DetailsData = DetailsData;
+                if (sumNG != parseInt($("#js_s_input_NG_Qty").val()) + parseInt($("#js_s_RepairNG_Qty").val()))
+                {
+                    PDMS.Utility.MessageBox.error("@ViewBag.NGnotsubmit");
+                    flag = false;
+                }
+                if (OQCData == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("@ViewBag.Pleaseproduction");
+                }
+                if (flag) {
+                    $.post(QAMasterUrls.SaveOQCData, { jsonWithProduct: JSON.stringify(OQCData) }, function (data) {
+                        if (data == 'Success') {
+                            PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                            $('#ModifyFlag').val(false);
+                            Initial(); //提交成功后，重新刷新页面。
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            GetFunPlant();
+            GetInterval();
+            QueryPlant();
+            function HiddenTableIntial() {
+                var uiNGDetailsBtn = document.getElementById("btn-RadioNGDetail");
+                uiNGDetailsBtn.disabled = true;
+                var uiReworkBtn = document.getElementById("btn-RadioReworkDetail");
+                uiReworkBtn.disabled = false;
+                var Reworkwidth = $("#js_reworkDetail_datatable").attr("style");
+                var NGwidth = $("#js_NGDetail_datatable").attr("style");
+                if (Reworkwidth.length > NGwidth.length) {
+                    $(".table-striped").attr("style", Reworkwidth);
+                }
+                else {
+                    $(".table-striped").attr("style", NGwidth);
+                }
+                $("#js_reworkDetail").hide();
+                $("#js_NGDetail").show();
+            }
+            $('#btn-RadioNGDetail').click(function () {
+                HiddenTableIntial();
+            });
+            $('#btn-RadioReworkDetail').click(function () {
+                var uiReworkBtn = document.getElementById("btn-RadioReworkDetail");
+                uiReworkBtn.disabled = true;
+                var uiNGDetailsBtn = document.getElementById("btn-RadioNGDetail");
+                uiNGDetailsBtn.disabled = false;
+                var Reworkwidth = $("#js_reworkDetail_datatable").attr("style");
+                var NGwidth = $("#js_NGDetail_datatable").attr("style");
+                if (Reworkwidth.length > NGwidth.length) {
+                    $(".table-striped").attr("style", Reworkwidth);
+                }
+                else {
+                    $(".table-striped").attr("style", NGwidth);
+                }
+                $("#js_reworkDetail").show();
+                $("#js_NGDetail").hide();
+            });
+            //#region  添加明细
+            //查询页面出现时候绑定值
+            $('#js_search_modal').on('show.bs.modal', function (event) {
+                GetInterval();
+            });
+            //获取第二级不良类型
+            function GetSecondTypeAdd() {
+                var temp = $("#js_s_add_first_type").val();
+                if (temp == "") return;
+                $("#js_s_add_second_type").empty();
+                $("<option></option>").val("").text("").appendTo($("#js_s_add_second_type"));
+                var project = $("#js_s_input_plant_Project").val();
+                $.post(QAMasterUrls.getAddType, { typeLevel: 2, parentCode: temp, ProjectName: project }, function (data) {
+                    $("#js_s_add_three_type").empty();
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Org_TypeCode)
+                                .text(item.TypeName)
+                                .appendTo($("#js_s_add_second_type"));
+                        });
+                        GetThirdTypeAdd();
+                    }
+                });
+            }
+            //获取第三阶不良
+            function GetThirdTypeAdd() {
+                var temp = $("#js_s_add_second_type").val();
+                if (temp == "") return;
+                $("#js_s_add_three_type").empty();
+                var project = $("#js_s_input_plant_Project").val();
+                $("<option></option>").val("").text("").appendTo($("#js_s_add_three_type"));
+                $.post(QAMasterUrls.getAddType, { typeLevel: 3, parentCode: temp, ProjectName: project }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Org_TypeCode)
+                                .text(item.TypeName)
+                                .appendTo($("#js_s_add_three_type"));
+                        });
+                    }
+                });
+            }
+            //第一级不良类型改变事件
+            $("#js_s_add_first_type").click(function ff() {
+                GetSecondTypeAdd();
+                if ($("#js_s_add_second_type").find("option:selected").text() == '') {
+                    SetTypeName();
+                }
+            });
+            //第二级不良类型改变事件
+            $("#js_s_add_second_type").click(function ff() {
+                GetThirdTypeAdd();
+                if ($("#js_s_add_three_type").find("option:selected").text() == '') {
+                    SetTypeName();
+                }
+            });
+            $("#js_s_add_three_type").click(function ff() {
+                if ($("#js_s_add_three_type").find("option:selected").text() != '') {
+                    SetTypeName();
+                }
+            });
+            function SetTypeName() {
+                var result = $("#js_s_add_three_type").find("option:selected").text();
+                if (result == '') {
+                    result = $("#js_s_add_second_type").find("option:selected").text();
+                    if (result == '') {
+                        result = $("#js_s_add_first_type").find("option:selected").text();
+                    }
+                }
+                $("#js_s_add_type_name").empty();
+                $("#js_s_add_type_name").val(result);
+            }
+            $("#js_s_add_typeClassify").click(function ff() {
+                var typeClassify = $("#js_s_add_typeClassify").val();
+                if(typeClassify=="不良明细")
+                {
+                    $("#FunPlant_div").show();
+                }
+                else
+                {
+                    $("#FunPlant_div").hide();
+                }
+            });
+            //#endregion
+            function CreateTab() {
+                $("#myTab li").remove();
+                $("#js_s_input_interval_time option").each(function (index) {
+                    if (this.selected == true) {
+                        var tabText = $(this).text();
+                        $("#myTab").append('<li ><a href="#ALL" data-toggle="tab">' + tabText + '</a></li>');
+                    }
+                });
+            }
+            //查询条件
+            $('#btn-search').click(function () {
+                //选择日报表时的逻辑
+                    //检查必须填写的值是否为空
+                if ($("#js_s_input_MaterialType").val() == null || $("#js_s_input_project").find("option:selected").text() == null
+                        || $("#js_s_input_process").val() == null || $("#js_s_input_date").val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.Cannotempty");
+                        return;
+                    }
+                    CreateTab();
+                    //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                    PDMS.Utility.Criteria.Build();
+                    $('#js_search_modal').modal('hide');
+                    //点击Tab查询值
+                    $('#myTab a').click(function (e) {
+                        //为日期、时段赋值
+                        var str = $("#js_s_input_date").val();
+                        var activeTab = $(e.target).text();
+                        var mtype = $("#js_s_input_MaterialType").val();
+                        var Color = $('#js_s_input_color option:selected').text;
+                        var project = $("#js_s_input_project").find("option:selected").text();
+                        var place = $("#js_s_input_process").val();
+                        var process = $('#js_s_input_process').find("option:selected").text();
+                        $("#js_project").text(project);
+                        $("#js_color").text(Color);
+                        $("#js_place").text(place);
+                        $("#js_meterialType").text(mtype);
+                        $("#js_process").text(process);
+                        $("#js_datetime").text(str);
+                        $("#js_time_interval").text(activeTab);
+                        $("#js_tab_select_text").val(activeTab);
+                        if ($("#js_form_query").valid()) {
+                            Initial();
+                        }
+                    });
+                    //#region 默认第一个页签被选中
+                    $('#myTab a:first').tab('show');
+                    var str = $("#js_s_input_date").val();
+                    var activeTab = $('#myTab a:first').text();
+                    var mtype = $("#js_s_input_MaterialType").val();
+                    var Color = $('#js_s_input_color option:selected').text();
+                    var project = $("#js_s_input_project").find("option:selected").text();
+                    var place = $("#js_s_input_process").val();
+                    var process = $('#js_s_input_process').find("option:selected").text();
+                    $("#js_project").text(project);
+                    $("#js_color").text(Color);
+                    $("#js_place").text(place);
+                    $("#js_meterialType").text(mtype);
+                    $("#js_process").text(process);
+                    $("#js_datetime").text(str);
+                    $("#js_time_interval").text(activeTab);
+                    $("#js_tab_select_text").val(activeTab);
+                    if ($("#js_form_query").valid()) {
+                        Initial();
+                    }
+                    //#endregion
+            });
+            //清空选择条件
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).find("option").first().attr("selected", true);
+                }
+                );
+                PDMS.Utility.Criteria.Clear();
+            });
+            //将后台传过来的datetime格式转换为date类型
+            var formatDate = function (date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? '0' + m : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + m + '-' + d;
+            };
+            //#endregion
+            $('body').on('click', '.ReturnButtonClick', function () {
+                var fromFlag = $('#is_from');
+                if (fromFlag == "Home") {
+                    var url = QAMasterUrls.ReturnToHome;
+                    window.location.href = url;
+                }
+                else {
+                    var color = $("#js_color").text();
+                    var MaterialType = $("#js_meterialType").text();
+                    var Project = $("#js_project").text()
+                    var ProductDate = $("#js_datetime").text();
+                    var OPtype = $("#js_OPtype").text();
+                    var funplant = $("#js_Funplant").text();
+                    var PartType = $("#js_PartType").text();
+                    var FlowChart_Master_UID = $("#js_FlowChart_Master_UID").val();
+                    if (FlowChart_Master_UID == "" || FlowChart_Master_UID == null)
+                    {
+                        var url = QAMasterUrls.ReturnToHome;
+                        window.location.href = url;
+                    }
+                    else
+                    {
+                        var url = QAMasterUrls.ReturnToReport + '?FlowChart_Master_UID=' + FlowChart_Master_UID + '&&PartType=' + PartType + '&&project=' + Project + '&&date=' + ProductDate + '&&materialType=' + MaterialType + "&&color=" + color + "&&OPType=" + OPtype + "&&funplant=" + funplant;
+                        window.location.href = url;
+                    }
+                }
+            });
+        });
+    </script>
+}

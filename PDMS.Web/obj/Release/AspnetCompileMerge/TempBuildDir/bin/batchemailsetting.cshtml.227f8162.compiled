@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Settings/BatchEmailSetting.cshtml" hash="1626a5ce" filehash="ffffdc88817ee33b" flags="110000" assembly="App_Web_0hgd0kgj" type="ASP._Page_Views_Settings_BatchEmailSetting_cshtml">
+    <filedeps>
+        <filedep name="/Views/Settings/BatchEmailSetting.cshtml" />
+    </filedeps>
+</preserve>

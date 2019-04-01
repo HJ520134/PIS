@@ -1,0 +1,114 @@
+﻿@model IEnumerable<PDMS.Model.SystemFunctionDTO>
+
+@{
+    var rootMenus = Model.Where(p => p.Parent_Function_UID == 0).OrderBy(p => p.Order_Index);
+}
+
+<style type="text/css">
+    .li-menu-header{
+
+    }
+</style>
+<script type="text/javascript">
+    function ToggleDisplay(e,i)
+    {
+      
+
+        var a = "." + i;
+        $(e.parentElement).children("li:not(.li-menu-header):not("+a+")").css("display", "none");
+        if ($(e.parentElement).children(a).css("display") == "none")
+            $(e.parentElement).children(a).css("display", "block");
+        else
+        {
+            $(e.parentElement).children(a).css("display", "none");
+        }
+        
+    }
+
+
+</script>
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu">
+            @foreach (var item in rootMenus)
+            {
+                if (Model.Where(p => p.Parent_Function_UID == item.Function_UID).Count() == 0)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.URL))
+                    {
+                        var routeData = item.URL.Split('/');
+                        if (routeData.Length >= 2)
+                        {
+                            <li><a href="@Url.Action(routeData[1],routeData[0]).ToLower()"><i class="@item.Icon_ClassName"></i> <span>@item.Function_Name</span></a></li>
+                        }
+                    }
+                }
+
+                else
+                {
+                    <li class="treeview">
+                        <a href="#">
+                            @if (!string.IsNullOrWhiteSpace(item.Icon_ClassName))
+                            {
+                                <i class="@item.Icon_ClassName"></i>
+                            }
+                            <span>@item.Function_Name</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+
+                            @{
+                                var titleMenus = Model.Where(p => p.Parent_Function_UID == item.Function_UID).OrderBy(o => o.Order_Index);
+                                //foreach (var titleMenu in titleMenus)
+                                for(int i=0;i< titleMenus.Count();i++)
+                                {
+                                    var titleMenu = titleMenus.ToList()[i];
+                                    <li class="li-menu-header"  onclick="ToggleDisplay(this,@i)">@titleMenu.Function_Name</li>
+
+                                    var menuItems = Model.Where(p => p.Parent_Function_UID == titleMenu.Function_UID).OrderBy(o => o.Order_Index);
+                                    @*if (@item.Function_Name != "治具管理模组" && @item.Function_Name != "设备部门管理")
+                                    {
+                                        if (menuItems != null && menuItems.Count() > 0)
+                                        {
+                                            foreach (var menuItem in menuItems)
+                                            {
+                                                var routeData = menuItem.URL.Split('/');
+                                                if (routeData.Length >= 2)
+                                                {
+                                                        <li class="@i" ><a href="@Url.Action(routeData[1],routeData[0]).ToLower()">@menuItem.Function_Name</a></li>
+                                                }
+                                            }
+                                        }
+                                    }*@
+                                   if (menuItems != null && menuItems.Count() > 0)
+                                    {
+                                        foreach (var menuItem in menuItems)
+                                        {
+                                            var routeData = menuItem.URL.Split('/');
+                                            if (routeData.Length >= 2)
+                                            {
+                                                @*if (routeData[0].ToUpper().Contains("OTHERSYSTEM"))
+                                                {
+                                                    <li><a href="@Url.Action(routeData[1], routeData[0]).ToLower()" target="_blank">@menuItem.Function_Name</a></li>
+                                                }
+                                                else 
+                                                {*@
+                                                    <li class="@i" style="display:none"><a href="@Url.Action(routeData[1],routeData[0]).ToLower()">@menuItem.Function_Name</a></li>
+                                                //}
+
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        </ul>
+                    </li>
+                                    }
+                                }
+        </ul>
+    </section>
+</aside>
+

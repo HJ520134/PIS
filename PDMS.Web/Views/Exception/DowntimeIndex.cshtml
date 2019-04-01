@@ -1,0 +1,1409 @@
+﻿@model PDMS.Model.ViewModels.Exception.ExceptionVM
+
+
+<section class="content portal-content">
+    <button id="view-fullscreen" class="btn btn-warning" onclick="fullSr()">@T("GL.FullScreen")</button>
+    <button id="cancel-fullscreen" class="btn btn-warning " onclick="cancFullSr()">@T("GL.CancelFullScreen")</button>
+    <button id="dispalyToggle" class="btn btn-success " onclick="toggleSearch()"><span class="glyphicon glyphicon-chevron-up">@T("Common.Search")</span></button>
+    
+    @*查询条件*@
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row" id="search_field">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+            </div>
+            <br />
+        </div>
+        <div style="margin-top:2px;margin-bottom:2px;height:10px;"></div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <form class="" id="js_form_query">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display:flex;justify-content:flex-start;">
+                    <div class='form-group'>
+                        <label class="control-label" for="js_select_plant_search" style="display:block"><strong>@T("Exception.Site")</strong></label>
+                        <select class="selectpicker form-control" id="js_select_plant_search" name="Plant_Organization_UID" data-live-search="true" data-width="auto">
+                            <option value="0"></option>
+                            @foreach (var item in Model.Plants)
+                            {
+                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-left:3%">
+                        <label class="control-label" for="js_select_op_types_search" style="display:block">@T("Exception.BG")</label>
+                        <select class="selectpicker form-control" id="js_select_op_types_search" name="BG_Organization_UID" data-live-search="true" data-width="auto"></select>
+                    </div>
+
+                    <div class='form-group' style="margin-left:3%">
+                        <label class="control-label" for="js_select_project_query" style="display:block"><strong> @T("Exception.Project")</strong></label>
+                        <select class="selectpicker form-control" id="js_select_project_query" name="CustomerID" data-live-search="true" data-width="auto"></select>
+                    </div>
+                    <div class='form-group' style="margin-left:3%">
+                        <label for="js_select_lineID_query" class="control-label" style="display:block"><strong>@T("Exception.Line")</strong></label>
+                        <select class="selectpicker form-control" id="js_select_lineID_query" name="LineID" data-live-search="true" data-width="auto">
+                            <option value=0></option>
+                        </select>
+                    </div>
+
+                    <div class='form-group  col-md-2 col-sm-6 hidden'>
+                        <label for="js_select_StationID_query" class="titlewhite control-label"><strong>@T("Exception.Station")</strong></label>
+                        <select class="selectpicker" id="js_select_StationID_query" name="StationID" data-live-search="true"></select>
+
+                    </div>
+
+                    <div class='form-group  col-md-2 col-sm-6 hidden'>
+                        <label for="js_select_dept_query" class="titlewhite control-label"><strong>@T("Exception.DeptName")</strong></label>
+                        <select class="selectpicker" id="js_select_dept_query" name="Exception_Dept_UID" data-live-search="true">
+                            @*<option value=0></option>
+                                @foreach (var item in Model.ExceDepts)
+                                {
+                                    <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                }*@
+                        </select>
+                    </div>
+
+
+                    @*<div class="form-group col-md-2 col-sm-12 hidden">
+                            <label class="titlewhite control-label" for="js_select_funplant_search">@T("GL.FunctionPlant"):</label>
+                            <select class="form-control" name="FunPlant_Organization_UID" id="js_select_funplant_search" data-live-search="true">
+                                <option value="0"></option>
+                            </select>
+                        </div>*@
+
+                    <div class='form-group' style="margin-left:3%">
+                        <label class="control-label" data-type="date-interval">@T("Common.Date")</label>
+                        <div class="input-group date" id="datetimepicker">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" name="WorkDate" class="form-control" id="js_select_workdate">
+                        </div>
+
+                    </div>
+
+                    <div class='form-group  col-md-2 col-sm-6 hidden'>
+                        <label for="js_select_delay_query" class="titlewhite control-label"><strong>@T("Exception.OverDaysUnprocessed")</strong></label>
+                        <input class="form-control" type="number" id="js_select_delay_query" name="DelayDayNub" />
+                        @*<select class="selectpicker" id="js_select_delay_query" name="DealyDayNub" data-live-search="true">
+                                <option value="">无</option>
+                                <option value="1">大于 1 天</option>
+                                <option value="2">大于 2 天</option>
+                                <option value="3">大于 3 天</option>
+                                <option value="4">大于 4 天</option>
+                                <option value="5">大于 5 天</option>
+                                <option value="6">大于 6 天</option>
+                                <option value="7">大于 7 天</option>
+                            </select>*@
+                    </div>
+
+
+                    <div class='form-group  col-md-2 col-sm-6 hidden'>
+                        <label for="Exception_Code_UID" class="titlewhite control-label"><strong>@T("Exception.CodeDes")</strong></label>
+                        <select class="selectpicker" id="js_select_code_query" name="Exception_Code_UID" data-live-search="true"></select>
+                    </div>
+
+                    <div class='form-group  col-md-2 col-sm-6 hidden'>
+                        <label for="js_select_stauts_query" class="titlewhite control-label"><strong>@T("Exception.Status")</strong></label>
+                        <select class="form-control" id="js_select_stauts_query" name="Status">
+                            <option value="-1">All</option>
+                            <option value="0">Open</option>
+                            <option value="1">Close</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display:flex;justify-content:flex-start;">
+                    <div class='form-group'>
+                        <label for="js_select_shiftTime_query" class="control-label" style="display:block"><strong> @T("Exception.Shift")</strong></label>
+                        <select class="selectpicker form-control" id="js_select_shiftTime_query" name="shiftTimeId" data-live-search="true" data-width="auto">
+                            <option value=0></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-left:3%">
+                        <label for="startTimeHour" class="titlewhite control-label" style="display:block"><strong>Time</strong></label>
+                        <select class="form-control selectpicker" style="max-width:40%;display:inline-block;" id="startTimeHour" name="startH" data-width="auto"></select>
+                        <span class="font-weight-bold" style="display:inline-block;">H</span>
+                        <select class="form-control selectpicker" style="max-width:40%;display:inline-block" id="startTimeMin" name="startM" data-width="auto">
+                            <option value="00">00</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="font-weight-bold"  style="display:inline-block;">M</span>
+                    </div>
+                    <div class='form-group' style="margin-left:10%;">
+                        <input type="button" value='@T("Exception.Query")' id="js_btn_query" class="btn btn-primary" style="display:inline-block;margin-top:25px;" />
+                    </div>
+                    <div class="form-group margin-l-10" style="margin-left:10%;">
+                        @*<button id="view-fullscreen" class="btn btn-warning" onclick="fullSr()" style="display:inline-block;margin-top:25px;">@T("GL.FullScreen")</button>
+                        <button id="cancel-fullscreen" class="btn btn-warning" onclick="cancFullSr()" style="display:inline-block;margin-top:25px;">@T("GL.CancelFullScreen")</button>*@              
+                     </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="row" id="echartsDashboard" style="display:none">
+        <div style="max-width:100%;height:400px" id="downtime"></div>
+    </div>
+
+    <div class="row padding-t-10">
+        <div class="col-md-12 table-container panel panel-danger" style="overflow-x:auto;border:0px;overflow-y:auto">
+            <div class="panel-heading text-center margin-b-5">
+                <h3 class="panel-title">Issue List</h3>
+            </div>
+            <table class="table table-striped table-hover table-condensed nowrap" id="table_1">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="hidden">@T("Exception.Site")</th>
+                        <th class="hidden">@T("Exception.BG")</th>
+                        <th class="text-center">@T("Exception.Project")</th>
+                        <th class="text-center">@T("Exception.Line")</th>
+                        <th class="hidden">@T("Exception.Procdure")</th>
+                        <th>@T("Exception.Station")</th>
+
+                        <th>@T("Exception.DeptName")</th>
+                        <th class="">@T("Exception.Code")</th>
+                        <th class="">@T("Exception.CodeDes")</th>
+                        <th class="">@T("Exception.Owner")</th>
+                        <th class="">@T("Exception.Contact")</th>
+                        <th>@T("Exception.Status")</th>
+                        <th class="hidden">@T("Exception.OutputDate")</th>
+                        <th class="text-center">@T("Exception.Shift")</th>
+                        <th class="hidden">@T("Exception.CreateUser")</th>
+                        <th class="text-center">@T("Exception.CreateTime")</th>
+                        <th class="hidden">@T("Exception.ModifyUser")</th>
+                        <th class="hidden">@T("Exception.ModifyTime")</th>
+                        <th class="text-center">Elapsed</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page1" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container" style="overflow-x:auto;">
+            <table class="table table-striped table-hover table-condensed nowrap" id="table_2">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="hidden">@T("Exception.Site")</th>
+                        <th class="hidden">@T("Exception.BG")</th>
+                        <th class="text-center">@T("Exception.Project")</th>
+                        <th class="text-center">@T("Exception.Line")</th>
+                        <th class="hidden">@T("Exception.Procdure")</th>
+                        <th class="text-center">@T("Exception.Station")</th>
+
+                        <th class="text-center">@T("Exception.DeptName")</th>
+                        <th class="">@T("Exception.Code")</th>
+                        <th class="">@T("Exception.CodeDes")</th>
+                        <th class="">@T("Exception.Owner")</th>
+                        <th class="">@T("Exception.Contact")</th>
+                        <th class="text-center">@T("Exception.Status")</th>
+                        <th class="hidden">@T("Exception.OutputDate")</th>
+                        <th class="text-center">@T("Exception.Shift")</th>
+
+                        <th class="hidden">@T("Exception.CreateUser")</th>
+                        <th class="text-center">@T("Exception.CreateTime")</th>
+                        <th class="hidden">@T("Exception.ModifyUser")</th>
+                        <th class="hidden">@T("Exception.ModifyTime")</th>
+                        <th class="text-center">@T("Common.EndDate")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page2" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+    <div class="row">
+        <div id="lastUpdateTime" class="label label-info pull-right" style="font-size: 1.6rem;"></div>
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_view_modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">View Issue Detail</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6 hidden">
+                        <input class="text col-sm-8" id="js_input_Exception_Record_UID" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_plant">@T("Exception.Site")</label>
+                        <input class="text col-sm-8" id="js_input_plant" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_bg">@T("Exception.BG")</label>
+                        <input class="text col-sm-8" id="js_input_bg" readonly />
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_project">@T("Exception.Project")</label>
+                        <input class="text col-sm-8" id="js_input_project" readonly />
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_line">@T("Exception.Line")</label>
+                        <input class="text col-sm-8" id="js_input_line" readonly />
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_procdure">@T("Exception.Procdure")</label>
+                        <input class="text col-sm-8" id="js_input_procdure" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_station">@T("Exception.Station")</label>
+                        <input class="text col-sm-8" id="js_input_station" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_deptName">@T("Exception.DeptName")</label>
+                        <input class="text col-sm-8" id="js_input_deptName" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_code">@T("Exception.Code")</label>
+                        <input class="text col-sm-8" id="js_input_code" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_codedes">@T("Exception.CodeDes")</label>
+                        <input class="text col-sm-8 " id="js_input_codedes" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_output">@T("Exception.OutputDate")</label>
+                        <input class="text col-sm-8" id="js_input_output" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_shift">@T("Exception.Shift")</label>
+                        <input class="text col-sm-8" id="js_input_shift" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_note">Note</label>
+                        <input class="text col-sm-8" id="js_input_note" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_owner">@T("Exception.Owner")</label>
+                        <input class="text col-sm-8" id="js_input_owner" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_contact">@T("Exception.Contact")</label>
+                        <input class="text col-sm-8" id="js_input_contact" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_createuser">@T("Exception.CreateUser")</label>
+                        <input class="text col-sm-8" id="js_input_createuser" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_createtime">@T("Exception.CreateTime")</label>
+                        <input class="text col-sm-8" id="js_input_createtime" readonly />
+                    </div>
+                    <div class="margin-b-5">Latest reply</div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_replyuser">@T("Exception.UserName")</label>
+                        <input class="text col-sm-8" id="js_input_replyuser" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_replydate">@T("Common.Date")</label>
+                        <input class="text col-sm-8" id="js_input_replydate" readonly />
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_replycontent">@T("Exception.Content")</label>
+                        <input class="text col-sm-8" id="js_input_replycontent" readonly />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="js_reply_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.Reply")</h4>
+                </div>
+
+                <form id="js_form_reply" data-need-validate="true">
+                    <div class="modal-footer" style="padding-bottom:0px">
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12 hidden">
+                            <label class="col-sm-2 control-label" for="js_input_Exception_Record_UID">异常编号</label>
+                            <div class="col-sm-3">
+                                <input id="js_input_Exception_Record_UID" class="form-control" name="Exception_Record_UID" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-12 col-lg-12">
+                            <label class="col-sm-2 control-label" for="js_input_Exception_Content">@T("Exception.Content")</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" class="form-control input-sm required" id="js_input_Exception_Content" name="Exception_Content" placeholder="Please type reply content..." rows="4"
+                                          required data-msg-required="Please type [reply content]."
+                                          data-rule-maxlength="100" data-msg-maxlength="Length of reply content need less than {0} characters."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_reply_save"><i class="fa fa-save"></i>  @T("Common.Save")</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script src="~/Scripts/ECharts/echarts.min.js"></script>
+    <script type="text/javascript">
+        _plantID = 0;
+        _bgUid = 0;
+        _projectID = 0;
+        _lineID = 0;
+        _lineName = '';
+        _workDate = '';
+        _unproposeDays = 0;
+        _shiftID = 0;
+        _startH = '';
+        _startM = 0;
+        $('#js_btn_clear').click(function () {
+            $('#js_select_plant_search').val(0);
+            $('#js_select_op_types_search').val(0);
+            $('#js_select_funplant_search').val(0);
+            $('#js_select_Account_UID_search').val(0);
+            $('#js_select_Workshop_ID_search').val(0);
+            $('#js_select_Workshop_UID_search').val(0);
+            $('#js_select_Account_UID_search').selectpicker('val', '');
+            $("#js_select_Account_UID_search").trigger("liszt:updated");
+            PDMS.Utility.Criteria.Clear();
+        });
+
+        //#endregion
+        $(function () {
+            intervalInt = 0;
+            var ExceptionRul = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryDowntimeDashboard: '@Url.Action("QueryExceptionRecordDashboard", "Exception")',
+                    queryDowntimeRecords: '@Url.Action("QueryDowntimeRecords", "Exception")',
+                    getOrgByParant: '@Url.Action("GetOrgByParant", "Fixture")',
+                    //根据线体ID获取所有的工站
+                    fetchStationsBasedLine: '@Url.Action("FetchStationsBasedLine", "Exception")',
+                    //关闭异常单功能
+                    closeExceptionOrder: '@Url.Action("CloseExceptionOrder", "Exception")',
+                    //删除异常单
+                    deleteExceptionOrder: '@Url.Action("DeleteExceptionOrder", "Exception")',
+                    exceptionReply: '@Url.Action("ExceptionReply", "Exception")',
+                    fetchGL_LineWithGroupAPI: '@Url.Action("FetchGL_LineWithGroupAPI", "Exception")',
+                    doAllExportFunction: '@Url.Action("ExportExcptionRecord2Excel", "Exception")',
+                    doSomeExportFunction: '@Url.Action("ExportSomeRecord2Excel", "Exception")',
+                    fetchExceptionDepts: '@Url.Action("FetchExceptionDepts", "Exception")',
+                    //异常部门变化,设置异常编码
+                    fetchExceptionCodeBasedDept: '@Url.Action("FetchExceptionCodeBasedDept", "Exception")',
+                    //根据BG拿专案
+                    getProjectByOPType: '@Url.Action("GetCustomers", "GoldenLine")',
+                    //根据Plant,BG,专案拿线体
+                    fetchLineBasedPlantBGCustomer: '@Url.Action("FetchStationsBasedLine", "Exception")',
+                    //查看历史处理状态
+                    viewRecordReply: '@Url.Action("ViewRecordReply", "Exception")',
+                    //发送邮件
+                    sendEmailException: '@Url.Action("SendEmailException", "Exception")',
+                    //fetch shift Time
+                    fetchShiftTimeDetail: '@Url.Action("FetchShiftTimeDetail", "Exception")',
+                    // fetch shift Time based on BG
+                    fetchShiftTimeBasedBG: '@Url.Action("fetchShiftTimeBasedBG", "Exception")',
+                    //根据ID获取详情
+                    fetchExceptionDetail: '@Url.Action("FetchExceptionDetail", "Exception")',
+                    //获取最新的回复
+                    fetchLatestReply: '@Url.Action("FetchLatestReply", "Exception")',
+                    fetchCurrentDate: '@Url.Action("FetchDatetimeNow", "Exception")', 
+                    fetchDatetimeNowTime: '@Url.Action("FetchDatetimeNowTime", "Exception")', 
+                };
+
+                $.post(urls.fetchCurrentDate, {}, function (data) {
+                    debugger;
+                    var da = new Date(data);
+                    $('#datetimepicker').datetimepicker({
+                        format: 'LT'
+                    });
+                    $('#datetimepicker').datetimepicker('setDate', new Date(data));
+                    // $("#datetimepicker").datepicker("update");
+
+                });
+                var table_1_Columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Record_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-record-view" data-id="' + rowData.Exception_Record_UID + '" style="margin-top:5px">View</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-record-reply" data-id="' + rowData.Exception_Record_UID + '" style="margin-top:5px">Reply</button>'
+                            '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+
+                    },
+                    // {
+                     //     data: "Plant",
+                     //     className: "min-col-xs text-center"
+                     // },
+                     //{
+                     //    data: "BG",
+                     //    className: "min-col-xs text-center"
+                     //},
+                    {
+                        data: "Project_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "LineName",
+                        className: "min-col-xs text-center"
+                    },
+                    //{
+                     //    data: "Seq",
+                     //    className: "min-col-xs text-center"
+                     //},
+                    {
+                        data: "StationName",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Dept_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Nub",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Contact_Person",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Contact_Phone",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Status",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Status == 0) {
+                                $(td).html('<i class="fa fa-circle" style="color:red"></i>');
+                            }
+                            else {
+                                $(td).html('<i class="fa fa-circle" style="color:green"></i>');
+                            }
+
+
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                    //{
+                    //    data: "WorkDate",
+                    //    className: "min-col-xs text-center"
+                    //},
+                    {
+                        data: "Shift",
+                        className: "min-col-xs text-center"
+                    },
+                     //{
+                     //    data: "User_Name",
+                     //    className: "min-col-xs text-center"
+                     //},
+                    {
+                        data: "Created_Date",
+                        className: "min-col-xs text-center"
+                    },
+                    //{
+                //    data: "Modified_UserName",
+                //    className: "min-col-xs text-center"
+                //},
+                //{
+                //    data: "Modified_Date",
+                //    className: "min-col-xs text-center"
+                //}
+                    {
+                        data: "Elapsed",
+                        className: "min-col-xs text-center"
+                    },
+                ];
+                var table_2_Columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Record_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-record-view" data-id="' + rowData.Exception_Record_UID + '" style="margin-top:5px">View</button>' +
+                                              '<button type="button" class="btn btn-primary btn-xs js-grid-record-reply" data-id="' + rowData.Exception_Record_UID + '" style="margin-top:5px">Reply</button>'
+                            '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+
+                    },
+                    // {
+             //     data: "Plant",
+             //     className: "min-col-xs text-center"
+             // },
+             //{
+             //    data: "BG",
+             //    className: "min-col-xs text-center"
+             //},
+                    {
+                        data: "Project_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "LineName",
+                        className: "min-col-xs text-center"
+                    },
+                    //{
+             //    data: "Seq",
+             //    className: "min-col-xs text-center"
+             //},
+                    {
+                        data: "StationName",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Dept_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Nub",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Exception_Name",
+                        className: "min-col-xs text-center"
+                    },
+                     {
+                         data: "Contact_Person",
+                         className: "min-col-xs text-center"
+                     },
+                    {
+                        data: "Contact_Phone",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Status",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Status == 0) {
+                                $(td).html('<i class="fa fa-circle" style="color:red"></i>');
+                            }
+                            else {
+                                $(td).html('<i class="fa fa-circle" style="color:green"></i>');
+                            }
+
+
+                        },
+                        className: "min-col-xs text-center"
+                    },
+            //{
+            //    data: "WorkDate",
+            //    className: "min-col-xs text-center"
+            //},
+                    {
+                        data: "Shift",
+                        className: "min-col-xs text-center"
+                    },
+             //{
+             //    data: "User_Name",
+             //    className: "min-col-xs text-center"
+             //},
+                    {
+                        data: "Created_Date",
+                        className: "min-col-xs text-center"
+                    },
+                    //{
+        //    data: "Modified_UserName",
+        //    className: "min-col-xs text-center"
+        //},
+        //{
+        //    data: "Modified_Date",
+        //    className: "min-col-xs text-center"
+        //}
+                    {
+                        data: "End_Date",
+                        className: "min-col-xs text-center"
+                    },
+                ];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                };
+
+                var _queryExceptionRecord = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryExceptionRecord,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryExceptionRecord(true, false);
+                    },
+                    queryExceptionRecord: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryExceptionRecord(false, true);
+                    },
+                    GetExceptionDatatable: function () {
+                        fixtureDatatable = $('#table_1').DataTable({
+                            dom: "fltip",
+                            paging: true,
+                            lengthMenu: [[5,10, 25, -1], [5,10, 25, "All"]],
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            pageLength: 5,
+                            pagingType: "full_numbers",
+                            columns: table_1_Columns
+                        });
+                        return fixtureDatatable;
+                    },
+                    GetExceptionDatatable2: function () {
+                        fetchDatatable2 = $('#table_2').DataTable({
+                            dom: "fltip",
+                            paging: true,
+                            lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            pageLength: 5,
+                            pagingType: "full_numbers",
+                            columns: table_2_Columns
+                        });
+                        return fetchDatatable2;
+                    },
+                    SetFixtureDatatable: function (datatable) {
+                        fixtureDatatable = datatable;
+                    },
+                    FixtureColumns: table_1_Columns
+                }
+            })();
+
+            //线体变化，拉出工站
+            $('#js_select_lineID_query').change(function () {
+                var lineID = $('#js_select_lineID_query option:selected').val();
+                if (lineID == 0) {
+                    return;
+                }
+                $('#js_select_StationID_query').html('<option value=0></option>');
+                var url = ExceptionRul.urls.fetchStationsBasedLine;
+                $.post(url, { uid: lineID }, function (data) {
+                    if (data.success != null) {
+                        $.each(data.success, function (index, item) {
+                            $('#js_select_StationID_query').append('<option value="' + item.StationID + '">' + item.StationName + '</option>');
+                        })
+                    }
+                })
+                $("#js_select_StationID_query").selectpicker('refresh');
+                $("#js_select_StationID_query").trigger('change');
+            });
+            $('#js_btn_query').click(function () {
+                //拿去筛选条件，然后依次给div赋值
+                _plantID = $('#js_select_plant_search option:selected').val() == undefined ? 0 : $('#js_select_plant_search option:selected').val();
+                _bgUid = $('#js_select_op_types_search option:selected').val() == undefined ? 0 : $('#js_select_op_types_search option:selected').val();
+                _projectID = $('#js_select_project_query option:selected').val() == undefined ? 0 : $('#js_select_project_query option:selected').val();
+                _lineID = $('#js_select_lineID_query option:selected').val() == undefined ? 0 : $('#js_select_lineID_query option:selected').val();
+                _lineName = $('#js_select_lineID_query option:selected').text();
+                _workDate = $('#js_select_workdate').val();
+                _unproposeDays = $('#js_select_delay_query').val() == '' ? 0 : $('#js_select_delay_query').val();
+                _shiftID = $('#js_select_shiftTime_query').val() == undefined ? 0 : $('#js_select_shiftTime_query').val();
+                _startH = $('#startTimeHour').val() == null ? '' : $('#startTimeHour').val();
+                _startM = $('#startTimeMin').val();
+                var url = ExceptionRul.urls.queryDowntimeDashboard;
+                // debugger
+                $.post(url, { plantID: _plantID, bgUid: _bgUid, projectID: _projectID, lineID: _lineID, lineName: _lineName, workDate: _workDate, unproposeDays: _unproposeDays, startH: _startH, startM: _startM, shiftID: _shiftID }, function (data) {
+                    // debugger;
+                    if (data.xLabel.length > 0) {
+                        $('#echartsDashboard').css('display', 'block');
+                        var echarDashboard = echarts.init(document.getElementById('downtime'));
+                        var dashboardOption = {
+                            title: {
+                                text: 'Hourly Elapsed Time Dashboard'
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data: ['Elapsed Time (Mins)'],
+                                top: '8%',
+                            },
+                            toolbox: {
+                                feature: {
+                                    dataView: { //数据视图
+                                        show: true
+                                    },
+                                    restore: { //重置
+                                        show: true
+                                    },
+                                    dataZoom: { //数据缩放视图
+                                        show: true
+                                    },
+                                    saveAsImage: {},
+                                    magicType: {//动态类型切换
+                                        type: ['bar', 'line']
+                                    }
+                                }
+                            },
+                            grid: {
+                                left: '5%',
+                                right: '1%',
+                                bottom: '6%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                              {
+                                  type: 'category',
+                                  boundaryGap: true,//坐标轴的数字在里面
+                                  data: data.xLabel,
+                                  axisLabel: {
+                                      interval: 0,//坐标轴上的时间都要显示
+                                      //rotate: 15,//旋转的角度
+                                      formatter: function (value, index) {
+                                          // 格式化成月/日，只在第一个刻度显示年份
+                                          // debugger
+                                          var date = new Date(value);
+                                          var strs = value.split(' '); //字符串数组
+                                          var str = strs[0] + '\n' + strs[1];
+
+                                          return str
+                                      }
+                                  }
+                              }
+                            ],
+                            yAxis: [
+                              {
+                                  type: 'value'
+                              }
+                            ],
+                            series: [
+                              {
+                                  name: 'Elapsed Time (Mins)',
+                                  type: 'bar',
+                                  areaStyle: { normal: {} },
+                                  data: data.yLabel,
+                                  label: {
+                                      normal: {
+                                          show: true,
+                                          position: 'inside',
+                                          textStyle: {
+                                              color: 'white',
+                                              fontWeight: 'bold'
+                                              // fontSize: '35',
+                                          }
+                                      },
+
+
+                                  },
+                                  animationDelay: function (idx) {
+                                      return idx * 10 + 100;
+                                  }
+                              }]
+                        };
+                        echarDashboard.setOption(dashboardOption);
+
+                    }
+                    else {
+                        $('#echartsDashboard').css('display', 'none');
+                    }
+
+
+                });
+
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var dataTable2 = ExceptionRul.GetExceptionDatatable2();
+                dataTable.clear().draw();
+                dataTable2.clear().draw();
+                //$.map($checkedItems, function (checkbox) {
+                //    var $sender = $(checkbox);
+                //    var $tr = $sender.closest('tr');
+                //    var trIndex = $tr.index();
+                //    dataTable.row($tr).remove().draw();
+                //});
+                //$.map($checkedItems2, function (checkbox) {
+                //    var $sender = $(checkbox);
+                //    var $tr = $sender.closest('tr');
+                //    var trIndex = $tr.index();
+                //    dataTable2.row($tr).remove().draw();
+                //});
+                var url_1 = ExceptionRul.urls.queryDowntimeRecords;
+                $.post(url_1, { plantID: _plantID, bgUid: _bgUid, projectID: _projectID, lineID: _lineID, lineName: _lineName, workDate: _workDate, unproposeDays: _unproposeDays, startH: _startH, startM: _startM, shiftID: _shiftID }, function (data) {
+                    // debugger;
+                    if (data.length > 0) {
+                        dataTable.clear().rows.add(data.filter(function (i, n) {
+                            debugger;
+                            return i.Status ==0;
+                        })).draw();
+                        dataTable2.clear().rows.add(data.filter(function (i, n) {
+                            return i.Status == 1;
+                        })).draw(); 
+                    }
+
+                });
+                //60秒刷新
+                if (intervalInt != 0) {
+                    clearInterval(intervalInt);
+                }
+                intervalInt = setInterval(function () {
+                    queryFunction(false);
+                }, 5000 *60);
+                var url_3 = ExceptionRul.urls.fetchDatetimeNowTime;
+                $.post(url_3, {}, function (data) {
+                    debugger;
+
+                    $('#lastUpdateTime').html(data);
+
+                });
+            });
+
+            function queryFunction() {
+                var url_1 = ExceptionRul.urls.queryDowntimeDashboard;
+                // debugger
+                $.post(url_1, { plantID: _plantID, bgUid: _bgUid, projectID: _projectID, lineID: _lineID, lineName: _lineName, workDate: _workDate, unproposeDays: _unproposeDays, startH: _startH, startM: _startM, shiftID: _shiftID }, function (data) {
+                    // debugger;
+                    if (data.xLabel.length > 0) {
+                        $('#echartsDashboard').css('display', 'block');
+                        var echarDashboard = echarts.init(document.getElementById('downtime'));
+                        var dashboardOption = {
+                            title: {
+                                text: 'Hourly Elapsed Time Dashboard'
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data: ['Downtime Minutes'],
+                                top: '8%',
+                            },
+                            toolbox: {
+                                feature: {
+                                    dataView: { //数据视图
+                                        show: true
+                                    },
+                                    restore: { //重置
+                                        show: true
+                                    },
+                                    dataZoom: { //数据缩放视图
+                                        show: true
+                                    },
+                                    saveAsImage: {},
+                                    magicType: {//动态类型切换
+                                        type: ['bar', 'line']
+                                    }
+                                }
+                            },
+                            grid: {
+                                left: '5%',
+                                right: '1%',
+                                bottom: '6%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                              {
+                                  type: 'category',
+                                  boundaryGap: true,//坐标轴的数字在里面
+                                  data: data.xLabel,
+                                  axisLabel: {
+                                      interval: 0,//坐标轴上的时间都要显示
+                                      //rotate: 15,//旋转的角度
+                                      formatter: function (value, index) {
+                                          // 格式化成月/日，只在第一个刻度显示年份
+                                          // debugger
+                                          var date = new Date(value);
+                                          var strs = value.split(' '); //字符串数组
+                                          var str = strs[0] + '\n' + strs[1];
+
+                                          return str
+                                      }
+                                  }
+                              }
+                            ],
+                            yAxis: [
+                              {
+                                  type: 'value'
+                              }
+                            ],
+                            series: [
+                              {
+                                  name: 'Downtime Minutes',
+                                  type: 'bar',
+                                  areaStyle: { normal: {} },
+                                  data: data.yLabel,
+                                  label: {
+                                      normal: {
+                                          show: true,
+                                          position: 'inside',
+                                          textStyle: {
+                                              color: 'white',
+                                              fontWeight: 'bold'
+                                              // fontSize: '35',
+                                          }
+                                      },
+
+
+                                  },
+                                  animationDelay: function (idx) {
+                                      return idx * 10 + 100;
+                                  }
+                              }]
+                        };
+                        echarDashboard.setOption(dashboardOption);
+
+                    }
+                    else {
+                        $('#echartsDashboard').css('display', 'none');
+                    }
+
+
+                });
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                debugger
+                dataTable.clear().draw();
+                var dataTable2 = ExceptionRul.GetExceptionDatatable2();
+                dataTable2.clear().draw();
+                var url_2 = ExceptionRul.urls.queryDowntimeRecords;
+                $.post(url_2, { plantID: _plantID, bgUid: _bgUid, projectID: _projectID, lineID: _lineID, lineName: _lineName, workDate: _workDate, unproposeDays: _unproposeDays, startH: _startH, startM: _startM, shiftID: _shiftID }, function (data) {
+                    // debugger;
+
+                    if (data.length > 0) {
+                        dataTable.clear().rows.add(data.filter(function (i, n) {
+                            debugger;
+                            return i.Status == 0;
+                        })).draw();
+                        dataTable2.clear().rows.add(data.filter(function (i, n) {
+                            debugger;
+                            return i.Status == 1;
+                        })).draw();
+                        //$.each(data, function (indes, item) {
+                        //    //  debugger
+                        //    if (item.Status == 0) {
+                        //        var row = dataTable.row.add({
+                        //            "Exception_Record_UID": item.Exception_Record_UID,
+                        //            "Plant": item.Plant,
+                        //            "BG": item.BG,
+                        //            "Project_Name": item.Project_Name,
+                        //            "LineName": item.LineName,
+                        //            "Seq": item.Seq,
+                        //            "StationName": item.StationName,
+                        //            "Status": item.Status,
+                        //            "Exception_Dept_Name": item.Exception_Dept_Name,
+                        //            "Exception_Nub": item.Exception_Nub,
+                        //            "Exception_Name": item.Exception_Name,
+                        //            "WorkDate": item.WorkDate,
+                        //            "Shift": item.Shift,
+                        //            "Contact_Person": item.Contact_Person,
+                        //            "Contact_Phone": item.Contact_Phone,
+                        //            "User_Name": item.User_Name,
+                        //            "Created_Date": item.Created_Date,
+                        //            "Modified_UserName": item.ModifiedUser,
+                        //            "Modified_Date": item.Modified_Date,
+                        //            "End_Date": item.End_Date,
+                        //            "Elapsed": item.Elapsed,
+                        //        }).draw();
+                        //    } else {
+                        //        var row = dataTable2.row.add({
+                        //            "Exception_Record_UID": item.Exception_Record_UID,
+                        //            "Plant": item.Plant,
+                        //            "BG": item.BG,
+                        //            "Project_Name": item.Project_Name,
+                        //            "LineName": item.LineName,
+                        //            "Seq": item.Seq,
+                        //            "StationName": item.StationName,
+                        //            "Status": item.Status,
+                        //            "Exception_Dept_Name": item.Exception_Dept_Name,
+                        //            "Exception_Nub": item.Exception_Nub,
+                        //            "Exception_Name": item.Exception_Name,
+                        //            "WorkDate": item.WorkDate,
+                        //            "Shift": item.Shift,
+                        //            "Contact_Person": item.Contact_Person,
+                        //            "Contact_Phone": item.Contact_Phone,
+                        //            "User_Name": item.User_Name,
+                        //            "Created_Date": item.Created_Date,
+                        //            "Modified_UserName": item.ModifiedUser,
+                        //            "Modified_Date": item.Modified_Date,
+                        //            "End_Date": item.End_Date,
+                        //            "Elapsed": item.Elapsed,
+                        //        }).draw();
+                        //    }
+                        //})
+                        //对行进行排序
+                        //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        //    // debugger;
+                        //    dataTable.cell(rowIdx, 2).data(rowIdx + 1).draw()
+                        //});
+                        ////对行进行排序
+                        //dataTable2.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        //    //  debugger;
+                        //    dataTable.cell(rowIdx, 2).data(rowIdx + 1).draw()
+                        //});
+
+                    }
+
+                });
+                var url_3 = ExceptionRul.urls.fetchDatetimeNowTime;
+                $.post(url_3, {}, function (data) {
+                    debugger;
+   
+                    $('#lastUpdateTime').html(data);
+                    // $("#datetimepicker").datepicker("update");
+                });
+            }
+
+            //厂区变更联动
+            $('#js_select_plant_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                SetOpByPlant(plantuid, 0);
+            })
+            function SetOpByPlant(Plant_Organization_UID, BG_Organization_UID) {
+                url = ExceptionRul.urls.getOrgByParant;
+                $('#js_select_op_types_search').html('<option value=0></option>');
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $("#js_select_op_types_search").selectpicker('refresh');
+                        $('#js_select_op_types_search').val(BG_Organization_UID);
+
+                    });
+                }
+            }
+            $('#js_select_op_types_search').change(function () {
+                var BG_Organization_UID = $('#js_select_op_types_search option:selected').val();
+                var Plant_Organization_UID = $('#js_select_plant_search option:selected').val();
+                //获取异常部门
+                var url = ExceptionRul.urls.fetchExceptionDepts;
+                $.post(url, { BG_Organization_UID: BG_Organization_UID, Plant_Organization_UID: Plant_Organization_UID }, function (data) {
+                    $('#js_select_dept_query').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_dept_query').append('<option value="' + data[i].Exception_Dept_UID + '">' + data[i].Exception_Dept_Name + '</option>');
+                    }
+                    $("#js_select_dept_query").selectpicker('refresh');
+                    $("#js_select_dept_query").trigger('change');
+                });
+                //获取班次
+                var url = ExceptionRul.urls.fetchShiftTimeBasedBG;
+                $.post(url, { plantuid: Plant_Organization_UID, bguid: BG_Organization_UID }, function (data) {
+                    // debugger
+                    $('#js_select_shiftTime_query').html('<option value=0></option>');
+                    for (var i = 0; i < data.success.length; i++) {
+                        $('#js_select_shiftTime_query').append('<option value="' + data.success[i].ShiftTimeID + '">' + data.success[i].Shift + '</option>');
+                    }
+                    $("#js_select_shiftTime_query").selectpicker('refresh');
+                    // $("#js_select_shiftTime_query").trigger('change');
+                });
+
+            })
+            //获取版次的开始和结束时间
+            $('#js_select_shiftTime_query').change(function () {
+                // debugger
+                var shiftuid = $('#js_select_shiftTime_query option:selected').val();
+                var url = ExceptionRul.urls.fetchShiftTimeDetail;
+                $.post(url, { uid: shiftuid }, function (data) {
+                   // debugger
+                    $('#startTimeHour').html('<option value=-1></option>');
+                    var startHour = parseInt(data.success.StartTime.split(':')[0]);
+                    var startMin = parseInt(data.success.StartTime.split(":")[1]);
+                    var endHour = parseInt(data.success.End_Time.split(":")[0]);
+                    var endMin = parseInt(data.success.End_Time.split(":")[1]);
+                    InitialStartTime(startHour, startMin, endHour, endMin);
+                    $("#startTimeHour").selectpicker('refresh');
+                });
+
+            })
+            function InitialStartTime(mHour, mMin, eH, eM) {
+                // debugger;
+                if (mHour <= eH) {
+                    while (mHour < eH) {
+                        $('#startTimeHour').append('<option value="' + mHour + '">' + mHour + '</option>');
+                        mHour += 1;
+                    }
+                }
+                else {
+                    while (mHour <= 24) {
+                        if (mHour === 24) {
+                            $('#startTimeHour').append('<option value="' + 0 + '">' + 00 + '</option>');
+                            mHour = 1;
+                            break;
+                        }
+                        $('#startTimeHour').append('<option value="' + mHour + '">' + mHour + '</option>');
+                        mHour += 1;
+                    }
+                    while (mHour <= eH) {
+                        $('#startTimeHour').append('<option value="' + mHour + '">' + mHour + '</option>');
+                        mHour += 1;
+                    }
+                }
+            }
+            //获取线体
+            $('#js_select_plant_search,#js_select_op_types_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                var bguid = $('#js_select_op_types_search option:selected').val();
+                // var funuid = $('#js_select_funplant_search option:selected').val();
+
+                //拿专案
+                $('#js_select_project_query').html('<option value=0></option>');
+                var url = ExceptionRul.urls.getProjectByOPType;
+                $.get(url, { oporgid: bguid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_project_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+                $('#js_select_project_query').selectpicker('refresh');
+                $('#js_select_project_query').val(0);
+
+            })
+            //根据专案拿线体
+            $('#js_select_project_query').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                var bguid = $('#js_select_op_types_search option:selected').val();
+                var customerid = $('#js_select_project_query option:selected').val();
+                // var funuid = $('#js_select_funplant_search option:selected').val();
+                // debugger;
+                $('#js_select_lineID_query').html('<option value=0></option>');
+                $('#js_select_lineID_query').selectpicker('refresh');
+                url = ExceptionRul.urls.fetchGL_LineWithGroupAPI;
+                $.post(url, { plantuid: plantuid, bguid: bguid, customerid: customerid }, function (data) {
+
+                    $.each(data.success, function (index, item) {
+                        $('#js_select_lineID_query').append('<option value="' + item.LineID + '">' + item.LineName + '</option>');
+
+                    })
+
+                    $('#js_select_lineID_query').selectpicker('refresh');
+                    $('#js_select_lineID_query').val(0);
+                });
+
+
+            });
+            //根据异常部门获取异常描述
+            $('#js_select_dept_query').change(function () {
+                var url = ExceptionRul.urls.fetchExceptionCodeBasedDept;
+                var deptUID = $('#js_select_dept_query option:selected').val();
+                if (deptUID == 0) {
+                    $('#js_select_code_query').html('<option value=0></option>');
+                    $("#js_select_code_query").selectpicker('refresh');
+                    $("#js_select_code_query").trigger('change');
+                    return;
+                }
+
+                $.post(url, { deptUID: deptUID }, function (data) {
+                    $('#js_select_code_query').html('<option value=0></option>');
+                    if (data.success.length > 0) {
+                        $.each(data.success, function (index, item) {
+                            $("<option></option>").val(item.Exception_Code_UID).text(item.Exception_Nub + '-' + item.Exception_Name).appendTo($("#js_select_code_query"));
+                        });
+                    }
+                    else {
+
+                        PDMS.Utility.MessageBox.info("no exception data fetched");
+                        return;
+                    }
+                    $("#js_select_code_query").selectpicker('refresh');
+                    $("#js_select_code_query").trigger('change');
+                });
+            });
+            $('body').on('click', '.js-grid-record-view', function () {
+                var uid = $(this).data('id');
+                $('#js_view_modal').modal('show', $(this));
+                $('#js_input_Exception_Record_UID').val(uid);
+                var url = ExceptionRul.urls.fetchExceptionDetail;
+                //拿部门名称
+                $.post(url, { uid: uid }, function (data) {
+                    // debugger;
+                    var record = JSON.parse(data.success);
+                    $('#js_input_plant').val(record.Plant);
+                    $('#js_input_bg').val(record.BG);
+                    $('#js_input_project').val(record.Project_Name);
+                    $('#js_input_line').val(record.LineName);
+                    $('#js_input_procdure').val(record.Seq);
+                    $('#js_input_station').val(record.StationName);
+                    $('#js_input_deptName').val(record.Exception_Dept_Name);
+                    $('#js_input_code').val(record.Exception_Nub);
+                    $('#js_input_codedes').val(record.Exception_Name);
+                    $('#js_input_output').val(record.WorkDate);
+                    $('#js_input_shift').val(record.Shift);
+                    $('#js_input_note').val(record.Note);
+                    $('#js_input_owner').val(record.Contact_Person);
+                    $('#js_input_contact').val(record.Contact_Phone);
+                    $('#js_input_createuser').val(record.User_Name);
+                    $('#js_input_createtime').val(record.Created_Date);
+
+                })
+                var url = ExceptionRul.urls.fetchLatestReply;
+                $.post(url, { uid: uid }, function (data) {
+                     debugger;
+                    var record = JSON.parse(data.success);
+                    $('#js_input_replyuser').val(record.Modified_UserName);
+                    $('#js_input_replydate').val(record.Reply_Date);
+                    $('#js_input_replycontent').val(record.Exception_Content);
+
+
+                })
+
+            });
+            $('#js_view_modal').on('hidden.bs.modal', function (e) {
+                $('#js_view_modal').find('input').val('');//清空所有input
+            });
+            $('body').on('click', '.js-grid-record-reply', function () {
+                var uid = $(this).data('id');
+                $('#js_input_Exception_Record_UID').val(uid);
+
+                $('#js_reply_modal').modal('show', $(this));
+
+            });
+            $('#js_reply_modal').on('hidden.bs.modal', function (e) {
+                $('#js_reply_modal').find('textarea').val('');//清空所有input
+                //$('#js_reply_modal').find('select').find('option:first').attr("selected", true);//下拉框默认选择第一项空
+
+            });
+            $('#btn_reply_save').click(function () {
+                var uid = $('#js_input_Exception_Record_UID').val();
+                var content = $('#js_input_Exception_Content').val();
+                var url = ExceptionRul.urls.exceptionReply;
+                $.post(url, { uid: uid, content: content }, function (data) {
+                    if (data.success > 0) {
+                        PDMS.Utility.MessageBox.info("reply successfully");
+                        $('#js_reply_modal').modal('hide');
+                    } else {
+                        PDMS.Utility.MessageBox.info("reply failed");
+                    }
+                })
+            });
+
+            //done-end--------------------------------------------------------------------------------
+        })
+
+
+
+        //done--------------------------------------------------------------------------------------
+
+
+        function fullSr() {
+            var docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            }
+            else if (docElm.msRequestFullscreen) {
+                docElm = document.body; //overwrite the element (for IE)
+                docElm.msRequestFullscreen();
+            }
+            else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            }
+            else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            }
+            $(".navbar-static-top").hide();
+        }
+
+        function cancFullSr() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
+            else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+            $(".navbar-static-top").show();
+        }
+        function toggleSearch() {
+            if ($('#dispalyToggle span').hasClass('glyphicon-chevron-down')) {
+                $('#dispalyToggle').html('<span class="glyphicon glyphicon-chevron-up"></span> @T("Common.Search")');
+            }
+            else {
+                $('#dispalyToggle').html('<span class="glyphicon glyphicon-chevron-down"></span> @T("Common.Search")');
+            }
+            $('#search_field').toggle();
+        }
+    </script>
+}

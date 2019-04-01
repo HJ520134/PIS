@@ -1,0 +1,477 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1BEE001D-DDEB-47FC-A64C-4D65D83F3774}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PDMS.Model</RootNamespace>
+    <AssemblyName>PDMS.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiResultModel.cs" />
+    <Compile Include="DynamicColumnModel.cs" />
+    <Compile Include="EntityDTO\ActualAndEstimateDTO.cs" />
+    <Compile Include="EntityDTO\ActualAndPlanDTO.cs" />
+    <Compile Include="EntityDTO\APP\APPDTO.cs" />
+    <Compile Include="EntityDTO\BadProjectTopTenModel\QEboardSumModel.cs" />
+    <Compile Include="EntityDTO\CNCMachine\CNCMachineColumnTableDTO.cs" />
+    <Compile Include="EntityDTO\CNCMachine\CNCMachineDTO.cs" />
+    <Compile Include="EntityDTO\CNCMachine\CNCMachineReportDTO.cs" />
+    <Compile Include="EntityDTO\CurrentStaffDTO.cs" />
+    <Compile Include="EntityDTO\DefectCode_GroupDTO.cs" />
+    <Compile Include="EntityDTO\DemissionRateAndWorkScheduleDTO.cs" />
+    <Compile Include="EntityDTO\EQPForecastPowerOnDTO.cs" />
+    <Compile Include="EntityDTO\EQPMaterialDTO.cs" />
+    <Compile Include="EntityDTO\EQPPowerOnDTO.cs" />
+    <Compile Include="EntityDTO\EQPRepairInfoDTO.cs" />
+    <Compile Include="EntityDTO\EQPTypeDTO.cs" />
+    <Compile Include="EntityDTO\EQPUserTableDTO.cs" />
+    <Compile Include="EntityDTO\EquipmentInfoDTO.cs" />
+    <Compile Include="EntityDTO\EquipmentReport.cs" />
+    <Compile Include="EntityDTO\ErrorInfoDTO.cs" />
+    <Compile Include="EntityDTO\ExceptionDTO.cs" />
+    <Compile Include="EntityDTO\ExceptionTypeWithFlowchartDTO.cs" />
+    <Compile Include="EntityDTO\FixtureDefectCode_SettingDTO.cs" />
+    <Compile Include="EntityDTO\FixtureMaintenanceProfileDTO.cs" />
+    <Compile Include="EntityDTO\FixtureMaintenance_PlanDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartInOutBoundInfoDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartScanCodeDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartScanDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartStorageInboundDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartStorageReportDTO.cs" />
+    <Compile Include="EntityDTO\FixturePartWarehouseDTO.cs" />
+    <Compile Include="EntityDTO\FixtureRepairDTO.cs" />
+    <Compile Include="EntityDTO\FixtureDTO.cs" />
+    <Compile Include="EntityDTO\FixtureMachineDTO.cs" />
+    <Compile Include="EntityDTO\FixtureStorageCheckDTO.cs" />
+    <Compile Include="EntityDTO\FixtureSystemUserDTO.cs" />
+    <Compile Include="EntityDTO\FixtureUserWorkshopDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_DefectCodeDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Maintenance_RecordDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_M_UseScanHistoryDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_PartDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Demand_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Demand_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Demand_Summary_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Demand_Summary_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_InventoryDTO.cs" />
+    <Compile Include="EntityDTO\FixtureInOutStorageModel.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Order_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Order_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Setting_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_Setting_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Part_UseTimesDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_RepairSolutionDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Repair_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Repair_D_DefectDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Repair_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Return_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Return_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Storage_Outbound_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Storage_Outbound_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Storage_TransferDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Totake_DDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Totake_MDTO.cs" />
+    <Compile Include="EntityDTO\Fixture_Warehouse_StorageDTO.cs" />
+    <Compile Include="EntityDTO\FlowchartDetailIEDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartIEMgDataDTO.cs" />
+    <Compile Include="EntityDTO\FlowchartMappingDTO.cs" />
+    <Compile Include="EntityDTO\GLBuildPlanDTO.cs" />
+    <Compile Include="EntityDTO\GL_BuildPlanDTO.cs" />
+    <Compile Include="EntityDTO\GL_FourQDownTimeRecordDTO.cs" />
+    <Compile Include="EntityDTO\GL_LineGroupDTO.cs" />
+    <Compile Include="EntityDTO\GL_LineDTO.cs" />
+    <Compile Include="EntityDTO\GL_LineShiftPerfDTO.cs" />
+    <Compile Include="EntityDTO\GL_LineShiftResposibleUserDTO.cs" />
+    <Compile Include="EntityDTO\GL_ShiftTimeDTO.cs" />
+    <Compile Include="EntityDTO\GL_StationDTO.cs" />
+    <Compile Include="EntityDTO\GL_WIPEventDTO.cs" />
+    <Compile Include="EntityDTO\GL_WIPHourOutputDTO.cs" />
+    <Compile Include="EntityDTO\GL_WIPShiftBatchOutputDTO.cs" />
+    <Compile Include="EntityDTO\GL_WIPShiftOutputDTO.cs" />
+    <Compile Include="EntityDTO\GoldenLineCTRecordDTO.cs" />
+    <Compile Include="EntityDTO\HumanResourcesSummaryDTO.cs" />
+    <Compile Include="EntityDTO\InOutBoundInfoDTO.cs" />
+    <Compile Include="EntityDTO\FlowchartDetailMEDTO.cs" />
+    <Compile Include="EntityDTO\FlowchartDetailMEEquipmentDTO.cs" />
+    <Compile Include="EntityDTO\IPQCDtos\GL_IPQCQualityReportDTO.cs" />
+    <Compile Include="EntityDTO\IPQCDtos\GL_QADetectionPointDTO.cs" />
+    <Compile Include="EntityDTO\IPQCDtos\GL_QATargetYieldDTO.cs" />
+    <Compile Include="EntityDTO\IPQCDtos\GL_IPQCQualityDetialDTO.cs" />
+    <Compile Include="EntityDTO\IPQCDtos\IPQCQualityRePortDto.cs" />
+    <Compile Include="EntityDTO\LaborUsingInfoDTO.cs" />
+    <Compile Include="EntityDTO\LatestLineStationInfoDTO.cs" />
+    <Compile Include="EntityDTO\LineShiftPlanActInfoDTO.cs" />
+    <Compile Include="EntityDTO\MachineDetailDTO.cs" />
+    <Compile Include="EntityDTO\MachineNoYieldDetailDTO.cs" />
+    <Compile Include="EntityDTO\MachineYieldAndMachineConfigDTO.cs" />
+    <Compile Include="EntityDTO\Machine_CustomerAndStationDTO.cs" />
+    <Compile Include="EntityDTO\Machine_CustomerDTO.cs" />
+    <Compile Include="EntityDTO\Machine_Schedule_ConfigDTO.cs" />
+    <Compile Include="EntityDTO\Machine_Station_CustomerDTO.cs" />
+    <Compile Include="EntityDTO\Machine_StationDTO.cs" />
+    <Compile Include="EntityDTO\Machine_YieldDTO.cs" />
+    <Compile Include="EntityDTO\MaintenancePlanDTO.cs" />
+    <Compile Include="EntityDTO\MaterialDemandSummaryDTO.cs" />
+    <Compile Include="EntityDTO\MaterialInfoDTO.cs" />
+    <Compile Include="EntityDTO\MaterialInventoryDTO.cs" />
+    <Compile Include="EntityDTO\MaterialManageDTO.cs" />
+    <Compile Include="EntityDTO\MaterialNormalDemandDTO.cs" />
+    <Compile Include="EntityDTO\MaterialReasonDTO.cs" />
+    <Compile Include="EntityDTO\MaterialRepairDemandDTO.cs" />
+    <Compile Include="EntityDTO\MaterialSparepartsDemandDTO.cs" />
+    <Compile Include="EntityDTO\Material_Maintenance_RecordDTO.cs" />
+    <Compile Include="EntityDTO\MES_PIS_SyncFailedRecordDTO.cs" />
+    <Compile Include="EntityDTO\MES_SNOriginalDTO.cs" />
+    <Compile Include="EntityDTO\Mes_StationColorDTO.cs" />
+    <Compile Include="EntityDTO\MES_StationDataRecordDTO.cs" />
+    <Compile Include="EntityDTO\MeterialUpdateInfoDTO.cs" />
+    <Compile Include="EntityDTO\ModelLineHRDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_DefectCodeDailyNumDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_DefectCodeDailySumDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_DownRecordsDTO.cs" />
+    <Compile Include="EntityDTO\GL_FourQBaseMaintainDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_FourQBaseMaintainDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_MachineDayOutputDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_DownTypeDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_DownTimeCodeDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_EveryDayMachineDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_MachineDailyDownRecordDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_MachineInfoDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_MachineStatusDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_StationDefectCodeDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_UserStationDTO.cs" />
+    <Compile Include="EntityDTO\OEE\OEE_MachineInformationDTO.cs" />
+    <Compile Include="EntityDTO\OQCInputMasterHistoryDTO.cs" />
+    <Compile Include="EntityDTO\OrgBomDTO.cs" />
+    <Compile Include="EntityDTO\PlayBoard_PlayUsetDTO.cs" />
+    <Compile Include="EntityDTO\PlayBoard_PlayTimeDTO.cs" />
+    <Compile Include="EntityDTO\PlayBoard_SettingDTO.cs" />
+    <Compile Include="EntityDTO\PlayBoard_ViewDTO.cs" />
+    <Compile Include="EntityDTO\ProcessIDTransformConfigDTO.cs" />
+    <Compile Include="EntityDTO\Process_InfoDTO.cs" />
+    <Compile Include="EntityDTO\ProductEquipmentQTYDTO.cs" />
+    <Compile Include="EntityDTO\ProductionSchedulDTO.cs" />
+    <Compile Include="EntityDTO\ProductionSchedulNPIDTO.cs" />
+    <Compile Include="EntityDTO\Production_LineDTO.cs" />
+    <Compile Include="EntityDTO\ProductRequestStaffDTO.cs" />
+    <Compile Include="EntityDTO\ProjectPlanDTO.cs" />
+    <Compile Include="EntityDTO\QualityAssuranceInputMasterHistoryDTO.cs" />
+    <Compile Include="EntityDTO\QualityAssurance_MgDataDTO.cs" />
+    <Compile Include="EntityDTO\EditWIPDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartDetailDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartDetailTempDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartMasterDTO.cs" />
+    <Compile Include="EntityDTO\EnumerationDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartMgDataDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartMgDataTempDTO.cs" />
+    <Compile Include="EntityDTO\FlowChartPCMHRelationshipDTO.cs" />
+    <Compile Include="EntityDTO\PPForQAInterfaceDTO.cs" />
+    <Compile Include="EntityDTO\QAReportDaySummeryDTO.cs" />
+    <Compile Include="EntityDTO\QAReportExceptionTypeRankDTO.cs" />
+    <Compile Include="EntityDTO\QualityAssurance_InputMasterDTO.cs" />
+    <Compile Include="EntityDTO\RepairLocationDTO.cs" />
+    <Compile Include="EntityDTO\SafeStockDTO.cs" />
+    <Compile Include="EntityDTO\StationStdActCTInfoDTO.cs" />
+    <Compile Include="EntityDTO\StorageCheckDTO.cs" />
+    <Compile Include="EntityDTO\StorageDetailDTO.cs" />
+    <Compile Include="EntityDTO\StorageInboundDTO.cs" />
+    <Compile Include="EntityDTO\StorageOutboundDDTO.cs" />
+    <Compile Include="EntityDTO\StorageOutboundDTO.cs" />
+    <Compile Include="EntityDTO\StorageReportDTO.cs" />
+    <Compile Include="EntityDTO\StorageTransferDTO.cs" />
+    <Compile Include="EntityDTO\SubUserOrgDTO.cs" />
+    <Compile Include="EntityDTO\ProductDataDTO.cs" />
+    <Compile Include="EntityDTO\SubUserPlantDTO.cs" />
+    <Compile Include="EntityDTO\SystemBUD_OrgDTO.cs" />
+    <Compile Include="EntityDTO\SystemBUDDTO.cs" />
+    <Compile Include="EntityDTO\SystemBUMDTO.cs" />
+    <Compile Include="EntityDTO\SystemFunctionPlantDTO.cs" />
+    <Compile Include="EntityDTO\SystemFunctionSubDTO.cs" />
+    <Compile Include="EntityDTO\QAInputModifyDTO.cs" />
+    <Compile Include="EntityDTO\SystemLanguageDTO.cs" />
+    <Compile Include="EntityDTO\SystemLocaleStringResourceDTO.cs" />
+    <Compile Include="EntityDTO\SystemModuleEmailDTO.cs" />
+    <Compile Include="EntityDTO\SystemOrgAndBomDTO.cs" />
+    <Compile Include="EntityDTO\SystemOrgBomDTO.cs" />
+    <Compile Include="EntityDTO\SystemOrgDTO.cs" />
+    <Compile Include="EntityDTO\SystemPlantDTO.cs" />
+    <Compile Include="EntityDTO\SystemProjectDTO.cs" />
+    <Compile Include="EntityDTO\SystemUserRoleDTO.cs" />
+    <Compile Include="EntityDTO\SystemRoleDTO.cs" />
+    <Compile Include="EntityDTO\SystemRoleFunctionDTO.cs" />
+    <Compile Include="EntityDTO\SystemUserBusinessGroupDTO.cs" />
+    <Compile Include="EntityDTO\SystemUserViewDTO.cs" />
+    <Compile Include="EntityDTO\SystemViewColumnDTO.cs" />
+    <Compile Include="EntityDTO\ExceptionTypeDTO.cs" />
+    <Compile Include="EntityDTO\System_LocalizedPropertyDTO.cs" />
+    <Compile Include="EntityDTO\System_Organization_PlantDTO.cs" />
+    <Compile Include="EntityDTO\TopTenQeboardModel.cs" />
+    <Compile Include="EntityDTO\TwoHourCapacityDTO.cs" />
+    <Compile Include="EntityDTO\VendorInfoDTO.cs" />
+    <Compile Include="EntityDTO\Vendor_InfoDTO.cs" />
+    <Compile Include="EntityDTO\DefectRepairSolutionDTO.cs" />
+    <Compile Include="EntityDTO\WarehouseDTO.cs" />
+    <Compile Include="EntityDTO\WarehouseStorageDTO.cs" />
+    <Compile Include="EntityDTO\WarningListDTO.cs" />
+    <Compile Include="EntityDTO\WIPChangeHistoryModel.cs" />
+    <Compile Include="EntityDTO\WorkshopDTO.cs" />
+    <Compile Include="EntityDTO\WorkStationDTO.cs" />
+    <Compile Include="InfrastructureModel\AuthorizedLoginUser.cs" />
+    <Compile Include="InfrastructureModel\BaseModel.cs" />
+    <Compile Include="EntityDTO\EntityDTOBase.cs" />
+    <Compile Include="EntityDTO\SystemFunctionDTO.cs" />
+    <Compile Include="EntityDTO\SystemUserDTO.cs" />
+    <Compile Include="InfrastructureModel\LoginUserModel.cs" />
+    <Compile Include="InfrastructureModel\Message.cs" />
+    <Compile Include="InfrastructureModel\Page.cs" />
+    <Compile Include="InfrastructureModel\PagedListModel.cs" />
+    <Compile Include="InfrastructureModel\PageUnauthorizedElement.cs" />
+    <Compile Include="InfrastructureModel\PushBotsModel.cs" />
+    <Compile Include="InfrastructureModel\SystemMenu.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InfrastructureModel\QueryModel.cs" />
+    <Compile Include="ViewModels\Batch\BatchExecVM.cs" />
+    <Compile Include="ViewModels\Batch\BatchMailVM.cs" />
+    <Compile Include="ViewModels\Batch\FixtureBatchVM.cs" />
+    <Compile Include="ViewModels\ChartVM.cs" />
+    <Compile Include="ViewModels\CNCMachine\API_CNCCollectionData.cs" />
+    <Compile Include="ViewModels\CNCMachine\API_MachineStatus.cs" />
+    <Compile Include="ViewModels\CNCMachine\API_RegisteredMachine.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCDataGroup1.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCDataGroup2.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCDataGroup3.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCMachineReportVM.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCMachineVM.cs" />
+    <Compile Include="ViewModels\CNCMachine\CNCToolInfo.cs" />
+    <Compile Include="ViewModels\Common\CommonVM.cs" />
+    <Compile Include="ViewModels\Common\CustomUserInfoVM.cs" />
+    <Compile Include="ViewModels\Common\EnumerationModelSearch.cs" />
+    <Compile Include="ViewModels\Common\LanguageVM.cs" />
+    <Compile Include="ViewModels\ElectricalBoard\ModelLineHRModelSearch.cs" />
+    <Compile Include="ViewModels\ElectricalBoard\ORTImgVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\CostCenterVM.cs" />
+    <Compile Include="ViewModels\Exception\ExceptionVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_UseTimesModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_ReturnVM.cs" />
+    <Compile Include="ViewModels\Fixture\FX_SNFixtureModel.cs" />
+    <Compile Include="ViewModels\GLQAReport\GLQAReportVM.cs" />
+    <Compile Include="ViewModels\GLQAReport\IPQCQualityReportVM.cs" />
+    <Compile Include="ViewModels\GLQAReport\IPQCQualityResultVM.cs" />
+    <Compile Include="ViewModels\GoldenLineViewModel.cs" />
+    <Compile Include="ViewModels\GoldenLine\GLBuildHCPlanVM.cs" />
+    <Compile Include="ViewModels\GoldenLine\GLBuildPlanVM.cs" />
+    <Compile Include="ViewModels\GoldenLine\GLHCActuaWM.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_BuildPlanModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_LineModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_LineShiftPerfModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_ShiftTimeModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_StationModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_WIPShiftBatchOutputModelSearch.cs" />
+    <Compile Include="ViewModels\GoldenLine\GL_WIPShiftOutputModelSearch.cs" />
+    <Compile Include="ViewModels\Machine\MachineDetailVM.cs" />
+    <Compile Include="ViewModels\OEE\OEEReportModel.cs" />
+    <Compile Include="ViewModels\OEE\OEE_DownTimeCodeVM.cs" />
+    <Compile Include="ViewModels\PlayBoard\PictureVM.cs" />
+    <Compile Include="ViewModels\PlayBoard\PPTVM.cs" />
+    <Compile Include="ViewModels\PlayBoard\PlayBoard_SettingModelSearch.cs" />
+    <Compile Include="ViewModels\PlayBoard\PlayBoard_ViewModelSearch.cs" />
+    <Compile Include="ViewModels\ProcessIDTraConfig\ProcessIDTraConfigVM.cs" />
+    <Compile Include="ViewModels\Machine\Machine_YieldReportVM.cs" />
+    <Compile Include="ViewModels\ProductionResourcePlan\DRAWS_QueryParam.cs" />
+    <Compile Include="ViewModels\ElectricalBoard\Eboard.cs" />
+    <Compile Include="ViewModels\ElectricalBoard\NoticeVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\EQPRepair.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\EQPRepairVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\EquipmentReportVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\MaterialVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\EQPRoleVM.cs" />
+    <Compile Include="ViewModels\EqpMaintenance\StoreManageVM.cs" />
+    <Compile Include="ViewModels\EventReportManager\WarningListVM.cs" />
+    <Compile Include="ViewModels\Fixture\DefectRepairSolutionVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixPartInOutReportDetailVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixturePartCreateboundVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixturePartUpdateboundVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixturePartWarehouseVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixturePart_OrderVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixtureRepairVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixtureStorageCheckVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixtureStorageTransferVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixtureTotakeVM.cs" />
+    <Compile Include="ViewModels\Fixture\FixtureVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_DefectCodeModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_DefectCodeVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_MachineModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_MachineVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_PartModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_PartVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Demand_DModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Demand_MModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Demand_MVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Demand_Summary_DModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Demand_Summary_MModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Setting_MModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Part_Setting_MVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_RepairSolutionModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_RepairSolutionVM.cs" />
+    <Compile Include="ViewModels\Fixture\Fixture_Repair_DModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Production_LineModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\Production_LineVM.cs" />
+    <Compile Include="ViewModels\Fixture\VendorInfoVM.cs" />
+    <Compile Include="ViewModels\Fixture\WorkStationModelSearch.cs" />
+    <Compile Include="ViewModels\Fixture\WorkStationVM.cs" />
+    <Compile Include="ViewModels\FlowChart\FlowChartModelSearch.cs" />
+    <Compile Include="ViewModels\EventReportManager\EnumVM.cs" />
+    <Compile Include="ViewModels\EventReportManager\PPCheckDataVM.cs" />
+    <Compile Include="ViewModels\FlowChart\FlowChartPCMHRelationshipVM.cs" />
+    <Compile Include="ViewModels\FlowChart\FlowChartPlanManagerVM.cs" />
+    <Compile Include="ViewModels\FlowChart\PrjectListVM.cs" />
+    <Compile Include="ViewModels\ProductData\ProcessDateSearch.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\Flowchart_DetailVM_ProductionPlanning.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\PPFlowchartMPVM.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\ProductionPlanningModel.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\ProductionPlanningReportVM.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\ProductionSchedulMPVM.cs" />
+    <Compile Include="ViewModels\ProductionPlanning\ProductionSchedulNPIVM.cs" />
+    <Compile Include="ViewModels\ProductionResourcePlan\ProductionPlanMeVM.cs" />
+    <Compile Include="ViewModels\Quality\ExceptionTypeFlowChart.cs" />
+    <Compile Include="ViewModels\Quality\ExceptionTypeVM.cs" />
+    <Compile Include="ViewModels\Quality\CheckPointVM.cs" />
+    <Compile Include="ViewModels\Quality\FunPlantVM.cs" />
+    <Compile Include="ViewModels\Quality\OQC\ExportData.cs" />
+    <Compile Include="ViewModels\Quality\OQC\OQCReprotVM.cs" />
+    <Compile Include="ViewModels\Quality\OQC\OQC_InputDetailVM.cs" />
+    <Compile Include="ViewModels\Quality\OQC\OQC_InputMasterVM.cs" />
+    <Compile Include="ViewModels\Quality\OrganiztionVM.cs" />
+    <Compile Include="ViewModels\Quality\ProductSaleReport\GoodRateVM.cs" />
+    <Compile Include="ViewModels\Quality\ProductSaleReport\TimeIntervalFPYReportVM.cs" />
+    <Compile Include="ViewModels\Quality\QABackToFunPlant.cs" />
+    <Compile Include="ViewModels\Quality\QADetailVM.cs" />
+    <Compile Include="ViewModels\Quality\QAInputModifyVM.cs" />
+    <Compile Include="ViewModels\Quality\QAMasterVM.cs" />
+    <Compile Include="ViewModels\Quality\QAReportVM.cs" />
+    <Compile Include="ViewModels\Quality\QATargetVM.cs" />
+    <Compile Include="ViewModels\Quality\ReturnMessageQA.cs" />
+    <Compile Include="ViewModels\QualtyTrace\TraceModel.cs" />
+    <Compile Include="ViewModels\ReportDataVM.cs" />
+    <Compile Include="ViewModels\Settings\BUDetailModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\BUModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\FuncPlantVM.cs" />
+    <Compile Include="ViewModels\Settings\FunctionMaintenanceVM.cs" />
+    <Compile Include="ViewModels\Settings\OrgBomModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\OrgBomVM.cs" />
+    <Compile Include="ViewModels\Settings\OrgModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\PlantModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\Process_InfoModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\Process_InfoVM.cs" />
+    <Compile Include="ViewModels\Settings\ProjectSearchModel.cs" />
+    <Compile Include="ViewModels\Settings\ProjectVM.cs" />
+    <Compile Include="ViewModels\Settings\SystemOrgAndProVM.cs" />
+    <Compile Include="ViewModels\Settings\System_LocalizedPropertyModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\System_LocalizedPropertyVM.cs" />
+    <Compile Include="ViewModels\Settings\UserFuncPlantVM.cs" />
+    <Compile Include="ViewModels\Settings\UserOrgSetting.cs" />
+    <Compile Include="ViewModels\Settings\UserRoleSettingVM.cs" />
+    <Compile Include="ViewModels\Settings\RoleFunctionSettingVM.cs" />
+    <Compile Include="ViewModels\Settings\RoleModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\UserBUSettingSearch.cs" />
+    <Compile Include="ViewModels\Settings\UserPlantSettingVM.cs" />
+    <Compile Include="ViewModels\Settings\ViewColumnSearch.cs" />
+    <Compile Include="ViewModels\Settings\WorkshopModelSearch.cs" />
+    <Compile Include="ViewModels\Settings\WorkshopVM.cs" />
+    <Compile Include="ViewModels\StorageManage\CreateBoundVM.cs" />
+    <Compile Include="ViewModels\StorageManage\InOutBoundVM.cs" />
+    <Compile Include="ViewModels\StorageManage\MatDemandSummaryVM.cs" />
+    <Compile Include="ViewModels\StorageManage\MaterialNormalDemandVM.cs" />
+    <Compile Include="ViewModels\StorageManage\Material_Maintenance_RecordVM.cs" />
+    <Compile Include="ViewModels\StorageManage\MatInventoryVM.cs" />
+    <Compile Include="ViewModels\StorageManage\matNDDetail.cs" />
+    <Compile Include="ViewModels\StorageManage\matNDVM.cs" />
+    <Compile Include="ViewModels\StorageManage\matRDVM.cs" />
+    <Compile Include="ViewModels\StorageManage\MatRepairDemandVM.cs" />
+    <Compile Include="ViewModels\StorageManage\matSDVM.cs" />
+    <Compile Include="ViewModels\StorageManage\MatSparepartsDemandVM.cs" />
+    <Compile Include="ViewModels\StorageManage\StorageCheckVM.cs" />
+    <Compile Include="ViewModels\StorageManage\StorageDetailVM.cs" />
+    <Compile Include="ViewModels\StorageManage\StorageReportVM.cs" />
+    <Compile Include="ViewModels\StorageManage\StorageTransferVM.cs" />
+    <Compile Include="ViewModels\StorageManage\UpdateBoundVM.cs" />
+    <Compile Include="ViewModels\StorageManage\WarehouseVM.cs" />
+    <Compile Include="ViewModels\System_ProjectModelSearch.cs" />
+    <Compile Include="ViewModels\UserInfoVM.cs" />
+    <Compile Include="ViewModels\Settings\UserModelSearch.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\CapacitySpace\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDMS.Common\PDMS.Common.csproj">
+      <Project>{09b6a6ab-8dc7-4d94-8ee4-248360ac54b3}</Project>
+      <Name>PDMS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>PIS(M) - @ViewBag.PageTitle </title>
+
+    <link rel="stylesheet" href="~/Content/AdminLTE/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Scripts/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="~/Content/AdminLTE/dist/css/ionicons.min.css" />
+    <link rel="stylesheet" href="~/Content/Css/icomoonFonts.css" />
+    <script src="~/Scripts/ECharts/echarts.min.js"></script>
+    <script src="~/Scripts/plugins/taffy-min.js"></script>
+
+
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="Content/img/logo-icon/apple-icon-57x57-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="Content/img/logo-icon/apple-icon-60x60-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="Content/img/logo-icon/apple-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="Content/img/logo-icon/apple-icon-76x76-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="Content/img/logo-icon/apple-icon-114x114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="Content/img/logo-icon/apple-icon-120x120-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="Content/img/logo-icon/apple-icon-144x144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="Content/img/logo-icon/apple-icon-152x152-precomposed.png" />
+
+
+    @Styles.Render("~/Content/DataTables")
+    @Styles.Render("~/Content/kendo")
+    @Styles.Render("~/Content/AdminLTE_Theme")
+    @Styles.Render("~/Content/css/css")
+
+    <!--RWD n Portal n Special CSS-->
+    <link rel="stylesheet" href="~/Content/css/Portal-xs.css" media="screen and (max-width: 768px)">
+    <link rel="stylesheet" href="~/Content/css/Portal-sm.css" media="screen and (min-width: 768px) and (max-width: 992px)">
+    <link rel="stylesheet" href="~/Content/css/Portal-md.css" media="screen and (min-width: 992px) and (max-width: 1200px)">
+    <link rel="stylesheet" href="~/Content/css/Portal-lg.css" media="screen and (min-width: 1200px)">
+    <style>
+        /*.abgne_marquee {
+            position: relative;
+            overflow: hidden;  超出範圍的部份要隱藏
+            width: 50%;
+            height: 25px;
+            border: 1px solid #3c8dbc;
+            background: #648ec7;
+            margin: 10PX 0 0 100PX;
+            float: left;
+            top:auto;
+
+        }
+
+        .abgne_marquee_ul, .abgne_marquee_li {
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+            font-size: 15px;
+            color: #2762bb;
+            font-weight: bold;
+            text-align: center;
+            width: 50%;
+        }
+
+        .abgne_marquee_ul {
+            position: absolute;
+            margin: 10PX 0 0 100PX;
+        }*/
+        .abgne_marquee {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 25px;
+            border: 1px solid #94d8ff;
+            background: #84a7bb;
+            margin: 10PX 0 0 100PX;
+            float: left;
+            top: auto;
+        }
+
+        .abgne_marquee_ul {
+            display: block;
+            padding: 0;
+            margin: 0px auto;
+            list-style: none;
+            line-height: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 22px; /* height should be included to reserve visual space for the marquee */
+        }
+
+            .abgne_marquee_ul li {
+
+                position: absolute; /*这行不可以改 */
+                top: -999em;
+                left: 0;
+                white-space: nowrap; /* 超出範圍的部份要隱藏 */
+
+                padding: 3px 5px;
+                width: 100%;
+                font-size: 16px;
+                color: ghostwhite;
+                font-weight: bold;
+                text-align: center;
+                margin: 0px auto;
+            }
+    </style>
+
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header portal-header">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Logo -->
+                <a href="@Url.Action("Index","Home")" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><img src="~/Content/img/logo/logo16.png" class="logo-mini-logoimg" /></span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><img src="~/Content/img/logo/logo16.png" class="logo-lg-logoimg" /></span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="abgne_marquee" style="width: 50%;float:left;">
+                    <ul class="abgne_marquee_ul" id="abgne_marquee_ul"></ul>
+                </div>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!--GMT+8-->
+                        <li>
+                            <!-- Menu Toggle Button -->
+                            <h5 class="padding-t-7 padding-r-5 text-gray">
+                                <span class="hidden-md hidden-lg">GMT+8 Taipei</span>
+                                <span class="hidden-xs hidden-sm"> (GMT+08:00)</span>
+                                <span class="hidden-xs hidden-sm">Taipei</span>
+                            </h5>
+                        </li>
+                        <!--Language Menu -->
+                        @Html.Action("LanguageSelector", "Common", new { area = "Admin" })
+                        <!-- Tasks Menu -->
+                        <li class="dropdown tasks-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-tasks"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Tasks</li>
+                                <li>
+                                    <!-- Inner menu: contains the tasks -->
+                                    <ul class="menu">
+
+                                        <li class="my-task">
+                                            <!-- Task item -->
+                                            <div class="row">
+                                                <div class="col-md-12 pull-left">
+                                                    No data
+                                                </div>
+                                            </div>
+                                        </li><!-- end task item -->
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="~/Content/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">@PDMS.Core.BaseController.CurrentUser.UserName</span> &nbsp;
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        <a class="btn btn-primary btn-flat" id="js_btn_changepwd"><i class="fa fa-sign-out"></i>修改密码</a>
+                                        <a href="@Url.Action("SignOut","Login")" class="btn btn-primary btn-flat" id="js_btn_signout"><i class="fa fa-sign-out"></i> Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Menu -->
+        @{
+            Html.RenderAction("MenuListPartial", "Home");
+        }
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper portal-content-wrapper">
+            <!--測試機字樣 start-->
+            @{
+                if (System.Configuration.ConfigurationManager.AppSettings["IsDevelop"] != null && bool.Parse(System.Configuration.ConfigurationManager.AppSettings["IsDevelop"].ToString()))
+                {
+                    <div class=" bg-red text-center" style="font-size:16px; font-weight:700; padding:5px 0px;">【 測試機 / Testing Server / 测试环境 】</div>
+                }
+            }
+
+            <!--測試機字樣 end-->
+            @if (!string.IsNullOrEmpty(ViewBag.PageTitle))
+            {
+                <!--Content Header (Page header)-->
+                <section class="content-header portal-content-header">
+                    <h1>
+                        @ViewBag.PageTitle
+                    </h1>
+                </section>
+            }
+            <!--填写主体内容-->
+            @RenderBody()
+        </div>
+        <!-- Main Footer -->
+        <footer class="main-footer portal-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                <!--Footer 右邊區塊-->
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 Jabil</strong> All rights reserved.
+        </footer>
+        <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+    <!--当前页相关信息，DIV不包含任何东西-->
+    @if (!string.IsNullOrEmpty(ViewBag.PageID))
+    {
+        <div id="system_page_id" data-id="@ViewBag.PageID" data-url="@string.Format("http://{0}:{1}{2}",HttpContext.Current.Request.Url.Host,Request.Url.Port,Url.Action("PageUnauthorizedElements", "Home"))"></div>}
+
+    @Scripts.Render("~/bundles/basic_framework")
+    @Scripts.Render("~/bundles/DataTables")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/spp-framework")
+    <!--挖2个坑，可以填放相应内容-->
+    @RenderSection("ViewModals", false)
+    @RenderSection("ViewScripts", false)
+    <!-- Modal -->
+    <div class="modal fade" id="js_editPass_modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">修改密码</h3>
+                </div>
+                <div class="modal-body form-horizontal">
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_pwd_old">现密码</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm valid" id="js_input_pwd_old" name="NowPassword" placeholder="现密码" required="" data-msg-required="请输入用户的当前密码" aria-required="true" aria-invalid="false">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_pwd_new">新密码</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm" id="js_input_pwd_new" name="NewPassword" placeholder="新密码"
+                                               required data-msg-required="请输入新的密码"
+                                               data-rule-maxlength="6" data-msg-maxlength="请至少输入{0}字.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_pwd_confirm">确认密码</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm" id="js_input_pwd_confirm" name="ConfirmPassword" placeholder="确认密码"
+                                               required data-msg-required="请输入确认密码"
+                                               data-rule-maxlength="6" data-msg-maxlength="请至少输入{0}字."
+                                               data-rule-email="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12">
+                            <ul class="list-group validate-error"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_edit_pass"><i class="fa fa-save"></i> 保存修改</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="hidCurrentLanguageIdFlag" />
+    <script src="~/Scripts/plugins/jquery.marquee.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".line").slideUp();
+            (function () {
+                PDMS.Utility.HideUnauthorizedElements();
+                $("#hidCurrentLanguageIdFlag").val(@Session["CurrentLanguageId"]);
+            })();
+
+            $('#js_btn_signout').click(function () {
+                PDMS.Storage.sessionStorage.removeAll();
+            });
+
+            $('#js_btn_changepwd').click(function () {
+                $('#js_editPass_modal').modal('show');
+            });
+
+
+            if (@ViewBag.PasswordFlag==true) {
+                    $('#js_btn_changepwd').show();
+                } else {
+                    $('#js_btn_changepwd').hide();
+            }
+
+            /**************先在讀取頁面時，先載入****************************/
+            if (@Session["CurrentLanguageId"]== 1) {
+                MarqueePath ="@Url.Content("~/Content/Marquee_EN.txt")";
+            } else  {
+                MarqueePath ="@Url.Content("~/Content/Marquee_CN.txt")";
+            }
+            $('.abgne_marquee_ul').children('li').remove();//每載入前先清空li
+
+            $.get(MarqueePath, function (result) {
+                $('.abgne_marquee_ul').append(result.replace(/.+/g, function (num) {
+                    var strS = '<li>' + num + '</li>';
+                    return strS;
+                }))
+            });
+
+            $(".abgne_marquee_ul").marquee({ yScroll: "top" });
+
+        });
+
+        $('#js_editPass_modal').on('hidden.bs.modal', function (e) {
+            $('#js_editPass_modal').find('input').val('');
+            //window.location.href = window.location.href;
+        });
+
+        $('#js_btn_save_edit_pass').click(function (e) {
+            url = "../Settings/ChangePassWord";
+            var obj = new Object();
+            obj.NowPassword = $("#js_input_pwd_old").val();
+            obj.NewPassword = $("#js_input_pwd_new").val();
+            obj.ConfirmPassword = $("#js_input_pwd_confirm").val();
+            var str = JSON.stringify(obj);
+            $.post(url, { info: str }, function (data) {
+                if (data == "success") {
+                    PDMS.Utility.MessageBox.info(data);
+                } else{
+                    PDMS.Utility.MessageBox.error(data);
+                }
+            });
+        });
+
+
+
+
+
+    $(function () {
+
+
+    });
+
+    this.SetFontSize = function (wordbox, maxHeight, minSize, maxSize) {
+        wordbox.css('font-size', minSize + "px");
+        maxSize++;
+
+        console.log(wordbox.height());
+
+        wordbox.each(function () {
+          //  console.log($(this).height());
+            console.log($(this).prop('tagName'));
+            $(this).css('word-wrap', 'break-word');
+            for (var i = minSize; i < maxSize; i++) {
+             //   console.log($(this).height() + '>' + maxHeight);
+                if ($(this).height() > maxHeight) {
+                 //   console.log('變小' + i);
+                    $(this).css('font-size', (i - 2) + 'px');
+                  //  console.log($(this).height());
+                    break;
+                } else {
+                //    console.log('變大' + i);
+                    //如果小于最大高度，文字大小加1继续尝试
+                    $(this).css('font-size', i + 'px');
+                 //   console.log($(this).height());
+
+                }
+            }
+        });
+    };
+
+
+    $(document).ready(function (){
+        SetFontSize($("#menutext1"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext2"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext3"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext4"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext5"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext6"), 16, 10, 16);//重置字体大小
+        SetFontSize($("#menutext7"), 16, 8, 16);//重置字体大小
+
+});
+
+/**********************************************************************/
+    </script>
+</body>
+</html>
+
+

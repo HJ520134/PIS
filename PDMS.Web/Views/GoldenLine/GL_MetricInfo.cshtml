@@ -1,0 +1,623 @@
+﻿@model PDMS.Model.ViewModels.Fixture_DefectCodeVM
+
+@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.View = T("Common.View").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Suredelete = T("QA.Suredelete").Text;
+    ViewBag.Successfullydeleted = T("QA.Successfullydeleted").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+    ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+    ViewBag.PleaseSite = T("OEE.PleaseSite").Text;
+    ViewBag.PleaseOPType = T("OEE.PleaseOPType").Text;
+    ViewBag.PleaseProject = T("OEE.PleaseProject").Text;
+    ViewBag.PleaseLine = T("OEE.PleaseLine").Text;
+    ViewBag.PleaseStation = T("OEE.PleaseStation").Text;
+    ViewBag.PleaseMalfunction = T("OEE.PleaseMalfunction").Text;
+    ViewBag.PleaseError_Code = T("OEE.PleaseError_Code").Text;
+    ViewBag.PleaseLevel_Details = T("OEE.PleaseLevel_Details").Text;
+    ViewBag.PleaseUpload_Ways = T("OEE.PleaseUpload_Ways").Text;
+
+}
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "GoldenLine", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+
+                    <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">@T("Common.AddNew")</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query">@T("Common.Search")</button>
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>MetricID</th>
+                        <th>Metric名称</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_search">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_search" name="Plant_Organization_UID" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_search">@T("QA.OPType")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_search" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_search">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_search" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Sequence_Add">Metric_ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Sequence_Add" name="Metric_ID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Type_Code_Add">Metric_Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Type_Code_Add" name="Metric_Name">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_inner_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("OEE.DownTimeCodeM")</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditMetricInfo", "GoldenLine", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_Add">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_Add" name="Plant_Organization_UID" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_Add">@T("QA.OPType")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_Add" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_Add">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_Add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Metric_ID_Add">Metric_ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Metric_ID_Add" name="Metric_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Type_Code_Add">Metric_Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Metric_Name_Add" name="Metric_Name">
+                                </div>
+                            </div>
+                            <input type="hidden" name="Metric_UID" />
+                            <input type="hidden" name="isEdit" id="isEdit" value=false />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#check_pre').hide();
+            $('#check_next').hide();
+        })
+        $('#js_btn_clear').click(function () {
+            PDMS.Utility.Criteria.Clear();
+            $('#js_search_modal').find('select').val('');
+        });
+
+        $('#js_search_modal').on('hidden.bs.modal', function (e) {
+            $('#js_search_modal').find('input').val('');
+            $('#js_search_modal').find('select').val('');
+        })
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+
+        $(function () {
+            var StorageCheckSetting = (function () {
+                var urls = {
+                    //画面初始化加载
+                    QueryMetricInfo: '@Url.Action("QueryMetricInfo", "GoldenLine")',
+                    GetMetricInfoByIdAPI: '@Url.Action("GetMetricInfoByIdAPI", "GoldenLine")',
+                    //删除未审核盘点数据
+                    DeleteMetricInfo: '@Url.Action("DeleteMetricInfo", "GoldenLine")',
+
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                };
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Metric_UID + '">')
+                                   .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-id="' + rowData.Metric_UID + '">@ViewBag.Edit</button>';
+                            var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete"   data-id="' + rowData.Metric_UID + '">@ViewBag.Delete</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '{1}' +
+                                        '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            result = result.replace('{1}', buttonDelete);
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: "Plant_Organization_Name",
+                        className: "min-col-xs text-center"
+                    },
+                      {
+                          data: "BG_Organization_Name",
+                          className: "min-col-xs text-center"
+                      },
+                        {
+                            data: "FunPlant_Organization_Name",
+                            className: "min-col-xs text-center"
+                        },
+                      {
+                          data: "Metric_ID",
+                          className: "min-col-xs text-center"
+                      },
+                   {
+                       data: "Metric_Name",
+                       className: "min-col-xs text-center"
+                   },
+                  {
+                      data: "Modified_UID",
+                      className: "min-col-xs text-center"
+                  }, {
+                      data: null,
+                      createdCell:
+                  function (td, cellData, rowData, row, col) {
+                      $(td).html(new Date(rowData.Modified_Date).format("yyyy-MM-dd hh:mm:ss"));
+                  },
+                      className: "min-col-xs"
+                  }];
+
+                //#endregion 定义字段列
+                Date.prototype.format = function (format) {
+                    var date = {
+                        "M+": this.getMonth() + 1,
+                        "d+": this.getDate(),
+                        "h+": this.getHours(),
+                        "m+": this.getMinutes(),
+                        "s+": this.getSeconds(),
+                        "q+": Math.floor((this.getMonth() + 3) / 3),
+                        "S+": this.getMilliseconds()
+                    };
+                    if (/(y+)/i.test(format)) {
+                        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                    }
+                    for (var k in date) {
+                        if (new RegExp("(" + k + ")").test(format)) {
+                            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                                   ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                        }
+                    }
+                    return format;
+                }
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _QueryMetricInfo = function (firstLoad, buildCriteria) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.QueryMetricInfo,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _QueryMetricInfo(true, false);
+                    },
+                    QueryMetricInfo: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _QueryMetricInfo(false, buildCriteria);
+                    }
+                }
+            })();
+
+            StorageCheckSetting.Init();
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+
+            $('#js_btn_query').click(function () {
+                $('#js_select_factory_search').trigger('change');
+            })
+
+            $('#js_select_factory_search').change(function () {
+                GetOPTypesearch();
+            });
+            function GetOPTypesearch() {
+                // ;
+                var oporgid = $('#js_select_factory_search option:selected').val();
+                url = StorageCheckSetting.urls.getCurrentOPType;
+                $('#js_select_optype_search').html('<option></option>');
+                $('#js_select_optype_search').selectpicker('refresh');
+                $('#js_select_funplant_search').html('<option></option>');
+                $('#js_select_funplant_search').selectpicker('refresh');
+
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_search').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+
+                        $('#js_select_optype_search').selectpicker('refresh');
+                    });
+                }}
+
+
+            $('#js_select_factory_Add').change(function () {
+                GetOPType();
+            });
+
+            function GetOPType() {
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                url = StorageCheckSetting.urls.getCurrentOPType;
+                $('#js_select_optype_Add').html('<option></option>');
+                $('#js_select_optype_Add').selectpicker('refresh');
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_Add').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                            }
+                        }
+                        $('#js_select_optype_Add').selectpicker('refresh');
+                    });
+
+                }
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_Add').change(function () {
+                var url = StorageCheckSetting.urls.getFunPlantByOPTypes;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+
+                if ($('#js_select_optype_Add option:selected').text() != "") {
+                    //设置功能厂
+                    $.post(url, { Optype: $('#js_select_optype_Add').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if(@Model.FunPlantID!=0)
+                            {
+                                if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                {
+                                    $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                                }
+                            }else
+                            {
+                                $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            }
+                        }
+                        $('#js_select_funplant_Add').selectpicker('refresh');
+                    });
+                }
+            });
+
+            //OP类型变更  start
+            $('#js_select_optype_search').change(function () {
+                var url = StorageCheckSetting.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_search').html('<option></option>');
+                $('#js_select_funplant_search').selectpicker('refresh');
+
+                //   if ($('#js_select_funplant_search option:selected').text() != "") {
+                //设置功能厂
+                $.post(url, { Optype: $('#js_select_optype_search').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if(@Model.FunPlantID!=0)
+                        {
+                            if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                            {
+                                $('#js_select_funplant_search').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            }
+                        }else
+                        {
+                            $('#js_select_funplant_search').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    }
+                    $('#js_select_funplant_search').selectpicker('refresh');
+                });
+                // }
+            });
+
+
+            //查询按钮
+            $('#js_btn_inner_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    StorageCheckSetting.QueryMetricInfo(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //添加按钮
+            $('#js_btn_query').click(function () {
+                $('#js_select_factory_search').trigger('change');
+            })
+
+            //添加按钮
+            $('#js_btn_add').click(function () {
+                debugger;
+                $('#js_select_factory_Add').trigger('change');
+                $('#js_edit_modal').find('input[name=isEdit]').val(false);
+            })
+
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_edit_modal').find('select[name=Plant_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseSite');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseOPType');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            if (data == "0") {
+                                PDMS.Utility.MessageBox.info('@ViewBag.Savesuccessfully');
+                                StorageCheckSetting.QueryMetricInfo();
+                            }
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //编辑---START
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+                //$('#js_edit_modal h4').text('异常代码编辑');
+
+                $('#js_edit_modal').find('input[name=isEdit]').val(true);
+
+                var Metric_UID = $(this).attr('data-id'),
+                    url = StorageCheckSetting.urls.GetMetricInfoByIdAPI;
+                $('#js_edit_modal').find('input[name=Metric_UID]').val(Metric_UID);
+                $.post(url, { uid: Metric_UID }, function (data) {
+                    $('#js_select_factory_Add').selectpicker('val', data.Plant_Organization_UID);
+                    $("#js_select_factory_Add").trigger("liszt:updated");
+                    if (data.Plant_Organization_UID != 0) {
+                        $('#js_select_factory_Add').trigger('change');
+                    }
+                    $('#js_select_optype_Add').selectpicker('val', data.BG_Organization_UID);
+                    $("#js_select_optype_Add").trigger("liszt:updated");
+                    if (data.BG_Organization_UID != 0) {
+                        $('#js_select_optype_Add').trigger('change');
+                    }
+                    $('#js_select_funplant_Add').selectpicker('val', data.FunPlant_Organization_UID);
+                    $("#js_select_funplant_Add").trigger("liszt:updated");
+                    $("#s_input_Metric_ID_Add").val(data.Metric_ID);
+                    $("#s_input_Metric_Name_Add").val(data.Metric_Name);
+                });
+            });
+            //编辑----END
+
+
+
+            //删除---START
+            $('body').on('click', '.js-grid-delete', function () {
+                var metricInfo_Uid = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("@ViewBag.Suredelete", function () {
+                    var url = StorageCheckSetting.urls.DeleteMetricInfo;
+                    $.post(url, { metricInfo_Uid: metricInfo_Uid }, function (data) {
+                        if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("删除成功.", function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            PDMS.Utility.MessageBox.info("@ViewBag.Successfullydeleted")
+                            StorageCheckSetting.QueryMetricInfo();
+                        }
+                    });
+                });
+            });
+            //删除----END
+
+
+
+
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                //$('#js_edit_modal h4').text('');
+
+                $('.list-group.validate-error').empty();
+            });
+
+
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+        })
+    </script>
+}

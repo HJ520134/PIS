@@ -1,0 +1,1128 @@
+﻿@model PDMS.Model.ViewModels.Exception.ExceptionVM
+<section class="content portal-content">
+    @*查询条件*@
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                <button id="bt_search" type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> @T("Exception.Query")</button>
+                <button type="button" class="fa fa-plus btn btn-primary" id="btn_add"> @T("Exception.EmailSendTimeSetting")</button>
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        <th>@T("Exception.Project")</th>
+                        <th>@T("Exception.SendStartTime")</th>
+                        <th>@T("Exception.SendPeriod")</th>
+                        <th>@T("Exception.SendTime")</th>
+                        <th>@T("Exception.SendTimePoint")</th>
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        @*<th>修改人</th>
+                            <th>修改日期</th>*@
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Exception.Site")</th>
+                        <th>@T("Exception.BG")</th>
+                        <th>@T("Exception.Project")</th>
+                        <th>@T("Exception.SendStartTime")</th>
+                        <th>@T("Exception.SendPeriod")</th>
+                        <th>@T("Exception.SendTime")</th>
+                        <th>@T("Exception.SendTimePoint")</th>
+                        <th>@T("Exception.CreateUser")</th>
+                        <th>@T("Exception.CreateTime")</th>
+                        @*<th>修改人</th>
+                            <th>修改日期</th>*@
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_time_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="overflow-y:auto">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.EmailSendTimeSetting")</h4>
+                </div>
+                @*<form id="js_form_dept" method="post">*@
+                <input type="hidden" name="fixturelist" id="fixturelist" />
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left;margin-bottom:20px;">
+
+                        <h4 style="display:inline-block">
+                            <b>@T("Exception.BaseInfo")</b>
+                        </h4>
+                        <button type="button" class="btn btn-success btn-sm pull-right" id="btn_dept_time_save"><i class="fa fa-save"></i>  @T("Exception.SaveBaseInfo")</button>
+                    </div>
+
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6" style="">
+                        <label class="col-sm-4 control-label" for="js_select_plant_dept">@T("Exception.Site")</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_plant_dept" name="Plant_Organization_UID">
+                                <option value=0></option>
+                                @foreach (var item in Model.Plants)
+                                {
+                                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_op_types_dept">@T("Exception.BG")</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_op_types_dept" name="BG_Organization_UID">
+                                @if (Model.optypes != null)
+                                {
+                                    <option value=0></option>
+
+                                    foreach (var item in Model.optypes)
+                                    {
+                                        if (item.BG != "Support team")
+                                        {
+                                            <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                        }
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_Exception_Project_UID">@T("Exception.Project")</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_Exception_Project_UID" name="Exception_Dept_UID"
+                                    data-live-search="true">
+                                @*@if (Model.ExceDepts != null)
+                                    {
+                                    <option value=0></option>
+                                        foreach (var item in Model.ExceDepts)
+                                        {
+                                    <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                        }
+                                    }*@
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_DealyDayNub">@T("Exception.SendStartTime")</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_DealyDayNub" name="DealyDayNub"
+                                    data-live-search="true">
+                                <optio></optio>
+                                <option value="0">Now</option>
+                                <option value="1">1 Day after</option>
+                                <option value="2">2 Day after</option>
+                                <option value="3">3 Day after</option>
+                                <option value="4">4 Day after</option>
+                                <option value="5">5 Day after</option>
+                                <option value="6">6 Day after</option>
+                                <option value="7">7 Day after</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_DayPeriod">@T("Exception.SendPeriod")</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_DayPeriod" name="DayPeriod"
+                                    data-live-search="true">
+                                <option value="1">1 Day</option>
+                                <option value="2">2 Day</option>
+                                <option value="3">3 Day</option>
+                                <option value="4">4 Day</option>
+                                <option value="5">5 Day</option>
+                                <option value="6">6 Day</option>
+                                <option value="7">7 Day</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_SendMaxTime">@T("Exception.SendMaxTime")</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_SendMaxTime" name="SendMaxTime"
+                                    data-live-search="true">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <divc class="col-xs-12 col-md-12 col-lg-12" style="margin-top:10px;overflow-y:initial !important">
+                        <div class="col-sm-12" style="text-align:left;border-top:1px solid #808080">
+                            <h5>
+                                <b>@T("Exception.AddSendTimePoints")</b>
+                            </h5>
+                        </div>
+                        <div class='form-group col-xs-12 col-md-8 col-lg-8' style="">
+                            <label class="col-sm-6 form-label" for="s_hour" style="margin-top:5px;"><strong>@T("Exception.SelectTimePoint")</strong></label>
+                            <div class="col-sm-3">
+                                <select id="s_hour" class="form-control col-sm-4 col-md-2 col-lg-2" style="display:inline-block;width:70px;">
+                                    <optio></optio>
+                                    <option value="00">00</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                </select>
+                                <label class="form-control" style="width:10px">&nbsp;&nbsp;&nbsp;&nbsp;H</label>
+                            </div>
+                            <div class="col-sm-3" style="padding-left:0px;">
+                                <select id="s_min" class="form-control col-sm-4 col-md-2 col-lg-2" style="display:inline-block;width:70px;">
+                                    <option value="00">00</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <label class="form-control" style="width:10px">&nbsp;&nbsp;&nbsp;&nbsp;Min</label>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-12 col-md-3 col-lg-3' style="padding-left:0px;">
+                            <button class="btn btn-primary" id="btn_add_period"> @T("Common.AddNew")</button>
+                            <button class="btn btn-info" id="btn_remove_period"> @T("Common.Delete")</button>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-sm-12" style="text-align:left">
+                                <h5>
+                                    <b>@T("Exception.AddedFiledInfo")</b>
+                                </h5>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;overflow-y: auto; max-height: 250px;">
+
+                                <table class="table table-condensed col-sm-9" id="table_exception2" name="table_exception2">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-checkbox nosort">
+                                                <input type="checkbox" class="js-checkbox-all" />
+                                            </th>
+                                            <th class="padding-1-5-i text-center hidden">System ID</th>
+                                            <th class="padding-1-5-i text-center">@T("Exception.Project")</th>
+                                            <th class="padding-1-5-i text-center">@T("Exception.SendTimePoint")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </divc>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Close")</button>
+                    @*<button type="button" class="btn btn-primary btn-sm" id="btn_dept_time_save"><i class="fa fa-save"></i>  保存</button>*@
+                </div>
+                @*</form>*@
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-2">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Exception.Query")</h4>
+                </div>
+
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="modal-footer">
+                        <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_plant_search">@T("Exception.Site")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_plant_search" name="Plant_Organization_UID">
+                                            <option value=0></option>
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_op_types_search">@T("Exception.BG")</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_op_types_search" name="BG_Organization_UID">
+                                            @if (Model.optypes != null)
+                                            {
+                                                <option value=0></option>
+
+                                                foreach (var item in Model.optypes)
+                                                {
+                                                    if (item.BG != "Support team")
+                                                    {
+                                                        <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_Exception_Project_UID_search">@T("Exception.Project")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Exception_Project_UID_search" name="Origin_UID"
+                                                data-live-search="true">
+                                            @*@if (Model.ExceDepts != null)
+                                                {
+                                                <option value=0></option>
+                                                    foreach (var item in Model.ExceDepts)
+                                                    {
+                                                <option value=@item.Exception_Dept_UID>@item.Exception_Dept_Name</option>
+                                                    }
+                                                }*@
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xs-12 col-md-6 col-lg-6 hidden">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Exception_Times_search">@T("Exception.SendTime")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Exception_Times_search" name="Exception_Times"
+                                                data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_User_NTID_search">@T("Exception.ModifyUser")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_UserNTID" class="form-control input-sm" id="js_s_input_User_NTID_search" placeholder="Modified_UserNTID">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" data-type="date-interval">@T("Exception.ModifyTime")</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_from" class="form-control input-sm date" id="js_s_input_Modified_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_to" class="form-control input-sm date" id="js_s_input_Modified_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        })
+
+        $('#js_btn_clear').click(function () {
+            $('#js_select_plant_search').val(0);
+            $('#js_select_op_types_search').val(0);
+            $('#js_select_Exception_Project_UID_search').html('<option value=0></option>');
+            $("#js_select_Exception_Project_UID_search").selectpicker('refresh');
+            $("#js_select_Exception_Project_UID_search").trigger('change');
+            $('#js_select_funplant_search').val(0);
+            $('#js_select_Account_UID_search').val(0);
+            $('#js_select_Workshop_ID_search').val(0);
+            $('#js_select_Workshop_UID_search').val(0);
+            $('#js_select_Account_UID_search').selectpicker('val', '');
+            $("#js_select_Account_UID_search").trigger("liszt:updated");
+            PDMS.Utility.Criteria.Clear();
+        });
+
+        //#endregion
+        $(function () {
+            var ExceptionRul = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryExceptionTime: '@Url.Action("QueryExceptionTime", "Exception")',
+                    getOrgByParant: '@Url.Action("GetOrgByParant", "Fixture")',
+                    queryFixtureTotakeByUid: '@Url.Action("QueryFixtureTotakeByUid", "Fixture")',
+                    queryFixtureByUid: '@Url.Action("QueryFixtureByUid", "Fixture")',
+                    //导出excel
+                    doExportFunction: '@Url.Action("DoFTExportFunction", "Fixture")',
+                    getFixtureByWorkshop: '@Url.Action("GetFixtureByWorkshop", "Fixture")',
+                    viewFixtureTotakeDetails: '@Url.Action("FixtureTotakeDetail", "Fixture")',
+                    getUserByOp: '@Url.Action("GetUserByOpLY", "Fixture")',
+                    getUserByWorkshop: '@Url.Action("GetUserByWorkshop", "Fixture")',
+
+                    //添加部门发送时间段
+                    addPeriodTime: '@Url.Action("AddPeriodTime", "Exception")',
+                    //根据部门ID获取所有发送时间点----------已废弃
+                    fetchPeriodTimeBasedDeptID: '@Url.Action("FetchPeriodTimeBasedDeptID", "Exception")',
+
+                    fetchPeriodTimeBasedProjectID: '@Url.Action("FetchPeriodTimeBasedProjectID", "Exception")',
+
+                    //删除发送时间点
+                    deletPeriodTime: '@Url.Action("DeletPeriodTime", "Exception")',
+                    //更新部门的发送信息----------------废弃
+                    updateDeptTime: '@Url.Action("UpdateDeptTime", "Exception")',
+                    //添加或者更新专案的信息
+                    updateProjectTime: '@Url.Action("UpdateProjectTime", "Exception")',
+                    //获取部门信息，编辑的时候用-------废弃
+                    fetchExceptionDept: '@Url.Action("FetchExceptionDept", "Exception")',
+
+
+                    //获取异常信息
+                    fetchExceptionEmailInfo: '@Url.Action("FetchExceptionEmailInfo", "Exception")',
+                    //根据Plant,BG获取Depts-----------------废弃
+                    fetchExceptionDepts: '@Url.Action("FetchExceptionDepts", "Exception")',
+                    //根据BG获取project
+                    fetchExceptionProject: '@Url.Action("FetchExceptionProject", "Exception")',
+                    //获取异专案周期信息
+                    fetchExceptionProjectCycleTime: '@Url.Action("FetchExceptionProjectCycleTime", "Exception")',
+                };
+
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Time_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                                     '<button type="button" class="btn btn-primary btn-xs js-grid-time-dele" data-id="' + rowData.Exception_Time_UID + '"style="margin-top:5px">Delete time point</button>' +
+                                        '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                     {
+                         data: "Plant",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "BG",
+                         className: "min-col-xs"
+                     },
+                     {
+                         data: "Project_Name",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "DelayDayNub",
+                         className: "min-col-xs text-center"
+                     },
+                    {
+                        data: "DayPeriod",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "SendMaxTime",
+                        className: "min-col-xs text-center"
+                    },
+                   {
+                       data: "Exception_Time_At",
+                       className: "min-col-xs text-center"
+                   },
+                    {
+                        data: "Created_User",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Created_Date",
+                        className: "min-col-xs text-center"
+                    }
+                //{
+                //    data: "Modified_UserName",
+                //    className: "min-col-xs"
+                //},
+                //{
+                //    data: "Modified_Date",
+                //    className: "min-col-xs"
+                //}
+                ];
+                var columnsEmail = [
+                            {
+                                data: null,
+                                createdCell: function (td, cellData, rowData, row, col) {
+                                    $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Email_UID + '">')
+                                    .addClass('table-col-checkbox');
+                                },
+                                className: "text-center"
+                            },
+                            {
+                                data: "Exception_Dept_Name",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "Exception_Times",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                //data: "ReceiveType",
+                                data: null,
+                                createdCell: function (td, cellData, rowData, row, col) {
+                                    var result = '';
+                                    if (rowData.ReceiveType == 1) {
+                                        result = 'Receive';
+                                    } else {
+                                        result = 'CC';
+                                    }
+                                    $(td).html(result);
+                                },
+                                className: "min-col-xs text-center"
+                            },
+
+                            {
+                                data: "User_NT",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "User_Name",
+                                className: "min-col-xs text-center"
+                            },
+                            {
+                                data: "User_Email",
+                                className: "min-col-xs text-center"
+                            }];
+                var fixtureDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Exception_Time_UID + '">')
+                        ;
+                    },
+                    className: "text-center min-col-xs"
+                },
+                 {
+                     data: "Exception_Time_UID",
+                     className: "min-col-xs text-center hidden"
+                 },
+                 {
+                     data: "Exception_Project_Name",
+                     className: "min-col-xs text-center"
+                 },
+                {
+                    data: "Exception_Time_At",
+                    className: "min-col-xs text-center"
+                }];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                };
+
+                var _queryExceptionTime = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryExceptionTime,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryExceptionTime(true, false);
+                    },
+                    queryExceptionTime: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryExceptionTime(false, true);
+                    },
+                    GetExceptionDatatable: function () {
+                        fixtureDatatable = $('#table_exception2').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: fixtureDatatableColumns
+                        });
+                        return fixtureDatatable;
+                    },
+                    GetExceptionEmailtable: function () {
+                        emailDatatable = $('#table_email').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: columnsEmail
+                        });
+                        return emailDatatable;
+                    },
+                    SetFixtureDatatable: function (datatable) {
+                        fixtureDatatable = datatable;
+                    },
+                    FixtureColumns: fixtureDatatableColumns
+                }
+            })();
+
+            ExceptionRul.Init();
+
+            //done--------------------------------------------------------------------------------------
+            // 异常时间段添加
+            $('#btn_add_period').click(function () {
+                var projectID = $('#js_select_Exception_Project_UID option:selected').val();
+                var projectName = $('#js_select_Exception_Project_UID option:selected').text();
+                var hour = $('#s_hour option:selected').val();
+                var min = $('#s_min option:selected').val();
+                var period = hour + ':' + min;
+                //alert(projectID);
+                if (projectID == 0 || projectID == undefined) {
+                    PDMS.Utility.MessageBox.info('Please select project !');
+                    return false;
+                }
+
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var row = dataTable.row.add({
+                    "Exception_Time_UID": 0,
+                    "Exception_Time_At": period,
+                    "Exception_Project_Name": projectName
+                }).draw();
+
+
+            })
+            //异常时间段删除
+            $('#btn_remove_period').click(function () {
+                //1.轮询checkbox,2.Delete
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    //1.先从数据库删除，2.在刷新表
+                    var delIDs = [];
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        // var Exception_UID = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var Exception_Time_UID = $('#table_exception2 tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+                        if (Exception_Time_UID != 0) {
+                            delIDs.push(Exception_Time_UID);
+                        }
+                    });
+                    var url = ExceptionRul.urls.deletPeriodTime;
+                    var timeIDs = "'" + delIDs.join() + "'";
+                    if (delIDs.length > 0) {
+                        $.post(url, { timeID: delIDs.join() }, function (data) {
+                            if (data.success > 0) {
+                                PDMS.Utility.MessageBox.info("Delete data successfully");
+                                $.map($checkedItems, function (checkbox) {
+                                    var $sender = $(checkbox);
+                                    var Exception_UID = $sender.val();
+                                    var $tr = $sender.closest('tr');
+                                    var trIndex = $tr.index();
+                                    dataTable.row($tr).remove().draw();
+                                });
+                                //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                                //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                                //});
+                            }
+                            else {
+                                PDMS.Utility.MessageBox.info("Delete data failed");
+                            }
+                        });
+                    } else {
+                        $.map($checkedItems, function (checkbox) {
+                            var $sender = $(checkbox);
+                            var Exception_UID = $sender.val();
+                            var $tr = $sender.closest('tr');
+                            var trIndex = $tr.index();
+                            dataTable.row($tr).remove().draw();
+                        });
+                    }
+
+                }
+                //暂时取消隐藏
+                //if ($('#table_exception2 tbody th td').length <= 1)
+                //    $('#bt_remove_fixture').hide();
+
+            })
+            // project周期添加
+            $('#btn_dept_time_save').click(function () {
+                var parameters = [];
+                var projectID = $('#js_select_Exception_Project_UID option:selected').val();
+                var dealyDayNub = $('#js_select_DealyDayNub option:selected').val();
+                var dayPeriod = $('#js_select_DayPeriod option:selected').val();
+                var sendMaxTime = $('#js_select_SendMaxTime option:selected').val();
+                //alert(projectID + "-" + dealyDayNub + "-" + dayPeriod + "-" + sendMaxTime)
+                if (projectID == undefined || projectID == 0) {
+                    PDMS.Utility.MessageBox.info('Please select project !');
+                    return false;
+                }
+                if (dealyDayNub == undefined) {
+                    PDMS.Utility.MessageBox.info('Please select send start time !');
+                    return false;
+                }
+                if (dayPeriod == undefined || dayPeriod == 0) {
+                    PDMS.Utility.MessageBox.info('Please select send period !');
+                    return false;
+                }
+                if (sendMaxTime == undefined || sendMaxTime == 0) {
+                    PDMS.Utility.MessageBox.info('Please select send max time !');
+                    return false;
+                }
+                var url = ExceptionRul.urls.updateProjectTime;
+                var urlPeriod = ExceptionRul.urls.addPeriodTime;
+                $.post(url, { projectID: projectID, dealyDayNub: dealyDayNub, dayPeriod: dayPeriod, sendMaxTime: sendMaxTime }, function (data) {
+                    if (data.success > 0) {
+                        PDMS.Utility.MessageBox.info("Save info successfully");
+                        //$('#js_edit_time_modal').modal('hidden');
+                        //对行进行排序
+                        //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                        //});
+                        //轮询table,找到所有Exception_Time_UID为0的行
+                        var dataTable = ExceptionRul.GetExceptionDatatable();
+                        var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                        if ($checkedItems.length == 0) {
+                            PDMS.Utility.MessageBox.info("Please add time for the project !");
+                            return;
+                        } else {
+                            $.map($checkedItems, function (checkbox) {
+                                var $sender = $(checkbox);
+                                //var Fixture_M_UID = $sender.val();
+                                var $tr = $sender.closest('tr');
+                                var trIndex = $tr.index();
+                                var uid = $('#table_exception2 tbody tr:eq(' + trIndex + ') td:eq(1)').text();
+
+                                var period = $('#table_exception2 tbody tr:eq(' + trIndex + ') td:eq(3)').text();
+                                //alert(uid + '-' + period);
+                                if (uid == 0) {
+                                    parameters.push({
+                                        Origin_UID: projectID,
+                                        Exception_Time_At: period
+                                    });
+                                }
+                               
+                            });
+                            if (parameters.length > 0) {
+                                $.post(urlPeriod, { model: JSON.stringify(parameters) }, function (data) {
+                                    if (data.success > 0) {
+                                        PDMS.Utility.MessageBox.info("Add data successfully !");
+                                        FetchPeriodTimeBasedProjectID();
+                                    }
+                                    else {
+                                        PDMS.Utility.MessageBox.info("Add data failed !");
+                                    }
+                                });
+                            }
+                           
+                        }
+                    } else {
+                        PDMS.Utility.MessageBox.info("Save info failed");
+                    }
+                })
+            })
+
+            //刷新表格
+            function FetchPeriodTimeBasedProjectID() {
+
+                var url = ExceptionRul.urls.fetchPeriodTimeBasedProjectID;
+                //先删除所有
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                var projectID = $('#js_select_Exception_Project_UID option:selected').val();
+                var projectName = $('#js_select_Exception_Project_UID option:selected').text();
+                //alert(projectName)
+                $.post(url, { projectID: projectID }, function (data) {
+                    if (data.success.length > 0) {
+                        $.each(data.success, function (indes, item) {
+                            var row = dataTable.row.add({
+                                "Exception_Time_UID": item.Exception_Time_UID,
+                                "Exception_Time_At": item.Exception_Time_At,
+                                "Exception_Project_Name": projectName
+                            }).draw();
+                        })
+                    }
+                })
+            }
+
+            //++部门选择后联动
+            //----新增时间段那块
+            $('#js_select_Exception_Project_UID').change(function () {
+                //先删除所有
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                var projectID = $('#js_select_Exception_Project_UID option:selected').val();
+                var projectName = $('#js_select_Exception_Project_UID option:selected').text();
+                if (projectID == 0) {
+                    return;
+                }
+                var url = ExceptionRul.urls.fetchExceptionProjectCycleTime;
+                $.post(url, { projectID: projectID }, function (data) {
+                    if (data != 0) {
+                        $('#js_select_DealyDayNub').val(data.success.DelayDayNub).trigger('change');
+                        $('#js_select_DayPeriod').val(data.success.DayPeriod).trigger('change');
+                        $('#js_select_SendMaxTime').val(data.success.SendMaxTime).trigger('change');
+                    }
+                })
+
+
+                var url = ExceptionRul.urls.fetchPeriodTimeBasedProjectID;
+
+                if (projectID == 0) {
+                    return;
+                }
+                $.post(url, { projectID: projectID }, function (data) {
+                    if (data.success.length > 0) {
+                        $.each(data.success, function (indes, item) {
+                            var row = dataTable.row.add({
+                                "Exception_Time_UID": item.Exception_Time_UID,
+                                "Exception_Time_At": item.Exception_Time_At,
+                                "Exception_Project_Name": projectName
+                            }).draw();
+                        })
+                    }
+                })
+            });
+            //----新增收件人那块
+            $('#js_select_Exception_Dept_UID_2').change(function () {
+                var deptID = $('#js_select_Exception_Dept_UID_2 option:selected').val();
+                $('#js_select_Exception_Times').html('<option value=0></option>');
+                var url = ExceptionRul.urls.fetchExceptionDept;
+                $.post(url, { uid: deptID }, function (data) {
+                    if (data != 0) {
+                        for (var i = 1; i <= data.SendMaxTime; i++)
+                            $('#js_select_Exception_Times').append('<option value="' + i + '">' + i + '</option>');
+                        $("#js_select_Exception_Times").selectpicker('refresh');
+                        $("#js_select_Exception_Times").trigger('change');
+                    }
+                })
+            });
+            //----查询那块
+            $('#js_select_Exception_Project_UID_search').change(function () {
+                var deptID = $('#js_select_Exception_Project_UID_search option:selected').val();
+                $('#js_select_Exception_Times_search').html('<option value=0></option>');
+                var url = ExceptionRul.urls.fetchExceptionDept;
+                $.post(url, { uid: deptID }, function (data) {
+                    if (data != 0) {
+                        for (var i = 1; i <= data.SendMaxTime; i++)
+                            $('#js_select_Exception_Times_search').append('<option value="' + i + '">' + i + '</option>');
+
+                    }
+                })
+                $("#js_select_Exception_Times_search").selectpicker('refresh');
+                $("#js_select_Exception_Times_search").trigger('change');
+            });
+
+            //判断表格是否已经存在相同的数据
+            function JudgeFixExist(data) {
+                var ret = true;
+                var $checkedItems = $('#table_email .js-checkbox-item');
+                if ($checkedItems.length > 0) {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var Fixture_M_UID = $sender.val();
+                        if (Fixture_M_UID == data)
+                            ret = false;
+                    });
+                }
+                return ret;
+            }
+            $('#js_form_email').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_form_email ul.validate-error'),
+                wrapper: 'li'
+            });
+            //++点击按钮弹出module
+            //----定时添加module
+            $('#btn_add').click(function () {
+                $('#js_edit_time_modal').modal('show', $(this));
+            })
+            //----查询module
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    ExceptionRul.queryExceptionTime();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //首页删除
+            $('body').on('click', '.js-grid-time-dele', function () {
+                var uid = $(this).data('id')
+                if (uid == 0) {
+                    PDMS.Utility.MessageBox.info("Cannot delete, there is no time point record！");
+                    return;
+                }
+
+                PDMS.Utility.MessageBox.confirm("Do confirm delete this record？", function () {
+                    var url = ExceptionRul.urls.deletPeriodTime;
+                    $.post(url, { timeID: uid }, function (data) {
+                        if (data.success > 0) {
+                            PDMS.Utility.MessageBox.info("Delete data successfully");
+                        }
+                        ExceptionRul.queryExceptionTime();
+                    })
+                });
+
+            });
+
+            //所有modal隐藏所要做的事情
+            //----时间填写modal
+            $('#js_edit_time_modal').on('hidden.bs.modal', function (e) {
+                ExceptionRul.queryExceptionTime();
+                $('#js_edit_time_modal').find('input').val('');//清空所有input
+                $('#js_select_Exception_Project_UID').val(0).trigger('change');
+                $('#js_select_DealyDayNub').val(0).trigger('change');
+                $('#js_select_DayPeriod').val(1).trigger('change');
+                $('#js_select_SendMaxTime').val(1).trigger('change');
+                //$('#js_edit_time_modal').find('select').find('option:first').attr("selected", true);//下拉框默认选择第一项空
+                //清空表格
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+
+            });
+
+
+            //异常编码----厂区变更-----BG变更
+            $('#js_select_plant_dept').change(function () {
+                var plantuid = $('#js_select_plant_dept option:selected').val();
+                $('#js_select_Exception_Project_UID').html('<option value=0></option>');
+                $("#js_select_Exception_Project_UID").selectpicker('refresh');
+                //$("#js_select_Exception_Project_UID").trigger('change');
+                //先删除所有
+                var dataTable = ExceptionRul.GetExceptionDatatable();
+                var $checkedItems = $('#table_exception2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+
+                });
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_dept').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantCode(plantuid, 0);
+            });
+            function SetOpByPlantCode(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_dept').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_dept').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_dept').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_dept').change(function () {
+                var bgorg = $('#js_select_op_types_dept option:selected').val();
+
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_dept').val();
+                BG_Organization_UID = bgorg;
+
+                var url = ExceptionRul.urls.fetchExceptionProject;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                    return;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                    return;
+                }
+                $.post(url, { uid: BG_Organization_UID }, function (data) {
+                    $('#js_select_Exception_Project_UID').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Exception_Project_UID').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $("#js_select_Exception_Project_UID").selectpicker('refresh');
+                    $("#js_select_Exception_Project_UID").trigger('change');
+                });
+
+            })
+
+            //搜索框的----厂区---BG---
+            $('#js_select_plant_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                if (plantuid == 0 || plantuid == -1) {
+                    $('#js_select_op_types_search').html('<option value=0></option>');
+                    return;
+                }
+
+                SetOpByPlantSearch(plantuid, 0);
+            });
+            function SetOpByPlantSearch(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types_search').html('<option value=0></option>');
+                url = ExceptionRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_search').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_search').change(function () {
+                var bgorg = $('#js_select_op_types_search option:selected').val();
+                //获取部门
+                Plant_Organization_UID = $('#js_select_plant_search').val();
+                BG_Organization_UID = bgorg;
+                var url = ExceptionRul.urls.fetchExceptionProject;
+
+
+                if (BG_Organization_UID == null || BG_Organization_UID == undefined) {
+                    BG_Organization_UID = 0;
+                }
+                if (Plant_Organization_UID == null || Plant_Organization_UID == undefined) {
+                    Plant_Organization_UID = 0;
+                }
+                $.post(url, { uid: BG_Organization_UID }, function (data) {
+                    $('#js_select_Exception_Project_UID_search').html('<option value=0></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Exception_Project_UID_search').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $("#js_select_Exception_Project_UID_search").selectpicker('refresh');
+                    $("#js_select_Exception_Project_UID_search").trigger('change');
+                });
+
+            })
+            //done-end--------------------------------------------------------------------------------
+
+
+        })
+    </script>
+}

@@ -1,0 +1,878 @@
+﻿
+@model PDMS.Model.ViewModels.CNCMachineReportVM
+<!-- Main content -->
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+
+    .js_ppcheckdata_datatable > tbody > tbody > tr {
+    }
+</style>
+<section class="content-header portal-content-header">
+    <h1>机台报表</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-12">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  隐藏显示条目
+                    <span class="caret"></span>
+                </button>
+
+                <div  class="row dropdown-menu" id="daily_droplist" aria-labelledby="dropdownMenu1" style="width:100%">
+                   
+                    @foreach (var columnItem in Model.ColumnDTOList)
+                            {
+                                if (columnItem.isChecked)
+                                {
+                                    if (columnItem.View_Column_Name == "机台SN号" || columnItem.View_Column_Name == "机台编号" )
+                                    {
+                                <div class="form-group col-xs-12 col-md-3 col-lg-3" style="display:none">
+                             
+                                    <div class="col-sm-2">
+                                        <input type = "checkbox" class="hiddenColumn" checked data-column=@columnItem.View_Column_Index data-column2='@columnItem.View_Name' />
+                                    </div>
+                                    <label class="col-sm-10 control-label">@columnItem.View_Column_Name</label>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group col-xs-12 col-md-3 col-lg-3">
+
+                                    <div class="col-sm-2">
+                                        <input type="checkbox" class="hiddenColumn" checked data-column=@columnItem.View_Column_Index data-column2='@columnItem.View_Name' />
+                                    </div>
+                                    <label class="col-sm-10 control-label">@columnItem.View_Column_Name</label>
+
+                                </div>
+                            }
+
+                        }
+                        else
+                        {
+                            if (columnItem.View_Column_Name == "机台SN号" || columnItem.View_Column_Name == "机台编号" )
+                            {
+                            <div class="form-group col-xs-12 col-md-3 col-lg-3" style="display:none">
+
+                                <div class="col-sm-2">
+                                    <input type = "checkbox" class="hiddenColumn"  data-column=@columnItem.View_Column_Index data-column2='@columnItem.View_Name' />
+                                </div>
+                                <label class="col-sm-10 control-label">@columnItem.View_Column_Name</label>
+                              
+                            </div>
+                            }
+                            else
+                            {
+                                <div class="form-group col-xs-12 col-md-3 col-lg-3">
+
+                                    <div class="col-sm-2">
+                                        <input type="checkbox" class="hiddenColumn" data-column=@columnItem.View_Column_Index data-column2='@columnItem.View_Name' />
+                                    </div>
+                                    <label class="col-sm-10 control-label">@columnItem.View_Column_Name</label>
+
+                                </div>
+                            }
+
+                        }
+                    }
+
+                </div>
+                <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query"><i class="fa fa-search"></i> 查询</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>     
+                <button type="button" class="fa fa-download btn btn-primary" id="btn_download">导出历史数据</button>     
+            </div>
+
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <div id="div_table" class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_ppcheckdata_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>机台名称</th>
+                        <th>机台编号</th>
+                        <th>机台SN号</th>
+                        <th>機台狀態</th>
+                        <th>工件加工C/T(sec)</th>
+                        <th>加工工件數</th>
+                        <th>X軸的負載(%)</th>
+                        <th>Y軸的負載(%)</th>
+                        <th>Z軸的負載(%)</th>
+                        <th>A軸的負載(%)</th>
+                        <th>刀具壽命(次)</th>
+                        <th>主軸轉速(rpm)</th>
+                        <th>進給(F)(毫米/分)</th>
+                        <th>四軸角度</th>
+                        <th>宏變量</th>
+                        <th>主轴誤差</th>
+                        <th>轴名称</th>
+                        <th>主轴负载(%)</th>
+                        <th>开机时间(Min)</th>
+                        <th>切削时间(Min)</th>
+                        <th>循环时间(sec)</th>
+                        <th>当前刀具号</th>
+                        <th>报警号</th>
+                        <th>报警信息</th>
+                        <th>倍率（快移）</th>
+                        <th>倍率（切削）</th>
+                        <th>倍率（JOG）</th>
+                        <th>倍率（HAND）</th>
+                        <th>倍率（主轴）</th>
+                        <th>快速进给时间常数</th>
+                        <th>快移速度</th>
+                        <th>最大控制轴数</th>
+                        <th>CNC模式</th>
+                        <th>主程序号</th>
+                        <th>当前程序号</th>
+                        <th>程序段号</th>
+                        <th>单段备注</th>
+                        <th>程序备注</th>
+                        <th>主轴指定速度(rpm)</th>
+                        <th>主轴实际速度(rpm)</th>
+                        <th>系统IP地址</th>
+                        <th>CNC型号</th>
+                        <th>CNC类型</th>
+                        <th>CNC序列号</th>
+                        <th>CNC版本号</th>
+                        <th>Customer ID/ Name</th>
+                        <th>Site</th>
+                        <th>Building</th>
+                        <th>Product ID</th>
+                        <th>Process name</th>
+                        <th style="background-color:indianred">Operator ID</th>
+                        <th style="background-color:indianred">伺服温度(℃)</th>
+                        <th style="background-color:indianred">主軸溫度(℃)</th>
+                        <th style="background-color:indianred">主軸扭力</th>
+                        <th style="background-color:indianred">停機時主軸原始座標X/Y/Z/A</th>
+                        <th style="background-color:indianred">切削液狀態</th>
+                        <th style="background-color:indianred">切削指定速度</th>
+                        <th style="background-color:indianred">伺服实际速度</th>
+                        <th style="background-color:indianred">当前控制轴数</th>
+                        <th style="background-color:indianred">报警类型</th>
+                        <th style="background-color:indianred">對刀儀</th>
+                        <th style="background-color:indianred">主軸熱伸長(mm)</th>
+                        <th style="background-color:indianred">每次加工起始時間</th> 
+                        <th style="background-color:indianred">伺服负载(%)</th> 
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+    <hr class="hr-custom">
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+  <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查询</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_factory_search">厂区</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_factory_search" name="Plant_Organization_UID" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_optype_search">OP类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_optype_search" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_funplant_search">功能厂</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_funplant_search" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Project_search">专案</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Project_search" name="Project_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Equipment_search">机台EMT号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="js_select_Equipment_search" name="Equipment">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Machine_ID_search">机台号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="js_select_Machine_ID_search" name="Machine_ID">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Machine_Name_search">机台名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="js_select_Machine_Name_search" name="Machine_Name">
+                            </div>
+                        </div>
+                  
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_QueryTime_query">建档日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm date" id="s_input_QueryTime_query" name="QueryTime" placeholder="Query Time">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_inner_query"><i class="fa fa-search"></i> 查询</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_download_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">机台历史数据下载</h4>
+            </div>
+            <form id="js_form_download" class="modal-body form-horizontal" data-need-validate="true" style="height:150px">
+                <div class="row">            
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_select_Project_search">机台名称</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_CNCMachineUID_search" name="CNCMachineUID" data-live-search="true"></select>
+                        </div>
+                    </div>
+           
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">参数创建日期</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <span class="input-group-addon">From</span>
+                                    <input type="text" name="Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                    <span class="input-group-addon">To</span>
+                                    <input type="text" name="Date_To" class="form-control input-sm date" id="js_s_input_modified_to">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="btn_clear_download"><i class="fa fa-times"></i>取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn_excel_download"><i class="fa fa-download"></i>下载</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+ <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $('#js_btn_clear').click(function () {
+            PDMS.Utility.Criteria.Clear();
+            $('#js_search_modal').find('select').val('');
+        });
+
+        $('#js_search_modal').on('hidden.bs.modal', function (e) {
+            $('#js_search_modal').find('input').val('');
+            $('#js_search_modal').find('select').val('');
+        })
+
+        //$('#btn_download').on('click', function () {
+        //    $('#js_download_modal').modal('show');
+        //});
+
+        $('#btn_clear_download').on('click', function () {
+            $('#js_download_modal').modal('hide');
+        });
+        $(function () {
+            intervalInt = 0;
+            var PPCheckData = (function () {
+
+                var urls = {
+                    QueryPPCheckDatas: '@Url.Action("QueryReportCNCMachineDatas", "CNCMachine")',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //获取专案
+                    getProjectList: '@Url.Action("GetSystemProjectDTO", "CNCMachine")',
+
+                    doAllExportMachineReport: '@Url.Action("DoAllExportMachineReport", "CNCMachine")',
+
+                    UpdateColumnInfo: '@Url.Action("UpdateColumnInfo", "CNCMachine")',
+                    //获取机台
+                    getCNCMachineList: '@Url.Action("GetCNCMachineList", "CNCMachine")',
+                    //导出历史数据
+                    doHisExportMachineReport: '@Url.Action("DoHisExportMachineReport", "CNCMachine")',
+                };
+
+                //#region columns
+
+                var columns = [
+                 {
+                     data: null,
+                     className: "table-col-seq min-col-xs"
+                 },  {
+                     data: "MachineName",
+                     className: "min-col-xs text-center"
+                 }, 
+                  {
+                      data: "AuthCode",
+                      className: "min-col-xs hidden"
+                  }, 
+                   {
+                       data: "dSn",
+                       className: "min-col-xs hidden"
+                   }, {
+                     data: "Status",
+                     className: "min-col-xs text-center",                   
+                 }, {
+                     data: "ProcessCycleTm",
+                     className: "min-col-xs text-center"
+                 },{
+                       data: "TotalNum", //加工工件數
+                       className: "min-col-xs text-center"
+                  },{
+                        data: "X_load",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Y_load",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Z_load",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "A_load",
+                        className: "min-col-xs text-center"
+                  },{
+                         data: "ToolSum",//刀具壽命
+                         className: "min-col-xs text-center"
+                  },{
+                        data: "S_RPM",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Feed",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Axisangle",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Mcode",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "S_Gap",
+
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "ServoName",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "S_Load",
+
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "PowerOnTm",
+
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "CuttingTm",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "CycleRunTm",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "CurrenttoolNo",
+                        className: "min-col-xs text-center",                        
+                  },{
+                        data: "ErrorCode",//报警号
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "ErrorDels",//报警信息
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "RateJOG",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "RateFastmove",
+
+                        className: "min-col-xs text-center"
+                  },{
+                           data: "RateJOG1",//??倍率（JOG
+                           className: "min-col-xs text-center"
+                  },{
+                        data: "RateHAND",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "RateS",
+
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "FastmoveTmC",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "Fastmovespeed",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "MaxAxisNo",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "CNCMode",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "MainProgram",
+                        className: "min-col-xs text-center"
+                  },{
+                        data: "NowProgram",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "ProgramStep",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "Singlenote",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "Programnote",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "S_SetSpeed",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "S_Speed",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "IPaddress",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "CNCModel",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "CNCType",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "CNCSequence",
+                        className: "min-col-xs text-center"
+                    },{
+                        data: "CNCVersion",
+                        className: "min-col-xs text-center"
+                    },{
+                      data: "Customer",//Customer ID/ Name
+                       className: "min-col-xs text-center"
+                   },{
+                       data: "Site",//Site
+                       className: "min-col-xs text-center"
+                   },{
+                       data: "Building",//Building
+                       className: "min-col-xs text-center"
+                   },{
+                       data: "ProductID",//Product ID
+                       className: "min-col-xs text-center"
+                   },{
+                       data: "ProcessName",//Process name
+                       className: "min-col-xs text-center"
+                   },{
+                       data: "OperatorID",//Operator ID
+                       className: "min-col-xs text-center"
+                   },{
+                         data: "ServoTemp",
+                         className: "min-col-xs text-center"
+                    },{
+                          data: "S_Temp",
+                          className: "min-col-xs text-center"
+                     },{
+                         data: "S_Torque",
+                         className: "min-col-xs text-center"
+                     },{
+                          data: "XYZA_load",//停機時主軸原始座標X/Y/Z/A
+                          className: "min-col-xs text-center"
+                     },{
+                         data: "Cuttingfluid",
+                         className: "min-col-xs text-center"
+                     },{
+                         data: "CuttingSpeed",
+                         className: "min-col-xs text-center"
+                     },{
+                         data: "ActualSpeed",
+
+                         className: "min-col-xs text-center"
+                     },{
+                         data: "UseAxisNo",
+                         className: "min-col-xs text-center"
+                     },{
+                         data: "ErrorType",//报警类型
+                         className: "min-col-xs text-center"
+                     },{
+                           data: "Toolset",
+                           className: "min-col-xs text-center"
+                     },{
+                           data: "S_TE",
+                           className: "min-col-xs text-center"
+                     },{
+                           data: "ProcessStartTm",
+                           className: "min-col-xs text-center"
+                     },{
+                          data: "SF_Load",//伺服负载
+                          className: "min-col-xs text-center"
+                       }             
+                ];
+
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryPPCheckData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: urls.QueryPPCheckDatas,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 800,
+                            fixedHeader: {
+                                header: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: urls.QueryPPCheckDatas,
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 800,
+                            fixedHeader: {
+                                header: true
+                            },
+                            columns: columns
+                        }
+                    };
+
+                    //if (!firstLoad) {
+                    //    debugger;
+                    //    $('#page').page('destroy');
+                    //    var chk_value = [];
+                    //    $('input.hiddenColumn:unchecked').each(function () {
+                    //        chk_value.push($(this).attr('data-column'));
+                    //    });
+
+                    //    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+                    //} else {
+                    //    PDMS.Utility.Pages.Set(config2);
+                    //}
+                    
+                    if (!firstLoad) {
+                        $('#page').page('destroy');               
+                    }
+                    var chk_value = [];
+                    $('input.hiddenColumn:unchecked').each(function () {
+                        chk_value.push($(this).attr('data-column'));
+                    });
+                    debugger;
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryPPCheckData(false);
+
+                        //debugger;
+                        //$('#js_btn_inner_query').click();
+                        //60秒刷新
+                        //if (intervalInt != 0) {
+                        //    clearInterval(intervalInt);
+                        //}
+                        //intervalInt = setInterval(function () {
+                        //    PPCheckData.QueryPPCheckDatas(false);
+                        //}, 1000 * 60);
+                    },
+                    QueryPPCheckDatas: function () {
+                        _queryPPCheckData(false);
+                    }
+                }
+            })();
+
+            PPCheckData.Init();
+
+            //查询按钮
+            $('#js_btn_inner_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    PPCheckData.QueryPPCheckDatas(true);
+                    $('#js_search_modal').modal('hide');
+                }
+                //debugger;
+                //60秒刷新
+                if (intervalInt != 0) {
+                    clearInterval(intervalInt);
+                }
+                intervalInt = setInterval(function () {
+                    PPCheckData.QueryPPCheckDatas(true);
+                }, 1000 * 60);
+            });
+
+            //添加按钮
+            $('#js_btn_query').click(function () {
+                $('#js_select_factory_search').trigger('change');
+            })
+
+            $('#js_select_factory_search').change(function () {
+                GetOPTypesearch();
+            });
+            function GetOPTypesearch() {
+                // debugger;
+                var oporgid = $('#js_select_factory_search option:selected').val();
+                url = PPCheckData.urls.getCurrentOPType;
+                $('#js_select_optype_search').html('<option></option>');
+                $('#js_select_optype_search').selectpicker('refresh');
+                $('#js_select_funplant_search').html('<option></option>');
+                $('#js_select_funplant_search').selectpicker('refresh');
+                $('#js_select_Project_search').html('<option></option>');
+                $('#js_select_Project_search').selectpicker('refresh');
+
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_search').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+
+                        $('#js_select_optype_search').selectpicker('refresh');
+                    });
+
+                }
+
+                //设专案加载
+                url=PPCheckData.urls.getProjectList;
+                var oporgid = $('#js_select_factory_search option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: 0}, function (data) {
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_search').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $('#js_select_Project_search').selectpicker('refresh');
+                });
+            }
+            //OP类型变更  start
+            $('#js_select_optype_search').change(function () {
+                var url = PPCheckData.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_search').html('<option></option>');
+                $('#js_select_funplant_search').selectpicker('refresh');
+                $('#js_select_Project_search').html('<option></option>');
+                $('#js_select_Project_search').selectpicker('refresh');
+
+              //  if ($('#js_select_funplant_search option:selected').text() != "") {
+                    //设置功能厂
+                    $.post(url, { Optype: $('#js_select_optype_search').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if(@Model.FunPlantID!=0)
+                            {
+                                if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                {
+                                    $('#js_select_funplant_search').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_funplant_search').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }
+                        $('#js_select_funplant_search').selectpicker('refresh');
+                    });
+
+                //}
+
+                //设专案加载
+                url=PPCheckData.urls.getProjectList;
+                var oporgid = $('#js_select_factory_search option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_search option:selected').val()}, function (data) {
+              
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_search').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $('#js_select_Project_search').selectpicker('refresh');
+                });
+            });
+
+
+
+            $('input.hiddenColumn').on('change', function (e) {
+               // var columnIndex = $(this).attr('data-column');
+                var column_Name = $(this).attr('data-column2');
+                var Display = $(this).prop('checked');
+                debugger;
+                //将勾选的数据存入到表中  $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                $.post(PPCheckData.urls.UpdateColumnInfo, { Column_Name: column_Name, isDisplay: Display }, function (data) {
+
+                });
+                //if (table != undefined) {
+                //        var column = table.column(columnIndex2);
+                //        column.visible(isDisplay);
+                //}
+            });
+
+            $('.dropdown-menu').click(function (e) {
+                e.stopPropagation();
+            });
+
+            //查询条件
+            $('#btn-search').click(function () {
+
+            });
+            //清空选择条件
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).find("option").first().attr("selected", true);
+                }
+                );
+                PDMS.Utility.Criteria.Clear();
+            });
+            $('#js_btn_export').click(function () {
+
+                //全部导出
+             
+                if($('#js_search_modal').find('select[name=Plant_Organization_UID]').val() == "")
+                {
+                    PDMS.Utility.MessageBox.info('请选择厂区');
+         
+                }else
+                {
+                    var url = PPCheckData.urls.doAllExportMachineReport;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            
+
+
+            });
+
+            //添加按钮
+            $('#btn_download').click(function () {
+                $('#js_CNCMachineUID_search').html('<option></option>');
+                $('#js_CNCMachineUID_search').selectpicker('refresh');
+                $('#js_download_modal').modal('show');
+                var url = PPCheckData.urls.getCNCMachineList;
+
+                $.post(url, { Plant_Organization_UID: 0 ,BG_Organization_UID: 0,FunPlant_Organization_UID:0}, function (data) {
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_CNCMachineUID_search').append('<option value="' + data[i].Machine_Name + '">' + data[i].Machine_Name + '</option>');
+                    }
+                    $('#js_CNCMachineUID_search').selectpicker('refresh');
+                });
+          
+            })
+            
+
+            // 下载Excel模板
+            $('#btn_excel_download').on('click', function () {
+                if($('#js_download_modal').find('select[name=CNCMachineUID]').val()=="")
+                {
+                    PDMS.Utility.MessageBox.info('请选择要导出的机台');
+                }else
+                {
+               
+                var url = '@Html.Raw(Url.Action("DoHisExportMachineReport", "CNCMachine"))';  
+                
+                Machine_Name =  $('#js_download_modal').find('select[name=CNCMachineUID]').val();
+              
+                Date_From =  $('#js_download_modal').find('input[name=Date_From]').val();
+
+                Date_To = $('#js_download_modal').find('input[name=Date_To]').val();              
+
+                if(Date_From=="")
+                {
+                    Date_From=null;
+
+                }
+                if(Date_To=="")
+                {
+                    Date_To=null;
+                }
+                if(Machine_Name==undefined)
+                {
+                    Machine_Name="";
+                }
+                url += "?Machine_Name=" + Machine_Name + "&Date_From=" + Date_From + "&Date_To=" + Date_To;
+
+                window.location.href = url;
+                }
+            });
+        });
+    </script>
+}

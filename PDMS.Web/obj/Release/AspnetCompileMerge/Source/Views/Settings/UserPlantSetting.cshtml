@@ -1,0 +1,991 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> Search</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_user_plant">
+                <i class="fa fa-plus"></i> Add
+            </a>
+            <a id="js_btn_export" class="btn btn-primary btn-sm" role="button">
+                <i class="glyphicon glyphicon-save"></i> Export
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_plant_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>User NTID</th>
+                        <th>User Name</th>
+                        <th>Plant</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Plant Code</th>
+                        <th>Begin Date</th>
+                        <th>End Date</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>User NTID</th>
+                        <th>User Name</th>
+                        <th>Plant</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Plant Code</th>
+                        <th>Begin Date</th>
+                        <th>End Date</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" id="js_hidden_account_uid" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_user_ntid">User NTID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="User_NTID" class="form-control input-sm" id="js_s_input_user_ntid" placeholder="User NTID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_user_name">User Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="User_Name" class="form-control input-sm" id="js_s_input_user_name" placeholder="User Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_plant">Plant</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Plant" class="form-control input-sm" id="js_s_input_plant" placeholder="Plant">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_location">Location</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Location" class="form-control input-sm" id="js_s_input_location" placeholder="Location">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_type">Type</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Type" class="form-control input-sm" id="js_s_input_type" placeholder="Type">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_plant_code">Plant Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Plant_Code" class="form-control input-sm" id="js_s_input_plant_code" placeholder="Plant Code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_reference_date">Reference Date</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="Reference_Date" class="form-control input-sm date" id="js_s_input_reference_date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="radio" data-for-name="query_types">Query Types</label>
+                                    <div class="col-sm-8 search-radio-cnt">
+                                        <label class="radio-inline"><input type="radio" name="query_types" id="js_s_radio_valid" value="0" checked> Valid</label>
+                                        <label class="radio-inline"><input type="radio" name="query_types" id="js_s_radio_invalid" value="1"> Invalid</label>
+                                        <label class="radio-inline"><input type="radio" name="query_types" id="js_s_radio_all" value="2"> All</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_modified_by_ntid">Modified By</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_By_NTID" class="form-control input-sm" id="js_s_input_modified_by_ntid" placeholder="Modified By(NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">Modified Date</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> Clear</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain User Plant</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form id="js_form_maintain" class="form-horizontal clearfix">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" style="text-align:left" for="js_input_user_ntid">User NTID</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="User_NTID" class="form-control input-sm" id="js_input_user_ntid" placeholder="User NTID">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label" for="js_input_user_name">User Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="User_Name" class="form-control input-sm" id="js_input_user_name" placeholder="User Name" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12 "><ul class="list-group validate-error"></ul></div>
+                    </form>
+                    <hr class="no-margin" />
+                    <div class="row">
+                        <div class="col-xs-12" id="js_panal_for_add">
+                            <table id="js_plant_table_addview" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-seq">Seq</th>
+                                        <th>Plant</th>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Plant Code</th>
+                                        <th>Begin Date</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <h4>
+                        Plants
+                        <button class="btn btn-primary btn-sm" id="js_btn_add_plant">Add Plant</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_del_plant">Delete Plant</button>
+                    </h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_plant_table" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="table-col-seq nosort">Seq</th>
+                                        <th class="nosort">Plant</th>
+                                        <th class="nosort">Location</th>
+                                        <th class="nosort">Type</th>
+                                        <th class="nosort">Plant Code</th>
+                                        <th class="nosort">Begin Date</th>
+                                        <th class="nosort">End Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_user_plant"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_user_plant"><i class="fa fa-save"></i> Edit Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">View</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_view" class="form-horizontal clearfix">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" style="text-align:left">User NTID</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="User_NTID" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">User Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="User_Name" class="form-control input-sm" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        Plants
+                    </h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_plant_table_view" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-seq nosort">Seq</th>
+                                        <th class="nosort">Plant</th>
+                                        <th class="nosort">Location</th>
+                                        <th class="nosort">Type</th>
+                                        <th class="nosort">Plant Code</th>
+                                        <th class="nosort">Begin Date</th>
+                                        <th class="nosort">End Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+
+            var UserPlantSettingUrls = {
+                QueryUserPlants: '@Url.Action("QueryUserPlants", "Settings")',
+                QueryUserPlantByAccountUID: '@Url.Action("QueryUserPlantByAccountUID", "Settings")',
+                DeleteUserPlant: '@Url.Action("DeleteUserPlant", "Settings")',
+                DeleteSubPlant: '@Url.Action("DeleteSubPlant", "Settings")',
+                AddUserPlant: '@Url.Action("AddUserPlant", "Settings")',
+                DoExportUserPlant: '@Url.Action("DoExportUserPlant", "Settings")',
+                GetSystemUserByNTId: '@Url.Action("GetSystemUserByNTId", "Common")',
+                modifyUserPlant: '@Url.Action("modifyUserPlant", "Settings")',
+                CheckPlantByPlantID: '@Url.Action("GetPlantInfoByPlant", "Settings")',
+                CheckDateInterval: '@Url.Action("CheckDateInterval", "Settings")'
+            };
+            //#region UserPlantSetting
+            var UserPlantSetting = (function () {
+
+                var subDatatable = null;
+                var needBuildCriteria = false;
+
+                //#region columns
+                var columns = [{
+
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.User_Plant_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-uuid="' + rowData.Account_UID + '">View</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-uuid="' + rowData.Account_UID + '">Edit</button>' +
+                                    '</div>');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                }, {
+                    data: "User_NTID",
+                    className: "min-col-xs"
+                }, {
+                    data: "User_Name",
+                    className: "min-col-md"
+                }, {
+                    data: "Plant",
+                    className: "min-col-xs"
+                }, {
+                    data: "Location",
+                    className: "min-col-xs"
+                }, {
+                    data: "Type",
+                    className: "min-col-md"
+                }, {
+                    data: "Plant_Code",
+                    className: "min-col-md"
+                }, {
+                    data: "Begin_Date",
+                    className: "min-col-md"
+                }, {
+                    data: "End_Date",
+                    className: "min-col-md"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }];
+                //#endregion
+
+                //#region subColumns
+                var subColumns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_Plant_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center",
+                    defaultContent: ' ',
+                }, {
+                    className: "table-col-seq",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                }, {
+                    data: "Plant",
+                    className: "min-col-lg js-p-plant",
+                    render: function (data, type, rowData, meta) {
+                        var isEdit = rowData.System_User_Plant_UID > 0;
+
+                        var html = isEdit ? data :
+                         '<input type="text" name="Plant" class="form-control input-sm js-subtable-plant" value="' + data + '">';
+
+                        return html;
+                    }
+                }, {
+                    data: "Location",
+                    className: "min-col-lg js-subtable-location"
+                }, {
+                    data: "Type",
+                    className: "min-col-lg js-subtable-type"
+                }, {
+                    data: "Plant_Code",
+                    className: "min-col-lg js-subtable-plantcode"
+                }, {
+                    data: "User_Plant_Begin_Date",
+                    className: "min-col-lg js-userplant-begindate",
+                    render: function (data, type, rowData, meta) {
+
+                        var isEdit = rowData.System_User_Plant_UID > 0;
+                        var html;
+
+                        if (isEdit) {
+                            html = data;
+                        } else {
+                            html = '<div class="input-group">' +
+                                        '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>' +
+                                        '<input type="text" name="Begin_Date" class="form-control input-sm date" value="" readonly="readonly">' +
+                                    '</div>';
+                        }
+                        return html;
+                    }
+                }, {
+                    data: "User_Plant_End_Date",
+                    className: "min-col-lg",
+                    render: function (data, type, rowData, meta) {
+                        var isDisable, html;
+
+                        isDisable = data !== null;
+
+                        if (isDisable) {
+                            html = data;
+
+                        } else {
+
+                            html = '<div class="input-group">' +
+                                        '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>' +
+                                        '<input type="text" name="End_Date" class="form-control input-sm date" value="" readonly="readonly">' +
+                                        '<span class="input-group-addon date-clear"><i class="fa fa-times"></i></span>' +
+                                   '</div>';
+                        }
+                        return html;
+                    }
+
+                }];
+                //#endregion subColumns
+
+                var subColumnsForView = [
+                    {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "Plant",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Location",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Type",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Plant_Code",
+                        className: "min-col-lg"
+                    }, {
+                        data: "User_Plant_Begin_Date",
+                        className: "min-col-lg"
+                    }, {
+                        data: "User_Plant_End_Date",
+                        className: "min-col-lg"
+                    }];
+
+                var _getParams = function () {
+
+                    if (needBuildCriteria) {
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    } else {
+                        return null;
+                    }
+                };
+
+                var _queryUserPlants = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_plant_datatable",
+                        remoteUrl: UserPlantSettingUrls.QueryUserPlants,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryUserPlants(true);
+                    },
+                    QueryUserPlants: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryUserPlants(false);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_plant_table').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: subColumns,
+                            });
+
+                        }
+                        return subDatatable;
+                    },
+                    SetSubDatatable: function (datatable) {
+                        subDatatable = datatable;
+                    },
+                    DestroySubTable: function () {
+                        if (subDatatable != null) {
+                            subDatatable.destroy();
+                        }
+                    },
+                    SubColumns: subColumns,
+                    SubColumnsForView: subColumnsForView
+
+                }
+
+
+            })();
+            //#endregion
+            UserPlantSetting.Init();
+            // #region Page elements events
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    UserPlantSetting.QueryUserPlants(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            //[新增User拥有的Plant]按钮
+            $('#js_btn_add_plant').on('click', function () {
+
+                var dataTable = UserPlantSetting.GetSubDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                    var $row = $(dataTable.row(rowIdx).node());
+                    var rowDate = $row.data('plantInfo');
+
+                    if (rowDate !== undefined && rowDate.userplantuid > 0) {
+                        return;
+                    }
+
+                    var $begindate = $row.find('input[name=Begin_Date]');
+                    var $inputPlant = $row.find('.js-subtable-plant');
+
+                    if ((($inputPlant.length > 0 && $.trim($inputPlant.val()) === "")
+                        || rowDate === undefined || rowDate.plantuid == 0)
+                        || ($begindate.length > 0 && $begindate.val() === "")) {
+
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                        allowAdd = false;
+                        return;
+                    }
+                });
+                if (allowAdd) {
+                    var row = dataTable.row.add({
+                        "System_Plant_UID": 0,
+                        "Plant": "",
+                        "Location": "",
+                        "Type": "",
+                        "Plant_Code": "",
+                        "User_Plant_Begin_Date": null,
+                        "User_Plant_End_Date": null
+                    }).draw();
+                    var $tr = $(row.node());
+                    $tr.find('.date').datetimepicker(PDMS.Utility.Settings.DatetimepickerFromToday);
+                }
+            });
+
+            //Plant文本框失去焦点后根据内容自动填充Plant Info
+            $('#js_edit_modal').on('blur', '.js-subtable-plant', function (e) {
+                var $sender = $(this);
+                var currentInput = $.trim($sender.val());
+                $.get(UserPlantSettingUrls.CheckPlantByPlantID, { Plant: currentInput },
+                    function (data) {
+
+                        if (data === null) {
+                            data = { Location: "", Type: "", Name_0: "", System_Plant_UID: 0, Begin_Date: null, End_Date: null };
+                        }
+
+                        var $tr = $sender.closest('tr');
+                        var $tds = $tr.find("td");
+                        $tr.find('.js-subtable-location').text(data.Location);
+                        $tr.find('.js-subtable-type').text(data.Type);
+                        $tr.find('.js-subtable-plantcode').text(data.Name_0);
+
+                        $tr.data('plantInfo', {
+                            "userplantuid": 0,
+                            "plantuid": data.System_Plant_UID,
+                            "begindate": data.Begin_Date,
+                            "enddate": data.End_Date
+                        });
+                    });
+            });
+
+            //[删除User拥有的Plant]按钮
+            $('#js_btn_del_plant').on('click', function () {
+
+                var dataTable = UserPlantSetting.GetSubDatatable();
+
+                var $checkedItems = $('#js_plant_table .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+
+                } else {
+
+                    $.map($checkedItems, function (checkbox) {
+                        dataTable.row($(checkbox).parents('tr')).remove().draw();
+                    });
+
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+            });
+            //User NTID文本框失去焦点后根据内容自动填充User Name
+            $('#js_input_user_ntid').on('blur', function () {
+
+                $.get(UserPlantSettingUrls.GetSystemUserByNTId, { User_NTID: $(this).val() },
+
+                    function (data) {
+                        var userName = '', accountUId = 0;
+
+                        if (data !== null) {
+                            userName = data.User_Name;
+                            accountUId = data.Account_UID;
+
+                            $.post(UserPlantSettingUrls.QueryUserPlantByAccountUID, { uuid: accountUId }, function (response) {
+
+                                var subTable = $('#js_plant_table_addview').DataTable({
+                                    columns: UserPlantSetting.SubColumnsForView,
+                                    ordering: false,
+                                    data: response.UserPlantWithPlants,
+                                    destroy: true
+                                });
+
+                                if (response.UserPlantWithPlants.length > 0) {
+
+                                    $('#js_panal_for_add').show();
+                                } else {
+
+                                    $('#js_panal_for_add').hide();
+                                }
+                            });
+
+                        } else {
+                            $('#js_panal_for_add').hide();
+                        }
+
+                        $('#js_input_user_name').val(userName);
+                        $("#js_hidden_account_uid").val(accountUId);
+                    });
+            });
+            //新增保存Plant按钮
+            $('#js_btn_save_new_user_plant').click('click', function () {
+
+                var userName = $.trim($('#js_input_user_name').val());
+                var accountUID = $("#js_hidden_account_uid").val();
+
+                if (accountUID == 0) {
+                    PDMS.Utility.MessageBox.info("Please input the right User NTID");
+                } else {
+
+                    if ($("#js_form_maintain").valid()) {
+                        var submitJson = { Account_UID: accountUID, User_Name: userName };
+
+                        if (SaveCheck(submitJson)) {
+                            if (submitJson.UserPlantWithPlants.length > 0) {
+                                $.post(UserPlantSettingUrls.AddUserPlant, { jsonUserWithPlant: JSON.stringify(submitJson) }, function (data) {
+                                    if (data == 'SUCCESS') {
+                                        PDMS.Utility.MessageBox.info("Save Success");
+                                        $("#js_form_maintain input").val('');
+                                        $("#js_hidden_account_uid").val(0);
+                                        UserPlantSetting.GetSubDatatable().clear().draw();
+                                        $('#js_panal_for_add').hide();
+                                    } else {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    }
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error("Please add at least one plant");
+                            }
+                        }
+                    }
+                }
+            });
+            //修改保存Plant按钮
+            $('#js_btn_save_edit_user_plant').click('click', function () {
+
+                var userName = $.trim($('#js_input_user_name').val());
+                var accountUID = $("#js_hidden_account_uid").val();
+
+                var submitJson = { Account_UID: accountUID, User_Name: userName };
+
+                if (SaveCheck(submitJson)) {
+                    $.post(UserPlantSettingUrls.modifyUserPlant, { jsonUserWithPlant: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("Save Success");
+                            UserPlantSetting.QueryUserPlants();
+                            $('#js_edit_modal').modal('hide');
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            function SaveCheck(submitJson) {
+                var flag = true;
+                var userPlants = [];
+                var dataTable = UserPlantSetting.GetSubDatatable();
+
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var userorg = {};
+                        var $row = $(dataTable.row(rowIdx).node()),
+                            rowData = $row.data('plantInfo');
+
+                        $endDateInput = $row.find('input[name=End_Date]');
+                        if ($endDateInput.length === 0) {
+                            return;
+                        }
+
+                        if (rowData === undefined || rowData.plantuid == 0) {
+
+                            flag = false;
+                            PDMS.Utility.MessageBox.error("Please input a correct plant at row #" + (rowIdx + 1));
+                            return false;
+                        }
+                        //get userorguid
+                        var userplantUid = rowData.userplantuid;
+                        var plant = userplantUid > 0 ? $row.find('.js-p-plant').text() : $row.find('.js-subtable-plant').val();
+
+                        //get orguid
+                        var plantUId = rowData.plantuid;
+
+                        //get userplant begindate
+                        var userplantBegindate = userplantUid > 0 ? $row.find('.js-userplant-begindate').text() : $row.find('input[name=Begin_Date]').val();
+
+                        //valid begindate
+                        if (!moment(userplantBegindate).isValid()) {
+                            PDMS.Utility.MessageBox.error(PDMS.Utility.Tools.FormatString("Begin Date can't be empty or is invalid at #{0}row", (rowIdx + 1)));
+                            flag = false;
+                            return false;
+                        }
+
+                        //get userplant enddate
+                        var userplantEnddate = $endDateInput.val();
+
+                        if (userplantEnddate === "") {
+                            userplantEnddate = null;
+                        } else {
+                            if (moment(userplantBegindate).isAfter(userplantEnddate)) {
+                                PDMS.Utility.MessageBox.error(PDMS.Utility.Tools.FormatString("Begin Date should before End Date, Error at #{0} row", (rowIdx + 1)));
+                                flag = false;
+                                return false;
+                            }
+                        }
+
+                        var dateValidate = PDMS.Utility.Tools.DateCompareInterval(
+                                                { name: "Plant", beginDate: rowData.begindate, endDate: rowData.enddate === undefined ? null : rowData.enddate },
+                                                { name: "User Plant", beginDate: userplantBegindate, endDate: userplantEnddate },
+                                                PDMS.Utility.Tools.FormatString("Date not valid at #{0} row", (rowIdx + 1))
+                                            );
+
+                        if (!dateValidate) { flag = false; return false; }
+
+                        userorg["System_User_Plant_UID"] = userplantUid;
+                        userorg["System_Plant_UID"] = plantUId;
+                        userorg["Plant"] = plant;
+                        userorg["User_Plant_Begin_Date"] = userplantBegindate;
+                        userorg["User_Plant_End_Date"] = userplantEnddate;
+                        //push item into sub
+                        userPlants.push(userorg);
+                    });
+
+                submitJson.UserPlantWithPlants = userPlants;
+
+                return flag;
+            }
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_user_plant_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = UserPlantSettingUrls.DoExportUserPlant;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //Form Validate
+            $('#js_form_maintain').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            //clear query conditions按钮
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format("YYYY-MM-DD"));
+                });
+            });
+
+            //modal取消時刷新頁面
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                var dataTable = UserPlantSetting.GetSubDatatable();
+                dataTable.clear().draw();
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //#region Add/Edit model 出现和消失事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.attr('id') == 'js_btn_add_user_plant') {
+
+                    title.text("Add User Plant");
+
+                    $('#js_panal_for_add').hide();
+                    $('#js_btn_save_edit_user_plant').hide();
+                    $('#js_btn_save_new_user_plant').show();
+                    $('#js_btn_del_plant').show();
+                    $('#js_input_user_ntid').attr("disabled", false);
+                    UserPlantSetting.GetSubDatatable().column(0).visible(true);
+                }
+                else if (button.hasClass("js-grid-edit")) {
+
+                    title.text("Edit User Plant");
+                    $('#js_panal_for_add').hide();
+                    $('#js_btn_del_plant').hide();
+                    $('#js_btn_save_new_user_plant').hide();
+                    $('#js_btn_save_edit_user_plant').show();
+                    $('#js_input_user_ntid').attr("disabled", true);
+                }
+            })
+
+            //Grid中编辑按钮
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var uuid = $(this).data('uuid'),
+                    url = UserPlantSettingUrls.QueryUserPlantByAccountUID;
+
+                $.post(url, { uuid: uuid }, function (data) {
+
+                    $('#js_input_user_ntid').val(data.User_NTID);
+                    $('#js_input_user_name').val(data.User_Name);
+                    $("#js_hidden_account_uid").val(uuid);
+
+                    var subTable = $('#js_plant_table').DataTable({
+                        columns: UserPlantSetting.SubColumns,
+                        ordering: false,
+                        data: data.UserPlantWithPlants,
+                        destroy: true,
+                        createdRow: function (row, data, index) {
+                            $(row).data('plantInfo', {
+                                "userplantuid": data.System_User_Plant_UID,
+                                "plantuid": data.System_Plant_UID,
+                                "begindate": data.Plant_Begin_Date,
+                                "enddate": data.Plant_End_Date
+                            });
+                        }
+
+                    });
+                    UserPlantSetting.SetSubDatatable(subTable);
+                    UserPlantSetting.GetSubDatatable().column(0).visible(false);
+
+                    $('#js_edit_modal .date').datetimepicker(PDMS.Utility.Settings.DatetimepickerFromToday);
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+            });
+            //Grid中View按钮
+            $('body').on('click', '.js-grid-view', function () {
+
+                var uuid = $(this).data('uuid'),
+                    url = UserPlantSettingUrls.QueryUserPlantByAccountUID;
+
+                $.post(url, { uuid: uuid }, function (data) {
+
+                    $('#js_view_modal').find('input[name=User_NTID]').val(data.User_NTID);
+                    $('#js_view_modal').find('input[name=User_Name]').val(data.User_Name).attr("disabled");
+
+                    var subTable = $('#js_plant_table_view').DataTable({
+                        columns: UserPlantSetting.SubColumnsForView,
+                        ordering: false,
+                        data: data.UserPlantWithPlants,
+                        destroy: true
+                    });
+                    $('#js_view_modal').modal('show');
+                });
+
+
+            });
+
+            $(document).on('click', '.date-clear', function () {
+                var $dateInput = $(this).prev();
+                if ($dateInput.hasClass('date')) {
+                    $dateInput.val('');
+                }
+            });
+            //#endregion
+        });
+    </script>
+}
+
+

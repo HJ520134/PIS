@@ -1,0 +1,35 @@
+﻿@{ 
+    Layout = null;
+} 
+
+@model HandleErrorInfo
+<hgroup>
+    <h1>Error.</h1>
+    <h2>System Error</h2>
+</hgroup>
+
+<table class="table table-bordered table-condensed">
+    <tr>
+        <td style="width:120px">Action Name</td>
+        <td>@Model.ActionName</td>
+    </tr>
+    <tr>
+        <td>Controller Name</td>
+        <td>@Model.ControllerName</td>
+    </tr>
+    <tr>
+        <td>Error Message</td>
+        <td>@Model.Exception.Message</td>
+    </tr>
+    <tr>
+        <td>Exception</td>
+        <td>@Model.Exception.ToString()</td>
+    </tr>
+    @if (@Model.Exception.InnerException != null)
+    {
+        <tr>
+            <td>InnerException</td>
+            <td>@Model.Exception.ToString()</td>
+        </tr>
+    }
+</table>

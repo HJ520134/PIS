@@ -1,0 +1,1283 @@
+﻿@model PDMS.Model.ViewModels.Production_LineVM
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-4">
+            @*<button type="button" class="fa fa-upload btn btn-primary" id="excel_input_btn">@T("QA.Importtheupdate")</button>*@
+            <a href="~/ExcelTemplate/Production_Line.xlsx" class="fa fa-download btn btn-primary" target="_blank"> 模板下载</a>
+            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl"> 上传</button>
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_Production_Line"> @T("Common.AddNew")</a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    @*<div class="row" id="excel_input" style="display:none">
+            <div class="col-xs-12">
+                <h4>生产线导入</h4>
+                @using (Html.BeginForm("ImportProductionLine", "Fixture", FormMethod.Post, new { id = "js_form_excel_add" }))
+                {
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <label class="control-label" for="js_s_input_upload">选择Excel</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="file" accept=".xls,.xlsx" class="form-control" id="js_s_input_upload" name="uploadName" placeholder="请选择需要上传的Excel" />
+                        </div>
+                        <div class="col-sm-5">
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_fl">上传</button>
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_fl">下载模板</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>*@
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Production_Line_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>生产线代码</th>
+                        <th>生产线名称</th>
+                        <th>生产线描述</th>
+                        <th>车间</th>
+                        <th>工站</th>
+                        <th>专案</th>
+                        <th>制程</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>生产线代码</th>
+                        <th>生产线名称</th>
+                        <th>生产线描述</th>
+                        <th>车间</th>
+                        <th>工站</th>
+                        <th>专案</th>
+                        <th>制程</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true" value="0"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_Line_ID_query">生产线代码</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Line_ID" class="form-control input-sm" id="js_input_Line_ID_query" placeholder="生产线代码">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_input_Line_Name_query">生产线名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Line_Name" class="form-control input-sm" id="js_input_Line_Name_query" placeholder="生产线名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_Line_Desc_query">生产线描述</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Line_Desc" class="form-control input-sm" id="js_Line_Desc_query" placeholder="生产线描述">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Workshop_query">车间</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Workshop_query" name="Workshop_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Workstation_query">工站</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Workstation_query" name="Workstation_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_project_query">专案</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_project_query" name="Project_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_process_query">制程</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_process_query" name="Process_Info_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_enable_flag_query">是否启用</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_enable_flag_query" name="Is_Enable">
+                                            <option value=""></option>
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain Production_Line</h4>
+                </div>
+
+                @using (Html.BeginForm("AddOrEditProduction_Line", "Fixture", FormMethod.Post, new { id = "js_form_Production_Line_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="Production_Line_UID" id="js_hidden_Production_Line_uid" value="0" />
+                            <input type="hidden" name="Plant_Organization_UID" id="js_hidden_Plant_Organization_uid" value="0" />
+                            <input type="hidden" name="BG_Organization_UID" id="js_hidden_BG_Organization_uid" value="0" />
+                            <input type="hidden" name="FunPlant_Organization_UID" id="js_hidden_FunPlant_Organization_uid" value="0" />
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_optype_add">OP类型</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_add" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_funplant_add">功能厂</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_LineId_add">生产线代码</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm required" id="js_select_LineId_add" name="Line_ID" placeholder="生产线代码"
+                                               required data-msg-required="请输入[生产线代码]."
+                                               data-rule-maxlength="10" data-msg-maxlength="生产线代码不能超过 {0} 个字符.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_Line_Name_add">生产线名称</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm required" id="js_input_Line_Name_add" name="Line_Name" placeholder="生产线名称"
+                                               required data-msg-required="请输入[生产线名称]."
+                                               data-rule-maxlength="30" data-msg-maxlength="生产线名称不能超过 {0} 个字符.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_Line_Desc_add">生产线描述</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm" id="js_input_Line_Desc_add" name="Line_Desc" placeholder="生产线描述"
+                                               data-rule-maxlength="30" data-msg-maxlength="生产线描述不能超过 {0} 个字符.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_Workshop_add">车间</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_Workshop_add" name="Workshop_UID" required data-msg-required="请选择[车间]." data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_Workstation_add">工站</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_Workstation_add" name="Workstation_UID" required data-msg-required="请选择[工站]." data-live-search="true" onchange="changeWorkStation(this)"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_project_add">专案</label>
+                                    <div class="col-sm-7">
+                                        <input type="hidden" class="form-control input-sm" id="js_select_project_add" name="Project_UID" />
+                                        <input type="text" class="form-control input-sm" id="js_select_projectName_add" name="Project_Name" readonly />
+                                        @*<select class="selectpicker form-control input-sm required" id="js_select_project_add" name="Project_UID" required data-msg-required="请选择[专案]." data-live-search="true"></select>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_process_add">制程</label>
+                                    <div class="col-sm-7">
+                                        <input type="hidden" class="form-control input-sm" id="js_select_process_add" name="Process_Info_UID" />
+                                        <input type="text" class="form-control input-sm" id="js_select_processName_add" name="Process_Info_Name" readonly />
+                                        @*<select class="selectpicker form-control input-sm required" id="js_select_process_add" name="Process_Info_UID" required data-msg-required="请选择[制程]." data-live-search="true"></select>*@
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_e_select_enable_flag">是否启用</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_e_select_enable_flag" name="Is_Enable">
+                                            <option></option>
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_Production_Line"><i class="fa fa-save"></i> 保存</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_Production_Line"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">生产线导入</h4>
+                </div>
+                @using (Html.BeginForm("ImportProductionLine", "Fixture", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" accept=".xls,.xlsx" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- View Modal -->
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查看产线信息</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">厂区</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_factory" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">OP类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_optype" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">功能厂</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_funplant" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">生产线代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_LineId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">生产线名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_Line_Name" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label" for="js_v_input_ccode">生产线描述</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_ccode" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">车间名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_Workshop" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">车间代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_WorkshopId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label" >工站名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_Workstation" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">工站代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_WorkstationId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">专案名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_project" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">专案代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_projectCode" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">制程名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_process" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">制程代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_processId" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">创建人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_creator" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">创建日期</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control input-sm" id="js_v_input_create_date" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">修改人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_modifier" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label no-padding-l" for="js_v_input_modified_date">修改日期</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control input-sm" id="js_v_input_modified_date" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">是否启用</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_v_input_enable_flag" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+        $(function () {
+            var Production_LineMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        EditProduction_Line: '@Url.Action("EditProductionLine", "Fixture")',
+                        AddProduction_Line: '@Url.Action("AddProductionLine", "Fixture")',
+                        queryProduction_Lines: '@Url.Action("QueryProductionLines", "Fixture")',
+                        queryProduction_Line: '@Url.Action("QueryProductionLine", "Fixture")',
+                        deleteProduction_Line: '@Url.Action("DeleteProductionLine", "Fixture")',
+                        exportProduction_Lines: '@Url.Action("DoExportProductionLine", "Fixture")',
+                        exportProduction_LinesByQuery: '@Url.Action("DoExportProductionLineByQuery", "Fixture")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        getProjectByOPType: '@Url.Action("QueryProjects", "Equipmentmaintenance")',
+                        getProcess_InfoList: '@Url.Action("GetProcess_InfoList", "Fixture")',
+                        downloadExcel: '@Url.Action("Production_Line", "Fixture")',
+                        getWorkshopList: '@Url.Action("GetWorkshopList", "Fixture")',
+                        getWorkstationList: '@Url.Action("GetWorkstationList", "Fixture")'
+                    };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Production_Line_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">';
+
+                            var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Production_Line_UID + '">查看</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Production_Line_UID + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Production_Line_UID + '" data-LineName = "' + rowData.Line_Name + '">删除</button>' +
+                                        '</div>';
+                            var resultHtml = hiddenHtml + buttonHtml;
+                            $(td).html(resultHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Plant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BG_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Line_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Line_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Line_Desc",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Workshop_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Workstation_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Project_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Process_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Is_Enable",
+                        render: function (data, type, full, meta) {
+                            return data ? "启用" : "禁用";
+                        },
+                        className: "min-col-xs"
+                    }
+                , {
+                    data: "ModifiedUser.User_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _queryProduction_Lines = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Production_Line_datatable",
+                        remoteUrl: urls.queryProduction_Lines,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryProduction_Lines(true);
+                    },
+                    queryProduction_Lines: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryProduction_Lines(false);
+                    }
+                }
+
+            })();
+            Production_LineMaintenance.Init();
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    Production_LineMaintenance.queryProduction_Lines(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Production_Line_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //PDMS.Utility.MessageBox.info('请选择要导出的数据');
+                    //全部导出
+                    var url = Production_LineMaintenance.urls.exportProduction_LinesByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = Production_LineMaintenance.urls.exportProduction_Lines;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_Production_Line_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format('YYYY-MM-DD'));
+                });
+            });
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.hasClass('js-grid-edit')) {
+                    //编辑
+                    title.text("编辑生产线信息");
+                    $('#js_btn_save_new_Production_Line').hide();
+                    $('#js_btn_save_edit_Production_Line').show();
+                    $("#js_hidden_edit_id").val(0);
+
+                    var uid = button.attr("data-id");
+                    //调api 获取生产线信息，填充到编辑画面
+                    $.get(Production_LineMaintenance.urls.queryProduction_Line, { uid: uid }, function (data) {
+
+                        //隐藏字段
+                        $('#js_hidden_Production_Line_uid').val(uid);
+                        $('#js_hidden_Plant_Organization_uid').val(data.Plant_Organization_UID);
+                        $('#js_hidden_BG_Organization_uid').val(data.BG_Organization_UID);
+                        $('#js_hidden_FunPlant_Organization_uid').val(data.FunPlant_Organization_UID);
+
+                        $('#js_select_factory_add').val(data.Plant_Organization_UID);
+                        $('#js_select_factory_add').trigger('change');
+
+                        $('#js_select_optype_add').val(data.BG_Organization_UID);
+                        $('#js_select_optype_add').trigger('change');
+
+                        $('#js_select_funplant_add').val(data.FunPlant_Organization_UID);
+                        $('#js_select_funplant_add').trigger('change');
+
+                        $('#js_select_LineId_add').val(data.Line_ID);
+                        $('#js_input_Line_Name_add').val(data.Line_Name);
+                        $('#js_input_Line_Desc_add').val(data.Line_Desc);
+                        $('#js_select_project_add').val(data.Project_UID);
+                        $('#js_select_projectName_add').val(data.Project_Name);
+                        $('#js_select_process_add').val(data.Process_Info_UID);
+                        $('#js_select_processName_add').val(data.Process_Name);
+                        $('#js_select_Workshop_add').val(data.Workshop_UID);
+                        $('#js_select_Workstation_add').val(data.Workstation_UID);
+                        $('#js_e_select_enable_flag').val(data.Is_Enable.toString());
+
+                    });
+
+
+                } else if (button.attr('id') == 'js_btn_add_Production_Line') {
+                    //新增
+                    title.text("新增生产线");
+                    $("#js_select_factory_add").removeAttr("disabled");
+                    $("#js_select_optype_add").removeAttr("disabled");
+                    $("#js_select_funplant_add").removeAttr("disabled");
+                    $('#js_select_factory_add').trigger('change');
+                    $('#js_select_optype_add').trigger('change');
+
+                    $('#js_select_production_LineId_add').val('');
+                    $('#js_input_Production_Line_Desc_add').val('');
+                    $('#js_e_select_enable_flag').val('false');
+
+                    $('#js_btn_save_new_Production_Line').show();
+                    $('#js_btn_save_edit_Production_Line').hide();
+                }
+            })
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //edit button in grid
+            $('body').on('click', '.js-grid-edit', function () {
+             
+                $("#js_select_factory_add").attr('disabled', 'disabled');
+                $("#js_select_optype_add").attr('disabled', 'disabled');
+                $("#js_select_funplant_add").attr('disabled', 'disabled');
+                var $sender = $(this);
+                if ($sender.hasClass('disabled')) {
+                    PDMS.Utility.MessageBox.error("Production_Line already expired, can't edit!");
+                    return;
+                }
+
+                $("#js_hidden_edit_id").val(1);
+
+
+                $('#js_edit_modal').modal('show', $(this));
+
+            });
+
+            //delete button in grid
+            $('body').on('click', '.js-grid-delete', function () {
+                var uid = $(this).attr('data-id');
+                var dataLineName = $(this).attr('data-LineName');
+                PDMS.Utility.MessageBox.confirm(
+                    "你确定要删除生产线:[" + dataLineName + "]?"
+                    , function () {
+                        var url = Production_LineMaintenance.urls.deleteProduction_Line;
+                        $.post(url, { uid: uid }, function (data) {
+                            
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("生产线删除成功", function () {
+                                    window.location.reload();
+                                });
+                            } else if (data == 'HAVEREFERENCE') {
+                                PDMS.Utility.MessageBox.error("生产线已在使用，不可删除!");
+                            } else {
+                                PDMS.Utility.MessageBox.error("Error:" + data);
+                            }
+                        });
+                    });
+            });
+
+            //查看
+            $('body').on('click', '.js-grid-view', function () {
+                
+                var uid = $(this).attr('data-id');
+                var url = Production_LineMaintenance.urls.queryProduction_Line;//PlantMaintenance.urls.queryPlant;
+                $.get(url, { uid: uid }, function (data) {
+
+                    //隐藏字段
+                    $('#js_v_input_factory').val(data.Plant_Organization_Name);
+                    $('#js_v_input_optype').val(data.BG_Organization_Name);
+                    $('#js_v_input_funplant').val(data.FunPlant_Organization_Name);
+
+                    $('#js_v_input_LineId').val(data.Line_ID);
+                    $('#js_v_input_Line_Name').val(data.Line_Name);
+
+                    $('#js_v_input_ccode').val(data.Line_Desc);
+                    $('#js_v_input_Workshop').val(data.Workshop_Name);
+                    $('#js_v_input_WorkshopId').val(data.Workshop_ID);
+
+                    $('#js_v_input_Workstation').val(data.Workstation_Name);
+                    $('#js_v_input_WorkstationId').val(data.Workstation_ID);
+                    $('#js_v_input_project').val(data.Project_Name);
+                    $('#js_v_input_projectCode').val(data.Project_Code);
+
+                    $('#js_v_input_process').val(data.Process_Name);
+                    $('#js_v_input_processId').val(data.Process_ID);
+                    $('#js_v_input_enable_flag').val(data.Is_Enable == true ? "启用" : "禁用");
+                    $('#js_v_input_creator').val(data.Created_UserName);
+                    $('#js_v_input_create_date').val(data.Created_Date);
+                    
+                    $('#js_v_input_modifier').val(data.Modified_UserName);
+                    $('#js_v_input_modified_date').val(data.Modified_Date);
+
+                    $('#js_view_modal').modal('show');
+                });
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+            })
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+            $('#js_select_factory_add').change(function () {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                url = Production_LineMaintenance.urls.getCurrentOPType;
+                if (oporgid != 0) {
+                    $('#js_select_optype_add').empty();
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+            })
+
+            //编辑时optype 改变时间
+            $('#js_select_optype_add').change(function () {
+                if ($('#js_select_optype_add option:selected').text() != "") {
+                    refreshFuncPlantAdd();
+                    refreshWorkshopSelectAdd();
+                    refreshWorkStationSelectAdd();
+                    refreshProjectSelectAdd();
+                    refreshProcessSelectAdd();
+                }
+            });
+            //刷新功能厂
+            function refreshFuncPlantAdd() {
+                var getFuncPlantUrl = Production_LineMaintenance.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_add').empty();
+                $('#js_select_funplant_add').html('<option></option>');
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val()
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = 0;
+                }
+                $.post(getFuncPlantUrl, { Optype: optypeVal }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+            }
+
+            //刷新车间列表
+            function refreshWorkshopSelectAdd() {
+                $('#js_select_Workshop_add').empty();
+                $('#js_select_Workshop_add').html('<option></option>');
+                var getWorkshopUrl = Production_LineMaintenance.urls.getWorkshopList;
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val()
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = 0;
+                }
+                $.post(getWorkshopUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Workshop_add').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID + "_" + data[i].Workshop_Name + '</option>');
+                    }
+                });
+            }
+            //刷新工站列表
+            function refreshWorkStationSelectAdd() {
+                $('#js_select_Workstation_add').empty();
+                $('#js_select_Workstation_add').html('<option></option>');
+                var getWorkstationUrl = Production_LineMaintenance.urls.getWorkstationList;
+                var factoryVal = $('#js_select_factory_add').val();
+                var optypeVal = $('#js_select_optype_add').val()
+                var funplantVal = $('#js_select_funplant_add').val();
+                if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                    funplantVal = 0;
+                }
+                $.post(getWorkstationUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Workstation_add').append('<option value="' + data[i].WorkStation_UID + '" data-Project_UID="' + data[i].Project_UID + '" data-Project_Name="' + data[i].Project_Name + '" data-Process_Info_UID="' + data[i].Process_Info_UID + '" data-Process_Name="' + data[i].Process_Name + '">' + data[i].WorkStation_ID + "_" + data[i].WorkStation_Name + '</option>');
+                    }
+                });
+            }
+            //刷新专案列表
+            function refreshProjectSelectAdd() {
+                $("#js_select_project_add").val('');
+                $("#js_select_projectName_add").val('');
+                //$('#js_select_project_add').empty();
+                //$('#js_select_project_add').html('<option></option>');
+                //var getProjectByOPTypeUrl = Production_LineMaintenance.urls.getProjectByOPType;
+                //var optypeVal = $('#js_select_optype_add').val()
+                //$.get(getProjectByOPTypeUrl, { oporgid: optypeVal }, function (data) {
+                //    for (var i = 0; i < data.length; i++) {
+                //        $('#js_select_project_add').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Code + "_" + data[i].Project_Name + '</option>');
+                //    }
+                //});
+            }
+            //刷新制程列表
+            function refreshProcessSelectAdd() {
+                $("#js_select_process_add").val('');
+                $("#js_select_processName_add").val('');
+                //$('#js_select_process_add').empty();
+                //$('#js_select_process_add').html('<option></option>');
+                //var getProcessUrl = Production_LineMaintenance.urls.getProcess_InfoList;
+                //var factoryVal = $('#js_select_factory_add').val();
+                //var optypeVal = $('#js_select_optype_add').val()
+                //var funplantVal = $('#js_select_funplant_add').val();
+                //if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                //    funplantVal = 0;
+                //}
+                //$.post(getProcessUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                //    for (var i = 0; i < data.length; i++) {
+                //        $('#js_select_process_add').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID + "_" + data[i].Process_Name + '</option>');
+                //    }
+                //});
+            }
+
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = Production_LineMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                //$('#js_select_optype_query').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+
+                $('#js_select_project_query').empty();
+                $('#js_select_project_query').html('<option></option>');
+
+                $('#js_select_Workshop_query').empty();
+                $('#js_select_Workshop_query').html('<option></option>');
+
+                $('#js_select_Workstation_query').empty();
+                $('#js_select_Workstation_query').html('<option></option>');
+
+                $('#js_select_project_query').empty();
+                $('#js_select_project_query').html('<option></option>');
+
+                $('#js_select_process_query').empty();
+                $('#js_select_process_query').html('<option></option>');
+                if ($('#js_select_optype_query option:selected').text() != "") {
+
+                    var factoryVal = $('#js_select_factory_query').val();
+                    var optypeVal = $('#js_select_optype_query').val()
+                    var funplantVal = $('#js_select_funplant_query').val();
+                    if (funplantVal == "" || funplantVal == undefined || funplantVal == false) {
+                        funplantVal = 0;
+                    }
+                    var url = Production_LineMaintenance.urls.getFunPlantByOPTypes;
+                    $.post(url, { Optype: optypeVal }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    });
+
+                    if (optypeVal > 0) {
+                        var getProjectByOPTypeUrl = Production_LineMaintenance.urls.getProjectByOPType;
+                        $.get(getProjectByOPTypeUrl, { oporgid: optypeVal }, function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_project_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Code + "_" + data[i].Project_Name + '</option>');
+                            }
+                        });
+
+                        var getWorkshopUrl = Production_LineMaintenance.urls.getWorkshopList;
+                        $.post(getWorkshopUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_Workshop_query').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID + "_" + data[i].Workshop_Name + '</option>');
+                            }
+                        });
+
+                        var getWorkstationUrl = Production_LineMaintenance.urls.getWorkstationList;
+                        $.post(getWorkstationUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_Workstation_query').append('<option value="' + data[i].WorkStation_UID + '">' + data[i].WorkStation_ID + "_" + data[i].WorkStation_Name + '</option>');
+                            }
+                        });
+
+                        var getProcessUrl = Production_LineMaintenance.urls.getProcess_InfoList;
+                        $.post(getProcessUrl, { Plant_Organization_UID: factoryVal, BG_Organization_UID: optypeVal, FunPlant_Organization_UID: funplantVal }, function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#js_select_process_query').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID + "_" + data[i].Process_Name + '</option>');
+                            }
+                        });
+                    }
+                }
+            })
+
+            //功能厂change
+            $('#js_select_funplant_query').change(function () {
+                url = Production_LineMaintenance.urls.getProcess_InfoList;
+                $('#js_select_process_query').empty();
+                $('#js_select_process_query').html('<option></option>');
+                $.post(url, { Plant_Organization_UID: $('#js_select_factory_query').val(), BG_Organization_UID: $('#js_select_optype_query').val(), FunPlant_Organization_UID: $('#js_select_funplant_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_process_query').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID + "_" + data[i].Process_Name + '</option>');
+                    }
+                });
+            });
+
+
+            $('#js_select_funplant_add').change(function () {
+                refreshWorkshopSelectAdd();
+                refreshWorkStationSelectAdd();
+                refreshProjectSelectAdd();
+                refreshProcessSelectAdd();
+            });
+
+
+            //新增修改Production_Line按钮
+            $("#js_btn_save_edit_Production_Line").click('click', function () {
+                var editform = $('#js_form_Production_Line_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: Production_LineMaintenance.urls.EditProduction_Line,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'EXIST') {
+                                PDMS.Utility.MessageBox.error("修改生产线[厂区][OP类型][生产线代码][生产线编码]重复");
+                            }
+                            else if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("修改生产线信息成功", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+
+            //新增保存Production_Line按钮
+            $("#js_btn_save_new_Production_Line").click('click', function () {
+                $('#js_hidden_Plant_Organization_uid').val($('#js_select_factory_add option:selected').val());
+                $('#js_hidden_BG_Organization_uid').val($('#js_select_optype_add option:selected').val());
+                $('#js_hidden_FunPlant_Organization_uid').val($('#js_select_funplant_add option:selected').val());
+
+                var editform = $('#js_form_Production_Line_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: Production_LineMaintenance.urls.AddProduction_Line,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'EXIST') {
+                                PDMS.Utility.MessageBox.error("新增生产线[厂区][OP类型][生产线代码][生产线编码]重复");
+                            }
+                            else if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("新增生产线信息成功", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //#region 模板下载
+            $('#js_btn_download_fl').on('click', function () {
+                
+                this.form.action = Production_LineMaintenance.urls.downloadExcel;
+                $('#js_form_excel_add').submit();
+            });
+            //#endregion
+            //提交     stat
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@T("QA.Importsuccessful")', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+            //提交   END
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+
+
+
+            //Form Validate
+            $('#js_form_Production_Line_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+        });
+
+        function changeWorkStation(sender) {
+            
+            var selectedWorkStation = $(sender).find("option:selected");
+            var projectUID = selectedWorkStation.attr("data-Project_UID");
+            var projectName = selectedWorkStation.attr("data-Project_Name");
+            var processUID = selectedWorkStation.attr("data-Process_Info_UID");
+            var processName = selectedWorkStation.attr("data-Process_Name");
+
+            $("#js_select_project_add").val(projectUID);
+            $("#js_select_projectName_add").val(projectName);
+            $("#js_select_process_add").val(processUID);
+            $("#js_select_processName_add").val(processName);
+        }
+    </script>
+}

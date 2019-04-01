@@ -1,0 +1,536 @@
+﻿@model PDMS.Model.ViewModels.FixPartInOutReportDetailVM
+<section class="content-header portal-content-header">
+    <h1>出入库存明细查询</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" id="js_btn_Serch" data-target="#js_search_modal">查询</button>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_FixtureInOut_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>出入库表单编号</th>
+                        <th>出入库类型</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>储位</th>
+                        <th>料架</th>
+                        <th>仓库编码</th>
+                        <th>仓库名称</th>
+                        <th>出入库时间</th>
+                        <th>入库数量</th>
+                        <th>出库数量</th>
+                        <th>结存数量</th>
+                        <th>最后更新者</th>
+                        <th>最后更新时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>出入库表单编号</th>
+                        <th>出入库类型</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>储位</th>
+                        <th>料架</th>
+                        <th>仓库编码</th>
+                        <th>仓库名称</th>
+                        <th>出入库时间</th>
+                        <th>入库数量</th>
+                        <th>出库数量</th>
+                        <th>结存数量</th>
+                        <th>最后更新者</th>
+                        <th>最后更新时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+        </div>
+    </div>
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_query"><font color='red'>*</font>厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                        @*<option></option>*@
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_query"><font color='red'>*</font>OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_query">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_storage_outbound_type" data-live-search="true">出库单类别</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_storage_outbound_type" name="Storage_In_Out_Bound_Type_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.FixturePartInOutboundStatus)
+                                        {
+                                            <option value=@item.Status_UID>@item.Status</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            @*<div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label error">出入库日期</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <span class="input-group-addon">From</span>
+                                                <input type="text" name="Start_Date" class="form-control input-sm date" id="js_s_input_modified_from">
+                                                <span class="input-group-addon">To</span>
+                                                <input type="text" name="End_Date" class="form-control input-sm date " id="js_s_input_modified_to">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">出入库日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Start_Date" class="form-control input-sm date" id="js_s_input_Start_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="End_Date" class="form-control input-sm date" id="js_s_input_Start_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_Bound_ID">出入库编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_Bound_ID" name="Storage_In_Out_Bound_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_ID">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Part_ID" name="Part_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_Name">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Part_Name" name="Part_Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Part_Spec">型号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Part_Spec" name="Part_Spec">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_ID">储位</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_ID" name="Storage_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Rack_ID">料架</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Rack_ID" name="Rack_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_Warehouse_ID">仓库编码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_Warehouse_ID" name="Fixture_Warehouse_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Fixture_Warehouse_Name">仓库名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Fixture_Warehouse_Name" name="Fixture_Warehouse_Name">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $('#js_btn_clear').click(function () {
+            var $searchform = $('#js_search_modal');
+            $searchform.find("select").each(function () {
+                $(this).find("option").attr("selected", false);
+                $(this).find("option").first().attr("selected", true);
+                $(this).selectpicker('refresh');
+            });
+            PDMS.Utility.Criteria.Clear();
+        });
+
+       
+        $(function () {
+            var MaterialInventorySetting = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryMaterialInventorySum: '@Url.Action("GetInOutDetialReportData", "FixturePart")',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //导出全部数据
+                    doExportAllFixtureDetailReprot: '@Url.Action("ExportALLInOutDetialReportData", "FixturePart")',
+                    //导出勾选的数据
+                    doExportSelectedFixtureDetailReprot: '@Url.Action("ExportSelectedInOutDetialReportData", "FixturePart")'
+                };
+                //#region 定义字段列
+                var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Storage_InOut_Detail_UID + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                },
+                {
+                    data: "Plant",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "BG_Organization",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "FunPlant_Organization",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Storage_In_Out_Bound_ID",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "InOut_Type",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Part_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Part_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Part_Spec",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Storage_ID",
+                    className: "min-col-xs"
+                },
+                 {
+                     data: "Rack_ID",
+                     className: "min-col-xs"
+                 },
+                  {
+                      data: "Fixture_Warehouse_ID",
+                      className: "min-col-xs"
+                  },
+                   {
+                       data: "Fixture_Warehouse_Name",
+                       className: "min-col-xs"
+                   },
+                {
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.In_Out_StorageTime).Format("yyyy-MM-dd hh:mm"));
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "In_Bound_Qty",
+                    className: "min-col-xs"
+                },
+                 {
+                     data: "Out_Bound_Qty",
+                     className: "min-col-xs"
+                 },
+                  {
+                      data: "Remaining_Bound_Qty",
+                      className: "min-col-xs"
+                  },
+                {
+                    data: "Modified_User_Name",
+                    className: "min-col-xs"
+                },
+                {
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Modified_Date).Format("yyyy-MM-dd hh:mm"));
+                    },
+                    className: "min-col-xs"
+                }
+                ];
+
+                //#endregion 定义字段列
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryMaterialInventorySum = function (firstLoad, buildCriteria) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_FixtureInOut_datatable",
+                        remoteUrl: urls.queryMaterialInventorySum,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryMaterialInventorySum(true, false);
+                    },
+                    queryMaterialInventorySum: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryMaterialInventorySum(false, buildCriteria);
+                    }
+                }
+            })();
+            MaterialInventorySetting.Init();
+            //查询的起始日期变更---START
+            $('#js_s_input_modified_from').change(function () {
+                $('#js_s_input_modified_to').val($(this).val());
+            })
+            //BG变更---START
+            $('#js_select_BG_Organization_UID').change(function () {
+                $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+                var url = MaterialInventorySetting.urls.queryFunplantByop,
+                    opuid = $(this).val();
+                $.post(url, { opuid: opuid }, function (data) {
+                    $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_FunPlant_Organization_UID').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                    }
+                })
+            })
+            //查询按钮
+            $('#js_btn_query').click(function () {
+
+                //检查必须填写的值是否为空
+                if ($("#js_select_factory_query").val() == null || $("#js_select_factory_query").val() == "" || $("#js_select_optype_query").val() == null || $("#js_select_optype_query").val() == ""
+                  ) {
+                    PDMS.Utility.MessageBox.error("厂区，OP类型为必填字段");
+                    return;
+                }
+
+                if ($('#js_s_input_Start_Date_from').val() > $('#js_s_input_Start_Date_to').val()) {
+                    PDMS.Utility.MessageBox.error("起始时间不可大于结束时间");
+                    return;
+                }
+
+                if ($('#js_form_query').valid()) {
+                    MaterialInventorySetting.queryMaterialInventorySum(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //查询--开始
+            $('#js_btn_Serch').click(function () {
+                $('#js_select_factory_query').trigger('change');
+                $('#js_select_optype_query').trigger('change');
+            })
+
+            $('#js_select_warehouse_storage_uid').selectpicker({ 'selectedText': 'cat' });
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+           // 查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            });
+
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = MaterialInventorySetting.urls.getCurrentOPType;
+                //$('#js_select_optype_query').empty();
+                //$('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_funplant_query').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+                $('#js_select_optype_query').selectpicker('refresh');
+                //$('#js_select_factory1').selectpicker('val', data[0].Plant_OrganizationUID);
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                var url = MaterialInventorySetting.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+
+                if ($('#js_select_optype_query option:selected').text() != "") {
+                    $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    })
+                }
+                $('#js_select_funplant_query').selectpicker('refresh');
+            });
+
+            $('#js_btn_Return').click(function () {
+                $('#js_search_modal1').modal('hide');
+            }
+            );
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_FixtureInOut_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = MaterialInventorySetting.urls.doExportAllFixtureDetailReprot;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = MaterialInventorySetting.urls.doExportSelectedFixtureDetailReprot;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,494 @@
+﻿<!-- Main content -->
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+
+    .js_ppcheckdata_datatable > tbody > tbody > tr {
+    }
+</style>
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <div class="dropdown">
+                <button id="btn-return_top" type="button" class="btn btn-primary ReturnButtonClick">@T("QA.Shutdown")</button>
+            </div>
+
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+    <div id="day_label_th">
+        <label>@T("QA.Date"):</label><label id="js_datetime">@ViewBag.ProductDate</label>&
+        <label>@T("QA.Timeperiod"):</label><label id="js_time_interval">@ViewBag.TimeInterVal</label>&
+        <label>@T("QA.Project"):</label><label id="js_project">@ViewBag.ProjectName</label>&
+        @*<label>@T("QA.Materialtypes"):</label><label id="js_meterialType">@ViewBag.MaterialType</label>&*@
+        <label>@T("QA.Colour"):</label><label id="js_color">@ViewBag.color</label>
+    </div>
+    <div style="display:none">
+        <label>@T("QA.Materialtypes"):</label><label id="js_meterialType">@ViewBag.MaterialType</label>&
+    </div>
+    <div id="week_label_th">
+        <b> <label id="interval_week_date"></label><br />@T("QA.Yieldsummary")<br /></b>
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_QaReportDaySummeryData_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>@T("QA.Badpoint")</th>
+                        <th>@T("QA.Numbertests")</th>
+                        <th>@T("QA.OnceOK")</th>
+                        <th>@T("QA.Atargetyield")</th>
+                        <th>@T("QA.Ayield")</th>
+                        <th>@T("QA.Numberinputs")</th>
+                        <th>@T("QA.Shipments")</th>
+                        <th>NG</th>
+                        <th>@T("QA.Specialmining")</th>
+                        <th>@T("QA.Secondarytargetyield")</th>
+                        <th>@T("QA.Secondaryyield")</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <b> <label id="interval_firstTopTenExcetionType"><br /><br /><br /></label>@T("QA.Badbadtimes")<br /></b>
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_QaReportFirstTopTen">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("QA.Ranking")</th>
+                        <th>@T("QA.Badname")</th>
+                        <th>@T("QA.Pooramount")</th>
+                        <th>@T("QA.Badrate")</th>
+                        <th>@T("QA.Badtype")</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <b> <label id="interval_secondTopTenExcetionType"><br /><br /><br /></label> @T("QA.Twobadtimes")<br /></b>
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_QaReportSecondTopTen">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("QA.Ranking")</th>
+                        <th>@T("QA.Badname")</th>
+                        <th>@T("QA.Pooramount")</th>
+                        <th>@T("QA.Badrate")</th>
+                        <th>@T("QA.Badtype")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row" hidden="hidden"></div>
+
+            </br><!--/表格-->
+        </div><!-- / 內容 表格列 -->
+    </div>
+    <hr class="hr-custom">
+
+    <div class="col-md-12 col-lg-9">
+    </div>
+    <div class="col-md-12 search-field col-lg-3">
+        <button id="btn-return_top" type="button" class="btn btn-primary ReturnButtonClick">@T("QA.Shutdown")</button>
+    </div>
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <input type="hidden" name="ProjectName" id="js_s_input_ProjectName" value="@ViewBag.ProjectName" />
+                            <input type="hidden" name="Process" id="js_s_input_Process" value= "@ViewBag.Process" />
+                            <input type="hidden" name="flowchart_master_uid_ID" id="flowchart_master_uid_ID" value=@ViewBag.FlowChart_Master_UID />
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Plant" name="Plant"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_OPType">@T("QA.OPType")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_OPType" name="OPType"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_Type">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_Part_Type" name="FlowChart_Master_UID">
+                                        <option value=@ViewBag.FlowChart_Master_UID selected="selected">@ViewBag.PartType</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtypes")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType">
+                                        <option value=@ViewBag.MaterialType selected="selected">@ViewBag.MaterialType</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant">
+                                        <option value="IPQC" selected="selected">IPQC</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_select_type">@T("QA.Querytype")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_select_type" name="Select_Type" class="form-control input-sm">
+                                        <option value="daily" selected="selected">@T("QA.Daily")</option>
+                                        @*<option value="weekly">周报</option>
+                                            <option value="monthly">月报</option>*@
+                                    </select>
+                                </div>
+                            </div>
+                            @*日报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="ProductDate" value=@ViewBag.ProductDate class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Checkpoint")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_process" name="FlowChart_Detail_UID">
+                                        <option value=@ViewBag.FlowChart_Detail_UID selected="selected">@ViewBag.Process</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_place">@T("QA.Workshop")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_place" name="Place"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color">
+                                        <option value=@ViewBag.color>@ViewBag.color</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_interval">
+                                        <option value=@ViewBag.TimeInterVal selected="selected">@ViewBag.TimeInterVal</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value=@ViewBag.TimeInterVal />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" class="btn btn-primary btn-query">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Queryreport")
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/QAReportJS/ClickEvent.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var subDatatable = null;
+            var QAReportUrls = {
+                QueryQADayReportSummery: '@Url.Action("QueryQADayReportSummery", "Quality")',
+                QueryQADayReportFirstTopTen: '@Url.Action("QueryQADayReportFirstTopTen", "Quality")',
+                QueryQADayReportSecondTopTen: '@Url.Action("QueryQADayReportSecondTopTen", "Quality")',
+                ReturnToReport: '@Url.Action("IPQCReportFromQAReportBack", "Quality")'
+            };
+            var QAMasterSummeryData = (function() {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FirstCheck_Qty",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FirstOK_Qty",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FirstTargetYield",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FirstRejectionRate",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Input",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Shipment_Qty",
+                        className: "min-col-xs"
+                    },
+                       {
+                           data: "NG",
+                           className: "min-col-xs"
+                       },
+                    {
+                        data: "SepcialAccept_Qty",
+                        className: "min-col-xs"
+                    }, {
+                        data: "SecondTargetYield",
+                        className: "min-col-xs"
+                    }, {
+                        data: "SecondRejectionRate",
+                        className: "min-col-xs"
+                    }
+                ];
+                //#endregion
+                var _getParams = function() {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _qaReportSummery
+                var _qaReportSummery = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_QaReportDaySummeryData_datatable",
+                        remoteUrl: QAReportUrls.QueryQADayReportSummery,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 490,
+                            columns: columns
+                        }
+                    };
+
+                    $('#page').page('destroy');
+                    PDMS.Utility.Pages.Set(config);
+                };
+                //#endregion
+                return {
+                    Init: function() {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _qaReportSummery();
+                    },
+                    QueryQaReportSummery: function() {
+                        _qaReportSummery(false);
+                    }
+                }
+            })();
+            var FirstTopTenDatatable = null;
+            var FirstTopTen = (function() {
+                //#region columns
+                var columns = [
+                    {
+                        data: "RankNum",
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: "TypeName",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "TotalCount",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "RejectionRate",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "ExceptionType",
+                        className: "min-col-md"
+                    }
+                ];
+                //#endregion
+                var _getParams = function() {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryWeekData = function(firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_QaReportFirstTopTen",
+                        remoteUrl: QAReportUrls.QueryQADayReportFirstTopTen,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    $('#page').page('destroy');
+                    PDMS.Utility.Pages.Set(config);
+                };
+                //#endregion
+                return {
+                    Init: function() {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryDayReprotFirstTopTenData: function() {
+                        _queryWeekData(false);
+                    },
+                }
+            })();
+            var SecondTopTenDatatable = null;
+            var SecondTopTen = (function() {
+                //#region columns
+                var columns = [
+                    {
+                        data: "RankNum",
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: "TypeName",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "TotalCount",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "RejectionRate",
+                        className: "min-col-md"
+                    },
+                    {
+                        data: "ExceptionType",
+                        className: "min-col-md"
+                    }
+                ];
+                //#endregion
+                var _getParams = function() {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryMounthData = function(firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_QaReportSecondTopTen",
+                        remoteUrl: QAReportUrls.QueryQADayReportSecondTopTen,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_QaReportSecondTopTen",
+                        remoteUrl: QAReportUrls.QueryQADayReportSecondTopTen,
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Pages.Set(config);
+                    } else {
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+                };
+                //#endregion
+                return {
+                    Init: function() {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryDayReprotSecondTopTenData: function() {
+                        _queryMounthData(false);
+                    }
+                }
+            })();
+            function Initial() {
+                PDMS.Utility.Criteria.Build();
+                QAMasterSummeryData.QueryQaReportSummery();
+                FirstTopTen.QueryDayReprotFirstTopTenData();
+                SecondTopTen.QueryDayReprotSecondTopTenData();
+            }
+            Initial();
+            //返回
+            $('body').on('click', '.ReturnButtonClick', function () {
+                //window.history.back();
+                window.close();
+                //var color = $("#js_color").text();
+                //var materialtype = $("#js_meterialtype").text();
+                //var project = $("#js_project").text()
+                //var productdate = $("#js_datetime").text();
+                //var timeinterval = $("#js_time_interval").text();
+                //var flowchart_master_uid = $("#flowchart_master_uid_ID").val();
+                //var parttype = $("#js_s_input_part_type").find("option:selected").text();
+                //var url = QAReportUrls.ReturnToReport + '?projectname=' + project + '&&productdate=' + productdate + '&&materialtype=' + materialtype + "&&color=" + color + "&&flowchart_master_uid=" + flowchart_master_uid
+                //+ "&&timeinterval=" + timeinterval + "&&parttype=" + parttype;
+                //window.location.href = url;
+            });
+        });
+    </script>
+}

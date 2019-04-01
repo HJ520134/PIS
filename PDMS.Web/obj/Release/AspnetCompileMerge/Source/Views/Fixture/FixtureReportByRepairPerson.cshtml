@@ -1,0 +1,328 @@
+﻿
+@model PDMS.Model.ViewModels.FixtureVM
+
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題 與 搜尋-->
+        <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+        </div><!--/次標題 與 搜尋-->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-7">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-5 search-field col-lg-5">
+            @using (Html.BeginForm("DownloadExcel", "Fixture", FormMethod.Post, new { id = "js_form_excel_download" }))
+            {
+                <a class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> 搜索</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl"> 导出</button>
+
+            <!-- 点击导出按钮将搜索窗口的条件传入-->
+                <input type="hidden" id="hidJsonValue" name="JsonValue" />
+            }
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Report_datatable">
+                <thead>
+                    <tr id="js_Rereport_datatable_tr">
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>工站</th>
+                        <th>异常原因代码</th>
+                        <th>异常原因名称</th>
+                        <th>维修人</th>
+                        <th>维修数量统计</th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_Rereport_datatable_foot">
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>工站</th>
+                        <th>异常原因代码</th>
+                        <th>异常原因名称</th>
+                        <th>维修人</th>
+                        <th>维修数量统计</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div id="page" class="row"></div>
+
+            @*<div id="page2" class="row"></div>*@
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">搜索</h4>
+                </div>
+                <form id="js_form_query" data-need-validate="true">
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_plant">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_plant" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_group">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_group" name="BG_Organization_UID" data-live-search="true"></select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_FunPlant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_WorkStation_UID">工站</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_WorkStation_UID" name="WorkStation_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" data-type="date-interval">送修日期</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="StartDate" class="form-control input-sm date" id="js_s_input_Start_Date_from" required data-msg-required="请输入开始日期">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="EndDate" class="form-control input-sm date" id="js_s_input_Start_Date_to" required data-msg-required="请输入结束日期">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_type">查询类别</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_type" name="QueryType" class="form-control input-sm">
+                                        <option value=1 selected="selected">治具维修次数</option>
+                                        <option value=2>治具维修明细</option>
+                                    </select>
+                                </div>
+                            </div>*@
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                        @*<button id="btn_search" type="button" class="btn btn-primary btn-query">搜索</button>*@
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_search"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/Common.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        var Report = (function () {
+            urls = {
+                queryReport: '@Html.Raw(Url.Action("QueryFixtureReportByRepairPerson", "Fixture"))',
+                exportValid: '@Html.Raw(Url.Action("ExportReportByRepairPersonValid", "Fixture"))',
+                export: '@Html.Raw(Url.Action("ExportReportByRepairPerson", "Fixture"))'
+            };
+
+            var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "PlantName",
+                        className: "min-col-xs "
+                    }, {
+                        data: "OpType_Name",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Func_Name",
+                        className: "min-col-xs "
+                    }, {
+                        data: "WorkStation_Name",
+                        className: "min-col-xs "
+                    }, {
+                        data: "DefectCode_ID",
+                        className: "min-col-xs "
+                    }, {
+                        data: "DefectCode_Name",
+                        className: "min-col-xs "
+                    }, {
+                        data: "RepairName",
+                        className: "min-col-xs "
+                    },{
+                        data: "TotalCount",
+                        className: "min-col-xs text-right"
+                    }];
+
+
+            var _getParams = function () {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryReport = function (firstLoad) {
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Report_datatable",
+                    remoteUrl: urls.queryReport,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        scrollX: true,
+                        autoWidth: true,
+                        columns: columns
+                    }
+                };
+
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                }
+                var chk_value = [];
+                table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+            }
+
+
+
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    RefreshOPTypesQuery();
+                },
+                QueryRereport: function () {
+                    _queryReport(false);
+                },
+            };
+
+        })();
+
+        Report.Init();
+
+        $('#js_form_query').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_search_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+
+        $('#btn_search').on('click', function () {
+            var startDate = $('#js_s_input_Start_Date_from').val();
+            var endDate = $('#js_s_input_Start_Date_to').val();
+            if (startDate == '' || endDate == '') {
+                PDMS.Utility.MessageBox.error("请输入开始日期和结束日期");
+                return false;
+            }
+            else {
+                if (new Date(startDate) > new Date(endDate)) {
+                    PDMS.Utility.MessageBox.error('开始日期不能大于结束日期');
+                    return false;
+                }
+                Report.QueryRereport();
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+        $('#btn_download_fl').click(function () {
+            var formHtml = this.form;
+            var url = Report.urls.export;
+            formHtml.action = url;
+
+            var startDate = $('#js_s_input_Start_Date_from').val();
+            var endDate = $('#js_s_input_Start_Date_to').val();
+            if (startDate == '' || endDate == '') {
+                PDMS.Utility.MessageBox.error("请输入开始日期和结束日期");
+                return false;
+            }
+            else {
+                if (new Date(startDate) > new Date(endDate)) {
+                    PDMS.Utility.MessageBox.error('开始日期不能大于结束日期');
+                    return false;
+                }
+            }
+
+            var paras = {};
+            paras["Plant_Organization_UID"] = $('#js_s_input_plant').val();
+            paras["BG_Organization_UID"] = $('#js_s_input_group').val();
+            paras["FunPlant_Organization_UID"] = $('#js_s_input_FunPlant').val();
+            paras["WorkStation_UID"] = $('#js_s_input_WorkStation_UID').val();
+            paras["StartDate"] = $('#js_s_input_Start_Date_from').val();
+            paras["EndDate"] = $('#js_s_input_Start_Date_to').val();
+            var validUrl = Report.urls.exportValid;
+            $.post(validUrl, paras, function (data) {
+                if (JSON.parse(data).length == 0) {
+                    PDMS.Utility.MessageBox.info("没有查询到任何数据，请修改搜索条件后再导出");
+                }
+                else { //导出数据
+                    $('#hidJsonValue').val(data);
+                    $('#js_form_excel_download').submit();
+                }
+            });
+        });
+
+        $('#js_btn_clear').on('click', function (e) {
+
+            $('#js_search_modal').find('input').val('');
+            $('#js_search_modal').find('textarea').val('');
+            var $searchform = $('#js_form_query');
+            $searchform.find("select").each(function () {
+                $(this).find("option").attr("selected", false);
+                //$(this).find("option").first().attr("selected", true);
+                $(this).selectpicker('refresh');
+            });
+            PDMS.Utility.Criteria.Clear();
+        });
+    });
+    </script>
+}

@@ -1,0 +1,246 @@
+﻿@{
+}
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="content-header portal-content-header">
+                <h1>
+                    MES-PIS数据同步报表
+                </h1>
+            </section>
+        </div>
+        <hr style="margin: 0px; height: 1px; border: 0px; background-color: #D5D5D5; color: #D5D5D5;" />
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+            <form id="js_form_query" class="form-inline">
+                <div class='form-group'>
+                    <label>同步日期:</label>
+                    <input type="text" name="Date" style="width:100px" class="form-control input-sm date" id="js_s_Date">
+                </div>
+                <div class='form-group'>
+                    <label>同步时段:</label>
+                    <input type="text" name="TimeInterVal" style="width:100px" class="form-control input-sm"  id="js_s_TimeInterVal">
+                </div>
+
+                <div class='form-group'>
+                    <label>PIS-制程ID:</label>
+                    <input type="text" name="PIS_ProcessID" style="width:100px" class="form-control input-sm" id="js_s_PIS_ProcessID">
+                </div>
+                <div class='form-group'>
+                    <label>PIS-制程名字:</label>
+                    <input type="text" name="PIS_ProcessName" class="form-control input-sm" style="width:100px" id="js_s_PIS_ProcessName">
+                </div>
+                <div class='form-group'>
+                    <label>MES-制程名字:</label>
+                    <input type="text" name="MES_ProcessName" style="width:100px" class="form-control input-sm" id="js_s_MES_ProcessName">
+                </div>
+                <div class='form-group ' style="float:right;margin-right:10%">
+                    @*<input type="button" value="查询" id="searchbtn" class="titlewhite" />*@
+                    <button type="button" class="fa fa-search btn btn-primary" id="searchbtn">查询</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_Exprot">导出</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  @*  <hr style="margin: 0px; height: 1px; border: 0px; background-color: #D5D5D5; color: #D5D5D5;" />*@
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_turnover_datatable">
+                <thead>
+                    <tr id="js_rpt_tr">
+                        <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th  class="">时段</th>
+                        <th  class="">PIS-制程ID</th>
+                        <th  class="">PIS-制程名称</th>
+                        <th  class="">MES-制程名称</th>
+                        <th  class="">扫码数</th>
+                        <th  class="">制程类型</th>
+                        <th  class="">部件类型</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_rpt_tr_foot">
+                        <th class="table-col-checkbox"><input type="checkbox" class="js-checkbox-all" /></th>
+                        <th class="table-col-seq">@T("Common.Seq")</th>
+                        <th>时段</th>
+                        <th>PIS-制程ID</th>
+                        <th>PIS-制程名称</th>
+                        <th>MES-制程名称</th>
+                        <th>扫码数</th>
+                        <th>制程类型</th>
+                        <th>部件类型</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+    </div><!-- / 內容 表格列 -->
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {          
+            var DemissionRate = (function () {
+                var urls = {
+                    QueryMESSyncReportData: '@Html.Raw(Url.Action("MESSyncReportData", "ProcessIDTraConfig"))',
+
+                    //全部导出
+                    ExportAllTwoHourReport: '@Html.Raw(Url.Action("ExportAllTwoHourReport", "ProcessIDTraConfig"))',
+                };
+
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                $('#js_s_Date').val(new Date().Format('yyyy-MM-dd'))
+
+                var columns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + 1 + '">')
+                        .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                },
+                 {
+                     data: null,
+                     className: "table-col-seq"
+                 },
+                {
+                    data: "TimeInterVal",
+                    className: "text-center"
+                }, {
+                    data: "PIS_ProcessID",
+                    className: "text-center"
+                }, {
+                    data: "PIS_ProcessName",
+                    className: "text-center"
+                }, {
+                    data: "MES_ProcessName",
+                    className: "text-center"
+                },
+                 {
+                     data: "ProductQuantity",
+                     className: "text-center"
+                 },
+                {
+                    data: "ProcessType",
+                    className: "text-center"
+                }
+                , {
+                    data: "Color",
+                    className: "text-center"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryDemissionRate = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_turnover_datatable",
+                        remoteUrl: urls.QueryMESSyncReportData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        $('#js_s_Date').val(new Date().Format('yyyy/MM/dd'))
+                        _queryDemissionRate(true);
+                    },
+                    QueryStuffs: function () {
+                        _queryDemissionRate(false);
+                    }
+                }
+
+            })();
+
+            DemissionRate.Init();
+
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            $('#btn_search_Query').click(function () {
+                $('#js_select_factory_query').trigger('change');
+            });
+
+            $('#searchbtn').click(function () {
+                $('#js_s_Date').val(new Date($('#js_s_Date').val()).Format('yyyy/MM/dd'))
+                if ($('#js_form_query').valid()) {
+                    DemissionRate.QueryStuffs();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            $('#btn_Exprot').click(function () {
+                var $selectList = $('#js_turnover_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = DemissionRate.urls.ExportAllTwoHourReport;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    PDMS.Utility.MessageBox.error("不支持勾选导出,请去掉勾选根据查询条件导出")
+                }
+            });
+        });
+    </script>
+} 

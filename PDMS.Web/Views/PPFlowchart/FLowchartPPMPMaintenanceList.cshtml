@@ -1,0 +1,510 @@
+﻿@{
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Imported = T("QA.Imported").Text;
+
+    ViewBag.MaintenanceMP = T("Production.MaintenanceMP").Text;
+    ViewBag.Client = T("QA.Client").Text;
+    ViewBag.Project = T("QA.Project").Text;
+    ViewBag.Part = T("QA.Part").Text;
+    ViewBag.JustInputPercent = T("Production.JustInputPercent").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+    ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+    ViewBag.Suredelete = T("QA.Suredelete").Text;
+    ViewBag.SelectDeleteInfo = T("Production.SelectDeleteInfo").Text;
+
+ }
+
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題 與 搜尋-->
+        <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+        </div><!--/次標題 與 搜尋-->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-7">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-5 search-field col-lg-5">
+            @using (Html.BeginForm("DownloadMPExcel", "PPFlowchart", FormMethod.Post, new {id = "js_form_excel_mpdownload" }))
+                {
+                <button type="button" class="fa fa-times btn btn-primary" id="btn_remove">@T("Common.Delete")</button>
+                <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">@T("Common.TeampleDownload")</button>
+                <a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal"> @T("QA.Uploadplan")</a>
+                <a class="fa btn-query btn btn-primary" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> @T("Common.Search")</a>
+                <button type="button" class="btn btn-primary btn-sm" id="btn_back"><i class="fa fa-reply"></i> @T("Common.Back")</button>
+                }
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_FL_datatable">
+                <thead>
+                    <tr id="js_FL_tr">
+                        <th class="table-col-checkbox nosort">
+                                <input type="checkbox" class="js-checkbox-all" />
+                            </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("QA.Version")</th>
+                        <th>@T("Production.PlanType")</th>
+                        <th>@T("QA.Date")</th>
+                        <th>@T("QA.Numberinputs")</th>
+                        @*<th>良率</th>*@
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_FL_foot">
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("QA.Version")</th>
+                        <th>@T("Production.PlanType")</th>
+                        <th>@T("QA.Date")</th>
+                        <th>@T("QA.Numberinputs")</th>
+                        @*<th>良率</th>*@
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Import")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        @using (Html.BeginForm("ImportMPExcel", "PPFlowchart", FormMethod.Post, new { id = "js_form_excel_add" })) {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="control-label" for="js_s_input_upload">@T("QA.SelecttheExcelfile")</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="file" class="form-control" id="js_s_input_upload" name="upload_excel" placeholder="@T("QA.SelecttheExcelfile")" />
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            </div>
+                            <input type="hidden" id="hidFlowChart_Master_UID" name="FlowChart_Master_UID" value="@ViewBag.ID" />
+                            <input type="hidden" id="hidFlowChart_Version" name="FlowChart_Version" value="@ViewBag.Version" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_modified_from">@T("Common.StartDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from" placeholder="@T("Common.StartDate")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_modified_to">@T("Common.EndDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to" placeholder="@T("Common.EndDate")">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-clear" id="js_btn_clear">@T("Common.Clear")</button>
+                    <button id="btn_search" type="button" class="btn btn-primary btn-query">@T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Production.MPEditPage")</h4>
+                </div>
+                @using (Html.BeginForm("EditFLDetailInfo", "ProductionPlanning", FormMethod.Post, new { id = "js_form_edit_fl" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Project_Name">@T("QA.Project")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" readonly id="s_input_Project_Name" name="Project_Name" placeholder="@T("QA.Project")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_FlowChart_Version">@T("QA.Version")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" readonly id="s_input_FlowChart_Version" name="FlowChart_Version" placeholder="@T("QA.Version")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PlanTypeValue">@T("Production.PlanType")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" readonly id="s_input_PlanTypeValue" name="PlanTypeValue" placeholder="@T("Production.PlanType")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Product_Date">@T("QA.Time")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" readonly id="s_input_Product_Date" name="Product_Date" placeholder="@T("QA.Time")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Input">@T("QA.Numberinputs")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Input" name="Input_Qty" data-rule-number="true" data-msg-number="@T("Production.InputInputNUM")"  placeholder="@T("QA.Numberinputs")"
+                                           required data-msg-required="@T("Production.InputInputNUM")">
+                                </div>
+                            </div>
+                            @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Target_Yield">良率%</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Target_Yield" name="Target_Yield" data-rule-number="true" data-msg-number="良率请输入数字"  placeholder="良率"
+                                           required data-msg-required="请输入良率">
+                                </div>
+                            </div>*@
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-sm-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="btn_save_edit"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <input type="hidden" id="Production_Schedul_UID" name="Production_Schedul_UID"/>
+                    <!--jquery validata error container-->
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                }
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var Plan = (function () {
+                var urls = {
+                    queryFLS: '@Html.Raw(Url.Action("FlowchartPPMPMaintenanceInfo", "PPFlowchart", new { id=ViewBag.ID,Version=ViewBag.Version}))',
+                    backFL: '@Url.Action("flowchartpplist", "PPFlowchart")',
+                    CheckDownloadMPExcel: '@Html.Raw(Url.Action("CheckDownloadMPExcel", "PPFlowchart",  new { id= ViewBag.ID, Version= ViewBag.Version}))',
+                    CheckUploadUrl: '@Html.Raw(Url.Action("CheckUploadNPI", "PPFlowchart",  new { id= ViewBag.ID, Version= ViewBag.Version }))',
+                    DeleteInfoByUIDList: '@Url.Action("DeleteInfoByUIDList", "PPFlowchart")',
+                    SaveMPInfo: '@Html.Raw(Url.Action("SaveMPInfo", "PPFlowchart", new { id=ViewBag.ID,Product_Phase=ViewBag.Product_Phase,Version=ViewBag.Version }))'
+                };
+
+                var contentDatatable = null;
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Production_Schedul_UID + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var hidProject_Name = '<input type="hidden" id=hidProject_Name value=' + rowData.Project_Name + '>';
+                        var hidFlowChart_Version = '<input type="hidden" id=hidFlowChart_Version value=' + rowData.FlowChart_Version + '>';
+                        var hidPlanTypeValue = '<input type="hidden" id=hidPlanTypeValue value=' + rowData.PlanTypeValue + '>';
+                        var hidProduct_Date = '<input type="hidden" id=hidProduct_Date value=' + rowData.Product_Date + '>';
+                        var hidInput_Qty = '<input type="hidden" id=hidInput_Qty value=' + rowData.Input_Qty + '>';
+                        var hidTarget_Yield = '<input type="hidden" id=hidTarget_Yield value=' + rowData.Target_Yield + '>';
+                        var hidProduction_Schedul_UID = '<input type="hidden" id=hidProduction_Schedul_UID value=' + rowData.Production_Schedul_UID + '>';
+
+                        var buttonEdit = '<button type="button" class="btn btn-default btn-sm js-grid-edit"  data-nid=' + rowData.Production_Schedul_UID + '>@ViewBag.Edit</button>';
+                        var result = hidProject_Name + hidFlowChart_Version + hidPlanTypeValue + hidProduct_Date + hidInput_Qty + hidTarget_Yield + hidProduction_Schedul_UID + buttonEdit;
+
+                        $(td).html(result);
+                    },
+                    className: "text-center js-grid-edit"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "Project_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "FlowChart_Version",
+                    //swidth: "5%",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "PlanTypeValue",
+                    className: "min-col-xs"
+                }, {
+                    data: "Product_Date",
+                    className: "min-col-xs"
+                }, {
+                    data: "Input_Qty",
+                    className: "min-col-xs text-right"
+                }
+                //, {
+                //    data: "Per_Target_Yield",
+                //    className: "min-col-xs text-right"
+                //}
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+
+                var _queryFLS = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_FL_datatable",
+                        remoteUrl: urls.queryFLS,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            destory: true,
+                            //scrollCollapse: true,
+
+                            //fixedColumns: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+                    //$('table thead tr').find('th').removeClass('text-right');
+                };
+
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryFLS(true);
+                        var title = '@ViewBag.MaintenanceMP ---- @ViewBag.Client：' + '@ViewBag.CustomerName' + ' @ViewBag.Project：' + '@ViewBag.ProjectName' + ' @ViewBag.Part：' + '@ViewBag.PartTypes';
+                        $('#lblTitle').text(title);
+                        @*var date = '@ViewBag.Monday' + '至' + '@ViewBag.Sunday'
+                        $('#lblDate').text(date);*@
+                    },
+                    AjaxInit: function () {
+                        _queryFLS(false);
+                    },
+                    SearchNPI: function () {
+                        _queryFLS(false);
+                    },
+                }
+            })();
+
+            Plan.Init();
+
+            $('#js_form_edit_fl').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+
+            $('#btn_back').on('click', function () {
+                var url = Plan.urls.backFL;
+                window.location.href = url;
+            });
+
+            jQuery.validator.addMethod("percent", function (value, element) {
+                var reg = /^((\d+\.?\d*)|(\d*\.\d+))\%$/;
+                var result = reg.test(value);
+                return result;
+            }, "@ViewBag.JustInputPercent");
+
+            $('body').on("click", ".js-grid-edit", function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr).data();
+                $('#js_edit_modal').modal('show');
+                //标题
+                $('#s_input_Project_Name').val($(this).find("#hidProject_Name").val());
+                $('#s_input_FlowChart_Version').val($(this).find("#hidFlowChart_Version").val());
+                $('#s_input_PlanTypeValue').val($(this).find("#hidPlanTypeValue").val());
+                $('#s_input_Product_Date').val($(this).find("#hidProduct_Date").val());
+                $('#s_input_Input').val($(this).find("#hidInput_Qty").val());
+                //var value = row.Target_Yield * 1000 / 10;
+                //$('#s_input_Target_Yield').val(value);
+                $('#Production_Schedul_UID').val($(this).find("#hidProduction_Schedul_UID").val());
+
+            });
+
+
+            //#region 保存单笔修改的信息
+            $('#btn_save_edit').on('click', function () {
+                this.form.action = Plan.urls.SaveMPInfo;
+                $('#js_form_edit_fl').submit();
+                Plan.AjaxInit();
+            });
+
+            //#endregion 保存单笔修改的信息
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            $('#js_import_modal').on('hidden.bs.modal', function (e) {
+                $('#js_import_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+            //隐藏modal框时清空值
+
+            //#region 下载Excel模板
+            $('#btn_download_fl').on('click', function () {
+                var formHtml = this.form;
+                var CheckUrl = Plan.urls.CheckDownloadMPExcel;
+
+                $.post(CheckUrl, function (data) {
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        var url = '@Html.Raw(Url.Action("DownloadMPExcel", "PPFlowchart", new { id= ViewBag.ID, Version= ViewBag.Version }))';
+                        formHtml.action = url;
+                        $('#js_form_excel_mpdownload').submit();
+                    }
+                });
+            });
+            //#endregion
+
+            $('#btn_import_fl').on('click', function () {
+                ImportExcel();
+            });
+
+            var ImportExcel = function () {
+                $('#js_import_modal').modal('hide');
+                $.blockUI({ message: "<h1>@ViewBag.Imported</h1>" });
+                $('#js_form_excel_add').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var input1 = $('#js_s_input_upload').val();
+
+                        if (input1 == '') {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseselectExcelfile');
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data, function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('@ViewBag.Importsuccessful', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            }
+
+            //#region 删除绑定
+            $('#btn_remove').on('click', function () {
+                PDMS.Utility.MessageBox.confirm("@ViewBag.Suredelete", function () {
+                    var array = new Array();
+                    $(".js-checkbox-item").each(function () {
+                        if ($(this).is(':checked')) {
+                            var value = $(this).val();
+                            array.push(value);
+                        }
+                    });
+                    if (array.length == 0) {
+                        PDMS.Utility.MessageBox.info('@ViewBag.SelectDeleteInfo');
+                    }
+                    else {
+                        var json = JSON.stringify(array)
+                        $.post(Plan.urls.DeleteInfoByUIDList, { json}, function (data) {
+                            Plan.AjaxInit();
+                        });
+                    }
+                });
+
+            });
+            //#endregion
+
+            $('#js_btn_clear').click(function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                //PDMS.Utility.Criteria.Clear();
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            $('#btn_search').click(function () {
+                Plan.SearchNPI();
+                $('#js_search_modal').modal('hide');
+            });
+
+        });
+    </script>
+}
+

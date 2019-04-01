@@ -1,0 +1,605 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> 查詢</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">
+                <i class="fa fa-plus"></i> 新增
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_cost_center_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th>廠區</th>
+                        <th>OP類型</th>
+                        <th>功能廠</th>
+                        <th>成本中心代號</th>
+                        <th>成本中心描述</th>
+                        <th>最後更新者</th>
+                        <th>最後更新日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th>廠區</th>
+                        <th>OP類型</th>
+                        <th>功能廠</th>
+                        <th>成本中心代號</th>
+                        <th>成本中心描述</th>
+                        <th>最後更新者</th>
+                        <th>最後更新日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查詢</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_select_factory">廠區</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_s_select_factory" name="Plant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_select_op_type">OP類型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_s_select_op_type" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_select_fun_plant">功能廠</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_s_select_fun_plant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_cost_center_id">成本中心代號</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="CostCtr_ID" class="form-control input-sm" id="js_s_input_cost_center_id" placeholder="Cost Center ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_cost_center_desc">成本中心描述</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="CostCtr_Description" class="form-control input-sm" id="js_s_input_cost_center_desc" placeholder="Cost Center Description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_modified_by">最後更新者</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_By" class="form-control input-sm" id="js_s_input_modified_by" placeholder="Modified By (NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">最後更新日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> Clear</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain Cost Center</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_maintain" class="form-horizontal clearfix">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_select_factory">廠區</label>
+                                    <div class="col-sm-6">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory" name="Plant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_op_type">OP類型</label>
+                                    <div class="col-sm-6">
+                                        <select class="selectpicker form-control input-sm" id="js_select_op_type" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_fun_plant">功能廠</label>
+                                    <div class="col-sm-6">
+                                        <select class="selectpicker form-control input-sm" id="js_select_fun_plant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label" for="js_input_cost_center_id">成本中心代號</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="CostCtr_ID" class="form-control input-sm" id="js_input_cost_center_id" placeholder="Cost Center ID"
+                                               required data-msg-required="Please enter Cost Center ID"
+                                               data-rule-maxlength="100" data-msg-maxlength="Please enter no more than {0} characters in Cost Center ID.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="js_input_cost_center_desc">成本中心描述</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control input-sm" id="js_input_cost_center_desc" name="CostCtr_Description" placeholder="Cost Center Description"
+                                               data-rule-maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Cost Center Description.">
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="CostCtr_UID" id="js_hidden_costctr_uid" value="0" />
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit"><i class="fa fa-save"></i> Edit Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<style>
+    input.fullWidth {
+        width: 100% !important;
+    }
+</style>
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            var CostCenterMaintenanceUrls = {
+                queryCostCenters: '@Url.Action("QueryCostCenters", "Equipmentmaintenance")',
+                queryCostCenter: '@Url.Action("QueryCostCenter", "Equipmentmaintenance")',
+                deleteCostCenter: '@Url.Action("DeleteCostCenter", "Equipmentmaintenance")',
+                addCostCenter: '@Url.Action("AddCostCenter", "Equipmentmaintenance")',
+                modifyCostCenter: '@Url.Action("ModifyCostCenter", "Equipmentmaintenance")',
+                getPlants: '@Url.Action("GetPlantsUseSettingsAPI", "Equipmentmaintenance")',
+                getOPType: '@Url.Action("GetOPTypeUseFixtureAPI", "Equipmentmaintenance")',
+                getFunPlant: '@Url.Action("GetFunPlantUseFixtureAPI", "Equipmentmaintenance")',
+            };
+
+            //#region CostCenterMaintenance
+            var CostCenterMaintenance = (function () {
+
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.CostCtr_UID + '">Edit</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.CostCtr_UID + '">Delete</button>' +
+                                '</div>');
+                        },
+                        className: "text-center min-col-xs"
+                    }, {
+                        data: "factory",
+                        className: "min-col-xs"
+                    }, {
+                        data: "op_Type",
+                        className: "min-col-xs"
+                    }, {
+                        data: "funPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "CostCtr_ID",
+                        className: "min-col-lg"
+                    }, {
+                        data: "CostCtr_Description",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Modified_UserName",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-lg"
+                    }];
+                //#endregion
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryCostCenters = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_cost_center_datatable",
+                        remoteUrl: CostCenterMaintenanceUrls.queryCostCenters,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryCostCenters(true);
+                    },
+                    QueryCostCenters: function () {
+                        _queryCostCenters(false);
+                    }
+                }
+
+            })();
+            //#endregion
+
+            CostCenterMaintenance.Init();
+
+            //#region Page elements events
+
+            //$('#js_s_select_factory,#js_s_select_op_type,#js_s_select_fun_plant,#js_select_factory,#js_select_op_type,#js_select_fun_plant').selectpicker({ 'selectedText': 'cat' });
+
+            //廠區資料載入
+            url = CostCenterMaintenanceUrls.getPlants;
+            $.post(url, function (data) {
+                $('#js_s_select_factory').html('<option></option>');
+                $('#js_select_factory').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    //查詢頁
+                    if ($('#js_s_select_factory').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                        $('#js_s_select_factory').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                    }
+                    //編輯頁
+                    if ($('#js_select_factory').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                        $('#js_select_factory').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                    }
+                }
+                $('#js_s_select_factory').selectpicker('val', '');
+                $('#js_select_factory').selectpicker('val', '');
+                //$('#js_s_select_factory').selectpicker('refresh');
+                //$('#js_select_factory').selectpicker('refresh');
+            });
+            //查詢頁廠區變更
+            $('#js_s_select_factory').change(function () {
+                var oporgid = $('#js_s_select_factory option:selected').val();
+                url = CostCenterMaintenanceUrls.getOPType;
+                $('#js_s_select_op_type').html('<option></option>');
+                $('#js_s_select_op_type').selectpicker('refresh');
+
+                $('#js_s_select_fun_plant').html('<option></option>');
+                $('#js_s_select_fun_plant').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_s_select_op_type').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_s_select_op_type').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                        $('#js_s_select_op_type').selectpicker('refresh');
+                    });
+                }
+            })
+            //查詢頁op類型變更
+            $('#js_s_select_op_type').change(function () {
+                $('#js_s_select_fun_plant').html('<option></option>');
+                if ($('#js_s_select_op_type').val() != "") {
+                    var url = CostCenterMaintenanceUrls.getFunPlant;
+                    $.post(url, { oporgid: $('#js_s_select_op_type').val(), Optypes: $('#js_s_select_op_type option:selected').text() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            debugger;
+                            if ($('#js_s_select_fun_plant').find('option[value=' + data[i].FunPlant_OrganizationUID + ']').length == 0) {
+                                $('#js_s_select_fun_plant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            }
+                        }
+                        $('#js_s_select_fun_plant').selectpicker('refresh');
+                    })
+                }
+            })
+
+            //編輯頁廠區變更
+            $('#js_select_factory').change(function () {
+                var oporgid = $('#js_select_factory option:selected').val();
+                url = CostCenterMaintenanceUrls.getOPType;
+                $('#js_select_op_type').html('<option></option>');
+                $('#js_select_op_type').selectpicker('refresh');
+
+                $('#js_select_fun_plant').html('<option></option>');
+                $('#js_select_fun_plant').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_op_type').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_op_type').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                        $('#js_select_op_type').selectpicker('refresh');
+                    });
+                }
+            })
+            //編輯頁op類型變更
+            $('#js_select_op_type').change(function () {
+                $('#js_select_fun_plant').html('<option></option>');
+                if ($('#js_select_op_type').val() != "") {
+                    var url = CostCenterMaintenanceUrls.getFunPlant;
+                    $.post(url, { oporgid: $('#js_select_op_type').val(), Optypes: $('#js_select_op_type option:selected').text() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            debugger;
+                            if ($('#js_select_fun_plant').find('option[value=' + data[i].FunPlant_OrganizationUID + ']').length == 0) {
+                                $('#js_select_fun_plant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            }
+                        }
+                        $('#js_select_fun_plant').selectpicker('refresh');
+                    })
+                }
+            })
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+
+                if ($('#js_form_query').valid()) {
+
+                    CostCenterMaintenance.QueryCostCenters();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //新增儲存CostCenter按钮
+            $('#js_btn_save_new').click('click', function () {
+
+                if ($.trim($('#js_select_factory').val()) === ''
+                    || $.trim($('#js_select_op_type').val()) === ''
+                    || $.trim($('#js_input_cost_center_id').val()) === ''
+                    || $.trim($('#js_input_cost_center_desc').val()) === '') {
+                    PDMS.Utility.MessageBox.info("Please be sure to enter Factory,OP Type,Cost Center ID and Cost Center Description");
+
+                } else {
+
+                    if ($("#js_form_maintain").valid()) {
+                        var submitJson = $('#js_form_maintain').serializeObject();
+
+                        $.post(CostCenterMaintenanceUrls.addCostCenter, { jsonCostCenter: JSON.stringify(submitJson) }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("Save Success");
+                                $("#js_form_maintain input[type!='hidden']").val('');
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                }
+            });
+
+            //修改儲存CostCenter按钮
+            $('#js_btn_save_edit').click('click', function () {
+
+                if ($.trim($('#js_input_cost_center_desc').val()) === '') {
+                    PDMS.Utility.MessageBox.info("Please be sure to enter Cost Center Description");
+
+                } else {
+
+                    if ($("#js_form_maintain").valid()) {
+                        var submitJson = $('#js_form_maintain').serializeObject();
+
+                        $.post(CostCenterMaintenanceUrls.modifyCostCenter, { jsonCostCenter: JSON.stringify(submitJson) }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("Save Success");
+                                CostCenterMaintenance.QueryCostCenters(false);
+                                $('#js_edit_modal').modal('hide');
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                }
+
+            });
+
+            //Form Validate
+            $('#js_form_maintain').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions按钮
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                $(this).closest('.modal-content').find('input').val('');
+            });
+
+            //#region Add/Edit model 出现和消失事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.attr('id') == 'js_btn_add') {
+
+                    title.text("Add CostCenter");
+
+                    $('#js_btn_save_edit').hide();
+                    $('#js_btn_save_new').show();
+                    $('#js_hidden_costctr_uid').val(0);
+                }
+                else {
+                    title.text("Edit CostCenter");
+
+                    $('#js_btn_save_edit').show();
+                    $('#js_btn_save_new').hide();
+                }
+            })
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_select_factory').selectpicker('val', '');
+                //$('#js_select_factory').selectpicker('refresh');
+                $('#js_select_factory').removeAttr("disabled");
+                $('#js_select_op_type').html('<option></option>');
+                $('#js_select_op_type').selectpicker('refresh');
+                $('#js_select_op_type').removeAttr("disabled");
+                $('#js_select_fun_plant').html('<option></option>');
+                $('#js_select_fun_plant').selectpicker('refresh');
+                $('#js_edit_modal').find('input').val('');
+                $('#js_input_cost_center_id').removeAttr("readonly");
+                $('.list-group.validate-error').empty();
+            });
+            //#endregion
+
+            //Grid中编辑按钮
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var uid = $(this).data('id'),
+                    url = CostCenterMaintenanceUrls.queryCostCenter;
+
+                $.post(url, { uid: uid }, function (data) {
+                    //$('#js_select_factory').val(data.Plant_Organization_UID);
+                    $('#js_select_factory').selectpicker('refresh')
+                    $('#js_select_factory').selectpicker('val', data.Plant_Organization_UID);
+                    $('#js_select_factory').trigger('change');
+                    $('#js_select_factory').attr('disabled', true);
+                    $('#js_select_op_type').append('<option value="' + data.BG_Organization_UID + '">' + data.op_Type + '</option>');
+                    $('#js_select_op_type').selectpicker('refresh')
+                    $('#js_select_op_type').selectpicker('val', data.BG_Organization_UID);
+                    $("#js_select_op_type").trigger("change");
+                    $('#js_select_op_type').attr('disabled', true);
+                    if (data.FunPlant_Organization_UID != null) {
+                        $('#js_select_fun_plant').append('<option value="' + data.FunPlant_Organization_UID + '">' + data.funPlant + '</option>');
+                        $('#js_select_fun_plant').selectpicker('refresh')
+                        $('#js_select_fun_plant').selectpicker('val', data.FunPlant_Organization_UID);
+                    }
+                    $('#js_input_cost_center_id').val(data.CostCtr_ID);
+                    $('#js_input_cost_center_id').attr('readonly', true);
+                    $('#js_input_cost_center_desc').val(data.CostCtr_Description);
+                    $('#js_hidden_costctr_uid').val(data.CostCtr_UID);
+
+                    $('#js_edit_modal').modal('show');
+                });
+
+
+            });
+
+            //Grid中Delete按钮
+            $('body').on('click', '.js-grid-delete', function () {
+
+                var uid = $(this).data('id');
+
+                PDMS.Utility.MessageBox.confirm(
+                    "Are you sure to delete this item?"
+                    , function () {
+                        var url = CostCenterMaintenanceUrls.deleteCostCenter;
+                        $.post(url, { uid: uid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                CostCenterMaintenance.QueryCostCenters(true);
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    });
+            });
+
+            $('#js_btn_clear').click(function () {
+                $('#js_s_select_factory').selectpicker('val', '');
+                //$('#js_s_select_factory').selectpicker('refresh');
+                $('#js_s_select_op_type').html('<option></option>');
+                $('#js_s_select_op_type').selectpicker('refresh');
+                $('#js_s_select_fun_plant').html('<option></option>');
+                $('#js_s_select_fun_plant').selectpicker('refresh');
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //#endregion
+        });
+        
+    </script>
+}
+
+

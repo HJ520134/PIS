@@ -1,0 +1,1043 @@
+﻿@{
+}
+
+<style>
+    .DownTime {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: #2287b9;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .FirstYield {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: gold;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    p {
+        /*background-color: blue;*/
+        /* Rotate p */ transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        /* Internet Explorer */ -moz-transform: rotate(90deg);
+        /* Firefox */ -webkit-transform: rotate(90deg);
+        /* Safari 和 Chrome */ -o-transform: rotate(90deg); /* Opera */
+    }
+</style>
+<style type="text/css">
+    #lineId, #datetimepicker {
+        width: 120px;
+    }
+
+    .textbox {
+        background-color: gold;
+        text-align: center;
+        margin: 2px;
+        border-radius: 5px;
+    }
+
+    .table.dataTable.table-condensed > thead > tr > th {
+        padding-left: 6px !important;
+    }
+
+    #UtilizationRate, #BalanceRate {
+        border: 40px solid green;
+        background-color: green;
+        font-size: 3.5em;
+    }
+
+    #tbl * {
+        text-align: center;
+    }
+
+    .row {
+        margin-top: 1px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .btn {
+        font-size: 12px;
+    }
+
+    #tbl1 > tbody > tr > th, #tbl1 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #tbl2 > tbody > tr > th, #tbl2 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #maindv {
+        margin-top: 30px;
+    }
+
+    #mainTbl tr td:first-child {
+        font-weight: bolder;
+    }
+
+    thead tr td {
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    /*#thead tr td {
+        background-color: #4F5D6C;
+    }*/
+
+    .output {
+        font-weight: bold;
+    }
+
+    .titlewhite {
+        font-size: 13px;
+        background-color: #3c8dbc;
+        border-top-left-radius: 3px;
+        border: 1px #546a74;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+        margin-bottom: 0px;
+    }
+
+    .titlewhite2 {
+        font-size: 13px;
+        background-color: #ffffff;
+        /*border-top-left-radius: 3px;*/
+        border: 1px solid #dddada;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #333;
+        margin: 0px -5px;
+    }
+
+    .dis {
+        /*display: flex;*/
+        /*margin-left: 1%;*/
+    }
+
+        .dis:hover {
+            font-family: monospace;
+        }
+
+    .function {
+        font-size: 12px;
+        background-color: #ffffff;
+        /*border-top: 1px solid #ffffff;*/
+        border-right: 0px solid #ff0000;
+        border-bottom: 0px solid #ffffff;
+        border-left: 0px solid #ffffff;
+        padding: 6px 12px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    .divShow {
+    }
+
+    .defaultDowntime {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .defaultFirstYield {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .background {
+        background-color: #ecf0f5;
+    }
+
+    .yangshi1 {
+        font-weight: bold;
+    }
+
+    table, table tr th, table tr td {
+        border: 1px solid #252121;
+        border-top: 1px solid #252121 !important;
+    }
+
+    table {
+        /*padding: 2px;*/
+        border: 1px solid #252121 !important;
+    }
+</style>
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+        $(".navbar-static-top").hide();
+    }
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        $(".navbar-static-top").show();
+    }
+</script>
+<section class="content-header portal-content-header background">
+    <h1 style="margin-right:3%;height:15px">
+        <input id="js_btn_IsShow" style="margin-left:1%;" type="button" value="hide" class="col-lg-1  pull-right fa fa-download btn btn-primary titlewhite" />
+        <button id="view-fullscreen" style="margin-left:1%" class="titlewhite col-lg-1 pull-right" onclick="fullSr()">@T("Common.FullScreen")</button>
+        <button id="cancel-fullscreen" style="margin-left:1%" class="titlewhite col-lg-1.5  pull-right" onclick="cancFullSr()">@T("Common.CancelFullScreen")</button>
+    </h1>
+    <div class="row hidden">
+        <input type="hidden" id="id_Plant_UID" name="Plant_Organization_UID" value="@ViewBag.Plant_UID" />
+        <input type="hidden" id="id_BG_UID" name="BG_Organization_UID" value="@ViewBag.BG_UID" />
+        <input type="hidden" id="id_Fun_Plant" name="FunPlant_Organization_UID" value="@ViewBag.Fun_Plant" />
+        <input type="hidden" id="id_Project_UID" name="Project_UID" value="@ViewBag.customerId" />
+        <input type="hidden" id="id_LineID" name="LineID" value="@ViewBag.lineName" />
+        <input type="hidden" id="id_StationID" name="StationID" value="@ViewBag.stationName" />
+        <input type="hidden" id="id_currentShiftID" name="ShiftTimeID" value="@ViewBag.ShiftID" />
+        <input type="hidden" id="id_startTime" name="startTime" value="@ViewBag.startTime" />
+        <input type="hidden" id="id_endTime" name="endTime" value="@ViewBag.endTime" />
+        <input type="hidden" id="id_isFromPhotoReport" name="isFromPhotoReport" value="@ViewBag.isFromPhotoReport" />
+    </div>
+</section>
+<section class="content-header portal-content-header background">
+    <div id="js_search_Param" style="margin:2px -10% 2px 0px;width:100%;">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="width:95%; border-left:5px solid #3c8dbc;background-color:#ffffff;margin-left:1.5%;height:110px">
+                <form id="js_form_query" class="form-inline">
+                    <div style="margin-top:1%;">
+                        <input id="VersionNumber" name="VersionNumber" type="text" value="0" hidden="hidden" />
+                        <div class="form-group col-md-12">
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.Changqu")</label>
+                                <select class="titlewhite2" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class='dis col-md-3'>
+                                <label class="titlewhite">@T("OEE.BG")</label>
+                                <select class="titlewhite2" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">功能厂</label>
+                                <select class="titlewhite2" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.PJ")</label>
+                                <select class="titlewhite2" id="customerId" name="CustomerID" data-live-search="true"> </select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <button type="button" style="font-size:medium" id="searchbtn" class="fa fa-search btn btn-primary"> @T("Common.Search")</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class='dis col-md-2' style="margin-top:1%">
+                            <label class="titlewhite">@T("OEE.Line")</label>
+                            <select class="titlewhite2" id="lineName" name="LineID" data-live-search="true"></select>
+                        </div>
+                        <div class='dis col-md-3' style="margin-top:1%">
+                            <label class="titlewhite"><strong>@T("OEE.Station")</strong></label>
+                            <select id="stationName" class="titlewhite2" name="StationID" data-live-search="true">  </select>
+                        </div>
+                        <div class='dis col-md-2' style="margin-top:1%">
+                            <label class="titlewhite">@T("OEE.Shift")</label>
+                            <select id="myRetriveShift" class="titlewhite2" name="ShiftTimeID" data-live-search="true"> </select>
+                        </div>
+                        <div class='dis col-md-4' style="margin-top:1%">
+                            <label class="titlewhite">@T("OEE.Date")</label>
+                            <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px;width: 120px" id='datetimepicker'>
+                                <input type='text' class="form-control input-sm" id="StartTime" name="StartTime" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <label style="" class="titlewhite2">-To-</label>
+                            <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                <input type='text' class="form-control input-sm" id="endTime" name="endTime" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-12">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content-header portal-content-header background"  style="height:1130px">
+    <div>
+        <div style="height:600px">
+            <div class="row">
+                <div class="col-xs-12" style="margin-left:0.5%;width:97.1%">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align:center">
+                            <i style="font-size:18px" class="fa fa-bar-chart"></i><label style="font-size:18px">IPQC工站一次良率趋势图</label>
+                        </div>
+                        <div class="panel-body panelbg">
+                            <div class="img-responsive" id="ipqcqualitydetailforone" style="width:100%;height:300%;"></div>
+                            <div style="height:150px">
+                                <div class="row">
+                                    <div style="text-align:center;margin-left:8%;margin-right:8%;overflow-y:auto;">
+                                        <table border="1" cellspacing="0" class="table table-striped  table-hover table-condensed" style="margin:auto;border-top: 1px solid #252121 !important;table-layout:fixed;text-align:center; width:88%;margin-top:1%" id="IPQC_FirstYield_Datatable"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12" style="margin-left:0.5%;width:97.1%">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align:center">
+                            <i style="font-size:18px" class="fa fa-bar-chart"></i><label style="font-size:18px">IPQC工站二次良率趋势图</label>
+                        </div>
+                        <div class="panel-body panelbg">
+                            <div class="img-responsive" id="ipqcqualitydetailfortwo" style="width:100%;height:300%;"></div>
+                            <div style="height:150px;text-align:center">
+                                <div class="row">
+                                    <div style="text-align:center;margin-left:8%;margin-right:8%;overflow-y:auto;">
+                                        <table border="1" cellspacing="0" style=" margin:auto;border-top: 1px solid #252121 !important;table-layout:fixed;text-align:center; width:88%;margin-top:1%" class="table table-striped  table-hover table-condensed" id="IPQC_SecondYield_Datatable"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script src="~/Scripts/ECharts/echarts-3.8.4.js"></script>
+    <script src="~/Scripts/ECharts/echarts-3.8.4.min.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            intervalInt = 0;
+            var CkeckIsOK = true;
+
+            var IPQCQualityMonth = (function () {
+                var urls = {
+                    GetIPQCQualityMonthReport: '@Html.Raw(Url.Action("GetIPQCQualityMonthReport", "GLQAReport"))',
+                    //根据厂区取得OP类型
+                    GetCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("getFunPlantByOPTypes", "Fixture")',
+                    //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                    getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                    getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                    //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                    getLineDTOs: '@Url.Action("GetIPQCLineDTOs", "GoldenLine")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getStationDTOs: '@Url.Action("GetStationDTOs", "GLQAReport")',
+                    CheckExportDate: '@Url.Action("CheckExportDate", "OEE")'
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        SetContinueDefault();
+                    },
+                };
+            })();
+
+            IPQCQualityMonth.Init();
+            $('#searchbtn').click(function () {
+                CkeckIsOK = true;
+                InitIpqcMonthReport(true);
+
+            });
+
+            //60秒刷新
+            if (intervalInt != 0) {
+                clearInterval(intervalInt);
+            }
+            intervalInt = setInterval(function () {
+                InitIpqcMonthReport(true);
+            }, 1000 * 60);
+            function InitIpqcMonthReport(isCheckParam) {
+                if (isCheckParam) {
+                    CheckSearchParam();
+                }
+                if (CkeckIsOK) {
+                    ipqcqualitydetailforonechart();
+                    ipqcqualitydetailfortwochart();
+                }
+            }
+
+            function CheckSearchParam() {
+                //验证条件
+                var factoryVal = $("#js_select_factory_query").val();
+                var js_select_optype_queryVal = $("#js_select_optype_query").val();
+                var customerIdVal = $("#customerId").val();
+                var lineNameVal = $("#lineName").val();
+                var myRetriveShiftVal = $("#myRetriveShift").val();
+                var ProductDate = $("#StartTime").val();
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择OP类型");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if (customerIdVal == "" || customerIdVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择Customer");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if (lineNameVal == "" || lineNameVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择线");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if (myRetriveShiftVal == "" || myRetriveShiftVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择班次");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if (ProductDate == "" || ProductDate == null) {
+                    PDMS.Utility.MessageBox.error("请选择日期");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                var CheckExportDateUrl = IPQCQualityMonth.urls.CheckExportDate;
+                $.get(CheckExportDateUrl, { EndTime: $("#endTime").val(), StartTime: $("#StartTime").val() }, function (data) {
+                    if (!data) {
+                        PDMS.Utility.MessageBox.error("导出日期不能大于31天！");
+                        CkeckIsOK = false;
+                        return false;
+                    }
+                });
+            }
+
+            function SetContinueDefault() {
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                if ($("#id_startTime").val() != "" && $("#id_endTime").val() != "") {
+                    $("#endTime").val($("#id_endTime").val());
+                    $("#StartTime").val($("#id_startTime").val());
+                } else {
+                    $("#endTime").val(new Date().Format("yyyy-MM-dd"));
+                    $("#StartTime").val(addDay(-14).Format("yyyy-MM-dd"));
+                }
+                if ($("#id_Plant_UID").val() != "") {
+                    $('#js_select_factory_query').val($("#id_Plant_UID").val());
+                }
+                GetOPTypes();
+                if ($("#id_BG_UID").val() != 0) {
+                    $('#js_select_optype_query').val($("#id_BG_UID").val());
+                }
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshShiftTimeSelect();
+                if ($("#id_Fun_Plant").val() != "") {
+                    $('#js_select_funplant_query').val($("#id_Fun_Plant").val());
+                }
+                if ($("#id_Project_UID").val() != "") {
+                    $('#customerId').val($("#id_Project_UID").val());
+                }
+                refreshLineSelect()
+                if ($("#id_LineID").val() != "") {
+                    $('#lineName').val($("#id_LineID").val());
+                }
+                refreshStationSelect();
+                if ($("#id_StationID").val() != "") {
+                    $('#stationName').val($("#id_StationID").val());
+                }
+                if ($("#id_currentShiftID").val() != "") {
+                    $('#myRetriveShift').val($("#id_currentShiftID").val());
+                }
+
+                InitIpqcMonthReport();
+            }
+
+            function addDay(dayNumber, date) {
+                date = date ? date : new Date();
+                var ms = dayNumber * (1000 * 60 * 60 * 24)
+                var newDate = new Date(date.getTime() + ms);
+                return newDate;
+            }
+
+            //时段发生变化
+            $('#timeintervalforone').change(function () {
+                ipqcqualitydetailforonechart();
+            })
+            //时段发生变化
+            $('#timeintervalfortwo').change(function () {
+                ipqcqualitydetailfortwochart();
+            })
+            // 控制是否显示
+            $('#js_btn_IsShow').click(function () {
+                if ($("#js_btn_IsShow").val() == "show") {
+                    $("#js_btn_IsShow").val("hide")
+                    $("#js_search_Param").show();
+                } else
+                    if ($("#js_btn_IsShow").val() == "hide") {
+                        $("#js_btn_IsShow").val("show")
+                        $("#js_search_Param").hide();
+                    }
+            })
+
+            //1 根据厂区获取OP
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+                $("#js_select_optype_query").trigger("change");
+            })
+
+            //2  根据OP获取专案
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshShiftTimeSelect();
+            })
+
+            //3 根据专案获取线别
+            $('#customerId').change(function () {
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#lineName').append('<option  selected="selected" value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                        } else {
+                            $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                        }
+                    }
+                });
+                $("#lineName").trigger("change");
+            })
+            //4 根据线获取站点
+            $('#lineName').change(function () {
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#stationName').append('<option selected="selected" value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                        } else {
+                            $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                        }
+                    }
+                });
+                $("#stationName").trigger("change");
+            })
+            function GetOPTypes() {
+                var url = '@Url.Action("GetCurrentOPType", "Fixture")';
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if (i == 0) {
+                                if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                    $('#js_select_optype_query').append('<option  selected="selected" value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                            } else {
+                                if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                    $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = IPQCQualityMonth.urls.getFunPlantByOPTypes;
+                var Optype = $('#js_select_optype_query option:selected').val();
+                $.post(url, { Optype: Optype }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#js_select_funplant_query').append('<option selected="selected" value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        } else {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    }
+                });
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+                $('#customerId').empty();
+                $('#customerId').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#customerId').append('<option selected="selected" value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                        } else {
+                            $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                        }
+                    }
+                });
+                $('#customerId').trigger("change");
+            }
+
+            //加载线
+            function refreshLineSelect() {
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#lineName').append('<option  selected="selected" value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                        } else {
+                            $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                        }
+                    }
+                });
+                $("#lineName").trigger("change");
+            }
+            //加载工站
+            function refreshStationSelect() {
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#stationName').append('<option selected="selected" value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                        } else {
+                            $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                        }
+                    }
+                });
+                $("#stationName").trigger("change");
+            }
+            //加载班别
+            function refreshShiftTimeSelect() {
+                $('#myRetriveShift').empty();
+                $('#myRetriveShift').html('<option></option>');
+                var getProjectByOPTypeUrl = IPQCQualityMonth.urls.getShiftTimeDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            $('#myRetriveShift').append('<option selected="selected" value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                        } else {
+                            $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                        }
+                    }
+                });
+            }
+            function createFirstYieldTable(result) {
+                var $table = $('#IPQC_FirstYield_Datatable');
+                $table.empty("");
+                var $trTemp1 = $("<tr  style=" + "width:100%;padding:5px;background-color:#546a74" + "> </tr>");
+                var $trTemp2 = $("<tr  style=" + "width:100%" + "> </tr>");
+                var $trTemp3 = $("<tr  style=" + "width:100%" + "> </tr>");
+                var $tdd1 = $("<td  style=" + "width:120px;" + "height:10px;color:#f4f4f4;font-size: 15px" + ">" + "日期" + "</td>");
+                var $tdd2 = $("<td  style=" + "width:120px;" + "height:10px" + ">" + "一次良率(%)" + "</td>");
+                var $tdd3 = $("<td  style=" + "width:120px;" + "height:10px" + ">" + "一次良率目标(%)" + "</td>");
+                $trTemp1.append($tdd1);
+                $trTemp2.append($tdd2);
+                $trTemp3.append($tdd3);
+                $table.append($trTemp2);
+                $table.append($trTemp3);
+                for (var i = 0; i < result.length ; i++) {
+                    var $td = $("<td  style=" + "width:100px;" + "height:10px;color:#f4f4f4;font-size: 15px" + ">" + result[i].ProductDate.split(" ")[0] + "</td>");
+                    var $td1 = $("<td  style=" + "width:100px;" + "height:10px" + ">" + result[i].FirstYield + "</td>");
+                    var $td2 = $("<td  style=" + "width:100px;" + "height:10px" + ">" + result[i].FirstTargetYield + "</td>");
+                    $trTemp1.append($td);
+                    $trTemp2.append($td1);
+                    $trTemp3.append($td2);
+                }
+                $table.append($trTemp1);
+                $table.append($trTemp2);
+                $table.append($trTemp3);
+            }
+            function createSecondYieldTable(result) {
+                var $table = $('#IPQC_SecondYield_Datatable');
+                $table.empty("");
+                var $trTemp1 = $("<tr  style=" + "width:100%;padding:5px;background-color:#546a74" + "> </tr>");
+                var $trTemp2 = $("<tr  style=" + "width:100%" + "> </tr>");
+                var $trTemp3 = $("<tr  style=" + "width:100%" + "> </tr>");
+                var $tdd1 = $("<td  style=" + "width:120px;" + "height:10px;color:#f4f4f4;font-size: 15px" + ">" + "日期" + "</td>");
+                var $tdd2 = $("<td  style=" + "width:120px;" + "height:10px" + ">" + "二次良率(%)" + "</td>");
+                var $tdd3 = $("<td  style=" + "width:120px;" + "height:10px" + ">" + "二次良率目标(%)" + "</td>");
+                $trTemp1.append($tdd1);
+                $trTemp2.append($tdd2);
+                $trTemp3.append($tdd3);
+                $table.append($trTemp2);
+                $table.append($trTemp3);
+                for (var i = 0; i < result.length ; i++) {
+                    var $td = $("<td  style=" + "width:100px;" + "height:10px;color:#f4f4f4;font-size:15px" + ">" + result[i].ProductDate.split(" ")[0] + "</td>");
+                    var $td1 = $("<td  style=" + "width:100px;" + "height:10px" + ">" + result[i].SecondYield + "</td>");
+                    var $td2 = $("<td  style=" + "width:100px;" + "height:10px" + ">" + result[i].SecondTargetYield + "</td>");
+                    $trTemp1.append($td);
+                    $trTemp2.append($td1);
+                    $trTemp3.append($td2);
+                }
+                $table.append($trTemp1);
+                $table.append($trTemp2);
+                $table.append($trTemp3);
+            }
+            function ipqcqualitydetailforonechart() {
+                var ipqcqualitydetailforone = echarts.init(document.getElementById('ipqcqualitydetailforone'));
+                ipqcqualitydetailforone.showLoading({ text: 'Trying to read the data...', maskcolor: 'transparent' });
+                //获取工站班次日期
+                var stationid = $("#stationName").val();
+                var shiftid = $("#myRetriveShift").val();
+                var productdate = $("#ProductDate").val();
+                var timeinterval = $('#timeintervalforone').val();
+                var _getParams = function () {
+                    //return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return JSON.stringify($("#js_form_query").serializeObject());
+                };
+                $.ajax({
+                    url: IPQCQualityMonth.urls.GetIPQCQualityMonthReport,
+                    type: 'Post',
+                    async: 'false',
+                    data: { paramModel: _getParams(), 'NgType': '0' },
+                    dataType: 'json',
+                    success: function (result) {
+                        var FirstTargetYield = _.pluck(result, 'FirstTargetYield')[0];
+                        var ipqcqualitydetailforone = echarts.init(document.getElementById('ipqcqualitydetailforone'));
+                        option = {
+                            title: {
+                                text: '一次良率趋势图',
+                            },
+                            tooltip: {
+                                formatter(params) {
+                                    return "<li>" + "二次良率: " + params[0].value + " %" + "</li>" + "<li>" + "二次目标良率: " + params[1].value + " %" + "</li>";
+                                },
+                                trigger: 'axis',
+                            },
+                            legend: {
+                                data: ['一次良率1']
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    dataView: { show: true, readOnly: false },
+                                    magicType: { show: true, type: ['line', 'bar'] },
+                                    restore: { show: true },
+                                    saveAsImage: { show: true }
+                                }
+                            },
+                            calculable: true,
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    axisLabel: {
+                                        textStyle: {
+                                            color: "#222",
+                                            fontSize: 13  //刻度大小
+                                        }
+                                    },
+                                    data: []
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value',
+                                    name: '一次良率',
+                                    min: 0,
+                                    max: 100,
+                                    interval: 10,
+                                    axisLabel: {
+                                        formatter: '{value} %'
+                                    }
+                                },
+                                {
+                                    type: 'value',
+                                    name: '一次良率',
+                                    min: 0,
+                                    max: 100,
+                                    interval: 10,
+                                    axisLabel: {
+                                        formatter: '{value} %'
+                                    }
+                                }
+                            ],
+                            grid: {
+                                y2: 80    //bottom部与x轴的距离
+                            },
+                            series: [
+                                {
+                                    name: '一次良率',
+                                    type: 'bar',
+                                    data: [],
+                                    barWidth: 20,
+                                    markPoint: {
+                                        data: [
+                                            { type: 'max', name: '最大值' },
+                                            { type: 'min', name: '最小值' }
+                                        ]
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#509fe2',  //圈圈的颜色
+                                            lineStyle: {
+                                                color: '#509fe2'  //线的颜色
+                                            }
+                                        }
+                                    },
+                                },
+                                    {
+                                        name: '',
+                                        type: 'line',
+                                        data: (function () {
+                                            var result2 = [];
+                                            debugger;
+                                            for (var i = 0; i < result.length; i++) {
+                                                result2.push(result[i].FirstTargetYield);
+                                            }
+                                            return result2;
+                                        })(),
+                                        markPoint: {
+                                            data: [
+                                                { type: 'max', name: 'max' }
+                                            ]
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#9bbb59',  //圈圈的颜色
+                                                lineStyle: {
+                                                    color: '#9bbb59'  //线的颜色
+                                                }
+                                            }
+                                        },
+                                        stack: 'plan',
+                                    },
+                            ]
+                        };
+                        option.xAxis[0].data = _.pluck(result, 'ProductDate');
+                        option.series[0].data = _.pluck(result, 'FirstYield');
+                        ipqcqualitydetailforone.setOption(option, true);
+                        ipqcqualitydetailforone.hideLoading();
+                        createFirstYieldTable(result);
+                    },
+                    error: function () {
+                        console.log('Show Quality Detail First Yield Error');
+                    }
+                });
+            }
+            function ipqcqualitydetailfortwochart() {
+                var ipqcqualitydetailfortwo = echarts.init(document.getElementById('ipqcqualitydetailfortwo'));
+                ipqcqualitydetailfortwo.showLoading({ text: 'Trying to read the data...', maskcolor: 'transparent' });
+                //获取工站班次日期
+                var stationid = $("#stationName").val();
+                var shiftid = $("#myRetriveShift").val();
+                var productdate = $("#ProductDate").val();
+                var timeinterval = $('#timeintervalfortwo').val();
+                var _getParams = function () {
+                    return JSON.stringify($("#js_form_query").serializeObject());
+                };
+                $.ajax({
+                    url: IPQCQualityMonth.urls.GetIPQCQualityMonthReport,
+                    type: 'Post',
+                    async: 'false',
+                    data: { paramModel: _getParams(), 'NgType': '1' },
+                    dataType: 'json',
+                    success: function (result) {
+                        var ipqcqualitydetailfortwo = echarts.init(document.getElementById('ipqcqualitydetailfortwo'));
+                        var SecondTargetYield = _.pluck(result, 'SecondTargetYield')[0];
+                        option = {
+                            title: {
+                                text: '二次良率趋势图',
+                            },
+                            tooltip: {
+                                formatter(params) {
+                                    return "<li>" + "二次良率: " + params[0].value + " %" + "</li>" + "<li>" + "二次目标良率: " + params[1].value + " %" + "</li>";
+                                },
+                                trigger: 'axis',
+                            },
+                            legend: {
+                                data: []
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    dataView: { show: true, readOnly: false },
+                                    magicType: { show: true, type: ['line', 'bar'] },
+                                    restore: { show: true },
+                                    saveAsImage: { show: true }
+                                }
+                            },
+                            calculable: true,
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    axisLabel: {
+                                        textStyle: {
+                                            color: "#222",
+                                            fontSize: 13  //刻度大小
+                                        }
+                                    },
+                                    data: []
+                                }
+                            ],
+                            yAxis: [
+                               {
+                                   type: 'value',
+                                   name: '二次良率',
+                                   min: 0,
+                                   max: 100,
+                                   interval: 10,
+                                   axisLabel: {
+                                       formatter: '{value} %'
+                                   }
+                               },
+                                {
+                                    type: 'value',
+                                    name: '二次良率',
+                                    min: 0,
+                                    max: 100,
+                                    interval: 10,
+                                    axisLabel: {
+                                        formatter: '{value} %'
+                                    }
+                                }
+                            ],
+                            grid: {
+                                y2: 80    //bottom部与x轴的距离
+                            },
+                            series: [
+                                {
+                                    name: '二次良率',
+                                    type: 'bar',
+                                    data: [],
+                                    barWidth: 20,
+                                    markPoint: {
+                                        data: [
+                                            { type: 'max', name: '最大值' },
+                                            { type: 'min', name: '最小值' }
+                                        ]
+                                    },
+                                    label: {
+                                        normal: {
+                                            //show: true,
+                                            //position: 'top',
+                                            //formatter: function (params) {
+                                            //    return params.value + ' %';
+                                            //}
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#ea7e53',  //圈圈的颜色
+                                            lineStyle: {
+                                                color: '#ea7e53'  //线的颜色
+                                            }
+                                        }
+                                    },
+                                },
+                                    {
+                                        name: '',
+                                        type: 'line',
+                                        data: (function () {
+                                            var result2 = [];
+                                            debugger;
+                                            for (var i = 0; i < result.length; i++) {
+                                                result2.push(result[i].SecondTargetYield);
+                                            }
+                                            return result2;
+                                        })(),
+                                        markPoint: {
+                                            data: [
+                                                { type: 'max', name: 'max' }
+                                            ]
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#9bbb59',  //圈圈的颜色
+                                                lineStyle: {
+                                                    color: '#9bbb59'  //线的颜色
+                                                }
+                                            }
+                                        },
+                                        stack: 'plan',
+                                    },
+                            ]
+                        };
+                        option.xAxis[0].data = _.pluck(result, 'ProductDate');
+                        option.series[0].data = _.pluck(result, 'SecondYield');
+                        ipqcqualitydetailfortwo.setOption(option, true);
+                        ipqcqualitydetailfortwo.hideLoading();
+                        createSecondYieldTable(result);
+                    },
+                    error: function () {
+                        console.log('Show Quality Detail Second Yield Error');
+                    }
+                });
+            }
+        });
+    </script>
+}

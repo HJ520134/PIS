@@ -1,0 +1,52 @@
+@charset "utf-8";
+/*======主視覺及版面重設======*/
+.logo-text {
+	font-size:medium
+	}
+.portal-header {
+	position:fixed;
+	width:100%;
+	box-shadow:0px 1px 1px rgba(0,0,0,0.5);
+	}
+.portal-content-wrapper {
+	margin-top:50px;
+	}
+.portal-content-header {
+	padding-bottom:8px;
+	padding-top:8px;
+	}
+.portal-content-header h1 {
+	font-size:22px !important
+	}
+.portal-content {
+	min-height: 200px;
+	background:#FFF;
+	box-shadow:0px -1px 2px rgba(0,0,0,0.2);
+	}
+.portal-content-jb {
+	min-height: 200px;
+	background:#FFF;
+	border-top:2px solid #00764B;
+	box-shadow:0px -1px 2px rgba(0,0,0,0.2);
+	}
+/*======margin & padding 空格======*/
+.margin-sm-t-5 {
+	margin-top:inherit
+	}
+.margin-xs-t-5 {
+	margin-top:inherit
+	}
+/*======top search======*/
+.search-field {
+	text-align: left;
+	margin-top:5px;
+	}
+/*======form 表單======*/
+.form-group-custom {
+	margin-bottom:10px !important;
+	margin-right:10px
+	}
+/* 斷行*/
+.xs-block {
+	display: inline
+	}

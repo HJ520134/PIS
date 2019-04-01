@@ -1,0 +1,763 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-6">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-6">
+@using (Html.BeginForm("ImportExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_add" }))
+{
+            <a href="~/ExcelTemplate/EQPPowerOn_Template.xlsx" class="fa fa-download btn btn-primary" target="_blank" id="js_btn_download">模板下载</a>
+            <a class="fa fa-upload btn btn-primary" data-toggle="modal" id="js_btn_import_currentWK"> 上传</a>
+            <a class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"> 查询</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_org">
+               新增
+            </a>
+}
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Organization_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">编号</th>
+                        <th>厂别</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>机台类型</th>
+                        <th>开机日期</th>
+                        <th>实际开机数量</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">编号</th>
+                        <th>厂别</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>机台类型</th>
+                        <th>开机日期</th>
+                        <th>实际开机数量</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="True">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" data-type="select" for="js_s_select_org_ctu">厂别</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm se1" id="js_s_select_org_ctu" name="Plant">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" data-type="select" for="js_s_select_org_pp">Business Group</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm se2" id="js_s_select_org_pp" name="BG_Organization_UID"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" data-type="select" for="js_s_select_FunctionPlant">功能厂</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" style="display:none" id="FunPlant_Organization_UID_Hidden" name="FunPlant_Organization_UID_Hidden">
+                                        <select class="form-control input-sm se3" id="js_s_select_FunctionPlant" name="FunPlantUID"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" data-type="select" for="js_s_select_EQP_Type_UID">机台类型</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" style="display:none" id="EQP_Type_UID_Hidden" name="EQP_Type_UID_Hidden">
+                                        <select class="form-control input-sm" id="js_s_select_EQP_Type_UID" name="EQP_Type_UID"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="js_btn_clear" type="button" class="btn btn-primary"><i class="fa fa-eraser"></i> 清除</button>
+                    <button id="js_btn_query" type="button" class="btn btn-primary"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_org_edit" class="form-horizontal clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">厂别</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm se1" id="js_edit_select_Org_CTU" name="Org_CTU" required data-msg-required="请选择厂别">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">Business Group</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm se2" id="js_edit_select_Org_PP" name="Org_PP"  required data-msg-required="请选择Business Group">
+                                        @*<option value="@item.Org_CTU" data-role-name="@item.Org_CTU">@item.Role_ID</option>*@
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm se3" id="js_edit_select_FunPlant_Organization_UID" name="FunPlant_Organization_UID"  required data-msg-required="请选择功能厂">
+                                        @*<option value="@item.Org_CTU" data-role-name="@item.Org_CTU">@item.Role_ID</option>*@
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">机台类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_edit_select_EQP_Type_UID" name="EQP_Type_UID"  required data-msg-required="请选择机台类型">
+                                        @*<option value="@item.Org_CTU" data-role-name="@item.Org_CTU">@item.Role_ID</option>*@
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="js_e_input_PowerOn_Date" name="PowerOnDateString"  placeholder="日期"
+                                           required data-msg-required="请输入日期" data-rule-date="true" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label padding-lr-5" style="text-align:left">开机数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="js_e_input_Daily_PowerOn_Qty" name="Daily_PowerOn_Qty"
+                                           data-rule-number="true" data-msg-number="开机数量只能是数字" required data-msg-required="请输入开机数量">
+                                </div>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control input-sm" style="display:none;" value="0" id="js_e_input_EQP_PowerOn_UID" name="EQP_PowerOn_UID">
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save"><i class="fa fa-save"></i> 保存</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit"><i class="fa fa-save"></i> 保存修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!--更新Excel Start-->
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">每日开机数量上传</h4>
+            </div>
+            @using (Html.BeginForm("ImportPowerOnExcel", "Equipmentmaintenance", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">选择文件</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="选择文件"
+                                   required data-msg-required="请选择要上传的Excel档!" />
+                        </div>
+                    </div>
+                    <input type="hidden" id="hid_currentOrNextWeek" name="hid_currentOrNextWeek" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_Update">取消</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update">提交</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--更新Excel End-->
+
+@section ViewScripts{
+    <script type="text/javascript">
+
+        $(function () {
+            var urls =
+                    {
+                        EditOrg: '@Url.Action("EditPowerOn", "Equipmentmaintenance")',
+                        AddOrg: '@Url.Action("AddPowerOn", "Equipmentmaintenance")',
+                        queryOrgs: '@Url.Action("QueryEQPPowerOns", "Equipmentmaintenance")',
+                        queryOrg: '@Url.Action("QueryEQPPowerOn", "Equipmentmaintenance")',
+                        deleteOrg: '@Url.Action("DeleteEQPPowerOn", "Equipmentmaintenance")',
+                        getFunctionPlantOrg: '@Url.Action("QueryFunplants", "Equipmentmaintenance")',
+                        CheckMaterialExistById: '@Url.Action("QueryMaterialByMaterial_Id", "Equipmentmaintenance")',
+                        getUserPlant: '@Url.Action("getUserPlant", "Settings")',
+                        getOrgAndPro: '@Url.Action("getOrgAndPro", "Settings")',
+                        GetOPType: '@Url.Action("QueryMaterialByMaterial_Id", "Equipmentmaintenance")',
+                        GetFunPlant: '@Url.Action("QueryMaterialByMaterial_Id", "Equipmentmaintenance")',
+                        GetEqpType: '@Url.Action("QueryEQPByBgAndFunPlant", "Equipmentmaintenance")',
+                        queryOrgByeqp: '@Url.Action("QueryEQPMaterialByEqp", "Equipmentmaintenance")',
+                        //deleteOrg: 'Settings/DeleteOrgAPI',
+                        @*exportOrgs: '@Url.Action("DoExportOrg", "Settings")',
+                GetMaxEnddate4Org: '@Url.Action("GetMaxEnddate4Org", "Settings")'*@
+                    };
+            initSelect();
+            var EQPPowerOn = (function () {
+                var needBuildCriteria = false;
+                
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.EQP_PowerOn_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var html = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.EQP_PowerOn_UID + '">修改</button>' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.EQP_PowerOn_UID + '">删除</button>' +
+                                    '</div>';
+                        $(td).html(html);
+                    },
+                    className: "text-center"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "Plant",
+                    className: "min-col-xs"
+                }, {
+                    data: "OPType",
+                    className: "min-col-xs"
+                }, {
+                    data: "Funplant",
+                    className: "min-col-xs"
+                }, {
+                    data: "EQP_Type1",
+                    className: "min-col-xs"
+                }, {
+                    data: "PowerOn_DateForShow",
+                    className: "min-col-xs"
+                }, {
+                    data: "Daily_PowerOn_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    } else {
+                        return null;
+                    }
+                };
+
+                var _queryOrgs = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Organization_datatable",
+                        remoteUrl: urls.queryOrgs,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryOrgs(true);
+                    },
+                    queryOrgs: function (isSearchBtn) {
+
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryOrgs(false);
+                    }
+                }
+
+            })();
+
+            EQPPowerOn.Init();
+
+            function initSelect() {
+                var url = urls.getOrgAndPro;
+                $.post(url, function (data) {
+                    if (data != null) {
+                        proAndOrg = data;
+                        getplant();
+                    }
+                });
+            }
+
+            function getplant() {
+
+                var url = urls.getUserPlant;
+                $.post(url, function (data) {
+                    if (data != null) {
+                        $("#js_s_select_org_ctu").empty();
+                        $("#js_edit_select_Org_CTU").empty();
+                        //添加空的选择框
+                        $("<option></option>")
+                            .val("")
+                            .text("")
+                            .appendTo($("#js_s_select_org_ctu"));
+                        $("<option></option>")
+                            .val("")
+                            .text("")
+                            .appendTo($("#js_edit_select_Org_CTU"));
+                        //添加从数据库中查询的Project
+                        $.each(data, function (i, item) {
+                            var op = "@ViewBag.OP";
+                            if (item == op&&op!=0) {
+                                $("<option></option>").val(item).text(item).appendTo($("#js_s_select_org_ctu"));
+                                $("<option></option>").val(item).text(item).appendTo($("#js_edit_select_Org_CTU"));
+                            } else{
+                                $("<option></option>").val(item).text(item).appendTo($("#js_s_select_org_ctu"));
+                                $("<option></option>").val(item).text(item).appendTo($("#js_edit_select_Org_CTU"));
+                            }
+                        });
+
+
+                    }
+
+                });
+            }
+
+            function getOpTypes(temp) {
+                $(".se2").empty();
+                //if (temp != "WUXI_M") {
+                $("<option></option>").val("").text("").appendTo($("#js_edit_select_Org_PP"));
+                $("<option></option>").val("").text("").appendTo($("#js_s_select_org_pp"));
+                //}
+                //$("<option></option>").val("Nothing").text("").appendTo($("#js_e_select_org_op"));
+                //添加从数据库中查询的Project
+                $.each(proAndOrg.SystemOrg, function (i, item) {
+                    if (item.Father_Org == temp) {
+                        $("<option></option>").val(item.Organization_UID).text(item.Child_Org).appendTo($("#js_edit_select_Org_PP"));
+                        $("<option></option>").val(item.Organization_UID).text(item.Child_Org).appendTo($("#js_s_select_org_pp"));
+                    }
+                });
+                $("#js_edit_select_Org_PP").trigger('change');
+            };
+
+            function getFuncPlant(pp) {
+                var id = pp;
+                var url = urls.getFunctionPlantOrg;
+                $.post(url, { oporgid: id }, function (data) {
+                    $("#js_edit_select_FunPlant_Organization_UID").empty();
+                    $("<option></option>").val("").text("").appendTo($("#js_edit_select_FunPlant_Organization_UID"));
+                    $("#js_s_select_FunctionPlant").empty();
+                    $("<option></option>").val("").text("").appendTo($("#js_s_select_FunctionPlant"));
+                    //添加节点
+                    $.each(data, function (i, item) {
+
+                        $("<option></option>")
+                            .val(item.FunPlant_OrganizationUID)
+                            .text(item.FunPlant)
+                            .appendTo($("#js_edit_select_FunPlant_Organization_UID"));
+
+                        $("<option></option>")
+                            .val(item.FunPlant_OrganizationUID)
+                            .text(item.FunPlant)
+                            .appendTo($("#js_s_select_FunctionPlant"));
+
+                    });
+                });
+            };
+
+            function getEqpTypeInfo(bg, plant) {
+
+                var url = urls.GetEqpType;
+                $.post(url, { bg: bg, funplant: plant }, function (data) {
+                    $("#js_s_select_EQP_Type_UID").empty();
+                    $("#js_edit_select_EQP_Type_UID").empty();
+                    $("<option></option>").val("").text("").appendTo($("#js_s_select_EQP_Type_UID"));
+                    $("<option></option>").val("").text("").appendTo($("#js_edit_select_EQP_Type_UID"));
+                    //添加节点
+                    $.each(data, function (i, item) {
+
+                        $("<option></option>")
+                            .val(item.EQP_Type_UID)
+                            .text(item.EQP_Type1)
+                            .appendTo($("#js_s_select_EQP_Type_UID"));
+
+                        $("<option></option>")
+                            .val(item.EQP_Type_UID)
+                            .text(item.EQP_Type1)
+                            .appendTo($("#js_edit_select_EQP_Type_UID"));
+
+                    });
+                });
+            };
+
+            $('.se1').on('change', function () {
+                var f1 = $('#js_s_select_org_ctu').val();
+                var f2 = $('#js_edit_select_Org_CTU').val();
+                if (f1 != "") {
+                    getOpTypes(f1);
+                }
+                else {
+                    getOpTypes(f2);
+                }
+            });
+
+            $('.se2').on('change', function () {
+                var f1 = $('#js_s_select_org_pp').val();
+                var f2 = $('#js_edit_select_Org_PP').val();
+                if (f1 != "" && f1 != null && f1 != "") {
+                    getFuncPlant(f1);
+                }
+                else {
+                    getFuncPlant(f2);
+                }
+            });
+
+
+            $('.se3').on('change', function () {
+                var f1 = $('#js_s_select_org_pp').val();
+                var f2 = $('#js_edit_select_Org_PP').val();
+                if (f1 != "" && f1 != null && f1 != "") {
+                    getEqpTypeInfo(f1, $('#js_s_select_FunctionPlant').val());
+                }
+                else {
+                    getEqpTypeInfo(f2, $('#js_edit_select_FunPlant_Organization_UID').val());
+                }
+            });
+
+
+            $('#js_btn_query').click(function () {
+
+                if ($("#js_form_query").valid()) {
+                    EQPPowerOn.queryOrgs(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+                $('#js_search_modal').find('input').val('');
+                $('#js_search_modal').find('select').empty();
+                getplant();
+            });
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Organization_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = EQPPowerOn.urls.exportOrgs;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //#region extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_org_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            //#endregion
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.attr('id') === 'js_btn_add_org') {
+
+                    title.text("每日开机数量维护--新增");
+                    $('#js_btn_save').show();
+                    $('#js_btn_save_edit').hide();
+                    $('#Organization_UID_hidden').val(0);
+                    $('#js_input_begin_date').attr("disabled", false);
+                    $('#js_input_end_date').attr("disabled", false);
+                    $("#js_edit_select_Org_CTU").removeAttr("disabled");
+                    $("#js_edit_select_Org_PP").removeAttr("disabled");
+                    $("#js_edit_select_FunPlant_Organization_UID").removeAttr("disabled");
+                    $("#js_edit_select_EQP_Type_UID").removeAttr("disabled");
+                }
+
+                if (button.hasClass('js-grid-edit')) {
+
+                    title.text("每日开机数量维护--修改");
+                    $('#js_btn_save').hide();
+                    $('#js_btn_save_edit').show();
+                    $('#js_input_begin_date').attr("disabled", true);
+                }
+            })
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+                $('#js_edit_modal').find('select').empty();
+                //$('#js_search_modal').find('select').empty();
+                getplant();
+            });
+
+            //新增保存Org按钮
+            $("#js_btn_save").click('click', function () {
+                $("#js_edit_select_Org_CTU").removeAttr("disabled");
+                $("#js_edit_select_Org_PP").removeAttr("disabled");
+                $("#js_edit_select_FunPlant_Organization_UID").removeAttr("disabled");
+                $("#js_edit_select_EQP_Type_UID").removeAttr("disabled");
+                if ($('#js_form_org_edit').valid()) {
+                    var submitJson = $('#js_form_org_edit').serializeObject();
+                    submitJson.Modified_UID = PDMS.Utility.Tools.GetLoginUserAccountID();
+
+                    $.post(EQPPowerOn.urls.AddOrg, { jsonAddOrg: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'SUCCESS') {
+                            EQPPowerOn.queryOrgs();
+                            $('#js_edit_modal').modal('hide');
+                            $("#js_form_org_edit input[type!=hidden]").val("");
+                            PDMS.Utility.MessageBox.info("添加成功");
+                            //EQPPowerOn.queryOrgs();
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            //新增修改Org按钮
+            $("#js_btn_save_edit").click('click', function () {
+                $("#js_edit_select_Org_CTU").removeAttr("disabled");
+                $("#js_edit_select_Org_PP").removeAttr("disabled");
+                $("#js_edit_select_FunPlant_Organization_UID").removeAttr("disabled");
+                $("#js_edit_select_EQP_Type_UID").removeAttr("disabled");
+                if ($('#js_form_org_edit').valid()) {
+                                var submitJson = $('#js_form_org_edit').serializeObject();
+                                    submitJson.Modified_UID = PDMS.Utility.Tools.GetLoginUserAccountID();
+
+                                    $.post(
+                                        EQPPowerOn.urls.EditOrg,
+                                        { jsonEditOrg: JSON.stringify(submitJson) },
+                                        function (data) {
+                                            if (data == 'SUCCESS') {
+                                                EQPPowerOn.queryOrgs();
+                                                $('#js_edit_modal').modal('hide');
+                                                PDMS.Utility.MessageBox.info("修改成功");
+                                            } else {
+                                                PDMS.Utility.MessageBox.error(data);
+                                            }
+                                        });
+                                }
+                        });
+
+            //edit button in grid
+            $('body').on('click', '.js-grid-edit', function () {
+
+                var $sender = $(this);
+
+                var uuid = $sender.attr('data-id'),
+                    url = urls.queryOrg;
+                $.post(url, { uuid: uuid }, function (data) {
+                    if (data != null) {
+                        $("#js_edit_select_Org_CTU").empty();
+
+                        $("<option></option>")
+                            .val(data.Plant)
+                            .text(data.Plant)
+                            .appendTo($("#js_edit_select_Org_CTU"));
+                        $("<option></option>")
+                            .val(data.BG_Organization_UID)
+                            .text(data.OPType)
+                            .appendTo($("#js_edit_select_Org_PP"));
+                        $("<option></option>")
+                            .val(data.FunPlantUID)
+                            .text(data.Funplant)
+                            .appendTo($("#js_edit_select_FunPlant_Organization_UID"));
+                        $("<option></option>")
+                            .val(data.EQP_Type_UID)
+                            .text(data.EQP_Type1)
+                            .appendTo($("#js_edit_select_EQP_Type_UID"));
+
+                        $("#js_edit_select_Org_CTU").attr("disabled", "disabled");
+                        $("#js_edit_select_Org_PP").attr("disabled", "disabled");
+                        $("#js_edit_select_FunPlant_Organization_UID").attr("disabled", "disabled");
+                        $("#js_edit_select_EQP_Type_UID").attr("disabled", "disabled");
+                        $("#js_e_input_PowerOn_Date").val(data.PowerOnDateString);
+                        $("#js_e_input_Daily_PowerOn_Qty").val(data.Daily_PowerOn_Qty);
+                        $("#js_e_input_EQP_PowerOn_UID").val(data.EQP_PowerOn_UID);
+                        //EQPMaterial.SetSubDatatable(dataTable1)
+                    }
+
+                });
+                $('#js_edit_modal').modal('show', $(this));
+            });
+
+            //delete button in grid
+            $('body').on('click', '.js-grid-delete', function () {
+
+                var uid = $(this).data('id');
+
+                PDMS.Utility.MessageBox.confirm(
+                    "确认删除？"
+                        , function () {
+                            var url = urls.deleteOrg;
+                            $.post(url, { uid: uid}, function (data) {
+                                if (data != 'FAIL') {
+                                    EQPPowerOn.queryOrgs();
+                                } else {
+                                    PDMS.Utility.MessageBox.error(data);
+                                }
+                            });
+                    //, function () {
+                    //    var url = PDMS.Utility.Tools.BuildAPIUri(EQPPowerOn.urls.deleteOrg);
+                    //    $.post(url + '/' + uid, null, function (data) {
+                    //        if (data != 'FAIL') {
+                    //            EQPPowerOn.queryOrgs();
+                    //        } else {
+                    //            PDMS.Utility.MessageBox.error("Organization already in use!");
+                    //        }
+                    //    });
+                    });
+            });
+
+            $('#js_btn_import_currentWK').on('click', function () {
+                $('#hid_currentOrNextWeek').val('currentWeek');
+                $('#js_importExcel_modal').modal('show');
+            }); 
+
+
+            $('#js_btn_clear_Update').on('click', function () {
+                $('#js_importExcel_modal').modal('hide');
+                $("#js_s_input_import").val('');
+            });
+
+            $('#js_btn_excel_update').on('click', function () {
+                $('#js_importExcel_modal').modal('hide');
+                $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+                $('#js_form_excel_update').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+
+                        if (!$('#js_form_excel_update').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                            $("#js_s_input_import").val('');
+                        }
+                        else {
+                            $("#js_s_input_import").val('');
+                            EQPPowerOn.queryOrgs();
+                            PDMS.Utility.MessageBox.info("上传成功！");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

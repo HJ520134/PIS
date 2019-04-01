@@ -1,0 +1,305 @@
+﻿
+@{
+
+    ViewBag.Inputdata = T("QA.Inputdata").Text;
+    ViewBag.Viewhistoricaldata = T("QA.Viewhistoricaldata").Text;
+    ViewBag.NBadtypeprocess = T("QA.NBadtypeprocess").Text;
+}
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+</style>
+
+<div class="row">
+    <!--次標題與Search keyword-->
+    <div class="col-md-12 col-lg-9">
+  
+    </div>
+    <div class="col-md-12 search-field col-lg-3">
+        <a id="btn_export_floor"  class="btn btn-default btn-sm" role="button">
+            <i class="glyphicon "></i> 切换到旧版本
+        </a>
+        <a id="btn-return" type="button"  href="qaflowchartlist" class="btn btn-primary ">@T("QA.Return")</a>
+    </div><!-- /col-右方搜尋與功能按鈕列-->
+
+</div>
+
+<div id="day_label_th">
+    <label>@T("QA.Materialtypes"):</label><label id="js_meterialType">@ViewBag.MaterialType</label>
+    &<label>@T("QA.Colour"):</label><label id="js_color">@ViewBag.Color</label>
+    &<label>@T("QA.Parttype"):</label><label id="js_Part_Types">@ViewBag.Part_Types</label>
+</div>
+
+<!-- Main content -->
+<section class="content portal-content">
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_plant_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+             
+                        <th id="test_title">@T("QA.Functionfactory")</th>
+                        <th>@T("Common.Name")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("QA.Description")</th>
+                    </tr>
+                </thead>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row" hidden="hidden"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+<style>
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-sub-group {
+        display: inline-block;
+        width: 100px;
+        vertical-align: middle;
+    }
+</style>
+
+
+
+@section ViewModals{
+    <!-- Modal -->
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Entrycondition")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                       
+                            <label class="hidden col-xs-12 col-md-6" id="Flowchart_Master_UID">@ViewBag.FlowChart_Master_UID</label>
+                            <label class="hidden col-xs-12 col-md-6" id="process_seq"></label>
+                            <label class="hidden col-xs-12 col-md-6" id="ProjectName"></label>
+                            <label class="hidden col-xs-12 col-md-6" id="ProcessName"></label>
+                            <label class="hidden col-xs-12 col-md-6" id="funPlant"></label>
+                            <label class="hidden col-xs-12 col-md-6" id="IsQAProcess"></label>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_material_Name">@T("QA.Materialtype")</label>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-7">
+                                        <select id="js_s_input_material_Name" name="material_Name" class="form-control input-sm"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color" id="js_s_input_color_label">@T("QA.Colour")</label>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-7">
+                                        <select id="js_s_input_color" name="color" class="form-control input-sm"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Place">@T("QA.Factorybuilding")</label>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-7">
+                                        <select id="js_s_input_Place" name="Place" class="form-control input-sm"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-cancel" id="js_btn_cancel">@T("QA.Cancel")</button>
+
+                    <button type="button" class="btn btn-primary btn-query" id="btn_comfirm">@T("QA.Determine")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function() {
+            var CheckPointsListUrls = {            
+                QueryCheckPointsList: '@Url.Action("QueryCheckPointList", "Quality")',
+                QueryInputCondition: '@Url.Action("QueryConditions", "Quality")',
+                PrepareForIPQCInputData: '@Url.Action("QAMaster", "Quality")',
+                PrepareForOQCInputData: '@Url.Action("OQCMaster", "OQCQuality")',
+                SearchHistoryData: '@Url.Action("QAMaster", "Quality")',
+                ExcepProcess: '@Url.Action("ExcetetionTypeProcess", "Quality")',
+                SearchHistoryOQCRecord: '@Url.Action("OQCHistorySearch", "OQCQuality")',
+                OldUrl: '@Url.Action("CheckPointsListo", "Quality")'
+            };
+            //#region CheckPointsListSetting
+            var CheckPointsListSetting = (function() {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            //录入数据
+ 
+                            var htmlImportUpdate = '<button type="button" class="btn btn-default btn-sm js-grid-input" data-funplant="' + rowData.FunPlant + '"  data-projectName="' + rowData.ProjectName + '"  data-processName="' + rowData.ProcessName + '"data-Process_seq=' + rowData.ProcessSeq + ' data-content="' + rowData.Flowchart_Master_UID + '" data-id="' + rowData.FlowChart_Detail_UID + '" data-IsQAProcess="' + rowData.IsQAProcess + '">@ViewBag.Inputdata</button></br>';
+                            //查看历史数据
+                            var htmlExport = '<button type="button" class="btn btn-default btn-sm js-grid-history"  data-funplant="' + rowData.FunPlant + '"   data-projectName="' + rowData.ProjectName + '"  data-processName="' + rowData.ProcessName + '" data-Process_seq=' + rowData.ProcessSeq + '  data-content="' + rowData.Flowchart_Master_UID + '" data-id="' + rowData.FlowChart_Detail_UID + '" data-IsQAProcess="' + rowData.IsQAProcess + '">@ViewBag.Viewhistoricaldata</button></br>';
+                            //不良类型制程绑定
+                            var htmlTypeProcess = '<button type="button" class="btn btn-default btn-sm js-grid-process"  data-projectName="' + rowData.ProjectName + '"  data-processName="' + rowData.ProcessName + '" data-Process_seq=' + rowData.ProcessSeq + ' data-id="' + rowData.FlowChart_Detail_UID + '" data-content="' + rowData.Flowchart_Master_UID + '" >@ViewBag.NBadtypeprocess</button></br>'; 
+
+                            var result = '<button type="button" class="btn btn-default btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder text-info"></i>' +
+                                '</button>' + '<div class="hidden popover-content">';
+                            result = result + htmlImportUpdate + htmlExport +htmlTypeProcess+ '</div>';
+                            $(td).html(result);
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ProcessName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ProjectName",
+                        className: "min-col-xs"
+                    }
+                    , {
+                        data: "OtherInfos",
+                        className: "min-col-xs"
+                    }
+                ];
+                var _getParams = function () {
+           
+                    var Flowchart_Master_UID = $("#Flowchart_Master_UID").text();
+                    var Color = $("#js_color").text();
+                    var MaterielType = $("#js_meterialType").text();
+                        var result = {};
+                       
+                        result["Flowchart_Master_UID"] = Flowchart_Master_UID;
+                        result["Color"] = Color;
+                        result["MaterialType"] = MaterielType;
+                        return result;
+                };
+                //#endregion
+                var queryCheckPointsLists = function() {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_plant_datatable",
+                        remoteUrl: CheckPointsListUrls.QueryCheckPointsList,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        queryCheckPointsLists();
+                    }
+                }
+            })();
+            //#endregion
+            CheckPointsListSetting.Init();
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            $("#btn_export_floor").click(function () {
+                var FlowChart_Detail_UID = $(this).attr('data-id');
+                var Flowchart_Master_UID = GetQueryString('FlowChart_Master_UID');
+                var processName = $(this).attr('data-processName');
+                var projectName = $(this).attr('data-projectName');
+                var funPlant = $(this).attr('data-funplant');
+                var IsQAProcess = $(this).attr('data-IsQAProcess');
+                var Color = $("#js_color").text();
+                var mtype = $("#js_meterialType").text();
+                var Part_Types = $("#js_Part_Types").text();
+                var Process_seq = $(this).attr('data-Process_seq');
+                //if (IsQAProcess == "Inspect_IPQC" || IsQAProcess == "Polling_IPQC") {
+                var url = CheckPointsListUrls.OldUrl + '?Flowchart_Master_UID=' + Flowchart_Master_UID + '&&Color=' + Color  + '&&MaterialType=' + mtype  + '&&Part_Types=' + Part_Types;
+              
+                window.location.href = url;
+            });
+            // #region Page elements events
+            //录入数据    将要修改 修改为都到IPQC页面录入。
+            $('body').on('click', '.js-grid-input', function () {
+                var FlowChart_Detail_UID = $(this).attr('data-id');
+                var Flowchart_Master_UID = $(this).attr('data-content');
+                var processName = $(this).attr('data-processName');
+                var projectName = $(this).attr('data-projectName');
+                var funPlant = $(this).attr('data-funplant');
+                var IsQAProcess = $(this).attr('data-IsQAProcess');
+                var Color = $("#js_color").text();
+                var mtype = $("#js_meterialType").text();
+                var Part_Types = $("#js_Part_Types").text();
+                var Process_seq = $(this).attr('data-Process_seq');
+                //if (IsQAProcess == "Inspect_IPQC" || IsQAProcess == "Polling_IPQC") {
+                    var url = CheckPointsListUrls.PrepareForIPQCInputData + '?Flowchart_Master_UID=' + Flowchart_Master_UID + '&&Color=' + Color + '&&Process_seq=' + Process_seq + '&&MaterialType=' + mtype + '&&FlowChart_Detail_UID=' + FlowChart_Detail_UID
+                     + '&&Process=' + processName + '&&ProjectName=' + projectName + '&&Part_Types=' + Part_Types;
+                 window.location.href = url;
+                //}
+                //else if (IsQAProcess == "Inspect_OQC" || IsQAProcess == "Inspect_Assemble" || IsQAProcess == "Inspect_Assemble,Inspect_OQC") {
+                //    var url = CheckPointsListUrls.PrepareForOQCInputData + '?Flowchart_Master_UID=' + Flowchart_Master_UID + '&&Color=' + Color + '&&Process_seq=' + Process_seq + '&&MaterialType=' + mtype + '&&FlowChart_Detail_UID=' + FlowChart_Detail_UID
+                //    + '&&Process=' + processName + '&&ProjectName=' + projectName + '&&IsQAProcess=' + IsQAProcess + '&&Part_Types=' + Part_Types;
+                //    window.location.href = url;
+                //}
+            });
+            //#endregion·         
+            $('#js_btn_cancel').click(function () {
+                $('#js_search_modal').modal('hide');
+            });
+            $('body').on('click', '.js-grid-history', function () {           
+                var FlowChart_Master_UID = $(this).attr('data-content');
+                var projectName = $(this).attr('data-projectName');
+                var funPlant = $(this).attr('data-funplant');
+                var process = $(this).attr('data-processName');
+                var IsQAProcess = $(this).attr('data-IsQAProcess');
+                var FlowChart_Detail_UID = $(this).attr('data-id');
+                //if (IsQAProcess == "Inspect_IPQC" || IsQAProcess == "Polling_IPQC") {   
+                    var url = CheckPointsListUrls.SearchHistoryData + '?FlowChart_Master_UID=' + FlowChart_Master_UID + '&&Color=&&Process_seq=&&Place=&&MaterialType=&&FlowChart_Detail_UID=&&Process=&&ProjectName=' + projectName;
+                    window.location.href = url;
+                //}
+                //else if (IsQAProcess == "Inspect_OQC" || IsQAProcess == "Inspect_Assemble"||IsQAProcess=="Inspect_Assemble,Inspect_OQC")
+                //{
+                //    var url = CheckPointsListUrls.SearchHistoryOQCRecord + '?project=' + projectName + '&&process=' + process + '&&date=&&materialType=&&color=&&IsQAProcess=' + IsQAProcess;
+                //    window.location.href = url;
+                //}
+            });
+            ///新增加的 用来绑定制程和不良项目
+            $('body').on('click', '.js-grid-process', function () {             
+                var FlowChart_Detail_UID = $(this).attr('data-id');
+                var projectName = $(this).attr('data-projectName');               
+                var FlowChart_Master_UID = $(this).attr('data-content');
+                var process = $(this).attr('data-processname');
+                var url = CheckPointsListUrls.ExcepProcess + '?projectName=' + projectName + '&&FlowChart_Detail_UID=' + FlowChart_Detail_UID + '&&FlowChart_Master_UID=' + FlowChart_Master_UID + '&&processName=' + process;
+                window.location.href = url;
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,72 @@
+﻿@model List<Type>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        th {
+            padding: 5px;
+            border: solid 1px;
+            background-color: lightgray;
+        }
+        td {
+            padding: 5px;
+            border: solid 1px;
+        }
+            td button {
+                margin: 3px;
+            }
+    </style>
+    <script src="/PDMSWeb/Content/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+</head>
+<body>
+    <div>
+        <h3>PIS Available Tasks:</h3>
+        <table cellspacing="0" cellpadding="0">
+            <tr>
+                <th>Class Name</th>
+                <th>Method Name</th>
+                <th>Parameters</th>
+                <th>Action</th>
+            </tr>
+            @foreach (var taskClass in Model)
+            {
+                foreach (var method in taskClass.GetMethods().Where(x => x.IsStatic == true))
+                {
+                    <tr>
+                        <td>@taskClass.Name</td>
+                        <td>@method.Name</td>
+                        <td>@method.GetParameters().Count()</td>
+                        <td>
+                            <button data-id="@String.Format("{0}.{1}",taskClass.Name,method.Name)" name="Run">Run</button>
+                            <button data-id="@String.Format("{0}.{1}",taskClass.Name,method.Name)" name="Schedule">Schedule</button>
+                            <button data-id="@String.Format("{0}.{1}",taskClass.Name,method.Name)" name="Recurring">Recurring</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('body').on('click', 'button', function () {
+                var action = $(this).attr('name'),
+                    taskName = $(this).attr('data-id');
+                $.post('@Url.Action("ExecuteTask", "TaskManager")', { action: action, taskName: taskName }, function (data) {
+                    // check status
+                });
+            });
+        });
+    </script>
+</body>
+</html>

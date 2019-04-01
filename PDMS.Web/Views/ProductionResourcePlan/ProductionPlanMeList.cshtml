@@ -1,0 +1,804 @@
+﻿@{
+    ViewBag.Close = T("Common.Close").Text;
+    ViewBag.Open = T("Common.Open").Text;
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Export = T("Common.Export").Text;
+    ViewBag.View = T("Common.View").Text;
+    ViewBag.Update = T("Common.Update").Text;
+
+    ViewBag.IEDataNotUploaded = T("Production.IEDataNotUploaded").Text;
+    ViewBag.IEDataHasUploaded = T("Production.IEDataHasUploaded").Text;
+    ViewBag.IEDataHasApproved = T("Production.IEDataHasApproved").Text;
+    ViewBag.MEImportUpdate = T("Production.MEImportUpdate").Text;
+    ViewBag.MaintenanceNPI = T("Production.MaintenanceNPI").Text;
+    ViewBag.DepartMove = T("Production.DepartMove").Text;
+    ViewBag.MaintenanceEqip = T("Production.MaintenanceEqip").Text;
+    ViewBag.BindBom = T("Production.BindBom").Text;
+    ViewBag.MEDetailInfo = T("Production.MEDetailInfo").Text;
+    ViewBag.Imported = T("QA.Imported").Text;
+    ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+    ViewBag.InputVersionDesc = T("Production.InputVersionDesc").Text;
+    ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+    ViewBag.SetPlantAndBusinessGroup = T("Production.SetPlantAndBusinessGroup").Text;
+    ViewBag.SureDepartMove = T("Production.SureDepartMove").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.ErrorPhase = T("Production.ErrorPhase").Text;
+    ViewBag.SureCloseProject = T("Production.SureCloseProject").Text;
+    ViewBag.ErrorProject = T("Production.ErrorProject").Text;
+    ViewBag.ImportNew = T("Production.ImportNew").Text;
+}
+<!-- Main content -->
+<section class="content portal-content" style="font-family:微軟正黑體">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field">
+            <a href="~/ExcelTemplate/Flowchart_ProductionPlan_Template.xlsx" id="hrfExcelDownload" class="fa fa-download btn btn-primary" target="_blank"><span style="font-family:微軟正黑體"> @T("Common.TeampleDownload")</span></a>
+            <a class="fa fa-upload btn btn-primary" id="NewImport" data-toggle="modal" data-target="#js_import_modal"><span style="font-family:微軟正黑體"> @T("Common.ImportExcel")</span></a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"><span style="font-family:微軟正黑體"> @T("Common.Export")</span></a>
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"><span style="font-family:微軟正黑體"> @T("Common.Search")</span></a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_ME_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("ME.BU")</th>
+                        <th>@T("ME.Project_Name")</th>
+                        <th>@T("ME.Part_Types")</th>
+                        <th>@T("ME.Product_Phase")</th>
+                        <th>@T("ME.Plant_Organization_Name")</th>
+                        <th>@T("ME.BG_Organization_Name")</th>
+                        <th>@T("ME.Daily_Targetoutput")</th>
+                        <th>@T("ME.FPY")</th>
+                        <th>@T("ME.FlowChart_Version")</th>
+                        <th>@T("ME.FlowChart_Version_Comment")</th>
+                        <th>@T("ME.Created_User")</th>
+                        <th>@T("ME.Created_Date")</th>
+                        <th>@T("ME.Modified_User")</th>
+                        <th>@T("ME.Modified_Date")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("ME.BU")</th>
+                        <th>@T("ME.Project_Name")</th>
+                        <th>@T("ME.Part_Types")</th>
+                        <th>@T("ME.Product_Phase")</th>
+                        <th>@T("ME.Plant_Organization_Name")</th>
+                        <th>@T("ME.BG_Organization_Name")</th>
+                        <th>@T("ME.Daily_Targetoutput")</th>
+                        <th>@T("ME.FPY")</th>
+                        <th>@T("ME.FlowChart_Version")</th>
+                        <th>@T("ME.FlowChart_Version_Comment")</th>
+                        <th>@T("ME.Created_User")</th>
+                        <th>@T("ME.Created_Date")</th>
+                        <th>@T("ME.Modified_User")</th>
+                        <th>@T("ME.Modified_Date")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+<!-- /.content -->
+@section ViewModals{
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog" style="font-family:微軟正黑體">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.ImportExcel")</h4>
+                </div>
+                @using (Html.BeginForm("ImportExcel", "ProductionResourcePlan", FormMethod.Post, new { id = "js_form_excel_add" }))
+                {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="control-label" for="js_s_input_upload">@T("ME.SelDoc")</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="file" class="form-control" id="js_s_input_upload" name="uploadName" placeholder="@T("ME.MS.SelDocForExcel")" />
+                        </div>
+                        <div class="clearfix"></div>
+                        <br />
+                        <div class="col-sm-3">
+                            <label class="control-label" for="js_s_input_version_comment">@T("ME.VersionComments")</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <textarea type="text" name="FlowChart_Version_Comment" rows="3" class="form-control input-sm" id="js_s_input_version_comment" placeholder="@T("ME.VersionComments")"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal" id="js_btn_clear_Update"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_fl">@T("Common.UploadExcel")</button>
+                    <input type="hidden" id="hid_key" name="FlowChart_Master_UID" />
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog" style="font-family:微軟正黑體">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Plant_Organization_UID">@T("ME.Plant_Organization_Name")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_Plant_Organization_UID" name="Plant_Organization_UID">
+                                        @*required data-msg-required="请选择厂区">*@
+                                        <option></option>
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_BG_Organization_UID">@T("ME.BG_Organization_Name")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_BG_Organization_UID" name="BG_Organization_UID"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Project_Name">@T("ME.Project_Name")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Project_Name" class="form-control input-sm" id="js_s_input_Project_Name" placeholder="@T("ME.Project_Name")">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_bu_id">@T("ME.BU")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="BU" class="form-control input-sm" id="js_s_input_bu_id" placeholder="@T("ME.BU")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_Types">@T("ME.Part_Types")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Part_Types" class="form-control input-sm" id="js_s_input_Part_Types" placeholder="@T("ME.Part_Types")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("ME.Product_Phase")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Product_Phase" class="form-control input-sm" id="js_s_input_Product_Phase" placeholder="@T("ME.Product_Phase")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_IsClose">@T("ME.IsClose")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_IsClose" name="Is_Closed">
+                                        <option value="false">@T("Common.No")</option>
+                                        <option value="true">@T("Common.Yes")</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">@T("ME.Modified_Date")</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Start_Date" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="End_Date" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear">@T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm enter-trigger" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_Process_D_modal" tabindex="-1" role="dialog" style="font-family:微軟正黑體">
+        <div class="modal-dialog modal-lg" role="document" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">
+                        <b>@T("ME.QueryME_D")</b><br />
+                    </h3>
+                    <h4 class="margin-tb-5">
+                        <small>
+                            <b>@T("ME.BU")</b> :<spen class="margin-lr-10" id="spBU"></spen>
+                            <b>@T("ME.Project_Name")</b> :<spen class="margin-lr-10" id="spProject"></spen>
+                            <b>@T("ME.Part_Types")</b> :<spen class="margin-lr-10" id="spPart_Types"></spen>
+                            <b>@T("ME.Product_Phase")</b> :<spen class="margin-lr-10" id="spPrloduct_Phase"></spen>
+                        </small>
+                    </h4>
+                </div>
+                <div class="modal-body form-horizontal padding-t-10">
+                    <div class="row" id="row_review_history_bak">
+                        <div class="col-md-12 table-container table-responsive">
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_process_d">
+                                <thead>
+                                    <tr>
+                                        <th>@T("ME.Process_Station")</th>
+                                        <th>@T("ME.FunPlant")</th>
+                                        <th>@T("ME.Process")</th>
+                                        <th>@T("ME.Process_Desc")</th>
+                                        <th>@T("ME.Processing_Equipment")</th>
+                                        <th>@T("ME.Automation_Equipment")</th>
+                                        <th>@T("ME.Processing_Fixtures")</th>
+                                        <th>@T("ME.Auxiliary_Equipment")</th>
+                                        <th>@T("ME.Equipment_CT")</th>
+                                        <th>@T("ME.Setup_Time")</th>
+                                        <th>@T("ME.Total_Cycletime")</th>
+                                        <th>@T("ME.Estimate_Yield")</th>
+                                        <th>@T("ME.Manpower_Ratio")</th>
+                                        <th>@T("ME.Capacity_ByHour")</th>
+                                        <th>@T("ME.Capacity_ByDay")</th>
+                                        <th>@T("ME.Equipment_RequstQty")</th>
+                                        <th>@T("ME.Manpower_2Shift")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_Process_D_modal_2" tabindex="-1" role="dialog" style="font-family:微軟正黑體;z-index:99999">
+        <div class="modal-dialog modal-lg" role="document" style="width:80%">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">
+                        <b>@T("ME.QueryME_D")</b><br />
+                    </h3>
+                    <h4 class="margin-tb-5">
+                        <small>
+                            <b>@T("ME.BU")</b> :<spen class="margin-lr-10" id="spBU"></spen>
+                            <b>@T("ME.Project_Name")</b> :<spen class="margin-lr-10" id="spProject"></spen>
+                            <b>@T("ME.Part_Types")</b> :<spen class="margin-lr-10" id="spPart_Types"></spen>
+                            <b>@T("ME.Product_Phase")</b> :<spen class="margin-lr-10" id="spPrloduct_Phase"></spen>
+                        </small>
+                    </h4>
+                </div>
+                <div class="modal-body form-horizontal padding-t-10">
+                    <div class="row" id="row_review_history_bak">
+                        <div class="col-md-12 table-container table-responsive">
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_process_d_2">
+                                <thead>
+                                    <tr>
+                                        <th>@T("ME.Process_Station")</th>
+                                        <th>@T("ME.FunPlant")</th>
+                                        <th>@T("ME.Process")</th>
+                                        <th>@T("ME.Process_Desc")</th>
+                                        <th>@T("ME.Processing_Equipment")</th>
+                                        <th>@T("ME.Automation_Equipment")</th>
+                                        <th>@T("ME.Processing_Fixtures")</th>
+                                        <th>@T("ME.Auxiliary_Equipment")</th>
+                                        <th>@T("ME.Equipment_CT")</th>
+                                        <th>@T("ME.Setup_Time")</th>
+                                        <th>@T("ME.Total_Cycletime")</th>
+                                        <th>@T("ME.Estimate_Yield")</th>
+                                        <th>@T("ME.Manpower_Ratio")</th>
+                                        <th>@T("ME.Capacity_ByHour")</th>
+                                        <th>@T("ME.Capacity_ByDay")</th>
+                                        <th>@T("ME.Equipment_RequstQty")</th>
+                                        <th>@T("ME.Manpower_2Shift")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_changeHistory_model" tabindex="-1" role="dialog" style="font-family:微軟正黑體">
+        <div class="modal-dialog modal-lg" role="document" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom:5px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">
+                        <b>@T("ME.MS.SearchChangeHistory")</b><br />
+                    </h3>
+                    <h4 class="margin-tb-5">
+                        <small>
+                            <b>@T("ME.BU")</b> :<spen class="margin-lr-10" id="spBU_changeHistory"></spen>
+                            <b>@T("ME.Project_Name")</b> :<spen class="margin-lr-10" id="spProject_changeHistory"></spen>
+                            <b>@T("ME.Part_Types")</b> :<spen class="margin-lr-10" id="spPart_Types_changeHistory"></spen>
+                            <b>@T("ME.Product_Phase")</b> :<spen class="margin-lr-10" id="spPrloduct_Phase_changeHistory"></spen>
+                        </small>
+                    </h4>
+                </div>
+                <div class="modal-body form-horizontal padding-t-10">
+                    <div class="row" id="row_review_history_bak">
+                        <div class="col-md-12 table-container table-responsive">
+                            @*<table class="table table-striped table-hover table-condensed nowrap">
+                                    <tr>
+                                        <th>@T("ME.BU")</th>
+                                        <td><spen id="spBU_changeHistory"></spen></td>
+                                        <th>@T("ME.Project_Name")</th>
+                                        <td><spen id="spProject_changeHistory"></spen></td>
+                                        <th>@T("ME.Part_Types")</th>
+                                        <td><spen id="spPart_Types_changeHistory"></spen></td>
+                                        <th>@T("ME.Product_Phase")</th>
+                                        <td><spen id="spPrloduct_Phase_changeHistory"></spen></td>
+                                    </tr>
+                                </table>*@
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_changeHistory">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                                        <th>@T("ME.FlowChart_Version")</th>
+                                        <th>@T("ME.FlowChart_Version_Comment")</th>
+                                        <th>@T("ME.Daily_Targetoutput")</th>
+                                        <th>@T("ME.FPY")</th>
+                                        <th>@T("ME.IsClose")</th>
+                                        <th>@T("ME.Created_User")</th>
+                                        <th>@T("ME.Created_Date")</th>
+                                        <th>@T("ME.Modified_User")</th>
+                                        <th>@T("ME.Modified_Date")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script>
+        $(function () {
+            //-----------------------------------------  document.ready 區
+            $(document).ready(function () {
+                QueryME.Init();
+            });
+            //-----------------------------------------  全部URL
+            var MEUrls = {
+                QueryMEs: '@Url.Action("QueryMEs", "ProductionResourcePlan")',
+                GetME_Ds: '@Url.Action("GetME_Ds", "ProductionResourcePlan")',
+                GetME_ChangeHistory: '@Url.Action("GetME_ChangeHistory", "ProductionResourcePlan")',
+            };
+            //-----------------------------------------  Grid 清單
+            var QueryME = (function () {
+                var needBuildCriteria = false;
+
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<a tabindex="0" class="btn btn-primary btn-xs" rel="action-popover" role="button"><i class="fa fa-reorder"></i></a>' +
+                                    '<div class="hidden popover-content">' +
+                                       '<a type="button" class="btn btn-primary btn-sm js-grid-view" data-id="' + rowData.RP_Flowchart_Master_UID + '" role="button" data-toggle="modal" data-target="#js_Process_D_modal">' + '@T("ME.QueryME_D")' + '</a>' +
+                                       '<a type="button" class="btn btn-primary btn-sm js-grid-EquipmentMaintenance" data-RP_Flowchart_Master_UID="' + rowData.RP_Flowchart_Master_UID + '" role="button">' + '@T("ME.EquipmentMaintenance")' + '</a>' +
+                                       '<a type="button" class="btn btn-primary btn-sm js-grid-changeHistory" data-Plant_Organization_UID="' + rowData.Plant_Organization_UID + '"  data-BG_Organization_UID="' + rowData.BG_Organization_UID + '" data-Project_UID="' + rowData.Project_UID + '" role="button" data-toggle="modal" data-target="#js_changeHistory_model">' + '@T("ME.MS.SearchChangeHistory")' + '</a>' + "<br>" +
+                                    '</div>');
+                    },
+                    className: "text-center"
+                }, {
+                    data: "BU_D_Name",
+                    className: "min-col-sm"
+                }, {
+                    data: "Project_Name",
+                    className: "min-col-sm"
+                }, {
+                    data: "Part_Types",
+                    className: "min-col-sm"
+                }, {
+                    data: "Product_Phase",
+                    className: "min-col-sm"
+                }, {
+                    data: "Plant_Organization_Name",
+                    className: "min-col-sm"
+                }, {
+                    data: "BG_Organization_Name",
+                    className: "min-col-sm"
+                }, {
+                    data: "Daily_Targetoutput",
+                    className: "min-col-sm"
+                }, {
+                    data: "FPY",
+                    className: "min-col-sm text-center"
+                }, {
+                    data: "FlowChart_Version",
+                    className: "min-col-sm"
+                }, {
+                    data: "FlowChart_Version_Comment",
+                    className: "min-col-sm"
+                }, {
+                    data: "Created_UserName",
+                    className: "min-col-sm"
+                }, {
+                    data: "Created_Date",
+                    className: "min-col-sm"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-sm"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-sm"
+                }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    } else {
+                        return null;
+                    }
+                };
+
+                var _queryME = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ME_datatable",
+                        remoteUrl: MEUrls.QueryMEs,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryME(true);
+                    },
+                    QueryME: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryME(false);
+                    },
+                    SortMEs: function () {
+                        _queryME(false);
+                    }
+                }
+            })();
+
+            /// Search 中的 Query 事件
+            $('#js_btn_query').click(function () {
+                ShowProgressBar();
+                if ($("#js_form_query").valid()) {
+                    QueryME.QueryME(true);
+                    $('#js_search_modal').modal('hide');
+                }
+                HideProgressBar();
+            });
+            //查詢選單清除事件
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            /// View 事件
+            $('body').on('click', '.js-grid-view', function () {
+                var RP_Flowchart_Master_UID = $(this).attr('data-id');
+                BindProcess_d(RP_Flowchart_Master_UID, 1);
+            });
+
+            $('body').on('click', '.js-grid-QueryME_D', function () {
+                var RP_Flowchart_Master_UID = $(this).attr('data-RP_Flowchart_Master_UID');
+                BindProcess_d(RP_Flowchart_Master_UID, 2);
+            });
+
+
+            function BindProcess_d(RP_Flowchart_Master_UID, type) {
+                var tab;
+                if (type == 1) {
+                    tab = $("#js_tb_process_d");
+                } else {
+                    tab = $("#js_tb_process_d_2");
+                }
+                var Columns = [{
+                    data: "Process_Station",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process_Desc",
+                    className: "min-col-xs"
+                }, {
+                    data: "Processing_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Automation_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Processing_Fixtures",
+                    className: "min-col-lg"
+                }, {
+                    data: "Auxiliary_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Equipment_CT",
+                    className: "min-col-lg"
+                }, {
+                    data: "Setup_Time",
+                    className: "min-col-lg"
+                }, {
+                    data: "Total_Cycletime",
+                    className: "min-col-lg"
+                }, {
+                    data: "ME_Estimate_Yield",
+                    className: "min-col-lg"
+                }, {
+                    data: "Manpower_Ratio",
+                    className: "min-col-lg"
+                }, {
+                    data: "Capacity_ByHour",
+                    className: "min-col-lg"
+                }, {
+                    data: "Capacity_ByDay",
+                    className: "min-col-lg"
+                }, {
+                    data: "Equipment_RequstQty",
+                    className: "min-col-lg"
+                }, {
+                    data: "Manpower_2Shift",
+                    className: "min-col-lg"
+                }];
+                $.ajax({
+                    type: "POST",
+                    url: MEUrls.GetME_Ds,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ rP_Flowchart_Master_UID: RP_Flowchart_Master_UID }),
+                    dataType: "json",
+                    success: function (result) {
+                        $("#spBU").text(result[0].BU);
+                        $("#spProject").text(result[0].Project_Name);
+                        $("#spPart_Types").text(result[0].Part_Types);
+                        $("#spPrloduct_Phase").text(result[0].Product_Phase);
+                        tab.DataTable({
+                            columns: Columns,
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            data: result,
+                            destroy: true
+                        });
+                    }
+                });
+            }
+            /// Change History 事件
+            $('body').on('click', '.js-grid-changeHistory', function () {
+                debugger;
+                var Plant_Organization_UID = $(this).attr('data-Plant_Organization_UID');
+                var BG_Organization_UID = $(this).attr('data-BG_Organization_UID');
+                var Project_UID = $(this).attr('data-Project_UID');
+                var Columns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<a tabindex="0" class="btn btn-primary btn-xs" rel="action-popover" role="button"><i class="fa fa-reorder"></i></a>' +
+                                    '<div class="hidden popover-content">' +
+                                       '<a type="button" class="btn btn-primary btn-sm js-grid-QueryME_D" data-RP_Flowchart_Master_UID="' + rowData.RP_Flowchart_Master_UID + '" role="button" data-toggle="modal" data-target="#js_Process_D_modal_2">' + '@T("ME.QueryME_D")' + '</a>' + "<br>" +
+                                    '</div>');
+                    },
+                    className: "text-center"
+                }, {
+                    data: "FlowChart_Version",
+                    className: "min-col-xs"
+                }, {
+                    data: "FlowChart_Version_Comment",
+                    className: "min-col-xs"
+                }, {
+                    data: "Daily_Targetoutput",
+                    className: "min-col-xs"
+                }, {
+                    data: "FPY",
+                    className: "min-col-xs"
+                }, {
+                    data: "Is_Closed",
+                    render: function (data, type, full, meta) {
+                        return data ? "Y" : "N";
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "Created_User_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Created_Date",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_User_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }];
+                $.ajax({
+                    type: "POST",
+                    url: MEUrls.GetME_ChangeHistory,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ plant_Organization_UID: Plant_Organization_UID, bG_Organization_UID: BG_Organization_UID, project_UID: Project_UID }),
+                    dataType: "json",
+                    success: function (result) {
+                        $("#spBU_changeHistory").text(result[0].BU);
+                        $("#spProject_changeHistory").text(result[0].Project_Name);
+                        $("#spPart_Types_changeHistory").text(result[0].Part_Types);
+                        $("#spPrloduct_Phase_changeHistory").text(result[0].Product_Phase);
+                        $("#js_tb_changeHistory").DataTable({
+                            columns: Columns,
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            data: result,
+                            destroy: true
+                        });
+                    }
+                });
+            });
+            /// QueryME_D 事件
+            $('body').on('click', '.js-grid-QueryME_D', function () {
+                var RP_Flowchart_Master_UID = $(this).attr('data-RP_Flowchart_Master_UID');
+                var Columns = [{
+                    data: "Process_Station",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process_Desc",
+                    className: "min-col-xs"
+                }, {
+                    data: "Processing_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Automation_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Processing_Fixtures",
+                    className: "min-col-lg"
+                }, {
+                    data: "Auxiliary_Equipment",
+                    className: "min-col-lg"
+                }, {
+                    data: "Equipment_CT",
+                    className: "min-col-lg"
+                }, {
+                    data: "Setup_Time",
+                    className: "min-col-lg"
+                }, {
+                    data: "Total_Cycletime",
+                    className: "min-col-lg"
+                }, {
+                    data: "ME_Estimate_Yield",
+                    className: "min-col-lg"
+                }, {
+                    data: "Manpower_Ratio",
+                    className: "min-col-lg"
+                }, {
+                    data: "Capacity_ByHour",
+                    className: "min-col-lg"
+                }, {
+                    data: "Capacity_ByDay",
+                    className: "min-col-lg"
+                }, {
+                    data: "Equipment_RequstQty",
+                    className: "min-col-lg"
+                }, {
+                    data: "Manpower_2Shift",
+                    className: "min-col-lg"
+                }];
+                $.ajax({
+                    type: "POST",
+                    url: MEUrls.GetME_Ds,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ rP_Flowchart_Master_UID: RP_Flowchart_Master_UID }),
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.length > 0) {
+                            $("#js_tb_process_d_2").attr("style", "display:");
+                            $("#js_tb_process_d_2").focus();
+                        } else {
+                            $("#js_tb_process_d_2").attr("style", "display:none");
+                        }
+                        $("#js_tb_process_d_2").DataTable({
+                            columns: Columns,
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            data: result,
+                            destroy: true
+                        });
+                    }
+                });
+            });
+
+            /// Equipment Maintenance 事件
+            $('body').on('click', '.js-grid-EquipmentMaintenance', function () {
+                var RP_Flowchart_Master_UID = $(this).attr('data-RP_Flowchart_Master_UID');
+                window.location.href = '@Url.Action("ProductionPlanMe_Equipment", "ProductionResourcePlan")?RP_Flowchart_Master_UID=' + RP_Flowchart_Master_UID;
+            });
+
+            //#region Excel 資料匯入
+            $('#js_btn_import_fl').on('click', function () {
+                $("#hid_key").val(0);
+                $('#js_import_modal').modal('hide');
+                $.blockUI({ message: "<h1>Loading...</h1>" });
+                $('#js_form_excel_add').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var input1 = $('#js_s_input_upload').val();
+                        var input2 = $('#js_s_input_version_comment').val();
+                        if (input1 == '') {
+                            PDMS.Utility.MessageBox.info('@T("ME.MS.SelDocForExcel")');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (input2 == '') {
+                            PDMS.Utility.MessageBox.info('@T("ME.MS.SelVersionComments")');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (input1 == '' || input2 == '') {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('@T("ME.MS.Importsuccessful")');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

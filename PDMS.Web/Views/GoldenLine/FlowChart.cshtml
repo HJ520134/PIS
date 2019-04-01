@@ -1,0 +1,354 @@
+﻿@model PDMS.Model.EntityDTO.GL_LineDTO
+
+<section class="content portal-content">
+    <form class="form-inline" id="myToolbar">
+        <h4 class="margin-td-5">@Model.System_Project.Project_Name @Model.LineName  @Model.Phase - Flow Chart</h4>
+        <div class="form-group">
+            <button type="button" class="btn btn-default btn-sm" name="Back">@T("Common.Back")</button>
+            <button type="button" class="btn btn-primary btn-sm" name="Add">@T("Common.AddNew")</button>
+            <button type="button" class="btn btn-primary btn-sm" name="FileUpload">@T("Common.UploadExcel")</button>
+            <a href="../ExcelTemplate/GoldenLine_FlowChart.xlsx" role="button" class="btn btn-primary btn-sm" name="Template">@T("QA.Templatedownload")</a>
+        </div>
+    </form>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_line_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">Number</th>
+                        <th>@T("Common.Seq")</th>
+                        <th>Station Name</th>
+                        <th>MES Station Name</th>
+                        <th>IE Cycle Time</th>
+                        <th>IsBirth</th>
+                        <th>IsOutput</th>
+                        <th>IsTest</th>
+                        <th>IsMES</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div>
+    </div>
+</section>
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain BU Detail</h4>
+                </div>
+                @using (Html.BeginForm("AddOrUpdateGLStation", "GoldenLine", FormMethod.Post))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="StationName" placeholder="StationName"
+                                           required data-msg-required="Station Name is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">MES Station Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" name="MESStationName">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Binding Seq</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="Binding_Seq" placeholder="Binding Seq"
+                                           required data-msg-required="Binding Seq ">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Cycle Time</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="CycleTime" placeholder="CycleTime"
+                                           required data-msg-required="Cycle Time is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Seq</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" name="Seq" placeholder="Seq"
+                                           required data-msg-required="Seq is blank or missing">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Birth</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" value="true" name="IsBirth">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Output</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" value="true" name="IsOutput">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is Test</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" value="true" name="IsTest">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">Is MES</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" value="true" name="IsOne">
+                                </div>
+                            </div>
+                            <input type="hidden" name="StationID" value="0" />
+                            <input type="hidden" name="Plant_Organization_UID" value="@Model.Plant_Organization_UID" />
+                            <input type="hidden" name="BG_Organization_UID" value="@Model.BG_Organization_UID" />
+                            <input type="hidden" name="FunPlant_Organization_UID" value="@Model.FunPlant_Organization_UID" />
+                            <input type="hidden" name="LineID" value="@Model.LineID" />
+                            <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                            <input type="hidden" name="isEdit" value="false" />
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                        <button type="submit" class="btn btn-primary btn-sm" name="Create"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                        <button type="submit" class="btn btn-primary btn-sm" name="Update"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">File Upload</h4>
+                </div>
+                @using (Html.BeginForm("UploadFlowChartFile", "GoldenLine", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">Select an Excel file</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="uploadfile" placeholder="ExcelFile"
+                                       required data-msg-required="Please select an Excel file" />
+                                <input type="hidden" name="Plant_Organization_UID" value="@Model.Plant_Organization_UID" />
+                                <input type="hidden" name="BG_Organization_UID" value="@Model.BG_Organization_UID" />
+                                <input type="hidden" name="FunPlant_Organization_UID" value="@Model.FunPlant_Organization_UID" />
+                                <input type="hidden" name="LineID" value="@Model.LineID" />
+                                <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>@T("Common.Cancel")</button>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i>@T("QA.Submit")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var dataSource = (function () {
+                var urls = {
+                    getStations: '@Url.Action("GetStation", "GoldenLine")',
+                    getStationsByID: '@Url.Action("GetStationByID", "GoldenLine")',
+                    removeStationByID: '@Url.Action("RemoveStationByID", "GoldenLine")'
+                }
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.StationID + '">Edit</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.StationID + '">Delete</button>' +
+                                '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            $(td).html(result);
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        className: "table-col-seq"
+                    }, {
+                        data: 'Seq',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'StationName',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'MESStationName',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'CycleTime',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'IsBirth',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "IsOutput",
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'IsTest',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, 
+                    {
+                        data: 'IsOne',
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "min-col-xs text-center"
+                    }, 
+                    {
+                        data: 'System_Users.User_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs text-center"
+                    }]
+                var getStations = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_line_datatable",
+                        searchParams: { LineID: @Model.LineID},
+                        remoteUrl: urls.getStations,
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        getStations();
+                        $(".text-center").removeClass("sorting");
+                        $('.text-center').removeAttr('onclick');
+                    },
+                    getStations: function () {
+                        $('#page').page('destroy');
+                        getStations();
+                    }
+                }
+            })();
+            dataSource.Init();
+            // add button click event - grid row edit
+            $('body').on('click', '.js-grid-edit', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.getStationsByID;
+                if (id) {
+                    var form = $('#js_edit_modal');
+                    $.post(url, { id: id }, function (data) {
+                        if (data) {
+                            data.isEdit = true;
+                            $('#js_edit_modal').data('entity', data).modal('show', $(this));
+                        }
+                    });
+                }
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.removeStationByID;
+                if (id) {
+                    PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                        $.post(url, { id: id }, function (data) {
+                            if (data && data.Result)
+                                dataSource.getStations();
+                            else
+                                PDMS.Utility.MessageBox.error("Remove Failed!");
+                        });
+                    });
+                }
+            });
+            // add button click event
+            $('#myToolbar button').click(function () {
+                switch ($(this)[0].name) {
+                    case 'Back':
+                        window.location.href = '@Url.Action("LineSetup", "GoldenLine")';
+                        break;
+                    case 'Add':
+                        $('#js_edit_modal').data('entity', { isEdit: false }).modal('show', $(this));
+                        break;
+                    case 'FileUpload':
+                        $('#js_importExcel_modal').modal('show', $(this));
+                        break;
+                }
+            });
+        });
+        // modal event
+        $(function () {
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var form = $('#js_edit_modal');
+                var btn1 = form.find('button[name=Create]');
+                var btn2 = form.find('button[name=Update]');
+                data = form.data('entity');
+                // set value to form
+                form.find('input[name=Seq]').val(data.Seq);
+                form.find('input[name=StationID]').val(data.StationID);
+                form.find('input[name=StationName]').val(data.StationName);
+                form.find('input[name=MESStationName]').val(data.MESStationName);
+                form.find('input[name=CycleTime]').val(data.CycleTime);
+                if (data.IsBirth)
+                    form.find('input[name=IsBirth]').prop("checked", true);
+                if (data.IsOutput)
+                    form.find('input[name=IsOutput]').prop("checked", true);
+                if (data.IsTest)
+                    form.find('input[name=IsTest]').prop("checked", true);
+                if (data.IsOne)
+                    form.find('input[name=IsOne]').prop("checked", true);
+                // change mode
+                if (data.isEdit) {
+                    form.find(".modal-title").html('Update FlowChart');
+                    btn1.hide();
+                    btn2.show();
+                } else {
+                    form.find(".modal-title").html('Create FlowChart');
+                    btn1.show();
+                    btn2.hide();
+                }
+            });
+            $('#js_edit_modal').on('hide.bs.modal', function (event) {
+                $(this).find('form')[0].reset();
+            });
+            $('#js_importExcel_modal').on('show.bs.modal', function (event) {
+
+            });
+            $('#js_importExcel_modal').on('hide.bs.modal', function (event) {
+                $(this).find('form')[0].reset();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,408 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i>Search</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_user_role">
+                <i class="fa fa-plus"></i> Add
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_role_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Project</th>
+                        <th>Project Types</th>
+                        <th>Process</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>Project</th>
+                        <th>Project Types</th>
+                        <th>Process</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_s_search_project">专案</label>
+                                    <div class="col-sm-8">
+                                        <select type="text" class="form-control input-sm" id="js_s_search_project" name="Project"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label" for="js_s_search_part_types">Part_Types</label>
+                                    <div class="col-sm-8">
+                                        <select type="text" class="form-control input-sm" id="js_s_search_part_types" name="partTypes"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i>Clear</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i>Query</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">关键制程设定</h4>
+                </div>
+                <form id='js_form_user_role_edit'>
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">专案</label>
+                                <div class="col-sm-7">
+                                    <select type="text" class="form-control input-sm" id="js_s_input_project" name="Project"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_part_types">部件</label>
+                                <div class="col-sm-7">
+                                    <select type="text" class="form-control input-sm" id="js_s_input_part_types" name="partTypes"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-5 control-label" for="js_select_process_id">制程</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_process_id" name="Process"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_keyProcess"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var KeyProcessSetting = (function () {
+                var urls = {
+                    QueryProject: '@Url.Action("GetOpenProject", "EventReportManager")',
+                    QueryProjectTypes: '@Url.Action("QueryProjectTypes", "Settings")',
+                    QueryProcessByFlowchartMasterUid: '@Url.Action("QueryProcessByFlowchartMasterUid", "Settings")',
+                    DeleteKeyProcess: '@Url.Action("DeleteKeyProcess", "Settings")',
+                    AddKeyProcess: '@Url.Action("AddKeyProcess", "Settings")',
+                    GetEnumNameForKeyProcess: '@Url.Action("GetEnumNameForKeyProcess", "Settings")',
+                    QueryEnumkeyProcess: '@Url.Action("QueryEnumkeyProcess", "Settings")'
+
+                };
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Enum_UID + '">Delete</button>' +
+                                    '</div>');
+                    },
+                    className: "text-center"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                },
+                    {
+                        data: "Decription",
+                        className: "min-col-xs"
+                    },
+                {
+                    data: "Enum_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Enum_Value",
+                    className: "min-col-xs"
+                }];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _queryUserRoles = function (firstLoad) {
+
+                    var config1 = {
+                        pageId: "#page",
+                        tableId: "#js_user_role_datatable",
+                        remoteUrl: urls.QueryEnumkeyProcess,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_user_role_datatable",
+                        remoteUrl: urls.QueryEnumkeyProcess,
+
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                        PDMS.Utility.Pages.Set(config1);
+                    }
+                    else
+                    {
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryUserRoles(true);
+                    },
+                    QueryUserRoles: function () {
+                        _queryUserRoles(false);
+                    }
+                }
+            })();
+
+
+            KeyProcessSetting.Init();
+
+          //  GetEnumNameForKeyProcess();
+            GetProject();
+            $("#js_s_input_part_types").change(function ff() {
+                GetProcess();
+            });
+
+            //获取下拉框专案
+            function GetProject() {
+                $("#js_s_input_project").empty();
+                $("#js_s_search_project").empty();
+                $.post(KeyProcessSetting.urls.QueryProject, function (data) {
+                    if (data != "") {
+                        //添加空的选择框
+                        $("<option></option>")
+                            .val("Nothing")
+                            .text("")
+                            .appendTo($("#js_s_input_project"));
+                        $("<option></option>")
+                         .val("Nothing")
+                         .text("")
+                         .appendTo($("#js_s_search_project"));
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_project"));
+                        });
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_search_project"));
+                        });
+                    }
+                });
+                //如果Project列表不为0，则继续加载下级联动
+
+                    GetPartTypes();
+
+            }
+
+            $('#js_s_input_project').on('change', function (e) {
+
+                GetPartTypes();
+            });
+            $('#js_s_search_project').on('change', function (e) {
+
+                GetSearchPartTypes();
+            });
+            function GetPartTypes() {
+                $("#js_s_input_part_types").empty();
+                var Project = $("#js_s_input_project").val();
+                $.post(KeyProcessSetting.urls.QueryProjectTypes, { "Project": Project }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.FlowChart_Master_UID)
+                                .text(item.Part_Types)
+                                .appendTo($("#js_s_input_part_types"));
+                        });
+                        GetProcess();
+                    }
+                });
+            }
+
+            function GetSearchPartTypes() {
+                $("#js_s_search_part_types").empty();
+                var Project = $("#js_s_search_project").val();
+                $.post(KeyProcessSetting.urls.QueryProjectTypes, { "Project": Project }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Part_Types)
+                                .text(item.Part_Types)
+                                .appendTo($("#js_s_search_part_types"));
+                        });
+
+                    }
+                });
+            }
+            //function GetEnumNameForKeyProcess() {
+            //    $("#js_s_input_PartTypes").empty();
+            //    $.post(KeyProcessSetting.urls.GetEnumNameForKeyProcess, function (data) {
+            //        if (data != "") {
+            //            $.each(data, function (i, item) {
+            //                $("<option></option>")
+            //                    .val(item)
+            //                    .text(item)
+            //                    .appendTo($("#js_s_input_PartTypes"));
+            //            });
+            //        }
+            //    });
+            //}
+
+            function GetProcess() {
+                $("#js_select_process_id").empty();
+                var tempFlowchartMasterUid = $("#js_s_input_part_types").val();
+                $.post(KeyProcessSetting.urls.QueryProcessByFlowchartMasterUid, { "flowchartMasterUId": tempFlowchartMasterUid }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_select_process_id"));
+                        });
+                    }
+                });
+            }
+
+            $("#js_btn_save_new_keyProcess").on('click', function () {
+                $.post(
+                    KeyProcessSetting.urls.AddKeyProcess,
+                    { Project: $('#js_s_input_project').val(), partTypes: $('#js_s_input_part_types option:selected').text(), process: $('#js_select_process_id').val() },
+                    function (data) {
+                        if (data == "SUCCESS") {
+                            PDMS.Utility.MessageBox.info("Save Success");
+                            $('#js_s_input_part_types').val('');
+                            $('#js_select_process_id').val('');
+                        }
+                    })
+            });
+
+
+            //尋找按鈕
+            $('#js_btn_query').click(function () {
+
+                if ($("#js_form_query").valid()) {
+                    KeyProcessSetting.QueryUserRoles();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_user_role_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uruids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = KeyProcessSetting.urls.exportUserRoles;
+                    url += "?uruids=" + uruids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //clear query conditions按钮
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //hidden清空事件
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_input_user_ntid').val('');
+                $('#js_input_user_name').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //Grid中Delete按钮
+            $('body').on('click', '.js-grid-delete', function () {
+                var uruid = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm(
+                    "Are you sure to delete this item?"
+                    , function () {
+                        var url = KeyProcessSetting.urls.DeleteKeyProcess;
+                        $.post(url, { Enum_UID: uruid }, function (data) {
+                            if (data != 'FAIL') {
+                                KeyProcessSetting.QueryUserRoles(true);
+                            }
+                            else {
+                                PDMS.Utility.MessageBox.error("User already role assigned!");
+                            }
+                        });
+                    });
+            });
+        });
+
+    </script>
+}

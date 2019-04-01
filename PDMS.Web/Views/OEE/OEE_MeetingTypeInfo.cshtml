@@ -1,0 +1,781 @@
+﻿
+@model PDMS.Model.ViewModels.Fixture_DefectCodeVM
+
+@{
+    ViewBag.OEE_AddMachine = "新增会议基本信息";
+    ViewBag.OEE_UpdateMachine = "编辑会议基本信息";
+}
+<!-- Main content -->
+@*<section class="content-header portal-content-header">
+        <h1>@T("OEE.HomeMachineMaintence")</h1>
+    </section>*@
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <div class="col-md-12 search-field col-lg-12">
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_oee_Machine"> @T("Common.AddNew")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_OEE_Machine_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>会议ID</th>
+                        <th>会议名称</th>
+                        <th>修改人</th>
+                        <th>修改时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>会议ID</th>
+                        <th>会议名称</th>
+                        <th>修改人</th>
+                        <th>修改时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div>
+    </div>
+
+</section>
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">@T("QA.Plantarea")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">@T("QA.OPType")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">@T("QA.Functionfactory")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Project_UID_query">会议ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MeetingType_ID" maxlength="20" class="form-control input-sm" id="js_select_MeetingType_ID_query" placeholder="@T("OEE.MeetingType_ID")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_LineID_query">会议名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MeetingType_Name"  maxlength="50" class="form-control input-sm" id="js_select_MeetingType_Name_query" placeholder="@T("OEE.MeetingType_Name")">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--新增/编辑-->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain OEE__Machine</h4>
+                </div>
+                @using (Html.BeginForm("AddOEE_MeetingTypeInfo", "OEE", FormMethod.Post, new { id = "js_form_OEE_Machine_edit" }))
+                {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_edit_form_query" data-need-validate="true">
+                            <input type="hidden" name="MeetingType_UID" id="js_hidden_MeetingType_UID" value="0" />
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_edit_factory_query">@T("QA.Plantarea")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_edit_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.Plants)
+                                                {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                                }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_edit_optype_query">@T("QA.OPType")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_edit_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_edit_funplant_query">@T("QA.Functionfactory")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_edit_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_edit_MeetingType_ID">会议ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MeetingType_ID" maxlength="20"  class="form-control input-sm" id="js_edit_MeetingType_ID" placeholder="@T("OEE.MeetingType_ID")">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_edit_MeetingType_Name">会议名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="MeetingType_Name" maxlength="50" class="form-control input-sm" id="js_edit_MeetingType_Name" placeholder="@T("OEE.MeetingType_Name")">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_Machine"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_Machine"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+
+        $(function () {
+            var OEE_MeetTypeMaintain = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        QueryOEE_MeetingTypeInfo: '@Url.Action("QueryOEE_MeetingTypeInfo", "OEE")',
+                        AddOEE_MeetingTypeInfo: '@Url.Action("AddOEE_MeetingTypeInfo", "OEE")',
+                        DeleteOEE_MeetingTypeInfo: '@Url.Action("DeleteOEE_MeetingTypeInfo", "OEE")',
+                        UpdateOEE_MeetingTypeInfo: '@Url.Action("UpdateOEE_MeetingTypeInfo", "OEE")',
+                        GetOEE_MeetingTypeInfoById: '@Url.Action("GetOEE_MeetingTypeInfoById", "OEE")',
+
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+
+                        //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                        getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+
+                        //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                        getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+
+                        //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                        getLineDTOs: '@Url.Action("GetLineDTOs", "OEE")',
+
+                        //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                        getStationDTOs: '@Url.Action("GetStationDTOs", "OEE")',
+                    };
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.MeetingType_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">';
+
+                            var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.MeetingType_UID + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.MeetingType_UID + '">删除</button>' +
+                                        '</div>';
+                            var resultHtml = hiddenHtml + buttonHtml;
+                            $(td).html(resultHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Plant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BG_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Organization_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "MeetingType_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "MeetingType_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_UID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _OEE_MeetTypeMaintain = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_OEE_Machine_datatable",
+                        remoteUrl: urls.QueryOEE_MeetingTypeInfo,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _OEE_MeetTypeMaintain(true);
+                    },
+
+                    OEE_MeetTypeMaintain: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _OEE_MeetTypeMaintain(false);
+                    }
+                }
+
+            })();
+            OEE_MeetTypeMaintain.Init();
+
+            $('#js_edit_factory_query').change(function () {
+                GetEditOPTypes();
+            });
+
+            function GetEditOPTypes() {
+                var oporgid = $('#js_edit_factory_query option:selected').val();
+                url = OEE_MeetTypeMaintain.urls.getCurrentOPType;
+                $('#js_edit_optype_query').empty();
+                $('#js_edit_optype_query').html('<option></option>');
+                $('#js_edit_optype_query').selectpicker('refresh');
+                $('#js_edit_funplant_query').empty();
+                $('#js_edit_funplant_query').html('<option></option>');
+                $('#js_edit_funplant_query').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_edit_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_edit_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                        $('#js_edit_optype_query').selectpicker('refresh');
+                    });
+                }
+            }
+
+            //OP类型变更
+            $('#js_edit_optype_query').change(function () {
+                refresheditFuncPlantSelect();
+            })
+
+            //加载功能厂
+            function refresheditFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = OEE_MeetTypeMaintain.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                    $('#js_select_funplant_query').selectpicker('refresh');
+                });
+            }
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = OEE_MeetTypeMaintain.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                        $('#js_select_optype_query').selectpicker('refresh');
+                    });
+                }
+            }
+
+            //OP类型变更
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+            })
+
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = OEE_MeetTypeMaintain.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                    $('#js_select_funplant_query').selectpicker('refresh');
+                });
+            }
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    OEE_MeetTypeMaintain.OEE_MeetTypeMaintain(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_OEE_Machine_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = OEE_MeetTypeMaintain.urls.ExportOEE_MachineByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = OEE_MeetTypeMaintain.urls.ExportOEE_Machine;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+            $('#js_form_OEE_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //清空
+            $('#js_btn_clear').click(function () {
+                //清楚下拉选项的值
+                $("#js_search_modal").find("option:selected").attr("selected", false);;
+                $("#js_search_modal").selectpicker('refresh');
+                PDMS.Utility.Criteria.Clear();//清楚文本框的值
+            });
+
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+                if (button.hasClass('js-grid-edit')) {
+                    //编辑
+                    title.text("@ViewBag.OEE_UpdateMachine");
+                    $("#js_hidden_edit_id").val(0);
+                    $('#js_btn_save_new_Machine').hide();
+                    $('#js_btn_save_edit_Machine').show();
+                    var uid = button.attr("data-id");
+                    //调api 获取异常信息，填充到编辑画面
+                    $.get(OEE_MeetTypeMaintain.urls.GetOEE_MeetingTypeInfoById, { uid: uid }, function (data) {
+                        $('#js_hidden_MeetingType_UID').val(uid);
+
+                        $('#js_edit_factory_query').selectpicker('val', data.Plant_Organization_UID);
+                        $("#js_edit_factory_query").trigger("liszt:updated");
+                        if (data.Plant_Organization_UID != 0) {
+                            $('#js_edit_factory_query').trigger('change');
+                        }
+
+                        $('#js_edit_optype_query').selectpicker('val', data.BG_Organization_UID);
+                        $("#js_edit_optype_query").trigger("liszt:updated");
+                        if (data.BG_Organization_UID != 0) {
+                            $('#js_edit_optype_query').trigger('change');
+                        }
+                        $('#js_edit_funplant_query').selectpicker('val', data.FunPlant_Organization_UID);
+                        $("#js_edit_funplant_query").trigger("liszt:updated");
+
+                        $('#js_edit_MeetingType_ID').val(data.MeetingType_ID);
+                        $('#js_edit_MeetingType_Name').val(data.MeetingType_Name);
+                    });
+                } else if (button.attr('id') == 'js_btn_add_oee_Machine') {
+                    //新增
+                    title.text("@ViewBag.OEE_AddMachine");
+                    $('#js_btn_save_new_Machine').show();
+                    $('#js_btn_save_edit_Machine').hide();
+                }
+            })
+
+            //修改界面
+            //$('#js_edit_factory_query').change(function () {
+            //    GeteditOPTypes();
+            //})
+            function GeteditOPTypes() {
+                var oporgid = $('#js_edit_factory_query option:selected').val();
+                url = OEE_MeetTypeMaintain.urls.getCurrentOPType;
+                $('#js_edit_optype_query').empty();
+                $('#js_edit_optype_query').html('<option></option>');
+                $('#js_edit_optype_query').selectpicker('refresh');
+                $('#js_edit_funplant_query').empty();
+                $('#js_edit_funplant_query').html('<option></option>');
+                $('#js_edit_funplant_query').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            //if ($('#js_edit_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            //    $('#js_edit_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            //}
+                            $('#js_edit_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+            }
+
+            //OP类型变更
+            $('#js_edit_optype_query').change(function () {
+                refresheditFuncPlantSelect();
+            })
+
+            //加载功能厂
+            function refresheditFuncPlantSelect() {
+                $('#js_edit_funplant_query').empty();
+                $('#js_edit_funplant_query').html('<option></option>');
+                var url = OEE_MeetTypeMaintain.urls.getFunPlantByOPTypes;
+                var optypeUid = $('#js_edit_optype_query option:selected').val();
+                $.post(url, { Optype: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_edit_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                $('#js_edit_funplant_query').selectpicker('refresh');
+            }
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+            //删除
+            $('body').on('click', '.js-grid-delete', function () {
+                var uid = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm(
+                    "删除确认"
+                    , function () {
+                        var url = OEE_MeetTypeMaintain.urls.DeleteOEE_MeetingTypeInfo;
+                        $.post(url, { meetingTypeInfo_UID: uid }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("删除成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else if (data == 'HAVEREFERENCE') {
+                                PDMS.Utility.MessageBox.error("异常已在使用，不可删除!");
+                            } else {
+                                PDMS.Utility.MessageBox.error("Error:" + data);
+                            }
+                        });
+                    });
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+            })
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                var url = OEE_MeetTypeMaintain.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+
+                if ($('#js_select_optype_query option:selected').text() != "") {
+                    $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    })
+                }
+            })
+
+            //修改按钮
+            $("#js_btn_save_edit_Machine").click('click', function () {
+
+                //验证栏位
+                if ($('#js_edit_factory_query option:selected').val() == "" || $('#js_edit_factory_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+                if ($('#js_edit_optype_query').val() == "" || $('#js_edit_optype_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置BG");
+                    return false;
+                }
+                if ($('#js_edit_funplant_query').val() == "" || $('#js_edit_funplant_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置功能厂");
+                    return false;
+                }
+
+                if ($('#js_edit_MeetingType_ID').val() == "" || $('#js_edit_MeetingType_ID').val() == null) {
+                    PDMS.Utility.MessageBox.error("请设置会议的ID");
+                    return false;
+                }
+
+                if ($('#js_edit_MeetingType_Name').val() == "" || $('#js_edit_MeetingType_Name').val() == null) {
+                    PDMS.Utility.MessageBox.error("请设置会议的名称");
+                    return false;
+                }
+
+                var editform = $('#js_form_OEE_Machine_edit');
+                var uid = $(this).attr('data-id');
+                if (editform.valid()) {
+                    var _getParams = function () {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_edit_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_edit_form_query').serialize().replace(/\+/g, " ");
+                    };
+                    var options = {
+                        url: OEE_MeetTypeMaintain.urls.UpdateOEE_MeetingTypeInfo,
+                        type: 'post',
+                        searchParams: _getParams(),
+                        success: function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("修改会议基本信息成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //新增按钮
+            $("#js_btn_save_new_Machine").click('click', function () {
+                //验证栏位
+                if ($('#js_edit_factory_query option:selected').val() == "" || $('#js_edit_factory_query option:selected').val() == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+                if ($('#js_edit_optype_query').val() == "" || $('#js_edit_optype_query').val() == null) {
+                    PDMS.Utility.MessageBox.error("请在设备模组中设置BG");
+                    return false;
+                }
+                //if ($('#js_edit_funplant_query').val() == "" || $('#js_edit_funplant_query').val() == null) {
+                //    PDMS.Utility.MessageBox.error("请在设备模组中设置功能厂");
+                //    return false;
+                //}
+
+                if ($('#js_edit_MeetingType_ID').val() == "" || $('#js_edit_MeetingType_ID').val() == null) {
+                    PDMS.Utility.MessageBox.error("请设置会议的ID");
+                    return false;
+                }
+                if ($('#js_edit_MeetingType_Name').val() == "" || $('#js_edit_MeetingType_Name').val() == null) {
+                    PDMS.Utility.MessageBox.error("请设置会议的名称");
+                    return false;
+                }
+                var editform = $('#js_form_OEE_Machine_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: OEE_MeetTypeMaintain.urls.AddOEE_MeetingTypeInfo,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("新增会议信息成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //显示修改的界面
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+            });
+            //模板下载
+            $('#js_btn_download_fl').on('click', function () {
+                this.form.action = OEE_MeetTypeMaintain.urls.downloadExcel;
+                $('#js_form_excel_add').submit();
+            });
+            //导入提交
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data == "SUCCESS") {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@T("QA.Importsuccessful")', function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.error(data);
+
+                        }
+                    }
+                });
+            });
+
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+
+            //Form Validate
+            $('#js_form_OEE_Machine_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+        });
+    </script>
+}

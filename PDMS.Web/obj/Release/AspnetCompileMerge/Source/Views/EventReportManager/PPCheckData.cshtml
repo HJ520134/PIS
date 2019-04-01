@@ -1,0 +1,1455 @@
+﻿@{
+    ViewBag.ModifyWIP = T("FlowChart.ModifyWIP").Text;
+    ViewBag.checkDataInfo1 = T("FlowChart.checkDataInfo1").Text;
+    ViewBag.checkDataInfo2 = T("FlowChart.checkDataInfo2").Text;
+    ViewBag.checkDataInfo3 = T("FlowChart.checkDataInfo3").Text;
+    ViewBag.checkDataInfo4 = T("FlowChart.checkDataInfo4").Text;
+    ViewBag.checkDataInfo5 = T("FlowChart.checkDataInfo5").Text;
+    ViewBag.checkDataInfo6 = T("FlowChart.checkDataInfo6").Text;
+    ViewBag.checkDataInfo7 = T("FlowChart.checkDataInfo7").Text;
+    ViewBag.checkDataInfo8 = T("FlowChart.checkDataInfo8").Text;
+    ViewBag.checkDataInfo9 = T("FlowChart.checkDataInfo9").Text;
+    ViewBag.checkDataInfo10 = T("FlowChart.checkDataInfo10").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.Out = T("FlowChart.Out").Text;
+    ViewBag.Out = T("FlowChart.In").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PPConfirm = T("FlowChart.PPConfirm").Text;
+    ViewBag.CurDate = T("FlowChart.CurDate").Text;
+    ViewBag.CurTime = T("FlowChart.CurTime").Text;
+    ViewBag.Info1 = T("FlowChart.Info1").Text;
+    ViewBag.Info2 = T("FlowChart.Info2").Text;
+    ViewBag.Info3 = T("FlowChart.Info3").Text;
+    ViewBag.Interger = T("FlowChart.Interger").Text;
+}
+<!-- Main content -->
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+</style>
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-2" id="js_save_status_div">
+                <h4 class="margin-td-5" id="js_save_status"></h4>
+            </div>
+            <div class="col-md-12 col-lg-10"></div>
+        </div>
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("Common.Search")</a>
+            &nbsp; &nbsp; &nbsp; <a id="btn_export" class="btn btn-default btn-sm" role="button"><i class="glyphicon glyphicon-save"></i> @T("Common.Export")</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px; margin-bottom: 10px">
+        <div class="col-lg-6">
+            <label>@T("Common.Date"):</label><label id="js_datetime"></label> <label>@T("QA.Timeperiod"):</label><label id="js_time_interval"></label> <label>@T("FlowChart.PassRate"): </label><label id="js_process_first_pass_yield"></label>
+        </div>
+        <div class="col-lg-2" id="IsShowSyncButton" hidden="hidden">
+            &nbsp; &nbsp; &nbsp;   <button class="btn btn-primary btn-sm js_btn_synchronize" data-toggle="modal" id="js_btn_synchronize" style="float: right"><i class="fa fa-save"></i>数据同步</button>
+            @*<button id="js_send_email">发送邮件</button>*@
+            <input type="hidden" id="Is_Synchronize" value="0" />
+        </div>
+        <div class="col-lg-2">
+            &nbsp; &nbsp; &nbsp;   <button class="btn btn-primary btn-sm js_btn_save_new" data-toggle="modal" id="js_btn_save_new" style="float: right"><i class="fa fa-save"></i>快速保存</button>
+            @*<button id="js_send_email">发送邮件</button>*@
+            <input type="hidden" id="ForceSave" value="0" />
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-primary btn-sm" data-toggle="modal" id="js_btn_save" style="float: right"><i class="fa fa-save"></i>@T("Common.Save")</button>
+        </div>
+
+    </div>
+    <div id="div_table" class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_ppcheckdata_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.ZhuGuan")</th>
+                        <th>@T("Production.TargetYield")</th>
+                        <th>@T("FlowChart.Plan")</th>
+                        <th>@T("FlowChart.RollingPlan")</th>
+                        <th>@T("FlowChart.lingliao")</th>
+                        <th>@T("FlowChart.lingliaoCK")</th>
+                        <th>@T("QA.Goodnumber")</th>
+                        <th>@T("FlowChart.tiaoji")</th>
+                        <th>@T("QA.Numberwarehouses")</th>
+                        <th>@T("QA.NG")</th>
+                        <th>@T("FlowChart.Dacheng")</th>
+                        <th>未达成原因</th>
+                        <th>@T("FlowChart.Final")</th>
+                        <th>@T("FlowChart.TotalWIP")</th>
+                        <th>@T("FlowChart.notWIP")</th>
+                        <th>@T("FlowChart.WIP")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.ZhuGuan")</th>
+                        <th>@T("Production.TargetYield")</th>
+                        <th>@T("FlowChart.Plan")</th>
+                        <th>@T("FlowChart.RollingPlan")</th>
+                        <th>@T("FlowChart.lingliao")</th>
+                        <th>@T("FlowChart.lingliaoCK")</th>
+                        <th>@T("QA.Goodnumber")</th>
+                        <th>@T("FlowChart.tiaoji")</th>
+                        <th>@T("QA.Numberwarehouses")</th>
+                        <th>@T("QA.NG")</th>
+                        <th>@T("FlowChart.Dacheng")</th>
+                        <th>未达成原因</th>
+                        <th>@T("FlowChart.Final")</th>
+                        <th>@T("FlowChart.TotalWIP")</th>
+                        <th>@T("FlowChart.notWIP")</th>
+                        <th>@T("FlowChart.WIP")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="margin-left">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_customer">@T("QA.Client")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_customer" name="Customer"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_project" name="Project"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="OP" class="form-control input-sm" id="js_s_input_OP">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_part_types">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_part_types" name="Part_Types"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                                </div>
+                            </div>
+                            <div style="display: none" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("Common.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Reference_Date" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: none" class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7 ">
+                                    <select multiple="multiple" size="2" class="form-control input-sm" id="js_s_input_interval_time" name="Interval_Time"></select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" class="btn btn-primary ">@T("FlowChart.check")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="@T("Common.Close")"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.ModifyWIP")</h4>
+                </div>
+                <form id="js_form_wip_edit" class="form-horizontal clearfix">
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="Product_UID" id="js_hidden_product_uid" value="0" />
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_now_wip">@T("FlowChart.CurrentWIP")</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm" id="js_input_now_wip" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_add_wip">@T("FlowChart.jiajianWIP")</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm required" id="js_input_add_wip" name="Addwip" placeholder="@T("FlowChart.jiajianWIPInfo1")"
+                                               required data-msg-required="@T("FlowChart.jiajianWIPInfo2")"
+                                               data-rule-maxlength="50" data-msg-maxlength="Please enter no more than {0} characters in Location.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_comment">@T("Production.Remark")</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-sm required" id="js_input_comment" name="Comment" placeholder="@T("FlowChart.Note1")"
+                                               required data-msg-required="@T("FlowChart.Note2")">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="div_nullwip" class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_input_NullWIP_QTY">@T("FlowChart.notWIP")</label>
+                                    <div class="col-sm-7">
+                                        <input type="number" class="form-control input-sm required needint" id="js_input_NullWIP_QTY" name="NullWIP_QTY">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12">
+                                <ul class="list-group validate-error"></ul>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_wip"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 确认是否保存资料模态框（Modal） -->
+    <div class="modal fade " id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">@T("FlowChart.SaveInfo")</h4>
+                </div>
+                <div class="modal-body" id="js_funcplant_modal"></div>
+                <div class="row">
+                    <!--表格-->
+                    <div class="col-md-12 table-container">
+                        <table class="table table-striped table-hover table-condensed nowrap" id="js_error_datatable">
+                            <thead>
+                                <tr>
+                                    <th>@T("Production.Process_Seq")</th>
+                                    <th>@T("QA.Process")</th>
+                                    <th>颜色</th>
+                                    <th>楼栋</th>
+                                    <th>@T("QA.Functionfactory")</th>
+                                    <th>@T("FlowChart.FunPlantInfo")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div id="page1" class="row"></div>
+
+                    </div><!--/表格-->
+                </div><!-- / 內容 表格列 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#js_save_data_modal">
+                        @T("FlowChart.SaveInfo")
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认是否保存资料模态框（Modal） -->
+    <div class="modal fade modal-warning modal-bgfff" id="js_save_data_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="data_modal_label">
+                        @T("FlowChart.0fill")?
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    @T("FlowChart.0fillInfo")@T("FlowChart.0fillInfo1")
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        @T("Common.Cancel")
+                    </button>
+                    <button type="button" class="btn btn-primary" id="js_btn_save_data">
+                        @T("FlowChart.0fill1")
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 确认是否保存资料模态框（Modal） -->
+    @*<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <font color="blue">确认保存资料吗?</font>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="js_funcplant_modal"></div>
+                    <div class="row">
+                        <!--表格-->
+                        <div class="col-md-12 table-container">
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_error_datatable">
+                                <thead>
+                                    <tr>
+                                        <th>制程序号</th>
+                                        <th>制程</th>
+                                        <th>功能厂</th>
+                                        <th>功能厂联系方式</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="page1" class="row"></div>
+
+                        </div><!--/表格-->
+                    </div><!-- / 內容 表格列 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="js_btn_save_data">
+                            保存资料
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>*@
+}
+@section ViewScripts{
+    @* ReSharper disable once UsageOfPossiblyUnassignedValue *@
+    <script type="text/javascript">
+        $(function () {
+            var subDatatable = null;
+            //#region 预设reference_date
+            var myDate = new Date();
+            $("#js_s_input_date").val(myDate.toLocaleDateString());
+            $("#js_error_datatable").hide();
+            //#endregion
+            var PPCheckDataUrls = {
+                EditWIPView: '@Url.Action("EditWIPView", "EventReportManager")',
+                QueryPPCheckDatas: '@Url.Action("QueryPPCheckDatas", "EventReportManager")',
+                GetCustomerSource: '@Url.Action("GetCustomerSource", "EventReportManager")',
+                GetProjectSource: '@Url.Action("GetProjectSource", "EventReportManager")',
+                GetProductPhaseSource: '@Url.Action("GetProductPhaseSource", "EventReportManager")',
+                GetPartTypesSource: '@Url.Action("GetPartTypesSource", "EventReportManager")',
+                GetColorSource: '@Url.Action("GetColorSource", "EventReportManager")',
+                GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")',
+                EditWIP: '@Url.Action("EditWIP", "EventReportManager")',
+                EditWIPNew: '@Url.Action("EditWIPNew", "EventReportManager")',
+                DoExportPPCheckData: '@Url.Action("DoExportPPCheckData", "EventReportManager")',
+                GetComfirmValue: '@Url.Action("GetComfirmValue", "EventReportManager")',
+                CheckFunPlantDataIsFull: '@Url.Action("CheckFunPlantDataIsFull", "EventReportManager")',
+                CheckProductDataIsFull: '@Url.Action("CheckProductDataIsFull", "EventReportManager")',
+                FillZeroProductData: '@Url.Action("FillZeroProductData", "ProductInput")',
+                SendEmail: '@Url.Action("SendEmail", "ProductInput")',
+                GetIsComfirmNo: '@Url.Action("GetIsComfirmNo", "EventReportManager")',
+                CheckWIPNeedUpdate: '@Url.Action("CheckWIPNeedUpdate", "EventReportManager")',
+                CheckMatchFlag: '@Url.Action("CheckMatchFlag", "EventReportManager")',
+                GetIntervalInfo:'@Url.Action("GetIntervalInfo", "EventReportManager")',
+                GetSelctOP:'@Url.Action("GetSelctOP", "EventReportManager")',
+
+                SynchronizeMesProcessInfo:'@Url.Action("SynchronizeMesInfo", "EventReportManager")',
+                IsSyneProjectName:'@Url.Action("IsSyneProjectName", "EventReportManager")'
+            };
+
+            function MakeWIPUnchange() {
+                $.post(PPCheckDataUrls.CheckWIPNeedUpdate, { "Op_Type": "OP2" }, function (data) {
+                    if (data != "") {
+                        if (data == "Yes")
+                            $(".js-grid-edit").removeAttr({ "disabled": "disabled" });
+                        else
+                            $(".js-grid-edit").attr({ "disabled": "disabled" });
+                    }
+                });
+            }
+
+            //#region 查询条件的五级联动
+            //初始化数据
+            GetCustomer();
+            GetInterval();
+
+            $("#js_s_input_customer").change(function ff() {
+                GetProject();
+            });
+            $("#js_s_input_project").change(function ff() {
+                GetProductPhase();
+                GetSelctOP();
+            });
+            $("#js_s_input_Product_Phase").change(function ff() {
+                GetPartTypes();
+            });
+            $("#js_s_input_part_types").change(function ff() {
+                GetColor();
+            });
+
+            //获取OP
+
+            function GetSelctOP() {
+                var phaseCount = 0;
+
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                $.post(PPCheckDataUrls.GetSelctOP, { "CustomerName": tempCustomer, "ProjectName": tempProject }, function (data) {
+                    if (data != "") {
+                        $("#js_s_input_OP").val(data);
+                    }
+                });
+
+
+            }
+
+            //获取数据
+            function GetCustomer() {
+                $("#js_s_input_customer").empty();
+                $.post(PPCheckDataUrls.GetCustomerSource, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_customer"));
+                        });
+                        GetProject();
+                    }
+                });
+            }
+
+            function GetProject() {
+                $("#js_s_input_project").empty();
+                var temp = $("#js_s_input_customer").val();
+                $.post(PPCheckDataUrls.GetProjectSource, { "CustomerName": temp }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_project"));
+                        });
+                        GetProductPhase();
+                        GetSelctOP();
+                    }
+                });
+            }
+
+            function GetProductPhase() {
+                $("#js_s_input_Product_Phase").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                $.post(PPCheckDataUrls.GetProductPhaseSource, { "CustomerName": tempCustomer, "ProjectName": tempProject }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_Product_Phase"));
+                        });
+                        GetPartTypes();
+                    }
+                });
+            }
+
+            function GetPartTypes() {
+                $("#js_s_input_part_types").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                $.post(PPCheckDataUrls.GetPartTypesSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_part_types"));
+                        });
+                        GetColor();
+                    }
+                });
+            }
+
+            function GetColor() {
+                $("#js_s_input_color").empty();
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                var tempPartTypes = $("#js_s_input_part_types").val();
+                $.post(PPCheckDataUrls.GetColorSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_color"));
+                        });
+                    }
+                });
+            }
+
+            function GetInterval() {
+                $("#js_s_input_interval_time").empty();
+                var CurrentOp = $("#js_s_input_OP").val();
+                $.post(PPCheckDataUrls.GetIntervalTime, { "nowOrAllInterval": "PPCheckData","OP":CurrentOp }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $('<option disabled="disabled" selected="selected"></option>').val(item["Enum_Name"]).text(item["Enum_Value"]).appendTo($("#js_s_input_interval_time"));
+                        });
+                    }
+                });
+            }
+
+            //#endregion
+            //计算直通率
+            function OnePassFunction() {
+                var dataTable = PPCheckData.GetTabDataTable();
+                var onePass = 100.00;
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                        var target_Yield = row.children().eq(8).text() + '%';
+                        row.children().eq(8).text(target_Yield);
+                        var rolling = row.children().eq(17).text() + '%';
+                        row.children().eq(17).text(rolling);
+                        var tyield = row.children().eq(19).text() + '%';
+                        row.children().eq(19).text(tyield);
+                        var FinallyYield = parseInt(row.children().eq(19).text()) / 100.00;
+                        onePass = onePass * FinallyYield;
+                    });
+                onePass = onePass.toFixed(2);
+                $("#js_process_first_pass_yield").text(onePass + "%");
+            }
+
+            var PPCheckData = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(
+                                '<button type="button"name="grid_edit" class="btn btn-primary btn-xs js-grid-edit" data-toggle="modal" data-target="#js_edit_modal" data-wip="' + rowData.WIP_QTY + '"data-nullwip="' + rowData.NullWIP_QTY+ '" data-id="' + rowData.Product_Input_UID + '">@ViewBag.ModifyWIP</button>'
+                            );
+                        },
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Process_Seq",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Place",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Color",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlant_Manager",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Target_Yield",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Product_Plan",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Product_Plan_Sum",
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Picking_MismatchFlag == null)
+                                $(td).html('<input type="text" style="width: 70px;" disabled="disabled"  name="Picking_QTY" class="text-center min-col-lg" value="' + rowData.Picking_QTY + '">');
+                            else
+                                $(td).html('<input type="text" style="background-color: red;width: 70px;" disabled="disabled" name="Picking_QTY" class="text-center min-col-lg" value="' + rowData.Picking_QTY + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "WH_Picking_QTY",
+                        className: "min-col-xs"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Good_MismatchFlag == null)
+                                $(td).html('<input type="text" style="width: 70px;" disabled="disabled" name="Good_QTY" class="text-center min-col-lg" value="' + rowData.Good_QTY + '">');
+                            else
+                                $(td).html('<input type="text" style="background-color: red;width: 70px;" disabled="disabled" name="Good_QTY" class="text-center min-col-lg" value="' + rowData.Good_QTY + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "Adjust_QTY",
+                        className: "min-col-xs"
+                    }, {
+                        data: "WH_QTY",
+                        className: "min-col-xs"
+                    }, {
+                        data: "NG_QTY",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Rolling_Yield_Rate",
+                        className: "min-col-xs"
+                    },
+                      {
+                          data: "Unacommpolished_Reason",
+                          className: "min-col-xs"
+                      },
+                    {
+                        data: "Finally_Field",
+                        className: "min-col-xs finally_field"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="text"  style="width: 70px;" disabled="disabled" id="WIP' + rowData.Product_Input_UID + '" name="Wip_Qty" class="text-center min-col-lg wipqty" value="' + rowData.WIP_QTY + '">');
+                        },
+                        className: "min-col-xs"
+                    }, {
+                        data: "NullWIP_QTY",
+                        className: "min-col-xs "
+                    }, {
+                        data: "OKWIP_QTY",
+                        className: "min-col-xs"
+                    }
+                ];
+                var columnsForError = [
+                    {
+                        data: "Process_Seq",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Process",
+                        className: "min-col-lg"
+                    },
+                    {
+                        data: "Color",
+                        className: "min-col-lg"
+                    },
+                     {
+                         data: "Place",
+                         className: "min-col-lg"
+                     },
+                    {
+                        data: "FuncPlant",
+                        className: "min-col-lg"
+                    },
+                    {
+                        data: "Contact",
+                        className: "min-col-lg"
+                    }];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryPPCheckData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: PPCheckDataUrls.QueryPPCheckDatas,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns,
+                            createdRow: function (row, data, index) {
+                                $(row).data('comfirm_flag', data.Is_Comfirm).data('Product_Stage', data.Product_Stage);
+                            }
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: PPCheckDataUrls.QueryPPCheckDatas,
+
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns,
+                            createdRow: function (row, data, index) {
+                                $(row).data('comfirm_flag', data.Is_Comfirm).data('Product_Stage', data.Product_Stage);
+                            }
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+
+                        if (@ViewBag.IsWX==0) {
+                            var chk_value = [];
+                            $('#div_nullwip').hide();
+                            chk_value.push(21);
+                            chk_value.push(22);
+                            table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                            //var width = $('#js_ppcheckdata_datatable_wrapper').width();
+                            //$('#div_table table').width(width);
+                        }
+                        //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                        //alert('1');
+                        PDMS.Utility.Criteria.Build();
+                        PDMS.Utility.Pages.Set(config);
+
+                    } else {
+                        if (@ViewBag.IsWX==0) {
+                            var chk_value = [];
+                            //$('#div_nullwip').hide();
+                            chk_value.push(20);
+                            chk_value.push(21);
+                            table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                            //var width = $('#js_ppcheckdata_datatable_wrapper').width();
+                            //$('#div_table table').width(width);
+                        }
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+                    OnePassFunction();
+                    //更新当前状态
+                    if (Is_Comfirm() != 0) {
+                        $("#js_save_status_div").attr("class", "col-md-12 col-lg-2 alert alert-danger");
+                        $("#js_save_status").text("@ViewBag.checkDataInfo1");
+                    } else {
+                        $("#js_save_status_div").removeAttr("class", "col-md-12 col-lg-2 alert alert-danger");
+                        $("#js_save_status").text("");
+                    }
+
+                    //_setQueryCriteria();
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryPPCheckDatas: function () {
+                        _queryPPCheckData(false);
+                    },
+                    GetPPCheckDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_ppcheckdata_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        }
+                        return subDatatable;
+                    },
+                    GetTabDataTable: function () {
+                        subDatatable = $('#js_ppcheckdata_datatable').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: columns
+                        });
+                        return subDatatable;
+                    },
+                    columnsForError: columnsForError
+                }
+            })();
+            PPCheckData.Init();
+
+            function CreateTab() {
+                $("#myTab li").remove();
+                $("#js_s_input_interval_time option").each(function (index) {
+                    if (this.selected == true) {
+                        var tabText = $(this).text();
+                        $("#myTab").append('<li class="ppchecktab" ><a href="#" data-toggle="tab">' + tabText + '</a></li>');
+                    }
+                });
+            }
+
+            //生产阶层线
+            function productStageLine() {
+                var dataTable = PPCheckData.GetPPCheckDatatable();
+                var productStage = 2;
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                        if (row.data('Product_Stage') == productStage) {
+                            row.attr("style", "border-top: 3px solid red");
+                            productStage++;
+                        }
+                    });
+            }
+            var  flag=0;
+            //检查是否功能厂不存在，不存在则Show出错误
+            function checkFunPlant() {
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                var tabList = [];
+                $('#myTab a').each(function () {
+                    var tab = {};
+                    tab["Time_InterVal"] = $(this).text();
+                    tabList.push(tab);
+                });
+                exportValue.TabList = tabList;
+                $.post(PPCheckDataUrls.CheckFunPlantDataIsFull, { jsonList: JSON.stringify(exportValue) }, function (data) {
+                    if (data.length == 0)
+                        return "SUCCESS";
+                    else
+                        return data.toString();
+                });
+                //var url = PPCheckDataUrls.CheckFunPlantDataIsFull;
+                //url += "?jsonList=" + JSON.stringify(exportValue);
+                //window.location.href = url;
+            }
+
+            //查询数据
+            $('#btn-search').click(function () {
+                var input_project =  $("#js_s_input_project").val()
+                $.get(PPCheckDataUrls.IsSyneProjectName,{ ProjectName: input_project },function(data){
+                    if(data=="SHOW")
+                    {
+                        $("#IsShowSyncButton").show();
+                    }else
+                    {
+                        $("#IsShowSyncButton").hide();
+                    }
+                });
+                CreateTab();
+                //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                PDMS.Utility.Criteria.Build();
+                $('#js_search_modal').modal('hide');
+                //点击Tab查询值
+                $('#myTab a').click(function (e) {
+                    //为日期、时段赋值
+                    var mydate = new Date();
+                    var myMonth = mydate.getMonth() + 1;
+                    var str = mydate.getFullYear() + '-' + myMonth + '-' + mydate.getDate();
+                    var activeTab = $(e.target).text();
+                    $("#js_datetime").text(str);
+                    $("#js_time_interval").text(activeTab);
+                    $("#js_tab_select_text").val(activeTab);
+                    if ($("#js_form_query").valid()) {
+                        PPCheckData.QueryPPCheckDatas();
+                        productStageLine();
+                        if (activeTab == "ALL") {
+                            $(".js-grid-edit").attr({ "disabled": "disabled" });
+                        } else {
+                            MakeWIPUnchange();
+                        }
+                    }
+                });
+                //#region 默认最后一个页签被选中
+                $('#myTab a:last').tab('show');
+                var mydate = new Date();
+                var str = $("#js_s_input_date").val();
+                var activeTab = $('#myTab a:last').text();
+                $("#js_datetime").text(str);
+                $("#js_time_interval").text(activeTab);
+                $("#js_tab_select_text").val(activeTab);
+                if ($("#js_form_query").valid()) {
+                    PPCheckData.QueryPPCheckDatas();
+                    PDMS.Utility.Criteria.Init();
+                    productStageLine();
+                }
+                MakeWIPUnchange();
+                $('table thead tr th:eq(2)').trigger('click');
+                //$('#myTab a:last').trigger('click');
+                //#endregion
+            });
+
+
+
+            var flag1=false;
+            //快速保存资料按钮
+            $('#js_btn_save_new').click('click', function () {
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                //#region 检查是否存在某功能厂数据未填写
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                var CurrentOp = $("#js_s_input_OP").val();
+                var timeIntervalUrl = PPCheckDataUrls.GetIntervalInfo;
+                var date;
+                var timeInterval;
+                flag1=true;
+                $.get(timeIntervalUrl,{ OPType: CurrentOp },function(a){
+                    date = a.NowDate;
+                    //通过数据库查询出来的实时时段
+                    timeInterval = a.Time_Interval;
+                    //页面上面停留的时段
+                    var selectTime = $('#js_tab_select_text').val();
+                    if(timeInterval != selectTime){ //当前时段已经过期的处理
+                        PDMS.Utility.MessageBox.info("@ViewBag.checkDataInfo2",function(){
+                            window.location.reload();
+                        });
+                    }
+                    else{//当前时间已经同步后的处理
+                        var tabList = [];
+                        $('#myTab a').each(function () {
+                            var tab = {};
+                            tab["Time_InterVal"] = $(this).text();
+                            tabList.push(tab);
+                        });
+                        exportValue.TabList = tabList;
+                        //检查
+                        //1是否有缺少的制程信息没输入
+                        //2各制程的数据颜色是否异常
+                        //3Rework和Repair返工数据是否正确
+                        $.post(PPCheckDataUrls.CheckProductDataIsFull, { jsonList: JSON.stringify(exportValue) }, function (data) {
+                            //检查1是否正确，如果正确再继续检查2和3
+                            if (data.length != 0) {
+                                $.unblockUI();
+                                //Show出对话框，并标注哪些功能厂未填写数据
+                                $('#myModal').modal('show');
+                                $("#js_funcplant_modal").text("@ViewBag.checkDataInfo3");
+                                $("#js_error_datatable").show();
+                                //弹出未填写数据的制程信息
+                                $('#js_error_datatable').DataTable({
+                                    columns: PPCheckData.columnsForError,
+                                    ordering: false,
+                                    data: data,
+                                    destroy: true
+                                });
+                                $("#js_btn_save_data").attr("disabled", false);
+                            } else {
+                                //checkGoodAndBad();
+                                CheckMatchFlag();
+                            }
+                        });
+                        //#endregion
+                    }
+                });
+            });
+
+            //保存资料按钮
+            $('#js_btn_save').click('click', function () {
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                //#region 检查是否存在某功能厂数据未填写
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                var CurrentOp = $("#js_s_input_OP").val();
+                var timeIntervalUrl = PPCheckDataUrls.GetIntervalInfo;
+                var date;
+                var timeInterval;
+                flag1=false;
+                $.get(timeIntervalUrl,{ OPType: CurrentOp },function(a){
+                    date = a.NowDate;
+                    //通过数据库查询出来的实时时段
+                    timeInterval = a.Time_Interval;
+                    //页面上面停留的时段
+                    var selectTime = $('#js_tab_select_text').val();
+                    if(timeInterval != selectTime){ //当前时段已经过期的处理
+                        PDMS.Utility.MessageBox.info("@ViewBag.checkDataInfo2",function(){
+                            window.location.reload();
+                        });
+                    }
+                    else{//当前时间已经同步后的处理
+                        var tabList = [];
+                        $('#myTab a').each(function () {
+                            var tab = {};
+                            tab["Time_InterVal"] = $(this).text();
+                            tabList.push(tab);
+                        });
+                        exportValue.TabList = tabList;
+                        //检查
+                        //1是否有缺少的制程信息没输入
+                        //2各制程的数据颜色是否异常
+                        //3Rework和Repair返工数据是否正确
+                        $.post(PPCheckDataUrls.CheckProductDataIsFull, { jsonList: JSON.stringify(exportValue) }, function (data) {
+                            //检查1是否正确，如果正确再继续检查2和3
+                            if (data.length != 0) {
+                                $.unblockUI();
+                                //Show出对话框，并标注哪些功能厂未填写数据
+                                $('#myModal').modal('show');
+                                $("#js_funcplant_modal").text("@ViewBag.checkDataInfo3");
+                                $("#js_error_datatable").show();
+                                //弹出未填写数据的制程信息
+                                $('#js_error_datatable').DataTable({
+                                    columns: PPCheckData.columnsForError,
+                                    ordering: false,
+                                    data: data,
+                                    destroy: true
+                                });
+                                $("#js_btn_save_data").attr("disabled", false);
+                            } else {
+                                //checkGoodAndBad();
+                                CheckMatchFlag();
+                            }
+                        });
+                        //#endregion
+                    }
+                });
+            });
+
+
+
+
+            //是否还有不匹配的数据，检查2和3是否有不匹配的数据
+            function CheckMatchFlag() {
+                var search = $('#js_form_query').serializeObject();
+                $.post(PPCheckDataUrls.CheckMatchFlag, { searchModel: search }, function (data) {
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.confirm(data+"，确定要强制保存?", function () {
+                            SaveEditWIP();
+                        });
+                        $.unblockUI();
+                        //PDMS.Utility.MessageBox.error(data);
+                        //RefreshDataView();
+                    } else {
+                        SaveEditWIP();
+                    }
+                });
+            }
+
+            //保存EditWIP及Product_Input的数据
+            function SaveEditWIP() {
+                //#region 检查是否还有红色的文本框
+                var dataTable = PPCheckData.GetTabDataTable();
+                var PPCheckValue = {};
+                var PPCheckList = [];
+                var flag = false;
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var sub = {};
+                        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                        var Wip_Qty = $.trim(row.find('input[name=Wip_Qty]').val());
+                        //var input_project = $.trim(row.find('input[name=js_s_input_project]').val());
+                        var input_project =  $("#js_s_input_project").val()
+                        if (parseInt(Wip_Qty) < 0&&input_project!="MLL")
+                        {
+                            $.unblockUI();
+                            flag = true;
+                            //PDMS.Utility.MessageBox.error("有制程WIP为负，不能保存");
+                            //RefreshDataView();
+
+                            return;
+                        }
+                        var Product_UID = $.trim(row.find('input[name=Wip_Qty]').attr('id'));
+                        sub["Wip_Qty"] = Wip_Qty;
+                        sub["Product_UID"] = Product_UID;
+                        PPCheckList.push(sub);
+                    });
+                if (flag) {
+                    $.unblockUI();
+                    PDMS.Utility.MessageBox.error("@ViewBag.checkDataInfo4");
+                    RefreshDataView();
+                    return;
+                }
+                else {
+                    PPCheckValue.PPEditValue = PPCheckList;
+                    $("#js_btn_save_data").attr("disabled", false);
+                    if(flag1)
+                    {
+                        $.post(PPCheckDataUrls.EditWIPNew, { jsonPPCheckList: JSON.stringify(PPCheckValue) }, function (data) {
+                            $.unblockUI();
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                                $(".wipqty").attr("disabled", true);
+                                //重新刷新数据区域
+                                RefreshDataView();
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                    else{
+                        $.post(PPCheckDataUrls.EditWIP, { jsonPPCheckList: JSON.stringify(PPCheckValue) }, function (data) {
+                            $.unblockUI();
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                                $(".wipqty").attr("disabled", true);
+                                //重新刷新数据区域
+                                RefreshDataView();
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+                    }
+                }
+                //#endregion
+            }
+
+            //同步数据
+            $('#js_btn_synchronize').click('click', function () {
+
+                var currentDate= $("#js_datetime").text();
+                var currentInterval= $("#js_time_interval").text();
+                var tempProject = $("#js_s_input_project").val();
+
+                if(currentDate==""||currentDate==null)
+                {
+                    PDMS.Utility.MessageBox.error("请选择同步日期");
+                    return false;
+                }
+
+                if(currentInterval==""||currentInterval==null)
+                {
+                    PDMS.Utility.MessageBox.error("请选择同步时段");
+                    return false;
+                }
+                var PPCheckValue={};
+                PPCheckValue.MesSyncParam
+                var mesSyncParam = [];
+                var temp = {};
+                var tempCustomer = $("#js_s_input_customer").val();
+                var tempProject = $("#js_s_input_project").val();
+                var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                var tempPartTypes = $("#js_s_input_part_types").val();
+                temp["currentDate"]=currentDate;
+                temp["currentInterval"]=currentInterval;
+                temp["Customer"]=tempCustomer;
+                temp["Project"]=tempProject;
+                temp["PhaseName"]=tempPhaseName;
+                temp["PartTypes"]=tempPartTypes;
+
+                mesSyncParam.push(temp);
+                PPCheckValue.MesSyncParam=mesSyncParam;
+                $.post(PPCheckDataUrls.SynchronizeMesProcessInfo, {
+                    jsonmesSyncParam:JSON.stringify(temp),
+                    submitType: "AJAX"
+                }, function (data) {
+                    if (data == "SUCCESS") {
+                        PDMS.Utility.MessageBox.info("同步成功");
+                        PPCheckData.QueryPPCheckDatas();
+                        PDMS.Utility.Criteria.Init();
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            });
+
+            //强制保存
+            $('#js_btn_save_data').click('click', function () {
+                $('#myModal').modal('hide');
+                $("#ForceSave").val(1);
+
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                //#region 检查是否存在某功能厂数据未填写
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                var CurrentOp = $("#js_s_input_OP").val();
+                var timeIntervalUrl = PPCheckDataUrls.GetIntervalInfo;
+                var date;
+                var timeInterval;
+                $.get(timeIntervalUrl,{ OPType: CurrentOp },function(a){
+                    date = a.NowDate;
+                    //通过数据库查询出来的实时时段
+                    timeInterval = a.Time_Interval;
+                    //页面上面停留的时段
+                    var selectTime = $('#js_tab_select_text').val();
+                    if(timeInterval != selectTime){ //当前时段已经过期的处理
+                        PDMS.Utility.MessageBox.info("@ViewBag.checkDataInfo2",function(){
+                            window.location.reload();
+                        });
+                    }
+                    else{//当前时间已经同步后的处理
+                        var tabList = [];
+                        $('#myTab a').each(function () {
+                            var tab = {};
+                            tab["Time_InterVal"] = $(this).text();
+                            tabList.push(tab);
+                        });
+                        exportValue.TabList = tabList;
+                        //检查
+                        //1是否有缺少的制程信息没输入
+                        //2各制程的数据颜色是否异常
+                        CheckMatchFlag();
+                        $("#js_save_data_modal").modal('hide');
+                        //3Rework和Repair返工数据是否正确
+
+                        //#endregion
+                    }
+                });
+
+            });
+
+            //保存资料对话框中保存按钮
+            @*$('#js_btn_save_data').click('click', function () {
+                $('#myModal').modal('hide');
+                //将未填写数据的功能厂补充0值
+                var funPlantList = $("#js_funcplant_modal").text();
+                funPlantList = funPlantList.substring(funPlantList.indexOf('【') + 1, funPlantList.indexOf('】'));
+                var funList = funPlantList.split(',');
+                var customer = $("#js_s_input_customer").val();
+                var project = $("#js_s_input_project").val();
+                var Part_Types = $("#js_s_input_part_types").val();
+                var Product_Phase = $("#js_s_input_Product_Phase").val();
+                var Date = $("#js_s_input_date").val();
+                var Time = $('#myTab a:last').text();
+
+                var funPlantValue = {};
+                var funPlantInfo = [];
+                $.each(funList, function (i, val) {
+                    var sub = {};
+                    sub["Func_Plant"] = val;
+                    sub["Customer"] = customer;
+                    sub["Project"] = project;
+                    sub["Part_Types"] = Part_Types;
+                    sub["Product_Phase"] = Product_Phase;
+                    sub["Date"] = Date;
+                    sub["Time"] = Time;
+                    funPlantInfo.push(sub);
+                });
+                funPlantValue.ZeroList = funPlantInfo;
+
+                $.post(PPCheckDataUrls.FillZeroProductData, { jsonWithFunPlantInfo: JSON.stringify(funPlantValue) }, function (data) {
+                    if (data != "")
+                        PDMS.Utility.MessageBox.error(data);
+                    else
+                        PDMS.Utility.MessageBox.info("@ViewBag.checkDataInfo5");
+                    $("#js_save_data_modal").modal('hide');
+                    RefreshDataView();
+                });
+
+            });*@
+            //导出按钮
+            $('#btn_export').click(function () {
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                var tabList = [];
+                $('#myTab a').each(function () {
+                    var tab = {};
+                    tab["Time_InterVal"] = $(this).text();
+                    tabList.push(tab);
+                });
+                exportValue.TabList = tabList;
+
+                //var url = PPCheckDataUrls.DoExportPPCheckData;
+                //url += "?jsonExportList=" + JSON.stringify(exportValue);
+                //window.location.href = url;
+
+                $.post(PPCheckDataUrls.DoExportPPCheckData, { jsonExportList: JSON.stringify(exportValue), submitType: "AJAX", exportName: "PPCheckData" }, function (data) {
+                    if (data == "SUCCESS") {
+                        var url = PPCheckDataUrls.DoExportPPCheckData;
+                        url += "?jsonExportList=" + JSON.stringify(exportValue) + "&exportName=" + "PPCheckData";
+                        window.location.href = url;
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+
+                });
+            });
+
+
+
+
+            //是否还有数据没有Comfirm
+            function Is_Comfirm() {
+                var dataTable = PPCheckData.GetPPCheckDatatable();
+                var comfirmFlag = 0;
+                var rowCount = 0;
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                        comfirmFlag = comfirmFlag + row.data('comfirm_flag');
+                        rowCount = rowCount + 1;
+                    });
+                if (rowCount == 0)
+                    return 1;
+                else
+                    return (rowCount - comfirmFlag);
+            }
+
+            //重新刷新数据区域
+            function RefreshDataView() {
+                $('#myTab a:last').tab('show');
+                var mydate = new Date();
+                var str = $("#js_s_input_date").val();
+                var activeTab = $('#myTab a:last').text();
+                $("#js_datetime").text(str);
+                $("#js_time_interval").text(activeTab);
+                $("#js_tab_select_text").val(activeTab);
+                if ($("#js_form_query").valid()) {
+                    PPCheckData.QueryPPCheckDatas();
+                    MakeWIPUnchange();
+                    //更新当前状态
+                    if (Is_Comfirm() != 0) {
+                        $("#js_save_status_div").attr("style", "background:red");
+                        $("#js_save_status").text("@ViewBag.checkDataInfo1");
+                    } else {
+                        $("#js_save_status_div").removeAttr("style", "background:red");
+                        $("#js_save_status").text("");
+                    }
+                }
+            }
+
+            //清空选择条件
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                PDMS.Utility.Criteria.Clear();
+                ////如果需要设定默认值，请在Clear内增加方法回调
+                //PDMS.Utility.Criteria.Clear(function () {
+                //    $('#js_s_radio_valid').prop('checked', true);
+                //});
+            });
+            //离开页面时，当未确认结果不能离开该页面
+            window.onbeforeunload = function (e) {
+                if (Is_Comfirm() != 0)
+                    // PDMS.Utility.MessageBox.error("内容未保存，确认离开页面？！");
+                    return (e || window.event).returnValue = '@ViewBag.checkDataInfo6';
+                //return (e || window.event).returnValue = '内容未保存，确认离开页面？！';
+            }
+            //发送邮件
+            $("#js_send_email").click(function () {
+                $.post(PPCheckDataUrls.SendEmail, function (data) {
+                    if (data != "SUCCESS") {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            });
+
+            $('body').on('click', '.js-grid-edit', function () {
+                $("#js_hidden_product_uid").val($(this).data('id'));
+                $("#js_input_now_wip").val($(this).data('wip'));
+                $("#js_input_NullWIP_QTY").val($(this).data('nullwip'));
+            });
+
+            $('.needint').keydown(function (event) {
+                var value = event.key;
+                if (value.length > 1)
+                    return true;
+                if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                    return false;
+            })
+
+            $("#js_btn_save_edit_wip").click('click', function () {
+                var product_uid = $("#js_hidden_product_uid").val();
+                var wip_qty = 0;
+                var wip_old = $("#js_input_now_wip").val();
+                var wip_add = $("#js_input_add_wip").val();
+                var comment = $("#js_input_comment").val();
+                var nullwip = $('#js_input_NullWIP_QTY').val();
+                if (@ViewBag.IsWX==0){
+                    if (comment == "" || wip_add=="") {
+                        PDMS.Utility.MessageBox.error("@ViewBag.checkDataInfo7");
+                        return;
+                    }
+                    if (parseInt($("#js_input_add_wip").val()))
+                        wip_qty = parseInt(wip_old) + parseInt(wip_add);
+                    else {
+                        PDMS.Utility.MessageBox.error("@ViewBag.Interger");
+                        return;
+                    }
+                }
+                else{
+                    if (comment == "" && wip_add!="") {
+                        PDMS.Utility.MessageBox.error("@ViewBag.checkDataInfo8");
+                        return;
+                    }
+                    if (wip_add == "") {
+                        wip_add = 0;
+                        wip_qty = parseInt(wip_old) + parseInt(wip_add);
+                    }
+                    else if (parseInt(wip_add))
+                        wip_qty = parseInt(wip_old) + parseInt(wip_add);
+                    else {
+                        if (wip_add != "") {
+                            PDMS.Utility.MessageBox.error("@ViewBag.Interger");
+                            return;
+                        }
+                    }
+                    if (parseInt(nullwip) > parseInt(wip_qty)) {
+                        PDMS.Utility.MessageBox.error("@ViewBag.checkDataInfo9");
+                        return;
+                    }
+                }
+                if (nullwip=='')
+                    nullwip=0;
+                $.post(PPCheckDataUrls.EditWIPView, { "product_uid": product_uid, "wip_qty": wip_qty, "wip_old": wip_old, "wip_add": wip_add, "comment": comment, "nullwip": nullwip }, function (data) {
+                    if (data == 'SUCCESS') {
+                        PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                        RefreshDataView();
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,4 @@
+D:\Git\PISMVC\PDMS.MESDataSchedult\obj\Debug\PDMS.MESDataSchedult.csprojResolveAssemblyReference.cache
+D:\Git\PISMVC\PDMS.MESDataSchedult\obj\Debug\PDMS.MESDataSchedult.csproj.ResolveComReference.cache
+D:\Git\PIS\PDMS.MESDataSchedult\obj\Debug\PDMS.MESDataSchedult.csprojResolveAssemblyReference.cache
+D:\Git\PIS\PDMS.MESDataSchedult\obj\Debug\PDMS.MESDataSchedult.csproj.ResolveComReference.cache

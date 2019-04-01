@@ -1,0 +1,360 @@
+﻿@model PDMS.Model.ViewModels.MatInventoryVM
+<section class="content-header portal-content-header">
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" >查询</button>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>仓库别</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>总数量</th>
+                        <th>更新者</th>
+                        <th>更新时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>仓库别</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>总数量</th>
+                        <th>更新者</th>
+                        <th>更新时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_BG_Organization_UID">Business Group</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_BG_Organization_UID" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.oporg)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_FunPlant_Organization_UID">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_FunPlant_Organization_UID" name="FunPlant_Organization_UID">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Warehouse_Type_UID">仓别</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_Warehouse_Type_UID" name="Warehouse_Type_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Types)
+                                        {
+                                            if (@item.Enum_Name == "WarehouseType")
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Material_Id_search">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Material_Id_search" name="Material_Id">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Material_Name_search">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Material_Name_search" name="Material_Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Material_Types_search">型号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Material_Types_search" name="Material_Types">
+                                </div>
+                            </div>
+
+
+                            @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Warehouse_ID_search">仓库</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Warehouse_ID_search" name="Warehouse_ID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Rack_ID_search">料架</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Rack_ID_search" name="Rack_ID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_ID_search">储位</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_ID_search" name="Storage_ID">
+                                </div>
+                            </div>*@
+
+                            @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_warehouse_storage_uid">储位</label>
+                                <div class="col-sm-7">
+                                    <select class=" selectpicker form-control input-sm" id="js_select_warehouse_storage_uid" name="Warehouse_Storage_UID" data-live-search="true">
+                                        <optgroup label="仓库_料架_储位">
+                                            <option></option>
+                                            @foreach (var item in Model.warst)
+                                            {
+                                                    <option value=@item.Warehouse_Storage_UID>@item.Warehouse_ID _ @item.Rack_ID _ @item.Storage_ID</option>
+                                            }
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>*@
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+    $('#js_btn_clear').click(function () {
+        PDMS.Utility.Criteria.Clear();
+        $('#js_search_modal').find('select').val('');
+
+        $('#js_select_warehouse_storage_uid').selectpicker('val', '');
+        $('#js_select_warehouse_storage_uid').trigger("liszt:updated");
+    });
+
+    $(function () {
+        var MaterialInventorySetting = (function () {
+            var urls = {
+                //画面初始化加载
+                queryMaterialInventorySum: '@Url.Action("QueryMaterialInventorySum", "StorageManage")',
+                queryFunplantByop: '@Url.Action("QueryFunplantByop", "StorageManage")',
+                viewMatInventoryDetail: '@Url.Action("MaterialInventoryDetail", "StorageManage")',
+                //导出excel
+                doExportMaterialInventoryReprot: '@Url.Action("DoExportMaterialInventoryReprot", "StorageManage")',
+
+                doAllExportMaterialInventoryReprot: '@Url.Action("DoAllExportMaterialInventoryReprot", "StorageManage")',
+            };
+            //#region 定义字段列
+            var columns = [{
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Inventory_UID + '">')
+                    .addClass('table-col-checkbox');
+                },
+                className: "text-center"
+            }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var buttonView = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-id="' + rowData.Material_Inventory_UID + '">明细</button>';
+                        $(td).html(buttonView);
+                    },
+                    className: "text-center"
+                }, {
+                    data: "BG",
+                    className: "min-col-xs"
+                }, {
+                    data: "Funplant",
+                    className: "min-col-xs"
+                }, {
+                    data: "Warehouse_Type",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Id",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Types",
+                    className: "min-col-xs"
+                }, {
+                    data: "Total_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "ModifyUser",
+                    className: "min-col-xs"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-xs"
+                }];
+
+            //#endregion 定义字段列
+
+            var _getParams = function () {
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryMaterialInventorySum = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryMaterialInventorySum,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        columns: columns
+                    }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+                $('table thead tr').find('th').removeClass('text-right');
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryMaterialInventorySum(true, false);
+                },
+                queryMaterialInventorySum: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryMaterialInventorySum(false, buildCriteria);
+                }
+            }
+        })();
+
+        MaterialInventorySetting.Init();
+        //BG变更---START
+        $('#js_select_BG_Organization_UID').change(function () {
+            $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+            var url = MaterialInventorySetting.urls.queryFunplantByop,
+                opuid = $(this).val();
+            $.post(url, { opuid: opuid }, function (data) {
+                $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#js_select_FunPlant_Organization_UID').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                }
+            })
+        })
+        //BG变更-----END
+
+        //查询按钮
+        $('#js_btn_query').click(function () {
+            if ($('#js_form_query').valid()) {
+                MaterialInventorySetting.queryMaterialInventorySum(true);
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+        $('#js_select_warehouse_storage_uid').selectpicker({ 'selectedText': 'cat' });
+
+        //检测输入数据
+        $('#js_form_user_edit').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+
+
+        //Grid中编辑按钮---START
+        $('body').on('click', '.js-grid-edit', function () {
+            var uid = $(this).data('id');
+            url = MaterialInventorySetting.urls.viewMatInventoryDetail + '?Material_Inventory_UID=' + uid;
+            window.location.href = url;
+        });
+        //Grid中编辑按钮-----END
+        //导出按钮
+        $('#js_btn_export').click(function () {
+
+            var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+            var len = $selectList.length;
+            if (len == 0) {
+                //全部导出
+                var url = MaterialInventorySetting.urls.doAllExportMaterialInventoryReprot;
+                //没有查询条件的情况，从查询页面获取
+                if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+                url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                window.location.href = url;
+
+            } else {
+                var uids = $.map($selectList, function (row) {
+                    return row.value;
+                });
+                $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                var url = MaterialInventorySetting.urls.doExportMaterialInventoryReprot;
+                url += "?uids=" + uids.toString();
+                window.location.href = url;
+            }
+        });
+    })
+    </script>
+}

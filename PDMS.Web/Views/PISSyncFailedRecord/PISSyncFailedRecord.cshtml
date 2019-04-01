@@ -1,0 +1,319 @@
+﻿@{
+//ViewBag.Edit = T("Common.Edit").Text;
+//ViewBag.Imported = T("QA.Imported").Text;
+//ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+//ViewBag.MoreThanDate = T("Production.MoreThanDate").Text;
+//ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+//Layout = null;
+}
+
+<!-- Main content -->
+<section class="content portal-content">
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="content-header portal-content-header">
+                <h1>
+                    MES-PIS同步失败记录信息
+                </h1>
+            </section>
+        </div>
+        <hr style="margin: 0px; height: 1px; border: 0px; background-color: #D5D5D5; color: #D5D5D5;" />
+
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-12">
+            @* <a href="~/ExcelTemplate/PIS-MES-ProcessTraConfig.xlsx" class="fa fa-download btn btn-primary" target="_blank">@T("Common.TeampleDownload")</a>*@
+            @*<a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal"> @T("Common.Import")</a>*@
+            @*<a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="btn_add"> @T("Common.AddNew")</a>
+                <a class="fa fa-search btn btn-primary" data-toggle="modal" id="btn_search_Query" data-target="#js_search_modal"> @T("Common.Search")</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>*@
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_turnover_datatable">
+                <thead>
+                    <tr id="js_rpt_tr">
+                        <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>操作</th>
+                        <th>同步ID</th>
+                        <th>同步类型</th>
+                        <th>同步名称</th>
+                        <th>同步时间</th>
+                        <th>同步参数</th>
+                        <th>同步结果</th>
+                        <th>同步是否成功</th>
+                        <th>同步次数</th>
+                        <th>操作人ID</th>
+                        <th>操作时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_rpt_tr_foot">
+                        <th class="table-col-checkbox nosort"><input type="checkbox" class="js-checkbox-all" /></th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>操作</th>
+                        <th>同步ID</th>
+                        <th>同步类型</th>
+                        <th>同步名称</th>
+                        <th>同步时间</th>
+                        <th>同步参数</th>
+                        <th>同步结果</th>
+                        <th>同步是否成功</th>
+                        <th>同步次数</th>
+                        <th>操作人ID</th>
+                        <th>操作时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Import")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        @using (Html.BeginForm("ImportProcessIDTraConfig", "ProcessIDTraConfig", FormMethod.Post, new { id = "js_form_excel_Turnover" }))
+                        {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="control-label" for="js_s_input_upload">@T("QA.SelecttheExcelfile")</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="file" class="form-control" id="js_s_input_upload" name="uploadName" placeholder="@T("QA.SelecttheExcelfile")" />
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var DemissionRate = (function () {
+                var urls = {
+                    GetSyncFailedRecordData: '@Html.Raw(Url.Action("GetSyncFailedRecordData", "PISSyncFailedRecord"))',
+                    MachineYieldSync: '@Html.Raw(Url.Action("MachineYieldSync", "PISSyncFailedRecord"))',
+                };
+
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.MES_PIS_SyncFailedRecord_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                {
+                    data: null,
+                    className: "table-col-seq"
+                },
+                 {
+                     data: null,
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         if (rowData.SyncType == "Machine") {
+                             $(td).html(
+                               '<button type="button" name="grid_edit" class="btn btn-primary btn-xs js-grid-dataSync"  data-id="' + rowData.MES_PIS_SyncFailedRecord_UID + '"  data-syncName="' + rowData.SyncType + '">同步</button>'
+                           );
+                         } else {
+                             $(td).html("");
+                         }
+                     },
+                     className: "min-col-xs"
+                 },
+                 {
+                     data: null,
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         $(td).html('<input type="text" style="width: 70px;" readonly="readonly" name="MES_PIS_SyncFailedRecord_UID" class="text-center min-col-lg" value="' + rowData.MES_PIS_SyncFailedRecord_UID + '">');
+                     },
+                     className: "min-col-xs"
+                 },
+                {
+                    data: "SyncType",
+                    className: "min-col-xs"
+                }, {
+                    data: "SyncName",
+                    className: "min-col-xs"
+                }, {
+                    //data: "SyncTime",
+                    //className: "min-col-xs"
+
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.SyncTime).Format("yyyy-MM-dd hh:mm"));
+                    },
+                    className: "min-col-xs"
+                }, {
+                    //data: "SyncRequest",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="text" style="width: 300px;" readonly="readonly" name="SyncRequest" class="text-center min-col-lg" value="' + rowData.SyncRequest + '">');
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "SyncResult",
+                    className: "min-col-xs"
+                }, {
+                    //data: "Is_ManuallySuccess",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.Is_ManuallySuccess) {
+                            $(td).html("是");
+                        } else {
+                            $(td).html("否");
+                        }
+                    },
+                    className: "min-col-xs"
+
+                }, {
+                    data: "FailedNumber",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.OperateID == 0) {
+                            $(td).html("System");
+                        } else {
+                            $(td).html(rowData.OperateID);
+                        }
+                    },
+                    className: "min-col-xs"
+                }, {
+                    //data: "OperateTime",
+                    //className: "min-col-xs"
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.OperateTime).Format("yyyy-MM-dd hh:mm"));
+                    },
+                    className: "min-col-xs"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryDemissionRate = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_turnover_datatable",
+                        remoteUrl: urls.GetSyncFailedRecordData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    $('#js_rpt_tr th').removeClass('text-right')
+                    $('#js_rpt_tr_foot th').removeClass('text-right')
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _queryDemissionRate(true);
+                    },
+                    QueryStuffs: function () {
+                        _queryDemissionRate(false);
+                    }
+                }
+
+            })();
+
+
+
+            DemissionRate.Init();
+
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            $('body').on("click", ".js-grid-dataSync", function () {
+                var uid = $(this).attr('data-id');
+                var syncName = $(this).attr('data-syncName');
+                //Machine数据
+                if (syncName == "Machine") {
+                    $.post(DemissionRate.urls.MachineYieldSync, { MES_PIS_SyncFailedRecord_UID: uid }, function (data) {
+                        if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("同步成功!");
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            $('#btn_search_Query').click(function () {
+                $('#js_select_factory_query').trigger('change');
+            });
+        });
+    </script>
+} 

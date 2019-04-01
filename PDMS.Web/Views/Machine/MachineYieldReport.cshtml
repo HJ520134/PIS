@@ -1,0 +1,749 @@
+﻿@model PDMS.Model.ViewModels.Machine_YieldReportVM
+<section class="content-header portal-content-header"></section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                @*<button type="button" class="btn btn-primary btn-sm" id="js_bt_export"><i class="glyphicon glyphicon-save">导出</i></button>*@
+
+                <a class="btn btn-primary btn-sm" data-toggle="modal" id="bt_search" data-target="#js_search_modal">
+                    <i class="fa fa-search"></i> 查询
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>Customer</th>                  
+                        <th>站点</th>
+                        <th>机台号</th>
+                        <th>投入数</th>
+                        <th>良品数</th>
+                        <th>NG数</th>
+                        <th>不良点数</th>
+                        <th>良率</th>
+                        <th>不良率</th>
+                        <th class="table-col-action nosort">查看详情</th>
+                        <th ></th>
+                        <th ></th>
+                        <th ></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>Customer</th>
+                        <th>站点</th>
+                        <th>机台号</th>
+                        <th>投入数</th>
+                        <th>良品数</th>
+                        <th>NG数</th>
+                        <th>不良点数</th>
+                        <th>良率</th>
+                        <th>不良率</th>
+                        <th class="table-col-action nosort">查看详情</th>
+                        <th ></th>
+                        <th ></th>
+                        <th ></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+
+@section ViewModals{
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body" style="height:230px">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true" >
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_factory">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_factory" name="Plant_OrganizationUID">
+                                            <option></option>
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_op_types">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_op_types" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_funplant">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_funplant" name="FunPlant_OrganizationUID"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_Machine_Customer_UID">专案</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_Machine_Customer_UID" name="Machine_Customer_UID"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_Machine_Station_UID">站点</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_Machine_Station_UID" name="Machine_Station_UID"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_PIS_Customer_Name">专案</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-sm" id="js_input_PIS_Customer_Name" name="PIS_Customer_Name" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_PIS_Station_Name">站点</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-sm" id="js_input_PIS_Station_Name" name="PIS_Station_Name" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_Machine_ID">机台</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-sm" id="js_input_Machine_ID" name="Machine_ID" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-intervalthree">时间段</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="StarTime" class="form-control input-sm  date_timethree" id="js_s_input_modified_from">
+                                            @*<input type="text" name="StarTime" class="form-control input-sm  date_timethree" id="js_s_input_modified_from"
+                                                   required data-msg-required="请填写起始时间">*@
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="EndTime" class="form-control input-sm  date_timethree" id="js_s_input_modified_to">
+                                            @*<input type="text" name="EndTime" class="form-control input-sm  date_timethree" id="js_s_input_modified_to"
+                                                   required data-msg-required="请填写截止时间">*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="no-margin" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="js_add_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">明细</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_Warehouse_add" class="form-horizontal clearfix">
+                    <div class="row">     
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Machine_ID">机台号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Machine_ID" name="Machine_ID" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_InPut_Qty">投入数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_InPut_Qty" name="InPut_Qty" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Yield_Qty">良品数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Yield_Qty" name="Yield_Qty" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_NG_Qty">不良数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_NG_Qty" name="NG_Qty" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Yield">良率</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Yield" name="Yield" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_NO_Yield">不良率</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_NO_Yield" name="NO_Yield" readonly>
+                            </div>
+                        </div>
+                        <input type="hidden" name="MES_Customer_Name" />
+                        <input type="hidden" name="PIS_Customer_Name" />
+                        <input type="hidden" name="MES_Station_Name" />
+                        <input type="hidden" name="PIS_Station_Name" />    
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </form>
+                <hr class="no-margin" />
+                <h4>
+                    不良明细            
+                </h4>
+                <div class="row" id="div_sub_ware">
+                    <div class="col-xs-12">
+                        <table id="js_sub_func_table" class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-seq">序号</th>
+                                    <th>不良名称</th>
+                                    <th>不良数</th>
+                                    <th>不良率</th>                                          
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>取消</button>         
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+         $(function () {
+
+             $('#js_btn_clear').click(function () {
+                            
+                     PDMS.Utility.Criteria.Clear();
+             
+                 $('#js_select_op_types').html('<option></option>');
+                 $('#js_select_op_types').selectpicker('refresh');
+
+                 $('#js_select_funplant').html('<option></option>');
+                 $('#js_select_funplant').selectpicker('refresh');
+
+                 $('#js_select_Machine_Customer_UID').html('<option></option>');
+                 $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+
+                 $('#js_select_Machine_Station_UID').html('<option></option>');
+                 $('#js_select_Machine_Station_UID').selectpicker('refresh');
+
+             });
+             var StorageReportSetting = (function () {
+                 var urls = {
+                     //画面初始化加载
+                     queryMachine_Yields: '@Url.Action("QueryMachine_Yields", "Machine")',
+                      //根据厂区取得OP类型
+                     getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                     //根据OP类型取得功能厂
+                     getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                     //导出excel
+                     doExportMachineReprot: '@Url.Action("DoExportMachineReprot", "Machine")',
+
+                     queryMachineDetails: '@Url.Action("QueryMachineDetails", "Machine")',
+
+                     exportMachineNoYieldDetails: '@Url.Action("ExportMachineNoYieldDetails", "Machine")',
+
+                     getCustomerList: '@Url.Action("GetCustomerList", "Machine")',
+
+                     getStationList: '@Url.Action("GetStationList", "Machine")',
+
+                 };
+                 //#region 定义字段列
+                 var columns = [{
+                     data: null,
+                     className: "table-col-seq"
+                 }, {
+                     data: "PIS_Customer_Name",
+                     className: "min-col-xs"
+                 }, {
+                     data: "PIS_Station_Name",
+                     className: "min-col-xs"
+                 }, {
+                     data: "Machine_ID",
+                     className: "min-col-xs"
+                 }, {
+                     data: "InPut_Qty",
+                     className: "min-col-xs"
+                 }, {
+                     data: "Yield_Qty",
+                     className: "min-col-xs text-right"
+                 }, {
+                     data: "NG_Qty",
+                     className: "min-col-xs text-right"
+                 }, {
+                     data: "NG_Point_Qty",
+                     className: "min-col-xs text-right"
+                 } ,{
+                     data: "Yield",
+                     render: function (data, type, full, meta) {
+                      
+                         return  (data*100).toFixed(2)+ '%';
+                     },
+                     className: "min-col-xs text-right"
+                 }, {
+                     data: "NO_Yield",
+                     render: function (data, type, full, meta) {
+                         return  (data*100).toFixed(2)+ '%';
+                     },
+                     className: "min-col-xs text-right"
+                 }, {
+                     createdCell: function (td, cellData, rowData, row, col) {
+                             var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                     '<i class="fa fa-reorder"></i>' +
+                                     '</button>' +
+                                     '<div class="hidden popover-content">' +
+                                         '<button type="button" class="btn btn-primary btn-xs js-grid-view"  data-id="' + rowData.InPut_Qty +'|'+rowData.MES_Customer_Name+'|'+rowData.MES_Station_Name+'|'+rowData.Machine_ID+'|'+rowData.Yield_Qty+'|'+rowData.Yield+'|'+rowData.NO_Yield+'|'+rowData.PIS_Customer_Name+'|'+rowData.PIS_Station_Name+'|'+rowData.NG_Qty+'">查看</button>' +
+                                          '<button type="button" class="btn btn-primary btn-xs js-grid-export"  data-id="' + rowData.InPut_Qty +'|'+rowData.MES_Customer_Name+'|'+rowData.MES_Station_Name+'|'+rowData.Machine_ID+'|'+rowData.Yield_Qty+'|'+rowData.Yield+'|'+rowData.NO_Yield+'|'+rowData.PIS_Customer_Name+'|'+rowData.PIS_Station_Name+'|'+rowData.NG_Qty+'">导出</button>' +
+                                     '</div>';
+
+                         $(td).html(result);
+                     },
+                     className: "text-center"
+                 }, {
+                     data: "MES_Customer_Name",
+                     className: "min-col-xs hidden"
+                 }, {
+                     data: "MES_Station_Name",
+                     className: "min-col-xs hidden"
+                 }, {
+                     data: "NG_Qty",
+                     className: "min-col-xs hidden"
+                 }];
+
+                 var subColumns = [{
+                     className: "table-col-seq",
+                     render: function (data, type, full, meta) {
+                         return ++meta.row;
+                     }
+                  }, {
+                      data: "DefectName",
+                     className: "min-col-lg"
+
+                  }, {
+                      data: "NG_Point",
+                     className: "min-col-lg"
+
+                 }, {
+                     data: "NO_Yield",
+                     className: "min-col-lg"
+
+                 }];
+                 //#endregion 定义字段列
+
+                 var _getParams = function () {
+                     return $('#js_form_query').serialize().replace(/\+/g, " ");
+                 };
+
+                 var _queryStorageReports = function (firstLoad, buildCriteria) {
+
+                     var config = {
+                         pageId: "#page",
+                         tableId: "#js_Bom_datatable",
+                         remoteUrl: urls.queryMachine_Yields,
+                         searchParams: _getParams(),
+                         tableOptions: {
+                             scrollX: true,
+                             autoWidth: true,
+                             columns: columns
+                         }
+                     };
+                     if (!firstLoad) {
+                         $('#page').page('destroy');
+                     }
+                     if (buildCriteria) {
+                         PDMS.Utility.Criteria.Build();
+                     }
+                     PDMS.Utility.Pages.Set(config);
+                     $('#js_Bom_datatable tbody tr td').addClass('text-center');
+                 };
+                 return {
+                     urls: urls,
+                     Init: function () {
+                         PDMS.Utility.Criteria.Init();
+                         _queryStorageReports(true, false);
+                         GetOPTypes();
+                     },
+                     queryStorageReports: function (buildCriteria) {
+                         if (!buildCriteria) {
+                             buildCriteria = false;
+                         }
+                         _queryStorageReports(false, buildCriteria);
+                     },
+                     GetDatatable: function () {
+                         if (subDatatable == null) {
+                             subDatatable = $('#js_Bom_datatable').DataTable({
+                                 paging: false,
+                                 searching: false,
+                                 ordering: false,
+                                 retrieve: true,
+                                 columns: columns
+                             });
+                         }
+                         return subDatatable;
+                     },
+                     GetSubDatatable: function () {
+
+                         if (subDatatable == null) {
+
+                             subDatatable = $('#js_sub_func_table').DataTable({
+                                 paging: false,
+                                 searching: false,
+                                 ordering: false,
+                                 retrieve: true,
+                                 columns: subColumns,
+                             });
+                         }
+                         return subDatatable;
+                     },
+                     SetSubDatatable: function (datatable) {
+                         subDatatable = datatable;
+                     },
+                     DestroySubTable: function () {
+                         if (subDatatable != null) {
+                             subDatatable.destroy();
+                         }
+                     },
+                     SubColumns: subColumns
+                 }
+             })();
+             StorageReportSetting.Init();
+
+             $('.needint').keydown(function (event) {
+                 var value = event.key;
+                 if (value.length > 1)
+                     return true;
+                 if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                     return false;
+             })
+             //查询按钮
+             $('#js_btn_query').click(function () {
+                 if ($('#js_form_query').valid()) {
+                     StorageReportSetting.queryStorageReports(true);
+                     $('#js_search_modal').modal('hide');
+                     $('#js_btn_query')
+                 }
+             });
+
+             $('#js_select_op_types,#js_select_funplant').selectpicker({ 'selectedText': 'cat' });
+
+             //查询界面厂区是OP类型变化
+             $('#js_select_factory').change(function () {
+                 GetOPTypes();
+             })
+
+             function GetOPTypes() {
+                 var oporgid = $('#js_select_factory option:selected').val();
+                 url = StorageReportSetting.urls.getCurrentOPType;
+                 $('#js_select_op_types').html('<option></option>');
+                 $('#js_select_op_types').selectpicker('refresh');
+                 $('#js_select_funplant').html('<option></option>');
+                 $('#js_select_funplant').selectpicker('refresh');
+                 $('#js_select_Machine_Customer_UID').html('<option></option>');
+                 $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 $('#js_select_Machine_Station_UID').html('<option></option>');
+                 $('#js_select_Machine_Station_UID').selectpicker('refresh');
+                 if (oporgid != 0) {
+                     $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                         for (var i = 0; i < data.length; i++) {
+                             if ($('#js_select_op_types').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                 if(@Model.OptypeID!=0)
+                                 {
+                                     if(@Model.OptypeID==data[i].Organization_UID )
+                                     {
+                                         $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                     }
+                                 }else
+                                 {
+                                     $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                 }
+                             }
+                             $('#js_select_op_types').selectpicker('refresh');
+                         }
+                     });
+                 }
+
+                 url=StorageReportSetting.urls.getCustomerList;
+                 $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:0,FunPlant_Organization_UID:0}, function (data) {
+                     for (var i = 0; i < data.length; i++) {
+
+                         $('#js_select_Machine_Customer_UID').append('<option value="' + data[i].Machine_Customer_UID + '">' + data[i].PIS_Customer_Name+ '</option>');
+
+                     }
+                     $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 });
+
+             }
+             //OP类型变更  start
+             $('#js_select_op_types').change(function () {
+                 var url = StorageReportSetting.urls.getFunPlantByOPTypes;
+                 $('#js_select_funplant').html('<option></option>');
+                 $('#js_select_funplant').selectpicker('refresh');
+                 $('#js_select_Machine_Customer_UID').html('<option></option>');
+                 $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 $('#js_select_Machine_Station_UID').html('<option></option>');
+                 $('#js_select_Machine_Station_UID').selectpicker('refresh');
+                 if ($('#js_select_op_types option:selected').text() != "") {
+                     $.post(url, { Optype: $('#js_select_op_types').val() }, function (data) {
+                         for (var i = 0; i < data.length; i++) {
+                             if(@Model.FunPlantID!=0)
+                             {
+                                 if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                 {
+                                     $('#js_select_funplant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                 }
+                             }else
+                             {
+                                 $('#js_select_funplant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                             }
+                         }
+                         $('#js_select_funplant').selectpicker('refresh');
+                     })
+                 }
+
+                 url=StorageReportSetting.urls.getCustomerList;
+                 var oporgid = $('#js_select_factory option:selected').val();
+
+                 $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:$('#js_select_op_types').val(),FunPlant_Organization_UID:0}, function (data) {
+                     for (var i = 0; i < data.length; i++) {
+
+                         $('#js_select_Machine_Customer_UID').append('<option value="' + data[i].Machine_Customer_UID + '">' + data[i].PIS_Customer_Name+ '</option>');
+
+                     }
+                     $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 });
+             })
+             $('#js_select_funplant').change(function () {
+                 $('#js_select_Machine_Customer_UID').html('<option></option>');
+                 $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 $('#js_select_Machine_Station_UID').html('<option></option>');
+                 $('#js_select_Machine_Station_UID').selectpicker('refresh');
+                 url=StorageReportSetting.urls.getCustomerList;
+                 var oporgid = $('#js_select_factory option:selected').val();                
+                 $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID:$('#js_select_op_types').val(),FunPlant_Organization_UID:$('#js_select_funplant').val()}, function (data) {
+                     for (var i = 0; i < data.length; i++) {
+
+                         $('#js_select_Machine_Customer_UID').append('<option value="' + data[i].Machine_Customer_UID + '">' + data[i].PIS_Customer_Name+ '</option>');
+
+                     }
+                     $('#js_select_Machine_Customer_UID').selectpicker('refresh');
+                 });
+             
+             
+             });
+
+             $('#js_select_Machine_Customer_UID').change(function () {
+                 $('#js_select_Machine_Station_UID').html('<option></option>');
+                 $('#js_select_Machine_Station_UID').selectpicker('refresh');
+                 url=StorageReportSetting.urls.getStationList;
+                 var oporgid = $('#js_select_factory option:selected').val();                
+                 $.post(url, { Machine_Customer_UID: $('#js_select_Machine_Customer_UID').val()}, function (data) {
+                     for (var i = 0; i < data.length; i++) {
+
+                         $('#js_select_Machine_Station_UID').append('<option value="' + data[i].Machine_Station_UID + '">' + data[i].PIS_Station_Name+ '</option>');
+
+                     }
+                     $('#js_select_Machine_Station_UID').selectpicker('refresh');
+                 });
+
+             });
+
+             //OP类型变更  end
+             //主界面上的查询按钮
+             $('#bt_search').click(function () {
+                 if ($('#js_select_funplant').find('option').length == 0) {
+                     $('#js_select_factory').trigger('change');
+                 }
+             })
+
+             //导出按钮
+             $('#js_bt_export').click(function () {
+
+                 var plantid = $('#js_search_modal').find('select[name=Plant_OrganizationUID] option:selected').val();
+                 var optypeid = $('#js_search_modal').find('select[name=BG_Organization_UID] option:selected').val();
+                 var funplantid = $('#js_search_modal').find('select[name=FunPlant_OrganizationUID] option:selected').val();
+                 var customer = $('#js_search_modal').find('input[name=PIS_Customer_Name]').val();
+                 var station = $('#js_search_modal').find('input[name=PIS_Station_Name]').val();
+                 var machine_ID = $('#js_search_modal').find('input[name=Machine_ID]').val();
+                 var url = StorageReportSetting.urls.doExportMachineReprot;
+                 if (plantid == "" || plantid == "undefined" || plantid == undefined)
+                 {
+                     plantid = 0;
+                 }
+                 if (optypeid == "" || optypeid == "undefined" || optypeid == undefined) {
+                     optypeid = 0;
+                 }
+                 if (funplantid == "" || funplantid == "undefined" || funplantid == undefined) {
+                     funplantid = 0;
+                 }
+                 url += "?plantId=" + plantid + "&optypeId=" + optypeid;
+                 url += "&funplantId=" + funplantid + "&customer=" + customer + "&station=" + station+ "&machine_ID=" + machine_ID;
+
+                 window.location.href = url;
+             });
+
+             //编辑--start
+             $('body').on('click', '.js-grid-view', function () {
+                 debugger;
+                 var StartTime= $('#js_s_input_modified_from').val();
+                 var EndTime= $('#js_s_input_modified_to').val();;
+                 if(StartTime==null||StartTime==""||EndTime==null||EndTime=="")
+                 {
+                     PDMS.Utility.MessageBox.info('请选择查询时间段');
+                     return false;
+                 }
+                 $('#js_add_modal').modal('show', $(this));
+                 //"' + rowData.InPut_Qty +'|'+rowData.MES_Station_Name+'|'+rowData.MES_Station_Name+'|'+rowData.Machine_ID+'|'+rowData.Yield_Qty+'|'+rowData.Yield+'|'+rowData.NO_Yield+'"
+                 //+rowData.PIS_Customer_Name+'|'+rowData.PIS_Station_Name+
+                 var strDataTable = $(this).attr('data-id');
+                 debugger;
+                 var arr=strDataTable.split("|");
+                 var InPut_Qty=arr[0];
+                 var Customer=arr[1];
+                 var Station=arr[2];
+                 var Machine=arr[3];
+                 var Yield_Qty=arr[4];
+                 var Yield=arr[5];
+                 var NO_Yield=arr[6];
+                 var PIS_Customer_Name=arr[7];
+                 var PIS_Station_Name=arr[8];
+                 var NG_Qty=arr[9];
+    
+                 $('#js_add_modal').find('input[name=Machine_ID]').val(Machine);
+                 $('#js_add_modal').find('input[name=InPut_Qty]').val(InPut_Qty);
+                 $('#js_add_modal').find('input[name=Yield_Qty]').val(Yield_Qty);
+                 $('#js_add_modal').find('input[name=NG_Qty]').val(NG_Qty);
+                 $('#js_add_modal').find('input[name=Yield]').val((Yield*100).toFixed(2)+ '%');
+                 $('#js_add_modal').find('input[name=NO_Yield]').val((NO_Yield*100).toFixed(2)+ '%');
+                 var  url = StorageReportSetting.urls.queryMachineDetails;
+                 debugger;
+                 $.post(url, { Customer: Customer, Machine:Machine,StartTime:StartTime,EndTime:EndTime,Station:Station,Input_Qty:InPut_Qty}, function (data) {
+                     debugger;
+
+                     var subTable = $('#js_sub_func_table').DataTable({
+                         columns: StorageReportSetting.SubColumns,
+                         ordering: false,
+                         data: data.Machinelist,
+                         destroy: true
+                     });
+
+                     StorageReportSetting.SetSubDatatable(subTable);
+                 });
+             });
+             //储位管理--end
+             $('body').on('click', '.js-grid-export', function () {
+                 debugger;
+                 var strDataTable = $(this).attr('data-id');
+                 var arr=strDataTable.split("|");
+                 var InPut_Qty=arr[0];
+                 var Customer=arr[1];
+                 var Station=arr[2];
+                 var Machine=arr[3];
+                 var Yield_Qty=arr[4];
+                 var Yield=arr[5];
+                 var NO_Yield=arr[6];
+                 var PIS_Customer_Name=arr[7];
+                 var PIS_Station_Name=arr[8];
+                 var NG_Qty=arr[9];
+                 var StartTime= $('#js_s_input_modified_from').val();
+                 var EndTime= $('#js_s_input_modified_to').val();
+
+                 if(StartTime==null||StartTime==""||EndTime==null||EndTime=="")
+                 {
+                     PDMS.Utility.MessageBox.info('请选择查询时间段');
+                     return false;
+                 }else
+                 {    
+                     //var StartTimeD = new Date(StartTime);
+                     //var EndTimeD = new Date(EndTime);
+
+                     //var houTime=   parseInt(EndTimeD - StartTimeD) / 1000 / 60;
+                     //if(houTime>12)
+                     //{
+                     //    PDMS.Utility.MessageBox.info('请选择查询时间段时间超过12小时，不能导出数据！');
+                     //    return false;
+                     //}else
+                     //{
+                     debugger;
+                     //StartTime= StartTime.replace(' ','|');
+                     Machine= Machine.replace('#','%23');
+                         var url = StorageReportSetting.urls.exportMachineNoYieldDetails;
+                     //  (string Customer, string Machine, DateTime StartTime, DateTime EndTime, string Station)  URLEncoder.encode(url,"UTF-8")       
+                         url += "?StartTime=" + StartTime + "&EndTime=" + EndTime + "&Station=" + Station;
+                         url += "&Customer=" + Customer + "&Machine=" + Machine;
+                     
+                         window.location.href = url;
+                    // }
+                     
+                 }
+         
+             });
+
+     })
+    </script>
+}

@@ -1,0 +1,902 @@
+﻿@model PDMS.Model.ViewModels.Fixture_PartVM
+
+<section class="content-header portal-content-header">
+    <h1>
+        治具配件采购单维护作业
+    </h1>
+</section>
+
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題 與 搜尋-->
+        <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+
+               
+            </div><!-- /col-次標題與Search keyword -->
+        </div><!--/次標題 與 搜尋-->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-7">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-5 search-field col-lg-5">
+            @using (Html.BeginForm("DownloadExcel", "Fixture", FormMethod.Post, new { id = "js_form_excel_download" }))
+            {
+                @*<a id="btn_import_download" href="~/ExcelTemplate/FixturePart_Purchase.xlsx" class="fa fa-download btn btn-primary" target="_blank"> 模板下载</a>
+                    <a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal" id="js_btn_upload"> 上传</a>*@
+                <a class="fa btn-query btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query"><i class="fa fa-search"></i> 搜索</a>
+                <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_new_modal" id="js_btn_add"> 新增</a>
+                <a id="js_btn_delete" class="fa fa-times btn btn-primary" role="button"> 删除</a>
+                <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+
+            <!-- 点击导出按钮将搜索窗口的条件传入-->
+                <input type="hidden" id="hidJsonValue" name="JsonValue" />
+                <input type="hidden" id="hidType" name="hidType" />
+            }
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Purchase_datatable">
+                <thead>
+                    <tr id="js_Rereport_datatable_tr">
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>采购单号</th>
+                        <th>订单日期</th>
+                        <th>是否完成</th>
+                        <th>提交状态</th>
+                        <th>删除状态</th>
+                        <th>提单人员</th>
+                        <th>提单时间</th>
+                        <th>修改人员</th>
+                        <th>修改时间</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_Rereport_datatable_foot">
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>采购单号</th>
+                        <th>订单日期</th>
+                        <th>是否完成</th>
+                        <th>提交状态</th>
+                        <th>删除状态</th>
+                        <th>提单人员</th>
+                        <th>提单时间</th>
+                        <th>修改人员</th>
+                        <th>修改时间</th>
+                        <th>备注</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">采购单导入</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        @using (Html.BeginForm("ImportPurchaseExcel", "FixturePart", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                        {
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <label class="control-label" for="js_s_input_upload">选择Excel档</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="选择文件"
+                                               required data-msg-required="请选择要上传的Excel档!" accept=".xls,.xlsx" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">搜索</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_plant">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_plant" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_group">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_group" name="BG_Organization_UID" data-live-search="true"></select>
+
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_FunPlant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Order">采购单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Order_ID" maxlength="20" class="form-control input-sm" id="js_s_input_Order" placeholder="采购单号">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Order_Date">订单日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Order_Date" class="form-control input-sm date" id="js_s_input_Order_Date" placeholder="订单日期">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_ID">配件料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Part_ID" class="form-control input-sm" id="js_s_input_Part_ID" placeholder="配件料号">
+                                </div>
+                            </div>`
+
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Vendor_Info_UID">供应商</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_Vendor_Info_UID" name="Vendor_Info_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Is_Complated">是否完成</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_Is_Complated" name="Is_ComplatedValue" data-live-search="true">
+                                        <option value="ALL" selected>All</option>
+                                        <option value="0">未完成</option>
+                                        <option value="1">已完成</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_SubMit_Date">提交日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="SubMit_Date" class="form-control input-sm date" id="js_s_input_SubMit_Date" placeholder="提交日期">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_ModifyTime">修改日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="ModifyTime" class="form-control input-sm date" id="js_s_input_ModifyTime" placeholder="修改日期">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Created_Name">提交人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Created_Name" class="form-control input-sm" id="js_s_input_Created_Name" placeholder="提交人员">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_ModifyName">修改人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="ModifyName" class="form-control input-sm" id="js_s_input_ModifyName" placeholder="修改人员">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Is_Del_Flag">是否删除</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_Is_Del_Flag" name="Del_Flag_Value" data-live-search="true">
+                                        <option value=0 selected>未删除</option>
+                                        <option value=1>已删除</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Is_Submit">是否提交</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_s_input_Is_Submit" name="Search_Is_Submit" data-live-search="true">
+                                        <option value="ALL" selected>ALL</option>
+                                        <option value="0">未提交</option>
+                                        <option value="1">已提交</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <ul class="list-group validate-error"></ul>
+                            </div>
+                            <input type="hidden" id="hidTab" name="hidTab" />
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    @*<button id="btn_search" type="button" class="btn btn-primary btn-query">搜索</button>*@
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_search"><i class="fa fa-search"></i> 搜索</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog1 modal-lg " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">编辑</h4>
+                </div>
+                @using (Html.BeginForm("EditEmailInfo", "FixturePart", FormMethod.Post, new { id = "js_form_edit_email" }))
+                {
+                <div class="modal-body form-horizontal">
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_s_input_plant_edit">厂区</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm setAttr" id="js_s_input_plant_edit" name="Plant_Organization_UID" data-live-search="true">
+                                @foreach (var item in Model.Plants)
+                                    {
+                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_s_input_group_edit">OP类型</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm setAttr" id="js_s_input_group_edit" name="BG_Organization_UID" data-live-search="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_s_input_FunPlant_edit">功能厂</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm setAttr" id="js_s_input_FunPlant_edit" name="FunPlant_Organization_UID" data-live-search="true"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_s_ntid">是否完成</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Is_Complated" readonly class="form-control input-sm" id="js_s_Is_Complated_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_input_Order_ID_edit">采购单号</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Order_ID" maxlength="20" readonly class="form-control input-sm" id="js_input_Order_ID_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_s_input_Order_Date_edit">订单日期</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Order_Date" class="form-control input-sm date setAttr" id="js_s_input_Order_Date_edit" placeholder="订单日期">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_input_Del_Flag_edit">删除状态</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Del_Flag" readonly class="form-control input-sm" id="js_input_Del_Flag_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-5 control-label" for="js_input_Remarks_edit">备注</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="Remarks" class="form-control input-sm setAttr" id="js_input_Remarks_edit">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="no-margin" />
+                @*<div class="modal-header">
+                        <h4>过滤条件</h4>
+                    </div>*@
+                <h4 style="padding-left:15px">过滤条件</h4>
+
+                <div class="modal-body form-horizontal">
+                    <div class="form-group col-xs-12 col-md-4">
+                        <label class="col-sm-5 control-label" for="js_s_Fixture_No_edit">治具图号</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_s_Fixture_No_edit" name="Fixture_NO" data-live-search="true"></select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                        <label class="col-sm-5 control-label" for="js_s_input_part_id">配件料号</label>
+                        <div class="col-sm-7">
+                            <select class="selectpicker form-control input-sm" id="js_s_input_part_id" name="Fixture_Part_UID" data-live-search="true"></select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-9">
+                            <button type="button" class="fa fa-plus btn btn-primary" id="js_btn_newpart">新增配件</button>
+                            <button type="button" class="fa fa-times btn btn-primary" id="js_btn_deletepart">删除配件</button>
+
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <h4>采购单配件明细区</h4>
+                    </div>
+
+                    <table class="table table-condensed" id="js_Purchase_datatable_detail">
+                        <thead>
+                            <tr>
+                                <th class="table-col-checkbox nosort">
+                                    <input type="checkbox" class="js-checkbox-all" />
+                                </th>
+                                <th class="padding-l-5-i">序号</th>
+                                <th class="padding-l-5-i">料号</th>
+                                <th class="padding-l-5-i">品名</th>
+                                <th class="padding-l-5-i">型号</th>
+                                <th class="padding-l-5-i">供应商</th>
+                                <th class="padding-l-5-i">采购单价</th>
+                                <th class="padding-l-5-i">采购数量</th>
+                                <th class="padding-l-5-i">实际交货量</th>
+                                <th class="padding-l-5-i">预计完成日期</th>
+                                @*<th class="padding-l-5-i">删除状态</th>*@
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <div id="hiddiv" style="display:none">
+                        <div class="form-group col-xs-12">
+                            <h4>采购单交货明细区</h4>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-12">
+                            <div class="col-sm-8">
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="fa fa-plus btn btn-primary" id="js_btn_newSub">新增交货明细</button>
+                                <button type="button" class="fa fa-times btn btn-primary" id="js_btn_deleteSub">删除交货明细</button>
+                            </div>
+                        </div>
+                        <table class="table table-condensed" id="js_Purchase_datatable_detail_sub">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-checkbox nosort">
+                                        <input type="checkbox" class="js-checkbox-all" />
+                                    </th>
+                                    <th class="padding-l-5-i">序号</th>
+                                    <th class="padding-l-5-i">预计交货日期</th>
+                                    <th class="padding-l-5-i">预计交货量</th>
+                                    <th class="padding-l-5-i">实际交货量</th>
+                                    @*<th class="padding-l-5-i">是否完成</th>*@
+                                    <th id="id_deliveryperiod_name" class="padding-l-5-i">交期资料维护者</th>
+                                    <th id="id_deliveryPeriod_date" class="padding-l-5-i">交期资料维护日期</th>
+                                    <th id="id_delivery_name" class="padding-l-5-i">交货资料维护者</th>
+                                    <th id="id_delivery_date" class="padding-l-5-i">交货资料维护日期</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div id="js_haddle_Edit" class="modal-footer">
+                    <button type="button" class="fa fa-times btn btn-primary" id="js_btn_createclear" data-dismiss="modal">取消</button>
+                    <button type="button" class="fa fa-save btn btn-primary" id="js_btn_saveEdit">保存</button>
+                    @*<button type="button" class="fa fa-save btn btn-primary" id="js_btn_submitEdit">提交</button>*@
+                    <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_Config_Submit" id="js_btn_submitEdit"> 提交</a>
+                </div>
+                    <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                <input type="hidden" id="hidFixture_Part_Order_M_UID" name="Fixture_Part_Order_M_UID" />
+                <input type="hidden" id="Is_SubmitFlag" value="false" name="Is_SubmitFlag" />
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_Config_Submit" role="dialog">
+        <div class="modal-dialog1 modal-lg " role="document">
+            <div class="modal-content" style="margin-top:5%">
+                <div class="modal-header" style="background-color:#3c8dbc">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">确认提交</h4>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align:center;font-size:x-large; color:#ff0000">数据提交后不能修改，请确认是否提交</p>
+                </div>
+                <div class="modal-footer" style="background-color:#3c8dbc">
+                    <button type="button" class="fa fa-times btn btn-primary" id="js_btn_ConfigCancel" data-dismiss="modal">取消</button>
+                    <button type="button" class="fa fa-save btn btn-primary" id="js_btn_ConfigSubmit">确认提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/Common.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript" src="~/Scripts/PDMSJS/FixturePartPurchaseJS/DataBind.js"></script>
+    <script type="text/javascript" src="~/Scripts/PDMSJS/FixturePartPurchaseJS/ClickEvent.js"></script>
+    <style type="text/css">
+        body {
+            overflow: auto !important;
+        }
+
+        .modal {
+            overflow: auto !important;
+        }
+
+        .modal-body1 {
+            max-height: 500px;
+            padding: 15px;
+        }
+
+
+        .modal-dialog1 {
+            position: relative;
+            display: table; /* This is important */
+            /*overflow-y: auto;
+        overflow-x: auto;*/
+            width: 70%;
+            margin-left: 15%;
+            min-width: 300px;
+            margin: 0px auto;
+        }
+
+        .js-select-vendor {
+            width: 100px !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+            //二级明细表数据
+            FIXTUREPART_ONEDATA = TAFFY();
+            //三级明细表数据
+            FIXTUREPART_TWODATA = TAFFY();
+            //供应商数据
+            VENDORINFOLIST_DATA = TAFFY();
+
+
+
+            var Purchase = (function () {
+                var urls = {
+                    queryPurchase: '@Html.Raw(Url.Action("QueryPurchase", "FixturePart"))',
+                    queryPurchaseByEdit: '@Html.Raw(Url.Action("QueryPurchaseByUID", "FixturePart"))',
+                    exprot: '@Html.Raw(Url.Action("ExportFixtureResumeByUID", "Fixture"))',
+                    doAllExportFunction: '@Url.Action("DoAllExportFixtureResumeReprot", "Fixture")',
+                    doAllPurchaseordermaintain: '@Url.Action("doAllPurchaseordermaintain", "FixturePart")',
+                    doPartPurchaseordermaintain: '@Url.Action("doPartPurchaseordermaintain", "FixturePart")',
+                    deletePurchase: '@Url.Action("DeletePurchaseByUIDS", "FixturePart")'
+                };
+
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Part_Order_M_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: ""
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                            '</button>' +
+                                            '<div class="hidden popover-content">' +
+                                                '{0}' +
+                                                '{1}' +
+                                                '{2}' +
+                                                '{3}' +
+                                            '</div>';
+                            var buttonView = '<button type="button" class="btn btn-primary btn-xs js-grid-view"  data-nid=' + rowData.Fixture_Part_Order_M_UID + '>查看</button>';
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-nid=' + rowData.Fixture_Part_Order_M_UID + '>编辑</button>';
+                            var buttonSubmitDate = '<button type="button" class="btn btn-primary btn-xs js-grid-submitDate"  data-nid=' + rowData.Fixture_Part_Order_M_UID + '>交期</button>';
+                            var buttonSubmit = '<button type="button" class="btn btn-primary btn-xs js-grid-submit"  data-nid=' + rowData.Fixture_Part_Order_M_UID + '>交货</button>';
+                            result = result.replace('{0}', buttonView);
+
+                            if (rowData.Is_Complated) {
+                                result = result.replace('{1}', '');
+                                result = result.replace('{2}', '');
+                                result = result.replace('{3}', '');
+                            }
+
+                            if (rowData.Del_Flag) {
+                                result = result.replace('{1}', '');
+                                result = result.replace('{2}', '');
+                                result = result.replace('{3}', '');
+                            }
+
+                            if (!rowData.Is_Complated && !rowData.Del_Flag) {
+                                //订单已经提交不能编辑
+                                if (!rowData.Is_SubmitFlag) {
+                                    result = result.replace('{1}', buttonEdit);
+                                    result = result.replace('{2}', '');
+                                    result = result.replace('{3}', '');
+                                } else if (rowData.Is_SubmitFlag) {
+                                    result = result.replace('{1}', '');
+                                    result = result.replace('{2}', buttonSubmitDate);
+                                    result = result.replace('{3}', buttonSubmit);
+                                } else {
+                                    result = result.replace('{1}', '');
+                                    result = result.replace('{2}', '');
+                                    result = result.replace('{3}', '');
+                                }
+                            }
+
+                            //订单已经提交不能编辑
+
+
+                            //var hidPlant = '<input type="hidden" id=hidPlant value=' + rowData.PlantName + '>';
+                            //var hidOptype = '<input type="hidden" id=hidOptype value=' + rowData.OpType_Name + '>';
+                            //var hidFunc = '<input type="hidden" id=hidFunc value=' + rowData.Func_Name + '>';
+                            //result = result + hidPlant + hidOptype + hidFunc;
+
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "PlantName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OpType_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Func_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Order_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Order_Date",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Is_Complated",
+                        render: function (data, type, row, rowIndex) {
+                            if (row.Is_Complated) {
+                                return '已完成';
+                            }
+                            else {
+                                return '未完成';
+                            }
+                        },
+                        className: "min-col-xs"
+                    },
+                     {
+                         data: "Is_SubmitFlag",
+                         render: function (data, type, row, rowIndex) {
+                             if (row.Is_SubmitFlag) {
+                                 return '已提交';
+                             }
+                             else {
+                                 return '未提交';
+                             }
+                         },
+                         className: "min-col-xs"
+                     },
+                       {
+                           data: "Del_Flag",
+                           render: function (data, type, row, rowIndex) {
+                               if (row.Del_Flag) {
+                                   return '已删除';
+                               }
+                               else {
+                                   return '未删除';
+                               }
+                           },
+                           className: "min-col-xs"
+                       },
+                     {
+                         data: "CreatName",
+                         className: "min-col-xs"
+                     },
+                      {
+                          data: "Created_Date",
+                          createdCell: function (td, cellData, rowData, row, col) {
+                              $(td).html(new Date(rowData.Created_Date).Format("yyyy-MM-dd hh:mm"));
+                          },
+                          className: "min-col-xs"
+                      },
+                       {
+                           data: "ModifyName",
+                           className: "min-col-xs"
+                       },
+                        {
+                            data: "ModifyTime",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                $(td).html(new Date(rowData.ModifyTime).Format("yyyy-MM-dd hh:mm"));
+                            },
+                            className: "min-col-xs"
+                        },
+                    {
+                        data: "Remarks",
+                        className: "min-col-xs"
+                    }
+                ];
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _queryPurchase = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Purchase_datatable",
+                        remoteUrl: urls.queryPurchase,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    Date.prototype.Format = function (fmt) { //author: meizz
+                        var o = {
+                            "M+": this.getMonth() + 1, //月份
+                            "d+": this.getDate(), //日
+                            "h+": this.getHours(), //小时
+                            "m+": this.getMinutes(), //分
+                            "s+": this.getSeconds(), //秒
+                            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                            "S": this.getMilliseconds() //毫秒
+                        };
+                        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                        for (var k in o)
+                            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                        return fmt;
+                    }
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        RefreshOPTypesQuery();
+                        $("#js_s_input_Is_Complated").val("0");
+                        _queryPurchase(true);
+                    },
+                    QueryPurchase: function () {
+                        _queryPurchase(false);
+                    }
+                }
+            })();
+            Purchase.Init();
+
+
+            $('#btn_search').click(function () {
+                Purchase.QueryPurchase();
+                $('#js_search_modal').modal('hide');
+            });
+
+            //$('#js_btn_add').click(function () {
+            //    $('#js_btn_submitEdit').show(); js_input_Order_ID_edit
+            //});
+
+            $('#js_btn_submitEdit').click(function () {
+                $('#js_Config_Submit').show();
+            })
+            $('#js_btn_ConfigCancel').click(function () {
+                $('#js_Config_Submit').modal('hide');
+                return false;
+            })
+            $('#js_btn_ConfigSubmit').click(function () {
+                $('#js_Config_Submit').modal('hide');
+                $('#Is_SubmitFlag').val(true);//IsSubmit_Flag表示已经提交
+                $('#js_btn_saveEdit').trigger("click");
+            })
+
+            $('#js_btn_delete').click(function () {
+                var array = new Array();
+                $(".js-checkbox-item").each(function () {
+                    if ($(this).is(':checked')) {
+                        var value = $(this).val();
+                        array.push(value);
+                    }
+                });
+                if (array.length == 0) {
+                    PDMS.Utility.MessageBox.info("请选中一条信息");
+                    return false;
+                }
+
+                var url = Purchase.urls.deletePurchase;
+                var json = JSON.stringify(array);
+                PDMS.Utility.MessageBox.confirm('确定要删除吗？', function () {
+                    $.post(url, { json }, function (data) {
+                        if (data.length > 0) {
+                            PDMS.Utility.MessageBox.info(data, function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("删除成功", function () {
+                                Purchase.QueryPurchase();
+                            });
+                        }
+                    });
+
+                });
+            });
+
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            window.location.reload();
+                        }
+                    }
+
+                });
+            });
+
+
+
+
+            //隐藏modal框时清空值
+            $('#js_btn_clear').on('click', function (e) {
+
+                $('#js_search_modal').find('input').val('');
+                $('#js_search_modal').find('textarea').val('');
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    //$(this).find("option").first().attr("selected", true);
+                    $(this).selectpicker('refresh');
+                });
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Purchase_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = Purchase.urls.doAllPurchaseordermaintain;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = Purchase.urls.doPartPurchaseordermaintain;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+                var $searchform = $('#js_edit_modal');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).selectpicker('refresh');
+                });
+
+                //清空二级明细表数据
+                FIXTUREPART_ONEDATA = TAFFY();
+                //清空三级明细表数据
+                FIXTUREPART_TWODATA = TAFFY();
+                //清空供应商数据
+                VENDORINFOLIST_DATA = TAFFY();
+
+                subTable = $('#js_Purchase_datatable_detail').DataTable({
+                    columns: GetDetailColumn(),
+                    ordering: false,
+                    data: [],
+                    destroy: true
+                });
+
+                subTwoTable = $('#js_Purchase_datatable_detail_sub').DataTable({
+                    columns: GetSubColumn(true),
+                    ordering: false,
+                    data: [],
+                    destroy: true
+                });
+
+            });
+            //#endregion 隐藏modal框时清空值
+
+        });
+
+    </script>
+
+}

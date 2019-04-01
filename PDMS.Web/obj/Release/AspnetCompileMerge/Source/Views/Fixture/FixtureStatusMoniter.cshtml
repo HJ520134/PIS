@@ -1,0 +1,674 @@
+﻿@model PDMS.Model.ViewModels.WorkStationVM
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        @*<div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>*@
+        <div id="js_search_modal">
+            <form id="js_form_query" class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_factory_query">厂区</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                    <option value="0"></option>
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_optype_query">OP类型</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_funplant_query">功能厂</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_project_query">专案</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_project_query" name="Project_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_process_query">制程</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_process_query" name="Process_Info_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_workstation_query">工站</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_workstation_query" name="Workstation_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_workshop_query">车间</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_workshop_query" name="Workshop_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_line_query">产线</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_line_query" name="Production_Line_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_select_machine_query">机台</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker form-control input-sm" id="js_select_machine_query" name="Fixture_Machine_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="col-sm-4" id="js_btn_export_div" style="display: none;">
+                                    <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>
+                                </div>
+                                &nbsp;<label class="control-label" id="second-conter" hidden><span id="second-count">5</span> 秒后刷新</label>
+                                &nbsp;<label class="control-label" id="refresh-info" hidden>正在刷新...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+        <hr class="hr-custom">
+
+        <!--row Search Keyword collapse-->
+        <div class="row">
+            <div id="js_criteria_alert_cnt">
+            </div>
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_WorkStation_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        @*<th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>车间</th>
+                        <th>制程</th>
+                        <th>工站</th>
+                        <th>线别</th>*@
+                        <th>治具唯一编码</th>
+                        <th>治具短码</th>
+                        @*<th>治具图号</th>*@
+                        <th>治具二维码</th>
+                        <th>扫码时间</th>
+                        <th>判定结果</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        @*<th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>车间</th>
+                        <th>制程</th>
+                        <th>工站</th>
+                        <th>线别</th>*@
+                        <th>治具唯一编码</th>
+                        <th>治具短码</th>
+                        @*<th>治具图号</th>*@
+                        <th>治具二维码</th>
+                        <th>扫码时间</th>
+                        <th>判定结果</th>
+                        <th>备注</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            intervalInt = 0;
+            var WorkStationMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        queryWorkStations: '@Url.Action("QueryFixtureStatusMoniter", "Fixture")',
+                        queryWorkStation: '@Url.Action("QueryWorkStation", "Fixture")',
+                        deleteWorkStation: '@Url.Action("DeleteWorkStation", "Fixture")',
+                        exportWorkStationsBySelected: '@Url.Action("ExportFixtureStatusMoniterBySelected", "Fixture")',
+                        exportWorkStationsByQuery: '@Url.Action("ExportFixtureStatusMoniterByQuery", "Fixture")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        getProjectByOPType: '@Url.Action("QueryProjects", "Equipmentmaintenance")',
+                        getProcess_InfoList: '@Url.Action("GetProcess_InfoList", "Fixture")',
+                        getWorkStationListBySearch: '@Url.Action("GetWorkstationListBySearch", "Fixture")',
+                        getWorkshopList: '@Url.Action("GetWorkshopList", "Fixture")',
+                        getLineList: '@Url.Action("GetProductionLineListBySearch", "Fixture")',
+                        getMachineList: '@Url.Action("GetFixtureMachineList", "Fixture")',
+                    };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.FX_SNFixtureID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                    //{
+                    //    data: "PlantName",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "OPName",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "FunPlantName",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "Workshop",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "Process_Info",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "Workstation",
+                    //    className: "min-col-xs"
+                    //}, {
+                    //    data: "Line_Name",
+                    //    className: "min-col-xs"
+                    //},
+                    {
+                        data: "Fixture_Unique_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ShortCode",
+                        className: "min-col-xs"
+                    },
+                    //{
+                    //    data: "Fixture_NO",
+                    //    className: "min-col-xs"
+                    //},
+                    {
+                        data: "TwoD_Barcode",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ScanedTime",
+                        className: "min-col-lg"
+                    },
+                    {
+                        data: "IsPass",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.IsPass) {
+                                $(td).text("Pass");
+                                $(td).css("background-color", "#5cb85c");
+                            } else {
+                                $(td).text("NG");
+                                $(td).css("background-color", "#d9534f");
+                            }
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: "MoniterStatusMark",
+                        className: "min-col-xs"
+                    }
+                ];
+
+                var _getParams = function () {
+                    debugger;
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryWorkStations = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_WorkStation_datatable",
+                        remoteUrl: urls.queryWorkStations,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        //_queryWorkStations(true);//首页不用加载数据
+                    },
+                    queryWorkStations: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryWorkStations(false);
+                    }
+                }
+
+            })();
+            WorkStationMaintenance.Init();
+
+            //$('#js_btn_query').click(function () {
+                //if ($("#js_form_query").valid()) {
+                //    WorkStationMaintenance.queryWorkStations(false);
+                //}
+                //倒计时测试
+            //    refreshData();
+            //});
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_WorkStation_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = WorkStationMaintenance.urls.exportWorkStationsByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    debugger;
+                    var url = WorkStationMaintenance.urls.exportWorkStationsBySelected;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+
+                    var ids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    url += "&IDArr=" + ids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+            })
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                refreshOPTypeSelect();//刷新OP类型
+                refreshSearchFuncPlantSelect();//功能厂
+                refreshSearchProjectSelect();//刷新专案
+                refreshSearchProcessSelect();//刷新制程
+                refreshSearchWorkStationSelect();//刷新工站
+                refreshSearchWorkshopSelect();//刷新车间
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            })
+
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshSearchProcessSelect();//刷新制程
+                refreshSearchWorkStationSelect();//刷新工站
+                refreshSearchWorkshopSelect();//刷新车间
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            })
+
+            //功能厂change
+            $('#js_select_funplant_query').change(function () {
+                refreshSearchProcessSelect();
+                refreshSearchWorkStationSelect();//刷新工站
+                refreshSearchWorkshopSelect();//刷新车间
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //专案change
+            $('#js_select_project_query').change(function () {
+                refreshSearchWorkStationSelect();
+                refreshSearchWorkStationSelect();//刷新工站
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //制程change
+            $('#js_select_process_query').change(function () {
+                refreshSearchWorkStationSelect();//刷新工站
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //工站change
+            $('#js_select_workstation_query').change(function () {
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //车间change
+            $('#js_select_workshop_query').change(function () {
+                refreshSearchLineSelect();//刷新产线
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //产线change
+            $('#js_select_line_query').change(function () {
+                refreshSearchMachineSelect();//刷新机台
+                refreshData();//刷新数据
+            });
+
+            //机台change
+            $('#js_select_machine_query').change(function () {
+                refreshData();
+                //setTimeout(function () {
+                //}, 1000);//刷新数据
+            });
+
+            //刷新OP类型下拉列表
+            function refreshOPTypeSelect() {
+                var factoryUID = $('#js_select_factory_query option:selected').val();
+                url = WorkStationMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                if (factoryUID != 0) {
+                    $.post(url, { plant_OrganizationUID: factoryUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_optype_query').selectpicker('refresh');
+            }
+
+            //刷新功能厂下拉列表
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = WorkStationMaintenance.urls.getFunPlantByOPTypes;
+                var opTypeUID = $('#js_select_optype_query').val();
+                if (opTypeUID > 0) {
+                    $.post(url, { Optype: opTypeUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_funplant_query').selectpicker('refresh');
+            }
+
+            //刷新搜索中专案下拉框
+            function refreshSearchProjectSelect() {
+                $('#js_select_project_query').empty();
+                $('#js_select_project_query').html('<option></option>');
+                var getProjectByOPTypeUrl = WorkStationMaintenance.urls.getProjectByOPType;
+                var optypeUID = $('#js_select_optype_query').val();
+                if (optypeUID > 0) {
+                    $.get(getProjectByOPTypeUrl, { oporgid: optypeUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_project_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_project_query').selectpicker('refresh');
+            }
+
+            //刷新搜索中制程下拉框
+            function refreshSearchProcessSelect() {
+                $('#js_select_process_query').empty();
+                $('#js_select_process_query').html('<option></option>');
+                url = WorkStationMaintenance.urls.getProcess_InfoList;
+                var factoryUID = $('#js_select_factory_query').val();
+                var optypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                if (factoryUID > 0 && optypeUID > 0) {
+                    $.post(url, { Plant_Organization_UID: factoryUID, BG_Organization_UID: optypeUID, FunPlant_Organization_UID: funplantUid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_process_query').append('<option value="' + data[i].Process_Info_UID + '">' + data[i].Process_ID + '_' + data[i].Process_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_process_query').selectpicker('refresh');
+            }
+
+            //刷新搜索中工站下拉框
+            function refreshSearchWorkStationSelect() {
+                $('#js_select_workstation_query').empty();
+                $('#js_select_workstation_query').html('<option></option>');
+                url = WorkStationMaintenance.urls.getWorkStationListBySearch;
+                var factoryUID = $('#js_select_factory_query').val();
+                var opTypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                var projectUID = $('#js_select_project_query').val();
+                var processUID = $('#js_select_process_query').val();
+                if (factoryUID > 0 && opTypeUID > 0 && projectUID > 0 && processUID > 0) {
+                    $.post(url, { Plant_Organization_UID: factoryUID, BG_Organization_UID: opTypeUID, FunPlant_Organization_UID: funplantUid, Project_UID: projectUID, Process_Info_UID: processUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_workstation_query').append('<option value="' + data[i].WorkStation_UID + '">' + data[i].WorkStation_ID + '_' + data[i].WorkStation_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_workstation_query').selectpicker('refresh');
+            }
+
+            //刷新车间列表
+            function refreshSearchWorkshopSelect() {
+                $('#js_select_workshop_query').empty();
+                $('#js_select_workshop_query').html('<option></option>');
+                url = WorkStationMaintenance.urls.getWorkshopList;
+                var factoryUID = $('#js_select_factory_query').val();
+                var opTypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                if (factoryUID > 0 && opTypeUID > 0) {
+                    $.post(url, { Plant_Organization_UID: factoryUID, BG_Organization_UID: opTypeUID, FunPlant_Organization_UID: funplantUid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_workshop_query').append('<option value="' + data[i].Workshop_UID + '">' + data[i].Workshop_ID + '_' + data[i].Workshop_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_workshop_query').selectpicker('refresh');
+            }
+
+            //刷新产线列表
+            function refreshSearchLineSelect() {
+                $('#js_select_line_query').empty();
+                $('#js_select_line_query').html('<option></option>');
+                url = WorkStationMaintenance.urls.getLineList;
+                var factoryUID = $('#js_select_factory_query').val();
+                var opTypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                var workshopUID = $("#js_select_workshop_query").val();
+                var workstationUID = $("#js_select_workstation_query").val();
+                var projectUID = $("#js_select_project_query").val();
+                var processUID = $("#js_select_process_query").val();
+                if (factoryUID > 0 && opTypeUID > 0 && workshopUID > 0 && workstationUID > 0 && projectUID > 0 && processUID > 0) {
+                    $.post(url, { Plant_Organization_UID: factoryUID, BG_Organization_UID: opTypeUID, FunPlant_Organization_UID: funplantUid, Workshop_UID: workshopUID, Workstation_UID: workstationUID, Project_UID: projectUID, Process_Info_UID: processUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_line_query').append('<option value="' + data[i].Production_Line_UID + '">' + data[i].Line_ID + '_' + data[i].Line_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_line_query').selectpicker('refresh');
+            }
+
+            //刷新机台列表
+            function refreshSearchMachineSelect() {
+                $('#js_select_machine_query').empty();
+                $('#js_select_machine_query').html('<option></option>');
+                url = WorkStationMaintenance.urls.getMachineList;
+                var factoryUID = $('#js_select_factory_query').val();
+                var opTypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                var lineUID = $("#js_select_line_query").val();
+
+                if (factoryUID > 0 && opTypeUID > 0 && lineUID > 0) {
+                    $.post(url, { Plant_Organization_UID: factoryUID, BG_Organization_UID: opTypeUID, FunPlant_Organization_UID: funplantUid, Production_Line_UID: lineUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_machine_query').append('<option value="' + data[i].Fixture_Machine_UID + '">' + data[i].Machine_ID + '_' + data[i].Machine_Name + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_machine_query').selectpicker('refresh');
+            }
+
+            //查询数据
+            function refreshData() {
+                if (intervalInt != 0) {
+                    window.clearInterval(intervalInt);
+                }
+                var factoryUID = $('#js_select_factory_query').val();
+                var opTypeUID = $('#js_select_optype_query').val();
+                var funplantUid = $('#js_select_funplant_query').val();
+                if (funplantUid == "" || funplantUid == undefined) {
+                    funplantUid = 0;
+                }
+                var projectUID = $("#js_select_project_query").val();
+                var machineUID = $("#js_select_machine_query").val();
+                var lineUID = $("#js_select_line_query").val();
+                if (factoryUID > 0 && opTypeUID > 0 && projectUID > 0 && machineUID > 0 && lineUID > 0) {
+                    $("#second-conter").hide();
+                    $("#refresh-info").text("正在刷新...");
+                    $("#refresh-info").show();
+                    //setTimeout(WorkStationMaintenance.queryWorkStations(false), 1000)
+                    setTimeout(function () {
+                        WorkStationMaintenance.queryWorkStations(false);
+                        $("#refresh-info").hide();
+                        $("#second-count").text(30);//为30，测试增加了时间
+                        $("#second-conter").show();
+                        $("#js_btn_export_div").show();
+                        //倒计时30秒
+                        intervalInt = window.setInterval(countDown, 1000);
+                    }, 100);//刷新数据
+
+                }
+                else {
+                    var info = "请选择：";
+                    if (!(factoryUID > 0)) {
+                        info += "[厂区]";
+                    }
+                    if ((!opTypeUID > 0)) {
+                        info += "[OP类型]";
+                    }
+                    if (!(projectUID > 0)) {
+                        info += "[专案]";
+                    }
+                    if (!(lineUID > 0)) {
+                        info += "[产线]";
+                    }
+                    if (!(machineUID > 0)) {
+                        info += "[机台]";
+                    }
+                    $("#second-conter").hide();
+                    $("#refresh-info").text(info);
+                    $("#refresh-info").show();
+                    $("#js_btn_export_div").hide();
+                }
+            }
+
+            //倒计时器
+            function countDown() {
+                var s = $("#second-count");
+                var sv = parseInt(s.text());
+                if (sv > 0) {
+                    s.text(sv - 1);
+                }
+                if (sv == 0) {
+                    $("#second-conter").hide();
+                    refreshData();
+                }
+            }
+        });
+    </script>
+}

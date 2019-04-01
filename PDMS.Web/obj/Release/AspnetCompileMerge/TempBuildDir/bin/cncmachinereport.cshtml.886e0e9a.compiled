@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/CNCMachine/CNCMachineReport.cshtml" hash="1626a5ce" filehash="1c08b4a6a06e" flags="110000" assembly="App_Web_bqeqmprt" type="ASP._Page_Views_CNCMachine_CNCMachineReport_cshtml">
+    <filedeps>
+        <filedep name="/Views/CNCMachine/CNCMachineReport.cshtml" />
+    </filedeps>
+</preserve>

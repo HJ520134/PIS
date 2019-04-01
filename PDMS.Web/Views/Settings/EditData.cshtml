@@ -1,0 +1,401 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改WIP</h4>
+                <label>注意：所有数据都必须输入，日期输入格式:2016-03-10,时段输入格式:04:00-06:00</label>
+            </div>
+            @using (Html.BeginForm("Edit_WIP", "Settings", FormMethod.Post, new { id = "js_form_edit_wip" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_interval">当前时段</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Interval_Now" class="form-control input-sm" id="js_s_input_interval" placeholder="当前时段">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_date">当前日期</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Date_Now" class="form-control input-sm" id="js_s_input_date" placeholder="当前日期XXXX-XX-XX">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_last_interval">上一时段</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Interval_Last" class="form-control input-sm" id="js_s_input_last_interval" placeholder="上一时段FF:FF-TT:TT">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_last_date">上一时段所在日期</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Date_Last" class="form-control input-sm" id="js_s_input_last_date" placeholder="上一时段所在日期">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_flowChart_master_uid">FlowChart_Master_UID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="FlowChart_Master_UID" class="form-control input-sm" id="js_s_input_flowChart_master_uid" placeholder="FlowChart_Master_UID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu"><i class="fa fa-save"></i> Save</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改生产数据</h4>
+                <label>注意：所有数据都必须输入，即使为0，也要输入0。</label>
+            </div>
+            @using (Html.BeginForm("Edit_Product", "Settings", FormMethod.Post, new { id = "js_form_edit_product" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_product_uid">Product_UID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Product_UID" class="form-control input-sm" id="js_s_input_product_uid" placeholder="Product_UID">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_picking_qty">领料</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Picking_QTY" class="form-control input-sm" id="js_s_input_picking_qty" placeholder="领料">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_good_qty">良品</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Good_QTY" class="form-control input-sm" id="js_s_input_good_qty" placeholder="良品">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_adjust_qty">调机试制</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Adjust_QTY" class="form-control input-sm" id="js_s_input_adjust_qty" placeholder="调机试制">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_ng_qty">NG数</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="NG_QTY" class="form-control input-sm" id="js_s_input_ng_qty" placeholder="NG数">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_wh_picking_qty">仓库领料</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="WH_Picking_QTY" class="form-control input-sm" id="js_s_input_wh_picking_qty" placeholder="仓库领料">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_wh__qty">入库数</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="WH_QTY" class="form-control input-sm" id="js_s_input_wh__qty" placeholder="入库数">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_wip_qty">WIP数</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="WIP_QTY" class="form-control input-sm" id="js_s_input_wip_qty" placeholder="WIP数">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_is_comfirm">Is_Comfirm</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_s_input_is_comfirm" name="Is_Comfirm">
+                                        <option>1</option>
+                                        <option>0</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_is_last">Is_Last</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_s_input_is_last" name="Is_Last">
+                                        <option>0</option>
+                                        <option>1</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu1"><i class="fa fa-save"></i> Save</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改标志</h4>
+                <label>注意：所有数据都必须输入，日期输入格式:2016-03-10,时段输入格式:04:00-06:00</label>
+            </div>
+            @using (Html.BeginForm("Edit_Flag", "Settings", FormMethod.Post, new { id = "js_form_edit_flag" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_e_date">日期</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Product_Date" class="form-control input-sm" id="js_s_input_e_date" placeholder="日期:XXXX-XX-XX">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_e_interval">时段</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Interval_Time" class="form-control input-sm" id="js_s_input_e_interval" placeholder="时段:FF:FF-TT:TT">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_e_masteruid">Master_UID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Master_UID" class="form-control input-sm" id="js_s_input_e_masteruid" placeholder="Master_UID">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_e_funcplant">功能厂</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Func_Plant" class="form-control input-sm" id="js_s_input_e_funcplant" placeholder="功能厂">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_is_e_comfirm">Is_Comfirmed</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_s_input_is_e_comfirm" name="Is_Comfirmed">
+                                        <option>1</option>
+                                        <option>0</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_is_e_last">Is_Lasted</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_s_input_is_e_last" name="Is_Lasted">
+                                        <option>0</option>
+                                        <option>1</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu2"><i class="fa fa-save"></i> Save</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改枚举值</h4>
+
+            </div>
+            @using (Html.BeginForm("Edit_Enum", "Settings", FormMethod.Post, new { id = "js_form_edit_enum" }))
+            {
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Enum_UID">Enum_UID</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_UID" class="form-control input-sm" id="js_s_input_Enum_UID">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Enum_Type">Enum_Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Type" class="form-control input-sm" id="js_s_input_Enum_Type">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Enum_Name">Enum_Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Name" class="form-control input-sm" id="js_s_input_Enum_Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Enum_Value">Enum_Value</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Value" class="form-control input-sm" id="js_s_input_Enum_Value">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Decription">Decription</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Decription" class="form-control input-sm" id="js_s_input_Enum_Value">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu2"><i class="fa fa-save"></i> Save</button>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">执行SQL语句-慎用！！！！！！！！！！！</h4>
+
+            </div>
+            @using (Html.BeginForm("ExeSql", "Settings", FormMethod.Post, new { id = "js_form_edit_enum" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_s_input_SQLText">SQLText</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="SQLText" class="form-control input-sm" id="js_s_input_SQLText">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_SQLText"><i class="fa fa-save"></i> Save</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">增加枚举值</h4>
+
+            </div>
+            @using (Html.BeginForm("Add_Enum", "Settings", FormMethod.Post, new { id = "js_form_add_enum" }))
+            {
+            <div class="modal-body form-horizontal">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Add_Enum_Type">Enum_Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Type" class="form-control input-sm" id="js_s_Add_input_Enum_Type">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Add_Enum_Name">Enum_Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Name" class="form-control input-sm" id="js_s_input_Add_Enum_Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Add_Enum_Value">Enum_Value</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Enum_Value" class="form-control input-sm" id="js_s_input_Add_Enum_Value">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="js_s_input_Add_Decription">Decription</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Decription" class="form-control input-sm" id="js_s_input_Add_Decription">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu2"><i class="fa fa-save"></i> Save</button>
+            </div>
+            }
+        </div>
+    </div>
+
+
+</section><!-- /.content -->
+@section ViewModals{
+
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+
+        });
+    </script>
+}
+

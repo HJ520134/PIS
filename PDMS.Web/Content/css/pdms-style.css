@@ -1,0 +1,340 @@
+@charset "utf-8";
+.pdms-style {
+	font-family: Microsoft JhengHei;
+	background:#E0E0E0; /*要看底圖是什麼顏色*/
+	margin:5px 5px
+	}
+.header-style {
+	background-image: url(../img/header-bg.png);
+	background-repeat: no-repeat;
+	background-position: 20px 18px;
+	margin-top:10px;
+	}
+.header-icon {
+	position: relative;
+	top:12px;
+	margin-right:6px;
+	}
+.header-title {
+	background: #E0E0E0; /*要看底圖是什麼顏色*/
+	width:auto;
+	float:left;
+	padding-right:12px;
+	font-weight:700;
+	}
+.header-title-name {
+	padding-right:12px
+	}
+.header-smalltitle {
+	position: relative;
+	top:12px;
+	padding-left:12px;
+	color:#A3A3A3;
+	border-left:solid 1px #A3A3A3
+	}	
+.header-span {
+	position:relative;
+	right:-20px;
+	width:20px;
+	height:40px;
+	background: #E0E0E0
+	}
+/* Report icon link */
+.report-section {
+	padding:0px 20px 0px 20px ;
+	}
+.report-box {
+	border-top:solid 1px #FFFFFF;
+	border-left:solid 1px #FFFFFF;
+	border-bottom:solid 1px #AAAAAA;
+	border-right:solid 1px #AAAAAA;
+	padding-bottom:10px;
+	padding-top:10px;
+	padding-left:10px;
+	padding-right:0px;
+	color:#00754F;
+	height:160px;
+	}
+.report-box h5 {
+	margin:10px inherit
+	}
+.report-icon {
+	font-size:55px; 
+	color:#00754F
+	}
+.report-title {
+	color:#292929
+	}
+.report-link {
+	color:#1865C1
+	}	
+.report-link a:hover {
+	background:#00754F
+	}
+/* System icon link */
+.system-section {
+	padding:0px 20px 0px 20px ;
+	}
+.system-section .report-icon {
+	color:#002D48
+	}
+/*=====================Hover.css=====================*/
+/* Overline Reveal */
+.hvr-overline-reveal {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none !important;  
+}
+.hvr-overline-reveal:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  background:#00754F;
+  height: 4px;
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  text-decoration: none  !important;  
+}
+.hvr-overline-reveal:hover:before, .hvr-overline-reveal:focus:before, .hvr-overline-reveal:active:before {
+	-webkit-transform: translateY(0);
+	transform: translateY(0);
+	text-decoration: none !important;  
+}
+/* Overline Reveal -DarkBlue*/
+.hvr-overline-reveal-blue {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none !important;  
+}
+.hvr-overline-reveal-blue:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  background:#002D48;
+  height: 4px;
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  text-decoration: none  !important;  
+}
+.hvr-overline-reveal-blue:hover:before, .hvr-overline-reveal-blue:focus:before, .hvr-overline-reveal-blue:active:before {
+	-webkit-transform: translateY(0);
+	transform: translateY(0);
+	text-decoration: none !important;  
+}
+/* TEXT*/
+.text-gp {
+	color:#008A5E
+	}
+.text-jb {
+	color:#005288
+	}
+.text-nypro {
+	color:#FF6633
+	}
+.text-darkblue {
+	color:#002D48
+	}
+.text-darkgreen {
+	color:#00754F
+	}
+/* margin padding */
+.margin-b-20 {
+	margin-bottom:20px
+	}
+.margin-all-20 {
+	margin:20px
+	}
+.no-padding {
+	padding:0px 
+	}
+/*======box 全部垂直罝中, 要全部各自加這個css======*/
+.pull-middle {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+/*======其他元件======*/
+.hr-custom {
+    margin: 5px 0px 5px 0px;
+	}
+/*====== bootstrap column same height 可置底、中、上，用於ROW ======*/
+.inside-full-height {
+    /*
+  // if you want to give content full height give him height: 100%;
+  // with content full height you can't apply margins to the content
+  // content full height does not work in ie http://stackoverflow.com/questions/27384433/ie-display-table-cell-child-ignores-height-100
+  */
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* columns of same height styles */
+
+.row-height {
+    display: table;
+    table-layout: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+.col-height {
+    display: table-cell;
+    float: none;
+    height: 100%;
+}
+
+.col-top {
+    vertical-align: top;
+}
+
+.col-middle {
+    vertical-align: middle;
+}
+
+.col-bottom {
+    vertical-align: bottom;
+}
+
+/*(min-width: 480px)*/
+@media (min-width: 480px) {
+    .row-xs-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-xs-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-xs-top {
+        vertical-align: top;
+    }
+
+    .col-xs-middle {
+        vertical-align: middle;
+    }
+
+    .col-xs-bottom {
+        vertical-align: bottom;
+    }
+}
+/*(min-width: 768px)*/
+@media (min-width: 768px) {
+    .row-sm-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-sm-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-sm-top {
+        vertical-align: top;
+    }
+
+    .col-sm-middle {
+        vertical-align: middle;
+    }
+
+    .col-sm-bottom {
+        vertical-align: bottom;
+    }
+}
+/*(min-width: 992px)992*/
+@media (min-width: 992px) {
+    .row-md-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-md-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-md-top {
+        vertical-align: top;
+    }
+
+    .col-md-middle {
+        vertical-align: middle;
+    }
+
+    .col-md-bottom {
+        vertical-align: bottom;
+    }
+}
+/*min-width: 1200px*/
+@media (min-width: 1200px) {
+    .row-lg-height {
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+        width: 100%;
+    }
+
+    .col-lg-height {
+        display: table-cell;
+        float: none;
+        height: 100%;
+    }
+
+    .col-lg-top {
+        vertical-align: top;
+    }
+
+    .col-lg-middle {
+        vertical-align: middle;
+    }
+
+    .col-lg-bottom {
+        vertical-align: bottom;
+    }
+}

@@ -1,0 +1,729 @@
+﻿<!-- Main content -->
+@{
+
+    ViewBag.Querydetailsdata = T("QA.Querydetailsdata").Text;
+    ViewBag.Notbeempty = T("QA.Notbeempty").Text;
+    ViewBag.Straightforward = T("QA.Straightforward").Text;
+    ViewBag.CNC = T("QA.CNC").Text;
+    ViewBag.Surface = T("QA.Surface").Text;
+    ViewBag.Anode = T("QA.Anode").Text;
+    ViewBag.Assembly = T("QA.Assembly").Text;
+    ViewBag.OQC = T("QA.OQC").Text;
+    ViewBag.UMP1 = T("QA.UMP1").Text;
+    ViewBag.UMP2 = T("QA.UMP2").Text;
+    ViewBag.UMP3 = T("QA.UMP3").Text;
+}
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+
+    .js_ppcheckdata_datatable > tbody > tbody > tr {
+    }
+
+    .RateDataStyle
+    {
+        width:215px
+    }
+    
+</style>
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5">
+                <small>
+                    <strong>Criteria: </strong>
+                    <label>@T("QA.OPType"):</label><label id="js_OPType" name="OPtype">@ViewBag.OPtype</label>&
+                    <label>@T("QA.Date"):</label><label id="js_datetime" name="ProductDate">@ViewBag.ProductDate</label>&
+                    <label>@T("QA.Project"):</label><label id="js_project" name="ProjectName">@ViewBag.ProjectName</label>&
+                    <label>@T("QA.Materialtypes"):</label><label id="js_meterialType" name="MaterialType">@ViewBag.MaterialType</label>&
+                    <label>@T("QA.Colour"):</label><label id="js_color" name="Color">@ViewBag.Color</label>&
+                    <label>@T("QA.Yieldtype"):</label><label id="js_RateType" name="RateType">@ViewBag.RateType</label>
+                </small>
+            </h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+
+        <div class="col-md-12 search-field col-lg-3">
+            <div class="dropdown">
+                <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("QA.Search")</a>
+            </div>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+
+    <div id="week_label_th">
+        <b> <label id="interval_week_date"></label><br />@T("QA.Report")<br /></b>
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <div id="js_PrdSaleReport_funPlant" hidden="hidden" class="table-responsive">
+                <br />@T("QA.Functionalplantsummary")<br />
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_PrdSaleReport_funPlant_detail">
+                    <thead>
+                        <tr>
+                            <th width="80px">@T("QA.Functionfactory")</th>
+                            <th width="200px">@T("QA.Fineitems")</th>
+                            <th id="First_day_FunPlant">@T("QA.Inputdayshift")</th>
+                            <th id="Second_day_FunPlant">@T("QA.OKdayshift")</th>
+                            <th id="Third_day_FunPlant">@T("QA.NGdayshift")</th>
+                            <th id="fourth_day_FunPlant">@T("QA.Reworkdayshift")</th>
+                            <th id="fifth_day_FunPlant">@T("QA.Inputnightshift")</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div id="js_PrdSaleReport_Process" hidden="hidden" class="table-responsive">
+                <br />@T("QA.Eachstation")<br />
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_PrdSaleReport_Process_detail">
+                    <thead>
+                        <tr>
+                            <th>@T("QA.Process")</th>
+                            <th>@T("QA.Fineitems")</th>
+                            <th id="First_day_Process">@T("QA.Inputdayshift")</th>
+                            <th id="Second_day_Process">@T("QA.OKdayshift")</th>
+                            <th id="Third_day_Process">@T("QA.NGdayshift")</th>
+                            <th id="fourth_day_Process">@T("QA.Reworkdayshift")</th>
+                            <th id="fifth_day_Process">@T("QA.Inputnightshift")</th>
+                            <th>@T("QA.Viewdetails")</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+            <div id="page" class="row" hidden="hidden"></div>
+            <br /><!--/表格-->
+        </div><!-- / 內容 表格列 -->
+        <hr class="hr-custom">
+    </div>
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Plant">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Plant" name="Plant"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_OPType">@T("QA.OPType")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_OPType" name="OPType"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="js_s_input_OP" value="0" />
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                           
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Part_Type">@T("QA.Part")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_Part_Type" name="FlowChart_Master_UID"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                                <div class="col-sm-7 ">
+
+                                    <select class="form-control input-sm " id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtypes")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType"></select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Checkpoint")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_process" name="Process_seq"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden" >
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_RateType">@T("QA.Querytype")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_RateType" name="RateType" class="form-control input-sm">
+                                        <option value="1" selected="selected">一次良率</option>
+                                        <option value="2">二次良率</option>
+                                    </select>
+                                </div>
+                            </div>
+                            @*日报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="ProductDate" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="OPType_OrganizationUID" id="js_s_input_OPType_OrganizationUID" value="" />
+                            <input type="hidden" name="FunPlant" id="js_s_input_FunPlantV" value="" />
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" class="btn btn-primary btn-query">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Queryreport")
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="js_detailInfo_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="js_detailInfo_modal_title">@T("QA.Queryconditions")</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <div class="col-md-12 table-container">
+                        <div class="table-responsive">
+                            <br />@T("QA.Baddetail")<br />
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_PrdSaleReport_detailInfo_table">
+                                <thead>
+                                    <tr>
+                                        <th class="padding-l-5-i">@T("QA.Fineitems")</th>
+                                        <th id="First_day_ExceptionTypeDetails" class="padding-l-5-i">@T("QA.Inputdayshift")</th>
+                                        <th id="Second_day_ExceptionTypeDetails" class="padding-l-5-i">@T("QA.OKdayshift")</th>
+                                        <th id="Third_day_ExceptionTypeDetails" class="padding-l-5-i">@T("QA.NGdayshift")</th>
+                                        <th id="fourth_day_ExceptionTypeDetails" class="padding-l-5-i">@T("QA.Reworkdayshift")</th>
+                                        <th id="fifth_day_ExceptionTypeDetails" class="padding-l-5-i">@T("QA.Inputnightshift")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="page1" class="row" style="display:none"></div>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button id="js_detailInfo_modal_btn_close" type="button" class="btn btn-primary btn_close">
+                    <i class="fa fa-search"></i>
+                    @T("QA.Shutdown")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+<script type="text/javascript" src="~/Scripts/PDMSJS/QAReportJS/ClickEvent.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var subDatatable = null;
+            var QAReportUrls = {
+                QueryProductSaleReportSummery: '@Url.Action("QueryProductSaleReportSummery", "QAProductSaleReport")',
+                QueryProductSaleReportFunplantDetail: '@Url.Action("QueryProductSaleReportFunplantDetail", "QAProductSaleReport")',
+                QueryProductSaleReportProcessDetail: '@Url.Action("QueryProductSaleReportProcessDetail", "QAProductSaleReport")',
+                QueryProductSaleReportExceptionTypeDetail: '@Url.Action("QueryProductSaleReportExceptionTypeDetail", "QAProductSaleReport")',
+                ExcelExport: '@Url.Action("ExportReportExcel", "OQCQuality")'
+            };
+            //功能厂、汇总
+            var PrdSaleReportFunPlant_ALL = (function () {
+                var columns_FunPlantDetail = [
+                    {
+                        data: "FunPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Item",
+                        className: "min-col-xs"
+                    }, {
+                        data: "SearchDataRate_VM",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OndDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    }, {
+                        data: "TwoDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ThreeDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FourDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    }
+                ];
+                var columns_exceptionTypeDetail = [
+                    {
+                        data: "Item",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "SearchDataRate_VM",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "OndDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "TwoDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "ThreeDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "FourDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+                var _qaReportSummery = function (firstLoad) {
+                    var config_funPlant_Summary = {
+                        pageId: "#page",
+                        tableId: "#js_PrdSaleReport_funPlant_detail",
+                        remoteUrl: QAReportUrls.QueryProductSaleReportSummery,
+                        searchParams: getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 490,
+                            columns: columns_FunPlantDetail
+                        }
+                    };
+                    var config_funPlant_detail = {
+                        pageId: "#page",
+                        tableId: "#js_PrdSaleReport_funPlant_detail",
+                        remoteUrl: QAReportUrls.QueryProductSaleReportFunplantDetail,
+                        searchParams: getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 490,
+                            columns: columns_FunPlantDetail
+                        }
+                    };
+                    var funplant_tal = $("#js_tab_select_text").val();
+                    if (!firstLoad)
+                    {
+                        $('#page').page('destroy');
+                    }
+                    if (funplant_tal == "@ViewBag.Straightforward")
+                    {
+                        PDMS.Utility.Pages.Set(config_funPlant_Summary);
+                    }
+                    else
+                    {
+                        $("#js_s_input_FunPlantV").val(funplant_tal);
+                        PDMS.Utility.Pages.Set(config_funPlant_detail);
+                    }
+                };
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryQaReportSummery: function () {
+                        _qaReportSummery(false);
+                    },
+                    ViewColumns: { ExceptionTypeDetailsView: columns_exceptionTypeDetail },
+                }
+            })();
+            //制程
+            var PrdSaleReport_Process_detail = null;
+            var PrdSaleReport_Process = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: "Process",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Item",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "SearchDataRate_VM",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "OndDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "TwoDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "ThreeDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "FourDayBeforeSearchDateRate_VM",
+                        className: "min-col-xs"
+                    }
+                    ,
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var activeTab = $("#js_tab_select_text").val();
+                            if (' 目标良率, 实际良率, 良品数, 投入数, 不良率'.indexOf(rowData.Item) < 0 )
+                                $(td).html('<button type="button" name="grid_edit" class="btn btn-primary btn-xs js-grid-edit" data-toggle="modal" data-target="#js_detailInfo_modal" data-id="' + rowData.Item + '" data-Process="' + rowData.Process + '" data-content="' + rowData.Flowchart_Detail_UID + '">@ViewBag.Querydetailsdata</button>');
+
+                            else
+                                $(td).html('-');
+                        },
+                        className: "min-col-xs"
+                    }
+                ];
+                //#endregion
+                //#region _queryPPCheckData
+                var _queryWeekData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_PrdSaleReport_Process_detail",
+                        remoteUrl: QAReportUrls.QueryProductSaleReportProcessDetail,
+                        searchParams: getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_PrdSaleReport_Process_detail",
+                        remoteUrl: QAReportUrls.QueryProductSaleReportProcessDetail,
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Pages.Set(config);
+                    }
+
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryDayReprotProcessData: function () {
+                        _queryWeekData(false);
+                    },
+                }
+            })();
+            //Grid中View按钮
+            $('body').on('click', '.js-grid-edit', function () {
+                var url = QAReportUrls.QueryProductSaleReportExceptionTypeDetail;
+                var typeFatherName = $(this).data('id');
+                var funPlant = $("#js_tab_select_text").val();
+                var process = $(this).attr('data-Process');
+                var dateTime = $("#js_s_input_date").val();
+                var flowchartMasterUID = $("#js_s_input_project").val();
+                var rateType = $("#js_s_RateType").val();
+                var color = $("#js_color").text();
+                var meterialType = $("#js_meterialType").text();
+                var FlowChart_Detail_UID = $(this).attr('data-content');
+                if (typeFatherName == '不良率')
+                {
+                    typeFatherName = "ALL";
+                }
+                var title = funPlant + '-' + process + '-' + typeFatherName + '-具体不良细项';
+                $("#js_detailInfo_modal_title").text(title);
+
+                var FixtureInventorySetting = (function () {
+                    var urls = {
+                        //画面初始化加载
+                        queryMaterialInventorySum: '@Url.Action("QueryProductSaleReportExceptionTypeDetail", "QAProductSaleReport")',
+                    };
+
+                    var _getParams = function () {
+
+                        return "FlowChart_Detail_UID=" + FlowChart_Detail_UID + "&Color=" + color
+                     + "&ProductDate=" + dateTime +
+                            "&RateType=" + rateType + "&MeterialType=" + meterialType +
+                             "&TypeFatherName=" + typeFatherName + "&FunPlant=" + funPlant ;
+                    };
+
+                    var _queryFixTureInventory = function (firstLoad, buildCriteria) {
+                        var config = {
+                            pageId: "#page1",
+                            tableId: "#js_PrdSaleReport_detailInfo_table",
+                            remoteUrl: urls.queryMaterialInventorySum,
+                            searchParams: _getParams(),
+                            tableOptions: {
+                                columns: PrdSaleReportFunPlant_ALL.ViewColumns.ExceptionTypeDetailsView
+                            }
+                        };
+                        if (!firstLoad) {
+                            $('#page1').page('destroy');
+                        }
+                        if (buildCriteria) {
+                            PDMS.Utility.Criteria.Build();
+                        }
+                        PDMS.Utility.Pages.Set(config);
+                    };
+                    return {
+                        urls: urls,
+                        Init: function () {
+                            PDMS.Utility.Criteria.Init();
+                            _queryFixTureInventory(true, false);
+                        },
+                        queryFixTureInventory: function (buildCriteria) {
+                            if (!buildCriteria) {
+                                buildCriteria = false;
+                            }
+                            _queryFixTureInventory(false, buildCriteria);
+                        }
+                    }
+                })();
+                FixtureInventorySetting.queryFixTureInventory(true);
+
+
+                //$.get(url, {
+                //    TypeFatherName: typeFatherName, FunPlant: funPlant, FlowChart_Detail_UID: FlowChart_Detail_UID, ProductDate: dateTime,
+                //    RateType: rateType, Color: color, MeterialType: meterialType
+                //}, function (data) {
+                   
+                //    $('#js_PrdSaleReport_detailInfo_table').DataTable({
+                //        columns: PrdSaleReportFunPlant_ALL.ViewColumns.ExceptionTypeDetailsView,
+                //        ordering: false,
+                //        data: data,
+                //        destroy: true
+                //    });
+                  
+                //});
+              
+          
+            });
+            function getParams()
+            {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            }
+            //设置日期Tilte
+            function SetTableDateTitle()
+            {
+                var SearchDay = GetDateStr(0);
+                var OneDayBeforeSearchDay = GetDateStr(1);
+                var TwoDayBeforeSearchDay = GetDateStr(2);
+                var ThreeDayBeforeSearchDay = GetDateStr(3);
+                var FourDayBeforeSearchDay = GetDateStr(4);
+                $("#First_day_FunPlant").text(SearchDay);
+                $("#Second_day_FunPlant").text(OneDayBeforeSearchDay);
+                $("#Third_day_FunPlant").text(TwoDayBeforeSearchDay);
+                $("#fourth_day_FunPlant").text(ThreeDayBeforeSearchDay);
+                $("#fifth_day_FunPlant").text(FourDayBeforeSearchDay);
+                $("#First_day_Process").text(SearchDay);
+                $("#Second_day_Process").text(OneDayBeforeSearchDay);
+                $("#Third_day_Process").text(TwoDayBeforeSearchDay);
+                $("#fourth_day_Process").text(ThreeDayBeforeSearchDay);
+                $("#fifth_day_Process").text(FourDayBeforeSearchDay);
+                $("#First_day_ExceptionTypeDetails").text(SearchDay);
+                $("#Second_day_ExceptionTypeDetails").text(OneDayBeforeSearchDay);
+                $("#Third_day_ExceptionTypeDetails").text(TwoDayBeforeSearchDay);
+                $("#fourth_day_ExceptionTypeDetails").text(ThreeDayBeforeSearchDay);
+                $("#fifth_day_ExceptionTypeDetails").text(FourDayBeforeSearchDay);
+
+            }
+            //获取日期Title
+            function GetDateStr(AddDayCount) {
+                var searchDay = new Date($("#js_s_input_date").val());
+                var searDayValue = searchDay.valueOf()
+                var Result = searchDay - AddDayCount * 24 * 60 * 60 * 1000
+
+                var a = new Date(Result)
+                return a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate();
+            }
+            function Initial() {
+                var funplant_tal = $("#js_tab_select_text").val();
+                //var flag = false;
+                PrdSaleReportFunPlant_ALL.Init();
+               
+                if (" @ViewBag.Straightforward".indexOf(funplant_tal) > 0) {
+                  
+                    //$("#js_PrdSaleReport_funPlant_ALL").hide();
+                    $("#js_PrdSaleReport_funPlant").show();
+                    $("#js_PrdSaleReport_Process").hide();
+                    PrdSaleReportFunPlant_ALL.QueryQaReportSummery();
+                }
+                else
+                {
+                    $("#js_PrdSaleReport_funPlant").show();
+                    $("#js_PrdSaleReport_Process").show();
+                    PrdSaleReportFunPlant_ALL.QueryQaReportSummery();
+                    PrdSaleReport_Process.QueryDayReprotProcessData();
+}
+
+            //else
+            //{
+            //        $("#js_PrdSaleReport_funPlant").hide();
+            //        $("#js_PrdSaleReport_Process").hide();
+            //}
+            }
+            Initial();
+            QueryPlant();
+            function CreateTab() {
+                $("#myTab li").remove();
+                $("#myTab").append('<li ><a href="#ALL" data-toggle="tab">@ViewBag.Straightforward</a></li>');
+
+                //循环遍历所有该专案所有功能厂
+                $("#js_s_input_FunPlant option").each(function () { //遍历全部option
+                    var txt = $(this).text(); //获取option的内容
+                    if(txt!="ALL")
+                    $("#myTab").append('<li ><a href="#ALL" data-toggle="tab">' + txt + '</a></li>');
+                });
+                
+
+             
+            }
+            //关闭明细界面
+            $('#js_detailInfo_modal_btn_close').click(function () {
+                $('#js_detailInfo_modal').modal('hide');
+            });
+            //查询条件
+            $('#btn-search').click(function () {
+                //选择日报表时的逻辑
+                //查询时间大于7天则弹出缓慢提醒
+                var t = new Date();
+                var nowDay = t.getDate();
+                var searchDay = new Date($("#js_s_input_date").val()).getDate();
+                var iDays = nowDay - searchDay;
+                if (iDays >= 7) {
+                    $('#btn-search').popover('show');
+                }
+                if ($("#js_s_input_MaterialType").val() == null || $("#js_s_input_project").find("option:selected").text() == null
+                        || $("#js_s_input_date").val() == "") {
+                    PDMS.Utility.MessageBox.error("@ViewBag.Notbeempty");
+                    return;
+                }
+                CreateTab();
+                SetTableDateTitle();//设置table Title
+                PDMS.Utility.Criteria.Build();
+                $('#js_search_modal').modal('hide');
+                //点击Tab查询值
+                $('#myTab a').click(function (e) {
+                    //为日期、时段赋值
+                    var str = $("#js_s_input_date").val();
+                    var activeTab = $(e.target).text();
+                    var mtype = $("#js_s_input_MaterialType").val();
+                    var color = $("#js_s_input_color").val();
+                    var project = $("#js_s_input_project").find("option:selected").text();
+                    var rateType = $("#js_s_RateType").find("option:selected").text();
+
+                    var OPType_OrganizationUID = $('#js_s_input_OPType').val();
+                    $('#js_s_input_OPType_OrganizationUID').val(OPType_OrganizationUID);
+                    $("#js_project").text(project);
+                    $("#js_color").text(color);
+                    $("#js_meterialType").text(mtype);
+                    $("#js_datetime").text(str);
+                    $('#js_RateType').text(rateType);
+
+                    $("#js_s_input_FunPlantV").val(activeTab);
+                    $("#js_tab_select_text").val(activeTab);
+
+                    if ($("#js_form_query").valid()) {
+                        Initial();
+                    }
+                });
+                //#region 默认第一个页签被选中
+                $('#myTab a:first').tab('show');
+                var str = $("#js_s_input_date").val();
+                var activeTab = $('#myTab a:first').text();
+                var mtype = $("#js_s_input_MaterialType").val();
+                var color = $("#js_s_input_color").val();
+                var project = $("#js_s_input_project").find("option:selected").text();
+                var rateType = $("#js_s_RateType").find("option:selected").text();
+                var OPType_OrganizationUID = $('#js_s_input_OPType').val();
+                $('#js_s_input_OPType_OrganizationUID').val(OPType_OrganizationUID);
+                $("#js_project").text(project);
+                $("#js_color").text(color);
+                $("#js_meterialType").text(mtype);
+                $("#js_datetime").text(str);
+                $('#js_RateType').text(rateType);
+                $("#js_s_input_FunPlantV").val(activeTab);
+                $("#js_tab_select_text").val(activeTab);
+                if ($("#js_form_query").valid()) {
+                    Initial();
+                }
+                //#endregion
+            });
+            //清空选择条件
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).find("option").first().attr("selected", true);
+                }
+                );
+                PDMS.Utility.Criteria.Clear();
+            });
+        })
+    </script>
+}

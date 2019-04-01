@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Settings/UserMaintenance.cshtml" hash="1626a5ce" filehash="2eca9e6edc06" flags="110000" assembly="App_Web_oh1yuaka" type="ASP._Page_Views_Settings_UserMaintenance_cshtml">
+    <filedeps>
+        <filedep name="/Views/Settings/UserMaintenance.cshtml" />
+    </filedeps>
+</preserve>

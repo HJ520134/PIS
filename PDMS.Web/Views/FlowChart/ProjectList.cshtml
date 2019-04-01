@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "ProjectList";
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Successfullymodified = T("QA.Successfullymodified").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+
+    ViewBag.Inputdata = T("QA.Inputdata").Text;
+
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.JustInputPercent = T("Production.JustInputPercent").Text;
+}
+<!-- Content Header (Page header) -->
+<section class="content-header portal-content-header">
+    <h1>
+        @T("FlowChart.ProdData")@*-<label id="js_input_func_plant">C</label>*@
+        <small></small>
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content portal-content">
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_plant_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Common.Action")</th>
+                        <th>@T("QA.Client")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("QA.Part")</th>
+                        <th>@T("QA.Productionstage")</th>
+                    </tr>
+                </thead>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+<style>
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-sub-group {
+        display: inline-block;
+        width: 100px;
+        vertical-align: middle;
+    }
+</style>
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+
+            //获取当前功能厂
+            var getCurrentUid = function () {
+                @*$("#js_input_func_plant").html('@ViewBag.ProcessTitle');*@
+                //u1rl = ProjectListUrls.GetCurrentFuncPlant;
+                //$.post(url, function (data) {
+                //    document.getElementById('js_input_func_plant').innerHTML = data;
+                //});
+            }
+
+            var ProjectListUrls = {
+                QueryFlowChartListUrl: '@Url.Action("QueryFlowChartsListData", "FlowChart")',
+                GetCurrentFuncPlant: '@Url.Action("getCurrentPlantName", "ProductInput")',
+
+                EditeFlowChartDataUrl: '@Url.Action("ProductData", "ProductInput")'
+            };
+
+            //#region WarningListSetting
+            var ProjectListSetting = (function () {
+
+                //#region columns
+                var columns = [{
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button type="button"name="grid_edit" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.FlowChartMaster_Uid + '" data-content="' + rowData.FuncPlant + '">@ViewBag.Inputdata</button>');
+                    },
+                    className: "min-col-md"
+                }, {
+                    data: "Customer",
+                    className: "min-col-md"
+                }, {
+                    data: "Project",
+                    className: "min-col-xs"
+                }, {
+                    data: "Part_Types",
+                    className: "min-col-xs"
+                }, {
+                    data: "Product_Phase",
+                    className: "min-col-xs"
+                }];
+                //#endregion
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var queryWarningLists = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_plant_datatable",
+                        remoteUrl: ProjectListUrls.QueryFlowChartListUrl,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        queryWarningLists();
+                        getCurrentUid();
+                    }
+                }
+            })();
+            //#endregion
+            ProjectListSetting.Init();
+            // #region Page elements events
+
+            //Form Validate
+            $('#js_form_maintain').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+
+            //Grid中编辑按钮
+            $('body').on('click', '.js-grid-edit', function () {
+                var uid = $(this).data('id'),
+                     url = ProjectListUrls.EditeFlowChartDataUrl + '?flowChartMaster_Uid=' + uid;
+                window.location.href = url;
+            });
+            //#endregion
+        });
+    </script>
+}
+
+

@@ -1,0 +1,2285 @@
+﻿@using PDMS.Model.EntityDTO;
+@{
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Successfullymodified = T("QA.Successfullymodified").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.Report = T("QA.Report").Text;
+    ViewBag.BaobiaoInfo2 = T("ViewBag.BaobiaoInfo2").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PPConfirm = T("FlowChart.PPConfirm").Text;
+    ViewBag.BaobiaoInfo1 = T("FlowChart.BaobiaoInfo1").Text;
+    ViewBag.PassYield = T("FlowChart.PassYield").Text;
+    ViewBag.Assembly = T("QA.Assembly").Text;
+    ViewBag.Anode = T("QA.Anode").Text;
+    ViewBag.Surface = T("QA.Surface").Text;
+}
+<!-- Main content -->
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+
+    .js_ppcheckdata_datatable > tbody > tbody > tr {
+    }
+</style>
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-12">
+            <div class="dropdown">
+                @*日报表*@
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @T("FlowChart.Columns")
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" id="daily_droplist" aria-labelledby="dropdownMenu1">
+                    @foreach (SystemViewColumnDTO columnItem in ViewBag.Column)
+                    {
+                        if (columnItem.isChecked)
+                        {
+                            if (columnItem.View_Group == "仅用于日报")
+                            {
+                                <li name="onlydaily"><input type="checkbox" class="col-md-3 hiddenColumn" data-column=@columnItem.View_Column_Index data-column2=@columnItem.new_index />@columnItem.View_Column_Name</li>
+                            }
+                            else
+                            {
+                                <li><input type="checkbox" class="col-md-3 hiddenColumn" data-column=@columnItem.View_Column_Index data-column2=@columnItem.new_index />@columnItem.View_Column_Name</li>
+                            }
+                        }
+                        else
+                        {
+                            if (columnItem.View_Group == "仅用于日报")
+                            {
+                                <li name="onlydaily"><input type="checkbox" class="col-md-3 hiddenColumn" checked data-column=@columnItem.View_Column_Index data-column2=@columnItem.new_index />@columnItem.View_Column_Name</li>
+                            }
+                            else
+                            {
+                                <li><input type="checkbox" class="col-md-3 hiddenColumn" checked data-column=@columnItem.View_Column_Index data-column2=@columnItem.new_index />@columnItem.View_Column_Name</li>
+                            }
+                        }
+                    }
+                </ul>
+                <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("Common.Search")</a>
+                <a id="btn_export" class="btn btn-default btn-sm" role="button">
+                    <i class="glyphicon glyphicon-save"></i> @T("Common.Export")
+                </a>
+                <a id="btn_export_floor" style="display:none" class="btn btn-default btn-sm" role="button">
+                    <i class="glyphicon glyphicon-save"></i> 导出楼栋详情
+                </a>
+                @*<a id="btn_ZTL_export" style="display:none" class="btn btn-default btn-sm" role="button">
+                        <i class="glyphicon glyphicon-save"></i> @T("FlowChart.zhitong")
+                    </a>*@
+            </div>
+
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+    <div id="day_label_th">
+        <label>@T("Common.Date"):</label><label id="js_datetime"></label> <label>@T("QA.Timeperiod"):</label><label id="js_time_interval"></label>&nbsp; &nbsp;<label id="js_Funplant"></label> <label>  @T("FlowChart.PassRate"): </label><label id="js_process_first_pass_yield"></label>&nbsp; &nbsp;<label id="js_funcplant_yield"></label>
+    </div>
+    <div id="day_label_thy" style="display:none">
+        <label>@T("Common.TargetYield") : &nbsp;</label><label id="js_TargetYield"></label>&nbsp; &nbsp; &nbsp; <label>@T("Common.TotolNG"): &nbsp;</label><label id="js_TotolNG"></label>&nbsp;  <label id="js_funcPlant_NG"></label> &nbsp; &nbsp;&nbsp;
+        <label>@T("Common.TotoalAdjust") : &nbsp;</label><label id="js_TotoalAdjust"></label>&nbsp; &nbsp;&nbsp;  <label>@T("Common.TotalWH") : &nbsp;</label><label id="js_TotalWH"></label>&nbsp; &nbsp;&nbsp;
+        <label>@T("Common.TotalWIP") : &nbsp;</label><label id="js_TotalWIP"></label>
+    </div>
+    <div id="week_label_th" style="display:none">
+        <b> <label id="interval_week_date"></label> @T("FlowChart.CapaSumReport")</b>
+    </div>
+    <div id="div_table" class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_ppcheckdata_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.ZhuGuan")</th>
+                        <th>@T("Production.TargetYield")</th>
+                        <th>@T("FlowChart.MasterPlan")</th>
+                        <th>@T("FlowChart.TotalRollPlan")</th>
+                        <th>@T("FlowChart.GenRec")</th>
+                        <th>@T("FlowChart.TotalWarehousePicking")</th>
+                        <th>@T("FlowChart.TotalYield")</th>
+                        <th>@T("FlowChart.TotalTransST")</th>
+                        <th>@T("FlowChart.TotalStorage")</th>
+                        <th>@T("FlowChart.TotalNG")</th>
+                        <th>@T("FlowChart.TotalRollRRate")</th>
+                        <th>@T("FlowChart.TotalFinYield")</th>
+                        <th>@T("FlowChart.Plan")</th>
+                        <th>@T("FlowChart.PickMater")</th>
+                        <th>@T("FlowChart.PickWare")</th>
+                        <th>@T("FlowChart.GoodProd")</th>
+                        <th>@T("FlowChart.TryMachine")</th>
+                        <th>@T("FlowChart.Warehousing")</th>
+                        <th>@T("QA.NG")</th>
+                        <th>@T("FlowChart.ReachRate")</th>
+                        <th>@T("FlowChart.Unacommpolished_Reason")</th>
+                        <th>@T("QA.Yield")</th>
+                        <th>@T("FlowChart.notWIP")</th>
+                        <th>@T("FlowChart.WIP")</th>
+                        <th>@T("FlowChart.TotalWIP")</th>
+                        <th>@T("FlowChart.ProperWIP")</th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                    </tr>
+                </thead>
+            </table>
+            @*周报*@
+            <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_ppcheckdata_week">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Common.Date") <br />@T("QA.Process")</th>
+                        <th>Total<br />@T("FlowChart.Plan")</th>
+                        <th>Total<br />@T("FlowChart.Actual")</th>
+                        <th>Total<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Monday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Monday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Monday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Tuesday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Tuesday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Tuesday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Wednesday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Wednesday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Wednesday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Thursday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Thursday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Thursday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Friday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Friday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Friday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Saturday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Saturday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Saturday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>(@T("QA.Sunday"))<br />@T("FlowChart.Plan")</th>
+                        <th>(@T("QA.Sunday"))<br />@T("FlowChart.Actual")</th>
+                        <th>(@T("QA.Sunday"))<br />@T("FlowChart.ReachRate")</th>
+                        <th>@T("FlowChart.Amount")</th>
+                    </tr>
+                </thead>
+
+            </table>
+            @*月报*@
+            <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_ppcheckdata_mounth">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>Total-@T("FlowChart.Plan")</th>
+                        <th>Total-@T("FlowChart.Actual")</th>
+                        <th>Total-@T("FlowChart.ReachRate")</th>
+                    </tr>
+                </thead>
+
+            </table>
+            @*时间段*@
+            <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_ppcheckdata_period">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.ZhuGuan")</th>
+                        <th>@T("Production.TargetYield")</th>
+                        <th>@T("FlowChart.MasterPlan")</th>
+                        <th>@T("FlowChart.GenRec")</th>
+                        <th>@T("FlowChart.TotalWarehousePicking")</th>
+                        <th>@T("FlowChart.TotalYield")</th>
+                        <th>@T("FlowChart.TotalTransST")</th>
+                        <th>@T("FlowChart.TotalStorage")</th>
+                        <th>@T("FlowChart.TotalNG")</th>
+                        <th>@T("FlowChart.TotalFinYield")</th>
+                        <th>@T("FlowChart.ReachRate")</th>
+                        <th>@T("FlowChart.TotalWIP")</th>
+                        <th>@T("FlowChart.notWIP")</th>
+                        <th>@T("FlowChart.WIP")</th>
+
+                    </tr>
+                </thead>
+            </table>
+
+            <div id="page" class="row"></div>
+
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+    <hr class="hr-custom">
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_customer">@T("QA.Client")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_customer" name="Customer"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_project" name="Project"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                                <div class="col-sm-7 ">
+
+                                    <select class="form-control input-sm " id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Flowchart_Master_UID" class="form-control input-sm" id="js_s_input_MasterUID">
+                            <input type="hidden" name="OP" class="form-control input-sm" id="js_s_input_OP">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_part_types">@T("QA.Parttype")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm " id="js_s_input_part_types" name="Part_Types"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                                </div>
+                            </div>
+
+                            @*<div class="form-group col-xs-12 col-md-6" style="display:none">
+                                    <label class="col-sm-5 control-label" for="js_s_input_building">@T("FlowChart.ViewTypet")</label>
+                                    <div class="col-sm-7 ">
+                                        <select class="form-control input-sm" id="js_s_input_building" name="Building">
+                                            <option value="1">@T("FlowChart.ByBuilding")</option>
+                                            <option value="2">@T("QA.Byprocess")</option>
+                                        </select>
+                                    </div>
+                                </div>*@
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_select_type">@T("QA.Querytype")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_select_type" name="Select_Type" class="form-control input-sm">
+                                        <option value="daily" selected="selected">@T("QA.Daily")</option>
+                                        <option value="weekly">@T("FlowChart.weekly")</option>
+                                        <option value="monthly">@T("FlowChart.Monthly")</option>
+                                        <option value="time">@T("QA.Period")</option>
+                                    </select>
+                                </div>
+                            </div>
+                            @*日报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="IsColour_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_IsColour">@T("Common.TotalRepoart")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_IsColour" name="IsColour">
+                                        <option value="0" selected="selected">@T("Common.No")</option>
+                                        <option value="1">@T("Common.Yes")</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="Funplant_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_Funplant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_Funplant" name="FunPlant">
+                                        <option value="ALL" selected="selected">ALL</option>
+                                        <option value="CNC">CNC</option>
+                                        <option value="表面">@T("QA.Surface")</option>
+                                        <option value="阳极">@T("QA.Anode")</option>
+                                        <option value="组装">@T("QA.Assembly")</option>
+                                        <option value="OQC">OQC</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("Common.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Reference_Date" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="day_version">
+                                <label class="col-sm-5 control-label" for="input_day_verion">@T("QA.Version")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm " id="input_day_verion" name="input_day_verion"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time1">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="6" class="form-control input-sm" id="js_s_input_interval_time1" name="Interval_Time">
+                                        <option value="06:00-08:00" >06:00-08:00</option>
+                                        <option value="08:00-10:00">08:00-10:00</option>
+                                        <option value="10:00-12:00">10:00-12:00</option>
+                                        <option value="12:00-14:00">12:00-14:00</option>
+                                        <option value="14:00-16:00">14:00-16:00</option>
+                                        <option value="16:00-18:00">16:00-18:00</option>
+                                        <option value="18:00-20:00">18:00-20:00</option>
+                                        <option value="20:00-22:00">20:00-22:00</option>
+                                        <option value="22:00-00:00">22:00-00:00</option>
+                                        <option value="00:00-02:00">00:00-02:00</option>
+                                        <option value="02:00-04:00">02:00-04:00</option>
+                                        <option value="04:00-06:00">04:00-06:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            @*周报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="week_Select_start" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_weekdate_start">@T("FlowChart.WeekDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Week_Date_Start" class="form-control input-sm date" id="js_s_input_weekdate_start">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="week_Select_end" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_week_interval">@T("FlowChart.cycle")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" name="week_interval" class="form-control input-sm" id="js_s_input_week_interval">
+                                </div>
+
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="week_version" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_week_verion">@T("QA.Version")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm " id="js_s_input_week_verion" name="Week_Version"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="week_version_date" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_week_verion_date">@T("FlowChart.VersionPeriod")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" name="week_interval" class="form-control input-sm" id="js_s_input_week_verion_date">
+                                </div>
+                            </div>
+                            @*月报选项*@
+                            <div class="form-group col-xs-12 col-md-6" id="month_Select" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_begin_date_month">@T("FlowChart.MonthDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Month_Date_Start" class="form-control input-sm date" id="js_s_begin_date_month">
+                                        <input type="hidden" name="Month_Date_End" id="hidMonth_Date_End" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="month_label" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_mounth_interval">@T("FlowChart.cycle")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" name="month_interval" class="form-control input-sm" id="js_s_input_mounth_interval">
+                                    @*<input type="text" hidden="hidden" name="Interval_Date_Start" id="Interval_Date_Start">
+                                        <input type="text" hidden="hidden" name="Interval_Date_End" id="Interval_Date_End">*@
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="month_version" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_month_verion">@T("QA.Version")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm " id="js_s_input_month_verion" name="Month_Version"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="month_version_date" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_month_verion_date">@T("FlowChart.VersionPeriod")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" name="month_interval" class="form-control input-sm" id="js_s_input_month_verion_date">
+                                </div>
+                            </div>
+                            @*时间段*@
+                            <div class="form-group col-xs-12 col-md-6" id="time_Select_Start" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="Interval_Date_Start">@T("Common.StartDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Interval_Date_Start" class="form-control input-sm date" id="Interval_Date_Start">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="time_Select_End" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="Interval_Date_End">@T("Common.EndDate")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="Interval_Date_End" class="form-control input-sm date" id="Interval_Date_End">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="time_version" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_verion_interval">@T("QA.Version")</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm " id="js_s_verion_interval" name="js_s_verion_interval"></select>
+                                    <input type="hidden" name="Verion_Interval" id="Verion_Interval" />
+                                </div>
+                            </div>
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-search" type="button" data-toggle="popover" data-placement="top"
+                            title="@T("FlowChart.patientlywaiting")" data-content="@T("FlowChart.Dayu7tian")！" class="btn btn-primary btn-query">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Queryreport")
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><span id="process-location-detail"></span>@T("QA.Seedetails")</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_sub_func_table_view" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                                        <th class="nosort">@T("FlowChart.Place")</th>
+                                        <th>@T("FlowChart.PickMater")</th>
+                                        <th>@T("FlowChart.PickWare")</th>
+                                        <th>@T("FlowChart.GoodProd")</th>
+                                        <th>@T("QA.NG")</th>
+                                        <th>@T("FlowChart.TryMachine")</th>
+                                        <th>@T("FlowChart.Warehousing")</th>
+                                      
+                                        <th class="nosort">WIP</th>
+                                        <th>@T("FlowChart.Unacommpolished_Reason")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>@T("Common.Cancel")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <script type="text/javascript" src="~/Scripts/PDMSJS/EventReportJS/ClickEvent.js"></script>
+    <script type="text/javascript">
+
+
+
+        $(function () {
+            var subDatatable = null;
+            var ppCheckDataUrls = {
+                QueryPPCheckDatas: '@Url.Action("QueryReportDatasInterval", "EventReportManager")',
+                GetCustomerSource: '@Url.Action("GetCustomerSource", "EventReportManager")',
+                GetProjectSource: '@Url.Action("GetProjectSource", "EventReportManager")',
+                GetProductPhaseSource: '@Url.Action("GetProductPhaseSource", "EventReportManager")',
+                GetSelctOP: '@Url.Action("GetSelctOP", "EventReportManager")',
+                GetPartTypesSource: '@Url.Action("GetPartTypesSource", "EventReportManager")',
+                GetColorSource: '@Url.Action("GetColorSource", "EventReportManager")',
+                GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")',
+                GetDayVersion: '@Url.Action("GetDayVersion", "EventReportManager")',
+                EditWIP: '@Url.Action("EditWIP", "EventReportManager")',
+                DoExportPPCheckData: '@Url.Action("DoExportProductReportNew", "EventReportManager")',
+                DoExportOnePassData: '@Url.Action("DoExportOnePassReport", "EventReportManager")',
+                DoExportWeeklyData: '@Url.Action("DoExportWeeklyData", "EventReportManager")',
+                DoExportIntervalData: '@Url.Action("DoExportIntervalData", "EventReportManager")',
+                SelectPart: '@Url.Action("SelectPart", "EventReportManager")',
+                GetVersionSource: '@Url.Action("GetVersionSource", "EventReportManager")',
+                GetWeekVersionSource: '@Url.Action("GetWeekVersionSource", "EventReportManager")',
+                GetDateTime: '@Url.Action("GetDateTime", "EventReportManager")',
+                QueryTimeSpanReport: '@Url.Action("QueryTimeSpanReport", "EventReportManager")',
+                QueryWeekReport: '@Url.Action("QueryWeekReport", "EventReportManager")',
+                QueryVersionInterval: '@Url.Action("GetVersionBeginEndDate", "EventReportManager")',
+                UpdateColumnInfo: '@Url.Action("UpdateColumnInfo", "EventReportManager")',
+                KeyProcessVertify: '@Url.Action("KeyProcessVertify", "EventReportManager")',
+                QueryInputLocation: '@Url.Action("GetProductInputLocation", "EventReportManager")',
+                QueryInputByProSeq: '@Url.Action("QueryInputByProSeq", "EventReportManager")',
+                ExportFloorDetail: '@Url.Action("ExportFloorDetail", "EventReportManager")'
+            };
+
+
+            function onePassFunction() {
+
+                var onePass = new Number(100.00);
+                var BandPass = new Number(100.00);
+                var Assembly1Pass = new Number(100.00);
+                var PVDPass = new Number(100.00);
+                var Assembly2Pass = new Number(100.00);
+                var OQCPass = new Number(100.00);
+                var CNCPass = new Number(100.00);
+                var ZuZhuangPass = new Number(100.00);
+                var BiaoMianPass = new Number(100.00);
+                var YangJiPass = new Number(100.00);
+                var functionplanName = new Array();
+                var functionplandata = new Array();
+                var sumCount = new Array();
+                var flag = true;
+                //获取功能的名字
+                var ProjectName = $("#js_s_input_project").val();
+                var Part_Types = $("#js_s_input_part_types").val();
+                var Product_Phase = $("#js_s_input_Product_Phase").val();
+                var opType = $("#js_s_input_OP").val()
+                selectProjects = ProjectName + '_' + Part_Types + '_' + Product_Phase;
+                $.post(ppCheckDataUrls.SelectPart, { "selectProjects": selectProjects, "opType": opType }, function (data) {
+                    if (data != "") {
+                        functionplanName = data;
+                    }
+                });
+
+                //var dt = $('#js_ppcheckdata_datatable').DataTable({
+                //    destroy: true,
+                //    scrollX: true,
+
+                //});
+                //new $.fn.dataTable.FixedColumns(dt, { "iLeftColumns": 6 });
+
+                var fun = $("#js_s_input_Funplant").val();
+                $("#js_Funplant").text(fun);
+                var dataTable = PPCheckData.GetTabDataTable();
+                //var onePass = 100.00;
+                var allPassText = "";
+
+                if ($("#js_s_input_customer").val() != "ABCd") {
+
+                    $("#day_label_thy").hide()
+                    $('[name=Color] option').each(function (i, o)   //按颜色统计直通良率
+                    {
+                        if (o.value != "ALL" && $('[name=Color] option').length != 1) {
+                            onePass = new Number(100.00);
+                            if (timeSelectList == '全天' || timeSelectList == 'ALL' || timeSelectList == 'Daily_Sum' || timeSelectList == 'Night_Sum' || timeSelectList == '白班小计' || timeSelectList == '夜班小计') {
+                             
+                            }
+                            else {
+                                dataTable
+                                .rows()
+                                .every(function (rowIdx, tableLoop, rowLoop) {
+
+                                    //良率的值
+                                    var CurrentColor = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.color').text();
+                                    var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FinallyField').text();
+                                    FinallyYield = parseFloat(FinallyYield / 100);
+                                    //var FinallyYield = parseFloat(row.children().eq(17).text()) / 100.00;
+                                    if (FinallyYield != 0 && (CurrentColor == o.value || CurrentColor == "")) {
+                                        onePass = onePass * FinallyYield;
+
+                                    }
+
+                                });
+                            }
+
+                            //$(".yield").val($(".yield").val() + "%");
+                            onePass = onePass.toFixed(2);
+                            allPassText += o.value + "的直通良率：" + onePass + "%"
+
+                        }
+                    });
+
+                    dataTable
+                     .rows()
+                     .every(function (rowIdx, tableLoop, rowLoop) {
+                         $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text()));
+                         $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text()));
+                         $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text()));
+                         $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text()));
+                     });
+
+                    $("#js_process_first_pass_yield").text(allPassText);
+                    //为部分数据加上%
+                    $("#js_ppcheckdata_datatable_wrapper :input").each(function () {
+                        var result = $(this).val();
+                        result += '%';
+                        $(this).val(result);
+                    });
+                    $("td.field").each(function () {
+                        var result1 = $(this).text();
+                        result1 += '%';
+                        $(this).text(result1);
+                    });
+                    $("td.Target_Yield").each(function () {
+                        var result1 = $(this).text();
+                        result1 += '%';
+                        $(this).text(result1);
+                    });
+                    return;
+                }
+
+
+                var TargetYield = new Number(100.00); var AllAdjustQTY = 0;
+                var AllNGQTY = 0; var WIPQTY = 0; var AllWHQTY = 0;
+                var BandNG = 0; var Assemble2NG = 0; OQCNG = 0;
+                Assemble1NG = 0;
+                //时段选择列表，尚未分割
+                var timeSelectList = $("#js_time_interval").text();
+                //如果时段选择为全天，则按照总最终良率来计算
+                if (timeSelectList == '全天' || timeSelectList == 'ALL' || timeSelectList == 'Daily_Sum' || timeSelectList == 'Night_Sum' || timeSelectList == '白班小计' || timeSelectList == '夜班小计') {
+                    for (var i = 0; i < functionplanName.length; i++) {
+                        var tempdata = 100;
+                        var sumTotalCount = 0;
+                        dataTable
+                       .rows()
+                       .every(function (rowIdx, tableLoop, rowLoop) {
+                           var Target_Yield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.Target_Yield').text();
+                           var All_Adjust_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text());
+                           var All_WH_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text());
+                           var All_NG_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text());
+                           var WIP_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text());
+                           var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FinallyField').text();
+                           var FuncPlant = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FuncPlant').text();
+                           FinallyYield = parseFloat(FinallyYield / 100);
+                           Target_Yield = parseFloat(Target_Yield / 100);
+                           if (functionplanName[i] == FuncPlant) {
+                               tempdata = tempdata * FinallyYield;
+                               sumTotalCount += All_NG_QTY;
+                           }
+                       })
+                        functionplandata[i] = tempdata;
+                        sumCount[i] = sumTotalCount;
+                    };
+
+                    dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var Target_Yield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.Target_Yield').text();
+                        var All_Adjust_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text());
+                        var All_WH_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text());
+                        var All_NG_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text());
+                        var WIP_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text());
+
+                        var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FinallyField').text();
+                        var FuncPlant = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FuncPlant').text();
+                        FinallyYield = parseFloat(FinallyYield / 100);
+                        Target_Yield = parseFloat(Target_Yield / 100);
+                        //var FinallyYield = parseFloat(row.children().eq(17).text()) / 100.00;
+                        //新增汇总
+                        if (Target_Yield != 0)
+                            TargetYield = TargetYield * Target_Yield;
+
+                        AllAdjustQTY += All_Adjust_QTY; AllNGQTY += All_NG_QTY; AllWHQTY += All_WH_QTY; WIPQTY += WIP_QTY;
+                        $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_Adjust_QTY').text()));
+                        $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_WH_QTY').text()));
+                        $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text()));
+                        $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text()));
+
+                        if (FinallyYield != 0) {
+                            onePass = onePass * FinallyYield;
+
+                            if (FuncPlant == "PVD") {
+                                PVDPass = PVDPass * FinallyYield;
+                                Assemble1NG += All_NG_QTY;
+                            }
+                            if (FuncPlant == "Assembly1") {
+                                Assembly1Pass = Assembly1Pass * FinallyYield;
+                            }
+                            if (FuncPlant == "Assembly2") {
+                                Assembly2Pass = Assembly2Pass * FinallyYield;
+                                Assemble2NG += All_NG_QTY;
+                            }
+                            if (FuncPlant == "OQC" || FuncPlant == "QA") {
+                                OQCPass = OQCPass * FinallyYield;
+                                OQCNG += All_NG_QTY;
+                            }
+                            if (FuncPlant == "CNC") {
+                                CNCPass = CNCPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Surface") {
+                                BiaoMianPass = BiaoMianPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Assembly") {
+                                ZuZhuangPass = ZuZhuangPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Anode") {
+                                YangJiPass = YangJiPass * FinallyYield;
+                            }
+                        }
+
+                    });
+
+                    TargetYield = TargetYield.toFixed(2);
+                    $("#js_TotolNG").text(toThousands(AllNGQTY));
+                    //$("#js_funcPlant_NG").text("(Band:" + (BandNG) + "    " + "Assemble1:" + (Assemble1NG) + "     " + "Assembly2:" + Assemble2NG + "    " + "OQC:" + OQCNG + ")")
+                    $("#js_TotoalAdjust").text(toThousands(AllAdjustQTY));
+                    $("#js_TotalWH").text(toThousands(AllWHQTY));
+                    $("#js_TotalWIP").text(toThousands(WIPQTY));
+                    $("#js_TargetYield").text(TargetYield + '%');
+                    $("#day_label_thy").show()
+                }
+                else {
+
+                    for (var i = 0; i < functionplanName.length; i++) {
+                        var tempdata = 100;
+                        var sumTotalCount = 0;
+                        dataTable
+                       .rows()
+                       .every(function (rowIdx, tableLoop, rowLoop) {
+                           //良率的值
+                           //$('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text()));
+                           var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.NormalField').text();
+                           var FuncPlant = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FuncPlant').text();
+                           var All_NG_QTY = parseInt($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.All_NG_QTY').text());
+
+                           FinallyYield = parseFloat(FinallyYield / 100);
+                           //var FinallyYield = parseFloat(row.children().eq(17).text()) / 100.00;
+                           if (FinallyYield != 0) {
+                               onePass = onePass * FinallyYield;
+                               //if (Target_Yield != 0)
+                               //    TargetYield = TargetYield * Target_Yield;
+                               if (functionplanName[i] == FuncPlant) {
+                                   tempdata = tempdata * FinallyYield;
+                                   sumTotalCount += All_NG_QTY;
+                               }
+                           }
+                       });
+
+                        functionplandata[i] = tempdata;
+                        sumCount[i] = sumTotalCount;
+                    }
+
+                    dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        //良率的值
+                        $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text(toThousands($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.WIP_QTY').text()));
+                        var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.NormalField').text();
+                        var FuncPlant = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FuncPlant').text();
+                        FinallyYield = parseFloat(FinallyYield / 100);
+                        //var FinallyYield = parseFloat(row.children().eq(17).text()) / 100.00;
+                        if (FinallyYield != 0) {
+                            onePass = onePass * FinallyYield;
+                            if (FuncPlant == "Band") {
+                                BandPass = BandPass * FinallyYield;
+                            }
+                            if (FuncPlant == "PVD") {
+                                PVDPass = PVDPass * FinallyYield;
+                            }
+                            if (FuncPlant == "Assembly1") {
+                                Assembly1Pass = Assembly1Pass * FinallyYield;
+                            }
+                            if (FuncPlant == "Assembly2") {
+                                Assembly2Pass = Assembly2Pass * FinallyYield;
+                            }
+
+                            if (FuncPlant == "CNC") {
+                                CNCPass = CNCPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Surface") {
+                                BiaoMianPass = BiaoMianPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Assembly") {
+                                ZuZhuangPass = ZuZhuangPass * FinallyYield;
+                            }
+                            if (FuncPlant == "@ViewBag.Anode") {
+                                YangJiPass = YangJiPass * FinallyYield;
+                            }
+                            if (FuncPlant == "OQC" || FuncPlant == "QA") {
+                                OQCPass = OQCPass * FinallyYield;
+                            }
+                        }
+
+                    });
+                    $("#day_label_thy").hide()
+                }
+
+                //$(".yield").val($(".yield").val() + "%");
+                onePass = onePass.toFixed(2); PVDPass = PVDPass.toFixed(2);
+                Assembly1Pass = Assembly1Pass.toFixed(2); Assembly2Pass = Assembly2Pass.toFixed(2);
+                BandPass = BandPass.toFixed(2); OQCPass = OQCPass.toFixed(2); BiaoMianPass = BiaoMianPass.toFixed(2);
+                ZuZhuangPass = ZuZhuangPass.toFixed(2); YangJiPass = YangJiPass.toFixed(2);
+                CNCPass = CNCPass.toFixed(2);
+
+                if ($("#js_Funplant").text() == "ALL" && $("#js_s_input_customer").val() == "ABC") {
+                    var strInfo = "";
+                    var strTotalInfo = "";
+                    for (var i = 0; i < functionplanName.length; i++) {
+                        strInfo += functionplanName[i] + " @ViewBag.PassYield：" + functionplandata[i].toFixed('2') + "%" + " "
+                        strTotalInfo += functionplanName[i] + ":" + sumCount[i] + " ";
+                    }
+                    $("#js_funcplant_yield").text(strInfo);
+                    $("#js_funcPlant_NG").text('(' + strTotalInfo + ')');
+                }
+
+                if ($("#js_Funplant").text() == "ALL" && $("#js_s_input_customer").val() != "ABC") {
+                    var strInfo = "CNC @ViewBag.PassYield：" + CNCPass + "%" + "，" + "@ViewBag.Surface @ViewBag.PassYield： " + BiaoMianPass + "%" + " ，" + "@ViewBag.Anode @ViewBag.PassYield：  " + YangJiPass + "%" + " ，" + "@ViewBag.Assembly @ViewBag.PassYield： " + ZuZhuangPass + "%" + " ，" + "OQC @ViewBag.PassYield：  " + OQCPass;
+
+                    $("#js_funcplant_yield").text(strInfo + "%");
+                }
+
+                $("#js_process_first_pass_yield").text(onePass + "%");
+
+                $("#js_ppcheckdata_datatable_wrapper :input").each(function () {
+                    var result = $(this).val();
+                    result += '%';
+                    $(this).val(result);
+                });
+                $("td.field").each(function () {
+                    var result1 = $(this).text();
+                    result1 += '%';
+                    $(this).text(result1);
+                });
+                $("td.Target_Yield").each(function () {
+                    var result1 = $(this).text();
+                    result1 += '%';
+                    $(this).text(result1);
+                });
+                var dataTable = PPCheckData.GetTabDataTable();
+                //var onePass = 100.00;
+
+                //dataTable
+                //    .rows()
+                //    .every(function (rowIdx, tableLoop, rowLoop) {
+                //        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                //        //var target_Yield = row.children().eq(7).text() + '%';
+                //        //row.children().eq(7).text(target_Yield);
+                //        //var r16 = row.children().eq(16).children().val() + '%';
+                //        //row.children().eq(16).children().val(r16);
+                //        //var r17 = row.children().eq(17).text() + '%';
+                //        //row.children().eq(17).text(r17);
+                //        //var r25 = row.children().eq(25).children().val() + '%';
+                //        //row.children().eq(25).children().val(r25);
+                //        //var tyield = row.children().eq(26).text() + '%';
+                //        //row.children().eq(26).text(tyield);
+                //        var FinallyYield = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.FinallyField').text();
+                //        //var FinallyYield = parseFloat(row.children().eq(17).text()) / 100.00;
+                //        var index = FinallyYield.indexOf("%");
+                //        FinallyYield = FinallyYield.substring(0, index);
+                //        if(FinallyYield!=0)
+                //        onePass = onePass * FinallyYield;
+                //    });
+                ////$(".yield").val($(".yield").val() + "%");
+                //onePass = onePass.toFixed(2);
+                var tempValue = onePass;
+                var tempValueStr = new String(tempValue);
+                if ((tempValueStr.indexOf('E') != -1) || (tempValueStr.indexOf('e') != -1)) {
+                    var regExp = new RegExp('^((\\d+.?\\d+)[Ee]{1}(\\d+))$', 'ig');
+                    var result = regExp.exec(tempValue);
+                    var resultValue = "";
+                    var power = "";
+                    if (result != null) {
+                        resultValue = result[2];
+                        power = result[3];
+                        result = regExp.exec(tempValueStr);
+                    }
+
+                    if (resultValue != "") {
+                        if (power != "") {
+                            var powVer = Math.pow(10, power);
+                            // alert("10的" + power + "次方[" + powVer + "]");
+                            resultValue = resultValue * powVer;
+                        }
+                    }
+                    $("#js_process_first_pass_yield").text(resultValue + "%");
+                } else {
+                    $("#js_process_first_pass_yield").text(onePass + "%");
+                }
+
+            }
+
+
+            ////查询类型改变时，当判断出当前查询类型不为日报，需到后台查询该专案是否有设置重点制程
+            $('#js_s_select_type').on('change', function (e) {
+                if ($("#js_s_select_type").val() != "daily") {
+                    $("#btn_export_floor").hide();
+                    var ProjectName = $("#js_s_input_project").val();
+                    var Part_Types = $("#js_s_input_part_types").val();
+                    $.post(ppCheckDataUrls.KeyProcessVertify, { "ProjectName": ProjectName, "Part_Types": Part_Types }, function (data) {
+                        if (data) {
+
+                        } else {
+                            PDMS.Utility.MessageBox.error("该专案未设定关键制程，无法查询周报、月报、时间段数据，请联系总战情PP设定");
+                        }
+                    });
+                } else {
+                    if ($("#js_s_input_customer").val() == "ABC-WUXI")
+                        $("#btn_export_floor").show();
+                }
+            });
+
+            $('#js_s_input_project').on('change', function (e) {
+
+                if ($("#js_s_select_type").val() != "daily") {
+                    var ProjectName = $("#js_s_input_project").val();
+                    var Part_Types = $("#js_s_input_part_types").val();
+                    $.post(ppCheckDataUrls.KeyProcessVertify, { "ProjectName": ProjectName, "Part_Types": Part_Types }, function (data) {
+                        if (data) {
+
+                        } else {
+                            PDMS.Utility.MessageBox.error("该专案未设定关键制程，无法查询周报、月报、时间段数据，请联系总战情PP设定");
+                        }
+                    });
+                }
+            });
+
+            function toThousands(num) {
+                var num = (num || 0).toString(), result = '';
+                while (num.length > 3) {
+                    result = ',' + num.slice(-3) + result;
+                    num = num.slice(0, num.length - 3);
+                }
+                if (num) { result = num + result; }
+                return result;
+            }
+            //日报表初始化绑定
+            var PPCheckData = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.Process_Seq > 1000)
+                                $(td).html(rowData.Process_Seq / 100);
+                            else
+                                $(td).html(rowData.Process_Seq);
+                        },
+                        className: "min-col-xs text-center "
+                    }, {
+                        data: "Place",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-xs  FuncPlant text-center"
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Color",
+                        className: "min-col-xs text-center color"
+                    }, {
+                        data: "DRI",
+                        //createdCell: function (td, cellData, rowData, row, col) {
+                        //    //DRI
+                        //        $(td).html('');
+
+                        //},
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Target_Yield",
+                        className: "min-col-xs Target_Yield text-center"
+                    },
+          {
+
+              data: null,
+              createdCell: function (td, cellData, rowData, row, col) {
+
+                  $(td)
+                      .html(
+                       toThousands(rowData.All_Product_Plan)
+                          );
+              },
+              className: "min-col-xs text-center"
+          },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.All_Product_Plan_Sum)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.All_Picking_QTY)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.All_WH_Picking_QTY)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.All_Good_QTY)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+         {
+
+             data: "All_Adjust_QTY",
+             //createdCell: function (td, cellData, rowData, row, col) {
+
+             //    $(td)
+             //        .html(
+             //         toThousands(rowData.All_Adjust_QTY)
+             //            );
+             //},
+             className: "min-col-xs All_Adjust_QTY text-center"
+         },
+        {
+
+            data: "All_WH_QTY",
+            //createdCell: function (td, cellData, rowData, row, col) {
+
+            //    $(td)
+            //        .html(
+            //         toThousands(rowData.All_WH_QTY)
+            //            );
+            //},
+            className: "min-col-xs All_WH_QTY text-center"
+        },
+         {
+
+             data: "All_NG_QTY",
+             //createdCell: function (td, cellData, rowData, row, col) {
+
+             //    $(td)
+             //        .html(
+             //         toThousands(rowData.All_NG_QTY)
+             //            );
+             //},
+             className: "min-col-xs All_NG_QTY  text-center"
+         },
+         {
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+                 if (rowData.All_Rolling_Yield_Rate > 98 || rowData.All_Rolling_Yield_Rate == 0)
+                     $(td).html('<input type="label" style="width: 70px;"disabled="disabled"  class=" min-col-xs yield" value="' + rowData.All_Rolling_Yield_Rate + '">');
+                 else if (rowData.All_Rolling_Yield_Rate >= 90)
+                     $(td).html('<input type="label" disabled="disabled" style="background-color: yellow;width: 70px;"  class=" min-col-xs yield" value="' + rowData.All_Rolling_Yield_Rate + '">');
+                 else if (rowData.All_Rolling_Yield_Rate < 90)
+                     $(td).html('<input type="label" disabled="disabled" style="background-color: #ff1800;width: 70px;"  class=" min-col-xs yield" value="' + rowData.All_Rolling_Yield_Rate + '">');
+             },
+             className: " min-col-xs text-center"
+         }, {
+             data: "All_Finally_Field",
+             className: "min-col-xs  field FinallyField  text-center"
+         },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+                 $(td)
+                     .html(
+                      toThousands(rowData.Product_Plan)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+        {
+
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+
+                $(td)
+                    .html(
+                     toThousands(rowData.Picking_QTY)
+                        );
+            },
+            className: "min-col-xs text-center"
+        },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.WH_Picking_QTY)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+        {
+
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+
+                $(td)
+                    .html(
+                     toThousands(rowData.Good_QTY)
+                        );
+            },
+            className: "min-col-xs text-center"
+        },
+         {
+
+             data: null,
+             createdCell: function (td, cellData, rowData, row, col) {
+
+                 $(td)
+                     .html(
+                      toThousands(rowData.Adjust_QTY)
+                         );
+             },
+             className: "min-col-xs text-center"
+         },
+        {
+
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+
+                $(td)
+                    .html(
+                     toThousands(rowData.WH_QTY)
+                        );
+            },
+            className: "min-col-xs text-center"
+        },
+        {
+
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+
+                $(td)
+                    .html(
+                     toThousands(rowData.NG_QTY)
+                        );
+            },
+            className: "min-col-xs text-center"
+        }, {
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+                if (rowData.Rolling_Yield_Rate > 98 || rowData.Rolling_Yield_Rate == 0)
+                    $(td).html('<input type="label" style="width: 70px;"disabled="disabled"  class=" min-col-xs yield" value="' + rowData.Rolling_Yield_Rate + '">');
+                else if (rowData.Rolling_Yield_Rate >= 90)
+                    $(td).html('<input type="label" disabled="disabled" style="background-color: yellow;width: 70px;"  class=" min-col-xs yield" value="' + rowData.Rolling_Yield_Rate + '">');
+                else if (rowData.Rolling_Yield_Rate < 90)
+                    $(td).html('<input type="label" disabled="disabled" style="background-color: #ff1800;width: 70px;"  class=" min-col-xs yield" value="' + rowData.Rolling_Yield_Rate + '">');
+            },
+            className: " min-col-xs  text-center"
+        },
+          {
+              data: "Unacommpolished_Reason",
+             
+              className: "min-col-xs   text-center"
+          },
+        {
+            data: "Finally_Field",
+            className: "min-col-xs  field NormalField text-center"
+        },
+
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.NullWIP_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+        {
+
+            data: null,
+            createdCell: function (td, cellData, rowData, row, col) {
+
+                $(td)
+                    .html(
+                     toThousands(rowData.OKWIP_QTY)
+                        );
+            },
+            className: "min-col-xs text-center"
+        },
+                     {
+
+                         data: "WIP_QTY",
+                         //createdCell: function (td, cellData, rowData, row, col) {
+
+                         //    $(td)
+                         //        .html(
+                         //         toThousands(rowData.WIP_QTY)
+                         //            );
+                         //},
+                         className: "min-col-xs WIP_QTY text-center"
+                     },
+                     {
+
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+
+                             $(td)
+                                 .html(
+                                  toThousands(rowData.Proper_WIP)
+                                     );
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            //var result = '<button class="btn btn-default btn-xs" type="button" rel="action-popover">' +
+                            //      '<i class="fa fa-reorder text-info"></i>' +
+                            //      '</button>' +
+                            //      '<div class="hidden popover-content">' +
+                            //         '<a href="LocationList?FlowChart_Detail_UID=' + rowData.FlowChart_Detail_UID + '"><button type="button" class="btn btn-default btn-sm js-grid-info" data-id="' + rowData.FlowChart_Detail_UID + '">楼栋数据详情</button></a>' +
+                            //      '</div>';
+
+                            //时段选择为xx:xx-xx:xx 才可查看详情
+                            var timeReg = /^[\d]{2}:[\d]{2}-[\d]{2}:[\d]{2}$/;
+                            var timeInterval = $("#js_tab_select_text")[0].value;
+                            var isDayAndNight = timeInterval != "夜班小计" && timeInterval != "白班小计";
+                            if (isDayAndNight) {
+                                if (rowData.IsFloor) {
+                                    var input_IsColour = $("#js_s_input_IsColour").val()
+                                    var result = "";
+                                    //专案名字-客户-部件类型-生产阶段-时间段
+                                    if (input_IsColour == 1) {
+                                        result = '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-Process_Seq="' + rowData.Process + '" data-color = "' + rowData.Color + '" data-process = "' + rowData.Process + '"> @T("QA.Seedetails")</button>';
+                                        $(td).html(result);
+                                    } else {
+                                        result = '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-detailid="' + rowData.FlowChart_Detail_UID + '" data-color = "' + rowData.Color + '" data-process = "' + rowData.Process + '"> @T("QA.Seedetails")</button>';
+                                    }
+                                    $(td).html(result);
+                                } else {
+                                    $(td).html("");
+                                }
+                            } else {
+                                $(td).html("");
+                            }
+                        },
+                        className: "text-center"
+                    }];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryPPCheckData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: ppCheckDataUrls.QueryPPCheckDatas,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 800,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns,
+                            createdRow: function (row, data, index) {
+                                $(row).data('Product_Stage', data.Product_Stage);
+                            }
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_datatable",
+                        remoteUrl: ppCheckDataUrls.QueryPPCheckDatas,
+
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            scrollCollapse: true,
+                            paging: false,
+                            fixedColumns: true,
+                            scrollY: 800,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        //PDMS.Utility.Pages.Set(config);
+                        var chk_value = [];
+                        $('input.hiddenColumn:unchecked').each(function () {
+                            chk_value.push($(this).attr('data-column'));
+                        });
+                        //if ($('#js_tab_select_text').val() == "全天" || $('#js_tab_select_text').val() == "白班小计" || $('#js_tab_select_text').val() == "夜班小计") {
+                        //    var sear = new RegExp(',28');
+                        //    if (sear.test(chk_value.toString()) == false) {
+                        //        chk_value.push(28);
+                        //    }
+                        //    var sear2 = new RegExp(',29');
+                        //    if (sear2.test(chk_value.toString()) == false) {
+                        //        chk_value.push(29);
+                        //    }
+                        //}
+                        table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                        //PDMS.Utility.Pages.Set(config);
+                        //var width = $('#js_ppcheckdata_datatable_wrapper').width();
+                        //$('#div_table table').width(width);
+
+                    } else {
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+                    onePassFunction();
+
+
+
+                    //_setQueryCriteria();
+                };
+
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryPPCheckDatas: function () {
+                        _queryPPCheckData(false);
+                    },
+                    GetPPCheckDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_ppcheckdata_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        }
+                        return subDatatable;
+                    },
+
+                    GetTabDataTable: function () {
+                        subDatatable = $('#js_ppcheckdata_datatable').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: columns
+                        });
+                        return subDatatable;
+                    }
+
+
+
+                }
+            })();
+
+
+            function getCookie(name) {
+                var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+                if (arr = document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+
+            function setCookie(name, value) {
+                var Days = 100;
+                var exp = new Date();
+                exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+            }
+            //周报表初始化绑定
+            var WeekDatatable = null;
+            var WeekData = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: "Process",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SumPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SumGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SumYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "MondayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "MondayGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "MondayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "TuesdayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "TuesdayGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "TuesdayYieldRate",
+                        className: " min-col-md text-center"
+                    }, {
+                        data: "WednesdayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "WednesdayGoodQty",
+                        className: " min-col-md text-center"
+                    },
+                    {
+                        data: "WednesdayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "ThursdayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "ThursdayGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "ThursdayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "FridayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "FridayGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "FridayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SaterdayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SaterdayGoodQty",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SaterdayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SundayPlan",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: "SundayGoodQty",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "SundayYieldRate",
+                        className: "min-col-md text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td).html(rowData.SumPlan - rowData.SumGoodQty);
+                        },
+                        className: "min-col-md text-center"
+                    }
+                ];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryWeekData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_week",
+                        remoteUrl: ppCheckDataUrls.QueryWeekReport,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Pages.Set(config);
+                    }
+                };
+
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryWeekData: function () {
+                        _queryWeekData(false);
+                    },
+                }
+            })();
+
+
+            //月报表初始化绑定
+            var MounthDatatable = null;
+            var MounthData = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    },
+                    {
+                        data: "Process",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "SumPlan",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "SumGoodQty",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "SumYieldRate",
+                        className: "min-col-md text-center"
+                    }
+                ];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryMounthData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_mounth",
+                        remoteUrl: ppCheckDataUrls.QueryTimeSpanReport,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true,
+                                footer: true
+                            },
+                            columns: columns
+
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_mounth",
+                        remoteUrl: ppCheckDataUrls.QueryTimeSpanReport,
+
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Pages.Set(config);
+
+                    } else {
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+
+
+                    //_setQueryCriteria();
+                };
+
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryMounthData: function () {
+                        _queryMounthData(false);
+                    },
+                    GetDataTables: function () {
+                        if (WeekDatatable == null) {
+                            WeekDatatable = $('#js_ppcheckdata_mounth').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns,
+                            });
+                        }
+                        return WeekDatatable;
+                    }
+
+                }
+            })();
+
+            //时段报表初始化绑定
+            var PeriodDatatable = null;
+            var PeriodData = (function () {
+                //#region columns
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq min-col-xs"
+                    }, {
+                        data: "Process_Seq",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Place",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "FunPlant",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Process",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Color",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "DRI",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Target_Yield",
+                        render: function (data, type, full, meta) {
+                            return data + '%';
+                        },
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Product_Plan",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Picking_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "WH_Picking_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Good_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "Adjust_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "WH_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "NG_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "All_Finally_Yield",
+                        render: function (data, type, full, meta) {
+                            return data + '%';
+                        },
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "All_Finally_Achieving",
+                        render: function (data, type, full, meta) {
+                            return data + '%';
+                        },
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "WIP_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "NullWip_QTY",
+                        className: "min-col-md text-center"
+                    }, {
+                        data: "OK_QTY",
+                        className: "min-col-md text-center"
+                    }
+                ];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryPPCheckData
+                var _queryPeriodData = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_period",
+                        remoteUrl: ppCheckDataUrls.QueryTimeSpanReport,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns
+
+                        }
+                    };
+                    var config2 = {
+                        pageId: "#page",
+                        tableId: "#js_ppcheckdata_period",
+                        remoteUrl: ppCheckDataUrls.QueryTimeSpanReport,
+
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            fixedHeader: {
+                                header: true
+
+                            },
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        //PDMS.Utility.Pages.Set(config);
+
+                        var chk_value = [];
+                        $('input.hiddenColumn:unchecked').each(function () {
+                            if ($(this).attr('data-column2') != 100) {
+                                chk_value.push($(this).attr('data-column2'));
+                            }
+                        });
+                        table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                        //PDMS.Utility.Pages.Set(config);
+                        //var width = $('#js_ppcheckdata_period').parent().width();
+                        //$('#div_table table').width(width);
+
+                    } else {
+                        PDMS.Utility.Pages.Set(config2);
+                    }
+
+                };
+
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                    },
+                    QueryPeriodData: function () {
+                        _queryPeriodData(false);
+                    },
+                    GetDataTables: function () {
+                        if (PeriodDatatable == null) {
+                            PeriodDatatable = $('#js_ppcheckdata_period').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns,
+                            });
+                        }
+                        return PeriodDatatable;
+                    }
+
+                }
+            })();
+
+            $('input.hiddenColumn').on('change', function (e) {
+                var columnIndex = $(this).attr('data-column');
+                var columnIndex2 = $(this).attr('data-column2');
+                var isDisplay = $(this).prop('checked');
+                //将勾选的数据存入到表中
+                $.get(ppCheckDataUrls.UpdateColumnInfo, { column_Index: columnIndex, isDisplay: isDisplay }, function (data) {
+
+                });
+                if (table != undefined) {
+                    if ($("#js_s_select_type").val() == "time") {
+                        e.preventDefault();
+                        //console.log($(this).attr('data-column2'));
+                        var column = table.column(columnIndex2);
+                        column.visible(isDisplay);
+                        //var width = $('#js_ppcheckdata_period').parent().width();
+                        //$('#div_table table').width(width);
+                    }
+                    else {
+                        if ($(this).attr('data-column') != 30 && $(this).attr('data-column') != 29 ||
+                            !($('#js_tab_select_text').val() == "全天" || $('#js_tab_select_text').val() == "全班小计" || $('#js_tab_select_text').val() == "夜班小计")) {
+                            e.preventDefault();
+                            console.log($(this).attr('data-column'));
+                            var column = table.column(columnIndex);
+                            column.visible(!column.visible());
+                        }
+                    }
+                }
+            });
+
+            $('.dropdown-menu').click(function (e) {
+                e.stopPropagation();
+            });
+
+
+            //#region 查询条件的五级联动------------start
+            //初始化数据
+            GetCustomer();
+            //绑定日报的时段选择下拉框
+
+            //查询条件的五级联动------------end
+
+
+
+            //#endregion
+            function CreateTab() {
+                $("#myTab li").remove();
+                $("#js_s_input_interval_time1 option").each(function (index) {
+                    if (this.selected == true) {
+                        var tabText = $(this).text();
+                        $("#myTab").append('<li ><a href="#AllDay" data-toggle="tab">' + tabText + '</a></li>');
+                    }
+                });
+            }
+
+            //不同的生产阶段用红色分隔线区分开
+            function productStageLine() {
+                var dataTable = PPCheckData.GetPPCheckDatatable();
+                var productStage = 2;
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var row = $('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx);
+                        if (row.data('Product_Stage') == productStage) {
+                            row.attr("style", "border-top: 3px solid red");
+                            productStage++;
+                        }
+                    });
+            }
+
+            //查询条件
+            $('#btn-search').click(function () {
+                if ($("#js_s_select_type").val() == "daily" && $("#js_s_input_customer").val() == "ABC-WUXI") {
+                    $("#btn_export_floor").show();
+                } else {
+                    $("#btn_export_floor").hide();
+                }
+
+                var projectName = $("#js_s_input_project").val();
+
+                document.cookie = setCookie("ProductReportProject", projectName);
+                //选择日报表时的逻辑
+                if ($("#js_s_select_type").val() == "daily") {
+                    //检查必须填写的值是否为空
+                    if ($("#js_s_input_customer").val() == null || $("#js_s_input_project").val() == null
+                        || $("#js_s_input_Product_Phase").val() == null || $("#js_s_input_part_types").val() == null ||
+                        $("#js_s_input_date").val() == "" || $("#js_s_input_interval_time1").val() == null
+                        || $("#input_day_verion").val() == null) {
+
+                        PDMS.Utility.MessageBox.error("@ViewBag.BaobiaoInfo1！");
+                        return;
+                    }
+                    $("#btn_export").show();
+                    $("#btn_ZTL_export").show();
+                    $("#myTab").show();
+                    PPCheckData.Init();
+                    //查询时间大于7天则弹出缓慢提醒
+                    //var t = new Date();
+                    //var nowDay = t.getDate();
+                    //var searchDay = new Date($("#js_s_input_date").val()).getDate();
+                    //var iDays = nowDay - searchDay;
+                    //if (iDays >= 7) {
+                    //    //$('#btn-search').popover('show');
+                    //    //$('#js_delay_text').attr("style", "display:true;");
+                    //}
+
+                    CreateTab();
+                    //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                    PDMS.Utility.Criteria.Build();
+                    $('#js_search_modal').modal('hide');
+                    //点击Tab查询值
+                    $('#myTab a').click(function (e) {
+                        //为日期、时段赋值
+                        var mydate = new Date();
+                        var str = $("#js_s_input_date").val();
+                        var activeTab = $(e.target).text();
+                        $("#js_datetime").text(str);
+                        $("#js_time_interval").text(activeTab);
+                        $("#js_tab_select_text").val(activeTab);
+                        if ($("#js_form_query").valid()) {
+
+                            PPCheckData.QueryPPCheckDatas();
+                            //productStageLine();
+                        }
+                    });
+                    //#region 默认第一个页签被选中
+                    $('#myTab a:first').tab('show');
+                    var mydate = new Date();
+                    var str = $("#js_s_input_date").val();
+                    var activeTab = $('#myTab a:first').text();
+                    $("#js_datetime").text(str);
+                    $("#js_time_interval").text(activeTab);
+                    $("#js_tab_select_text").val(activeTab);
+
+                    if ($("#js_form_query").valid()) {
+
+                        PPCheckData.QueryPPCheckDatas();
+                        //productStageLine();
+                    }
+                    //#endregion
+                } else if ($("#js_s_select_type").val() == "weekly") {
+                    var banBen = $("#js_s_input_week_verion").val();
+                    if (banBen == "" || banBen == null) {
+                        alert("@ViewBag.BaobiaoInfo2。");
+                        return;
+                    }
+                    //$("#interval_week_date").text($("#js_s_input_week_interval").val());
+
+                    //$("#btn_export").hide()
+                    $("#btn_ZTL_export").hide();
+                    $("#myTab").hide();
+                    WeekData.Init();
+                    PDMS.Utility.Criteria.Build();
+                    $('#js_search_modal').modal('hide');
+                    if ($("#js_form_query").valid()) {
+                        WeekData.QueryWeekData();
+                    }
+
+                } else if ($("#js_s_select_type").val() == "monthly" || $("#js_s_select_type").val() == "time") {
+                    if ($("#js_s_select_type").val() == "monthly") {
+
+                        var banBen = $("#js_s_input_month_verion").val();
+                        if (banBen == "" || banBen == null) {
+                            alert("@ViewBag.BaobiaoInfo2。");
+                            return;
+                        }
+                        $("#myTab").hide();
+                        MounthData.Init();
+                        PDMS.Utility.Criteria.Build();
+                        $('#js_search_modal').modal('hide');
+
+                        if ($("#js_form_query").valid()) {
+                            MounthData.QueryMounthData();
+
+                        }
+                    } else {
+                        var banBen = $("#js_s_verion_interval").val();
+                        if (banBen == "" || banBen == null) {
+                            alert("@ViewBag.BaobiaoInfo2。");
+                            return;
+                        }
+                        $("#Verion_Interval").val($("#js_s_verion_interval option:selected").text());
+
+                        $("#btn_ZTL_export").hide()
+                        $("#myTab").hide();
+                        PeriodData.Init();
+                        PDMS.Utility.Criteria.Build();
+                        $('#js_search_modal').modal('hide');
+
+                        if ($("#js_form_query").valid()) {
+
+                            PeriodData.QueryPeriodData();
+
+                        }
+                    }
+                }
+            });
+            //清空选择条件
+            $('#js_search_modal').on('click', '.btn-clear', function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                var $searchform = $('#js_form_query');
+                $searchform.find("select").each(function () {
+                    $(this).find("option").attr("selected", false);
+                    $(this).find("option").first().attr("selected", true);
+                }
+                );
+                PDMS.Utility.Criteria.Clear();
+            });
+            //将后台传过来的datetime格式转换为date类型
+            var formatDate = function (date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? '0' + m : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + m + '-' + d;
+            };
+
+
+            $("#btn_export_floor").click(function () {
+                var searchParam = $('#js_form_query').serializeObject();
+                var IsColour = $("#js_s_input_IsColour").val();
+                var opType = $("#js_s_input_OP").val();
+                $.post(ppCheckDataUrls.ExportFloorDetail,
+                    {
+                        jsonSearchParam: JSON.stringify(searchParam),
+                        submitType: "AJAX",
+                        exportName: "Report",
+                        IsColour: IsColour,
+                        opType: opType
+                    }, function (data) {
+                        if (data == "SUCCESS") {
+                            var url = ppCheckDataUrls.ExportFloorDetail;
+                            url += "?jsonSearchParam=" + JSON.stringify(searchParam) + "&exportName=" + "Report" + "&IsColour=" + IsColour;
+                            window.location.href = url;
+                            //PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+            });
+            //导出按钮
+            $('#btn_export').click(function () {
+                var $selectList = $('#js_ppcheckdata_datatable').find('.js-checkbox-item:checked');
+                var exportValue = $('#js_form_query').serializeObject();
+                if ($("#js_s_select_type").val() == "daily") {
+                    var tabList = [];
+                    $('#myTab a').each(function () {
+                        var tab = {};
+                        tab["Time_InterVal"] = $(this).text();
+                        tabList.push(tab);
+                    });
+                    exportValue.TabList = tabList;
+
+                    //var url = ppCheckDataUrls.DoExportPPCheckData;
+                    //url += "?jsonExportList=" + JSON.stringify(exportValue);
+                    //window.location.href = url;
+
+                    var IsColour = $("#js_s_input_IsColour").val();
+
+                    $.post(ppCheckDataUrls.DoExportPPCheckData, { jsonExportList: JSON.stringify(exportValue), submitType: "AJAX", exportName: "Report", IsColour: IsColour }, function (data) {
+                        if (data == "SUCCESS") {
+                            var url = ppCheckDataUrls.DoExportPPCheckData;
+                            url += "?jsonExportList=" + JSON.stringify(exportValue) + "&exportName=" + "Report" + "&IsColour=" + IsColour;
+                            window.location.href = url;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+
+                } else if ($("#js_s_select_type").val() == "weekly") {
+
+                    $.post(ppCheckDataUrls.DoExportWeeklyData, { jsonExportList: JSON.stringify(exportValue), submitType: "AJAX", exportName: "Report" }, function (data) {
+                        if (data == "SUCCESS") {
+                            var url = ppCheckDataUrls.DoExportWeeklyData;
+                            url += "?jsonExportList=" + JSON.stringify(exportValue) + "&exportName=" + "Report";
+                            window.location.href = url;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+                } else if ($("#js_s_select_type").val() == "monthly" || $("#js_s_select_type").val() == "time") {
+                    exportValue.Interval_Time = "";
+                    $.post(ppCheckDataUrls.DoExportIntervalData, { jsonExportList: JSON.stringify(exportValue), submitType: "AJAX", exportName: "Report" }, function (data) {
+                        if (data == "SUCCESS") {
+                            var url = ppCheckDataUrls.DoExportIntervalData;
+                            url += "?jsonExportList=" + JSON.stringify(exportValue) + "&exportName=" + "Report";
+                            window.location.href = url;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+                }
+            });
+
+            $('#btn_ZTL_export').click(function () {
+
+                if ($("#js_s_select_type").val() == "daily") {
+
+                    var tab = {};
+                    tab["onePass"] = onePass;
+                    tab["CNCPass"] = CNCPass;
+                    tab["BiaoMianPass"] = BiaoMianPass;
+                    tab["YangJiPass"] = YangJiPass;
+                    tab["ZuZhuangPass"] = ZuZhuangPass;
+                    tab["Project"] = $("#js_s_input_project").val();
+                    tab["OQCPass"] = OQCPass;
+
+                    $.post(ppCheckDataUrls.DoExportOnePassData, { jsonExportList: JSON.stringify(tab), submitType: "AJAX", exportName: "@ViewBag.PassYield@ViewBag.Report" }, function (data) {
+                        if (data == "SUCCESS") {
+                            var url = ppCheckDataUrls.DoExportOnePassData;
+                            url += "?jsonExportList=" + JSON.stringify(tab) + "&exportName=" + "@ViewBag.PassYield@ViewBag.Report";
+                            window.location.href = url;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+
+                }
+            });
+
+
+            //Grid中View按钮
+            $('body').on('click', '.js-grid-view', function () {
+
+                var input_IsColour = $("#js_s_input_IsColour").val()
+
+                var flowChartDetailUID = $(this).attr('data-detailid');
+                var color = $(this).attr('data-color');
+                //制程放在详情页标题
+
+                var process = $(this).attr('data-process');
+                $("#process-location-detail").text(process + "_" + color);
+                var date = $("#js_s_input_date").val();
+
+                //var activeTab = $("#myTab li a[aria-expanded='true']")[0];
+                //var timeInterval = activeTab.innerText;
+                //从标签页获取时间间隔
+                var timeInterval = $("#js_tab_select_text")[0].value;
+                var url = ppCheckDataUrls.QueryInputLocation;
+
+                var customer = $("#js_s_input_customer").val()
+                var project = $("#js_s_input_project").val()
+                var Product_Phase = $("#js_s_input_Product_Phase").val()
+                var part_types = $("#js_s_input_part_types").val()
+                var input_date = $("#js_s_input_date").val()
+                var input_time = $("#js_s_input_interval_time").val()
+                var Process_Seq = $(this).attr('data-Process_Seq');//制程序号
+                var optype = $("#js_s_input_OP").val();
+
+                if (input_IsColour == 0) {
+                    url = url;
+                } else {
+                    url = ppCheckDataUrls.QueryInputByProSeq;
+                }
+
+                $.get(url, {
+                    flowChartDetailUID: flowChartDetailUID,
+                    color: color,
+                    process: process,
+                    date: date,
+                    timeInterval: timeInterval,
+                    customer: customer,
+                    project: project,
+                    Product_Phase: Product_Phase,
+                    part_types: part_types,
+                    Process_Seq: Process_Seq,
+                    input_date: input_date,
+                    input_time: timeInterval,
+                    optype: optype
+                }, function (data) {
+
+                    var $modal = $('#js_view_modal');
+
+                    var subTable = $('#js_sub_func_table_view').DataTable({
+                        columns: [
+                    {
+                        data: null,
+                        className: "table-col-seq text-center",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "Place",
+                        className: "min-col-lg text-center"
+                    },
+
+                {
+                    data: "Picking_QTY",
+                    className: "min-col-lg text-center"
+                },
+                {
+                    data: "WH_Picking_QTY",
+                    className: "min-col-lg text-center"
+                }, {
+                    data: "Good_QTY",
+                    className: "min-col-lg text-center"
+                }, {
+                    data: "NG_QTY",
+                    className: "min-col-lg text-center"
+                },
+                            {
+                                data: "Adjust_QTY",
+                                className: "min-col-lg text-center"
+                            }, {
+                                data: "WH_QTY",
+                                className: "min-col-lg text-center"
+                            }, {
+                                data: "WIP_QTY",
+                                className: "min-col-lg   text-center"
+                            }
+                            , {
+                                data: "Unacommpolished_Reason",
+                                className: "min-col-lg   text-center"
+                            }
+                        ],
+                        ordering: false,
+                        data: data,
+                        destroy: true
+                    });
+                    $('#js_view_modal').modal('show');
+                });
+                $('#js_view_modal').modal('show');
+
+            });
+
+        });
+    </script>
+}

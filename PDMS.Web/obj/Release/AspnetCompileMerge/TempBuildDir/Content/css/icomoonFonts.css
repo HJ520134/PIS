@@ -1,0 +1,165 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../Fonts/icomoon.eot?d38njk');
+  src:  url('../Fonts/icomoon.eot?d38njk#iefix') format('embedded-opentype'),
+    url('../Fonts/icomoon.ttf?d38njk') format('truetype'),
+    url('../Fonts/icomoon.woff?d38njk') format('woff'),
+    url('../Fonts/icomoon.svg?d38njk#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-OQC-report:before {
+  content: "\e91f";
+}
+.icon-OQC-add:before {
+  content: "\e920";
+}
+.icon-IPQC-search:before {
+  content: "\e921";
+}
+.icon-OQC-search:before {
+  content: "\e922";
+}
+.icon-IPQC:before {
+  content: "\e923";
+}
+.icon-QA-add:before {
+  content: "\e924";
+}
+.icon-NG-add:before {
+  content: "\e925";
+}
+.icon-drawer:before {
+  content: "\e801";
+}
+.icon-check-product-data:before {
+  content: "\e914";
+}
+.icon-it-system:before {
+  content: "\e915";
+}
+.icon-over-time-system:before {
+  content: "\e916";
+}
+.icon-process-data-input:before {
+  content: "\e917";
+}
+.icon-product-data-input:before {
+  content: "\e918";
+}
+.icon-sf-system:before {
+  content: "\e919";
+}
+.icon-HR:before {
+  content: "\e91a";
+}
+.icon-MRB:before {
+  content: "\e91b";
+}
+.icon-OQC:before {
+  content: "\e91c";
+}
+.icon-s-mold:before {
+  content: "\e91d";
+}
+.icon-E-TRN:before {
+  content: "\e908";
+}
+.icon-MPR:before {
+  content: "\e909";
+}
+.icon-MTR:before {
+  content: "\e90a";
+}
+.icon-MYR:before {
+  content: "\e90b";
+}
+.icon-OR:before {
+  content: "\e90c";
+}
+.icon-report-icon:before {
+  content: "\e90d";
+}
+.icon-report-title:before {
+  content: "\e90e";
+}
+.icon-RFID:before {
+  content: "\e90f";
+}
+.icon-system-icon:before {
+  content: "\e910";
+}
+.icon-system-title:before {
+  content: "\e911";
+}
+.icon-TMR:before {
+  content: "\e912";
+}
+.icon-TR:before {
+  content: "\e913";
+}
+.icon-supplier:before {
+  content: "\e91e";
+}
+.icon-contract-management:before {
+  content: "\e907";
+}
+.icon-contract12:before {
+  content: "\e902";
+}
+.icon-january1:before {
+  content: "\e904";
+}
+.icon-calculator3:before {
+  content: "\e905";
+}
+.icon-longterm:before {
+  content: "\e906";
+}
+.icon-bar-menu:before {
+  content: "\e903";
+}
+.icon-chart30:before {
+  content: "\e900";
+}
+.icon-ascendant6:before {
+  content: "\e901";
+}
+.icon-squares53:before {
+  content: "\e800";
+}
+.icon-letter28:before {
+  content: "\e600";
+}
+.icon-plan2:before {
+  content: "\e601";
+}
+.icon-notifications:before {
+  content: "\e24a";
+}
+.icon-notifications_active:before {
+  content: "\e24d";
+}
+.icon-assignment:before {
+  content: "\e272";
+}
+.icon-assignment_turned_in:before {
+  content: "\e277";
+}
+

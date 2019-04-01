@@ -1,0 +1,53 @@
+﻿
+<div id="div-eboardshow" style="width:100%;height:100px;">
+    <iframe id="iframe-eboardshow" style="width:100%;height:100%;"></iframe>
+</div>
+
+<script>
+    debugger;
+    //浏览器高度
+    document.getElementById('div-eboardshow').style.height = $(window).height() + "px";
+
+    //默认2秒
+    PLAYTIME = 2;
+
+    //html编码解码函数
+    var HtmlUtil = {
+        /*1.用正则表达式实现html转码*/
+        htmlEncodeByRegExp: function (str) {
+            var s = "";
+            if (str.length == 0) return "";
+            s = str.replace(/&/g, "&amp;");
+            s = s.replace(/</g, "&lt;");
+            s = s.replace(/>/g, "&gt;");
+            s = s.replace(/ /g, "&nbsp;");
+            s = s.replace(/\'/g, "&#39;");
+            s = s.replace(/\"/g, "&quot;");
+            return s;
+        },
+        /*2.用正则表达式实现html解码*/
+        htmlDecodeByRegExp: function (str) {
+            var s = "";
+            if (str.length == 0) return "";
+            s = str.replace(/&amp;/g, "&");
+            s = s.replace(/&lt;/g, "<");
+            s = s.replace(/&gt;/g, ">");
+            s = s.replace(/&nbsp;/g, " ");
+            s = s.replace(/&#39;/g, "\'");
+            s = s.replace(/&quot;/g, "\"");
+            return s;
+        }
+    };
+
+    $(function () {
+        debugger;
+        var x = '@ViewBag.JsonParameter';
+        var data = HtmlUtil.htmlDecodeByRegExp('@ViewBag.JsonParameter');
+
+        var src = data;
+        //空格换成%20
+        var url = src.replace(' ','%20');
+        $("#iframe-eboardshow").attr('src', url);
+    });
+
+</script>

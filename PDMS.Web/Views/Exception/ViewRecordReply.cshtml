@@ -1,0 +1,86 @@
+﻿@model IEnumerable<PDMS.Model.EntityDTO.ReplyRecordDTO>
+@{
+   var entities = ViewBag.Entity;
+}
+<section class="content-header portal-content-header">
+    <h1>
+        @T("Exception.Reply")
+    </h1>
+</section>
+<section class="content portal-content">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                @using (Html.BeginForm("ExceptionRecordIndex", "Exception", FormMethod.Get, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" class="fa  btn btn-primary" onclick="javascript:history.go(-1);">
+                        <i class="glyphicon glyphicon-backward"></i>
+                        @T("Common.Back")
+                    </button>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>NTID</th>
+                        <th>@T("Exception.UserName")</th>
+                        <th>@T("Exception.Content")</th>
+                        <th>@T("Exception.ReplyTime")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 0;
+                        if (entities != null)
+                        {
+                            foreach (var item in entities)
+                            {
+                                i = i + 1;
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Modified_UserNTID</td>
+                                    <td>@item.Modified_UserName</td>
+                                    <td>@item.Exception_Content</td>
+                                    <td>@item.Reply_Date</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>NTID</th>
+                        <th>@T("Exception.UserName")</th>
+                        <th>@T("Exception.Content")</th>
+                        <th>@T("Exception.ReplyTime")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+}
+
+

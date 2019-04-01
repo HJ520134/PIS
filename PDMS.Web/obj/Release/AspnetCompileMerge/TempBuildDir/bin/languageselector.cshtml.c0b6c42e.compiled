@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Common/LanguageSelector.cshtml" hash="1626a5ce" filehash="195d2310edb3" flags="110000" assembly="App_Web_15r4vdvx" type="ASP._Page_Views_Common_LanguageSelector_cshtml">
+    <filedeps>
+        <filedep name="/Views/Common/LanguageSelector.cshtml" />
+    </filedeps>
+</preserve>

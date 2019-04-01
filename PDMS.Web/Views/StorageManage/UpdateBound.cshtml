@@ -1,0 +1,2675 @@
+﻿@model PDMS.Model.UpdateBoundVM
+<section class="content-header portal-content-header">
+    @*<h1>出入库维护作业</h1>*@
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-4">
+            </div>
+            <div class="col-md-12 search-field col-lg-8">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_importExcel_modal" id="js_btn_import"> Coupa采购单汇入</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query"> 查询</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="bt_add_inbound"> 入库</button>
+                    <button type="button" class="fa fa-save btn btn-primary" id="js_btn_approve"> 入库审核</button>
+                    <button type="button" class="fa fa-times btn btn-primary" data-toggle="modal" data-target="#js_outedit_modal" id="bt_add_outbound"> 出库</button>
+                    <button type="button" class="fa fa-save btn btn-primary" id="js_btn_outapprove"> 出库审核</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>出入库单类别</th>
+                        <th>出入库单编号</th>
+                        <th>状态</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>仓号</th>
+                        <th>料架号</th>
+                        <th>储位</th>
+                        <th>出入库数量</th>
+                        <th>领用人</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>出入库单类别</th>
+                        <th>出入库单编号</th>
+                        <th>状态</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>型号</th>
+                        <th>仓号</th>
+                        <th>料架号</th>
+                        <th>储位</th>
+                        <th>出入库数量</th>
+                        <th>领用人</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">入库申请</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditInboundApply", "StorageManage", FormMethod.Post, new { id = "js_form_inbound_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_inbound_type">类别</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_inbound_type" name="PartType_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.enums)
+                                        {  //fky2017/11/13
+                                           //if (@item.Enum_Name == "PartType" && @item.Enum_UID!=409)
+                                            if (@item.Enum_Name == "PartType" && @item.Enum_UID != 434)
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_material_uid">料号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_material_uid" name="Material_Uid" data-live-search="true">
+                                        @*<optgroup label="料号_品名_型号">
+                                                <option></option>
+                                                @foreach (var item in Model.mats)
+                                                {
+                                                    <option value=@item.Material_Uid>@item.Material_Id _ @item.Material_Name _ @item.Material_Types</option>
+                                                }
+                                            </optgroup>*@
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_warehouse_storage_uid">储位</label>
+                                <div class="col-sm-7">
+                                    <select class=" selectpicker form-control input-sm" id="js_select_warehouse_storage_uid" name="Warehouse_Storage_UID" data-live-search="true">
+                                        <optgroup label="OP类型_功能厂_仓库_料架_储位"></optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_PU_NO" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PU_NO">采购单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_PU_NO" name="PU_NO">
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_PU_qty" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PU_qty">采购单数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_PU_qty" name="PU_Qty">
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_issue_no" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_issue_no">发料单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_issue_no" name="Issue_NO">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_be_check_qty">待检数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_be_check_qty" name="Be_Check_Qty">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ok_qty">良品数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_ok_qty" name="OK_Qty">
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_ng_qty" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ng_qty">不良品数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_ng_qty" name="NG_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_desc"></label>
+                                <div class="col-sm-7">
+                                    <button type="button" class="btn fa fa-plus btn-primary" id="bt_add_warehouse_storage">建立新储位</button>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Storage_Inbound_UID" />
+                            <input type="hidden" name="Sum_PuQty" id="Sum_PuQty" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_outedit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">出库申请</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditOutbound", "StorageManage", FormMethod.Post, new { id = "js_form_outbound_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_storage_outbound_type">出库单类别</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_storage_outbound_type" name="Storage_Outbound_Type_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.enums)
+                                        {   //fky2017/11/13
+                                            //if (@item.Enum_UID == 387 || @item.Enum_UID == 388)
+                                            if (@item.Enum_UID == 416 || @item.Enum_UID == 417)
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_repair_id" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_repair_id">维修单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_repair_id" name="Repair_id">
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_apply_time" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_apply_time">报修时间</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_apply_time" name="Apply_Time" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_eqp_location" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_eqp_location">机台位置</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_eqp_location" name="EQP_Location" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_equipment" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_equipment">机台EMT</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_equipment" name="Equipment" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_op_types" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_op_types">OP类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_op_types" name="OP_Types" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_funplant" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_funplant">功能厂</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_funplant" name="FunPlant" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_repair_reason" class="form-group col-xs-12 col-md-10 col-lg-10">
+                                <label class="col-sm-3 control-label" for="s_input_repair_reason">故障描述</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" id="s_input_repair_reason" name="Repair_Reason" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_outbound_account">领用人</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_outbound_account" name="Outbound_Account_UID" data-live-search="true">
+                                        @*<option></option>
+                    @foreach (var item in Model.users)
+                    {
+                        <option value=@item.EQPUser_Uid>@item.User_Name</option>
+                    }*@
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_desc" class="form-group col-xs-12 col-md-10 col-lg-10">
+                                <label class="col-sm-3 control-label" for="s_input_desc">出库说明</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" id="s_input_desc" name="Desc">
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>
+                            详细
+                        </h4>
+                        <hr />
+                        <div class="row" id="div_sub_ware">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_material_out_uid">料号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_material_out_uid" name="Material_Uid" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_warehouse_storage_out_uid">储位</label>
+                                <div class="col-sm-7">
+                                    <select class=" selectpicker form-control input-sm" id="js_select_warehouse_storage_out_uid" name="Warehouse_Storage_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div style="float:right;padding-right:18px">
+                                <button type="button" class="btn btn-primary btn-sm" id="bt_add_mat">
+                                    <i class=" fa fa-plus"></i> 添加
+                                </button>
+                                <button type="button" class="btn  btn-primary btn-sm" id="bt_remove_mat">
+                                    <i class="fa fa-times"> </i> 删除
+                                </button>
+                            </div>
+                            @*<div class="col-sm-4">
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn fa fa-plus btn-primary" id="bt_add_mat">添加</button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn fa fa-times btn-primary" id="bt_remove_mat">删除</button>
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class=" table col-sm-12 table-condensed" id="table_material" name="table_material">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="table-col-checkbox nosort">
+                                                <input type="checkbox" class="js-checkbox-all" />
+                                            </th>
+                                            <th class="padding-1-5-i " style="display:none">料号UID</th>
+                                            <th class="padding-l-5-i text-center">料号</th>
+                                            <th class="padding-1-5-i " style="display:none">储位UID</th>
+                                            <th class="padding-1-5-i text-center">储位</th>
+                                            <th class="padding-1-5-i " style="display:none">类别UID</th>
+                                            <th class="padding-1-5-i text-center">材料类别</th>
+                                            <th class="padding-1-5-i text-center">待审数量</th>
+                                            <th class="padding-1-5-i text-center">申请数量</th>
+                                            <th class="padding-1-5-i text-center">库存数量</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Repair_Uid" id="Repair_Uid" value="0" />
+                        <input type="hidden" name="Storage_Outbound_M_UID" value="0" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_out"><i class="fa fa-save"></i> 存档</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_approve_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">入库审核</h4>
+                </div>
+                @using (Html.BeginForm("ApproveInboundByUid", "StorageManage", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_Inbound_ID">入库单编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_Inbound_ID" name="Storage_Inbound_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_Inbound_Type">入库单类别</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_Inbound_Type" name="Storage_Inbound_Type" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_inbound_type">类别</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_inbound_type" name="PartType_UID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_id">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_id" name="Material_Id" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_name">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_name" name="Material_Name" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_types">型号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_material_types" name="Material_Types" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_PU_NO" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PU_NO">采购单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_PU_NO" name="PU_NO" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_PU_qty" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PU_qty">采购单数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm" id="s_input_PU_qty" name="PU_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_issue_no" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_issue_no">发料单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_issue_no" name="Issue_NO" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_be_check_qty">待检数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_be_check_qty" name="Be_Check_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ok_qty">良品数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ok_qty" name="OK_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_ng_qty" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ng_qty">不良品数量</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ng_qty" name="NG_Qty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_desc">仓库号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ng_qty" name="Warehouse_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_desc">料架号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ng_qty" name="Rack_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_desc">储位号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ng_qty" name="Storage_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_status">状态</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_status" name="Status" readonly>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="currentID" id="currentID" />
+                            <input type="hidden" name="Storage_Inbound_UID" />
+                            <input type="hidden" name="NeedShow" id="NeedShow" />
+
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="inbound_pre"><i class="fa"></i> 上一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="inbound_next"><i class="fa"></i> 下一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="inbound_close"><i class="fa fa-times"></i> 返回</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_approve_save"><i class="fa fa-save"></i> 审核</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_outapprove_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">出库审核</h4>
+                </div>
+                @using (Html.BeginForm("ApproveOutboundByUid", "StorageManage", FormMethod.Post, new { id = "js_form_outbound_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_Outbound_ID">出库单编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_Outbound_ID" name="Storage_Outbound_ID" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_storage_outbound_type">出库单类别</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_storage_outbound_type" name="Storage_Outbound_Type" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_repair_id2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_repair_id">维修单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_repair_id" name="Repair_id" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_apply_time2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_apply_time">报修时间</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_apply_time" name="Apply_Time" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_eqp_location2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_eqp_location">机台位置</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_eqp_location" name="EQP_Location" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_equipment2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_equipment">机台EMT</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_equipment" name="Equipment" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_op_types2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_op_types">OP类型</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_op_types" name="OP_Types" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_funplant2" class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_funplant">功能厂</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_funplant" name="FunPlant" readonly>
+                                </div>
+                            </div>
+                            <div id="div_s_input_repair_reason2" class="form-group col-xs-12 col-md-10 col-lg-10">
+                                <label class="col-sm-3 control-label" for="s_input_repair_reason">故障描述</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" id="s_input_repair_reason" name="Repair_Reason" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_outbound_account">领用人</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_outbound_account" name="Outbound_Account" readonly>
+                                </div>
+                            </div>
+
+                            <div id="div_s_input_desc2" class="form-group col-xs-12 col-md-10 col-lg-10">
+                                <label class="col-sm-3 control-label" for="s_input_desc">出库说明</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" id="s_input_desc" name="Desc" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_status">状态</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_status" name="Status" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group col-xs-12 col-md-12col-lg-12">
+                                    <table class=" table col-sm-12 table-condensed" id="table_material2" name="table_material2">
+                                        <thead>
+                                            <tr>
+                                                <th class="table-col-checkbox nosort">
+                                                    <input type="checkbox" class="js-checkbox-all" />
+                                                </th>
+                                                <th class="padding-1-5-i " style="display:none">料号UID</th>
+                                                <th class="padding-l-5-i text-center">料号</th>
+                                                <th class="padding-1-5-i " style="display:none">储位UID</th>
+                                                <th class="padding-1-5-i text-center">储位</th>
+                                                <th class="padding-1-5-i " style="display:none">类别UID</th>
+                                                <th class="padding-1-5-i text-center">材料类别</th>
+                                                <th class="padding-1-5-i text-center">待审数量</th>
+                                                <th class="padding-1-5-i text-center">申请数量</th>
+                                                <th class="padding-1-5-i text-center">库存数量</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <input type="hidden" name="Storage_Outbound_M_UID" />
+                            <input type="hidden" name="currentID2" id="currentID2" />
+                            <input type="hidden" name="NeedShow2" id="NeedShow2" />
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="outbound_pre"><i class="fa"></i> 上一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="outbound_next"><i class="fa"></i> 下一笔</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="outbound_close"><i class="fa fa-times"></i> 返回</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_save_outapprove"><i class="fa fa-save"></i> 审核</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_BG_Organization_UID_search">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_BG_Organization_UID_search" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_FunPlant_Organization_UID_search">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_FunPlant_Organization_UID_search" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_storage_bound_type">出入库单类别</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_storage_bound_type" name="Storage_Bound_Type_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.enums)
+                                        {
+                                            //fky2017/11/13
+                                            if (@item.Enum_UID == 413 || @item.Enum_UID == 416 || @item.Enum_UID == 417)
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Storage_Bound_ID">出入库单编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Storage_Bound_ID" name="Storage_Bound_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Status">状态</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_Status" name="Status_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.enums)
+                                        {
+                                            if (@item.Enum_Name == "Status")
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Applicant_Date">申请日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Applicant_Date" name="Applicant_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Approver_Date">审核日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Approver_Date" name="Approver_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Outbound_Accounts">领用人</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Outbound_Accounts" name="Outbound_Account_UID" data-live-search="true">
+                                        @*<option></option>
+                                            @foreach (var item in Model.users)
+                                            {
+                                                <option value=@item.EQPUser_Uid>@item.User_Name</option>
+                                            }*@
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ModifiedUser">申请者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ModifiedUser" name="ModifiedUser">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ApproverUser">审核者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ApproverUser" name="ApproverUser">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PU_NO_search">采购单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_PU_NO_search" name="PU_NO">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Issue_NO">发料单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Issue_NO" name="Issue_NO">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Repair_Uid">维修单号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Repair_Uid" name="Repair_id">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Warehouse_Storage">储位</label>
+                                <div class="col-sm-7">
+                                    <select class=" selectpicker form-control input-sm" id="js_select_Warehouse_Storage" name="Warehouse_Storage_UID" data-live-search="true">
+                                        @*<optgroup label="仓库代码_料架号_储位号">
+                                                <option></option>
+                                                @foreach (var item in Model.warsts)
+                                                {
+                                                    <option value=@item.Warehouse_Storage_UID>@item.Warehouse_ID _ @item.Rack_ID _ @item.Storage_ID</option>
+                                                }
+                                            </optgroup>*@
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_material">料号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_material" name="Material_Uid" data-live-search="true">
+                                        @*<optgroup label="料号_品名_型号">
+                                                <option></option>
+                                                @foreach (var item in Model.mats)
+                                                {
+                                                    <option value=@item.Material_Uid>@item.Material_Id _ @item.Material_Name _ @item.Material_Types</option>
+                                                }
+                                            </optgroup>*@
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_inner_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_addstorage_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">入库新增储位界面</h4>
+                </div>
+                @using (Html.BeginForm("SaveWarehouseSt", "StorageManage", FormMethod.Post, new { id = "js_form_warehouse_storage" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optypes">Business Group</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_optypes" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplan">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_funplan" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_warehouse_id">仓号</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_warehouse_id" name="Warehouse_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_rack_id">料架编号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_rack_id" name="Rack_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_storage_id">储位</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_storage_id" name="Storage_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-10 col-lg-10">
+                                <label class="col-sm-3 control-label" for="s_input_desc">说明</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm required" id="s_input_desc" name="Desc">
+                                </div>
+                            </div>
+                            <input type="hidden" id="PartType_UID" name="PartType_UID" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-times btn btn-primary" data-dismiss="modal">取消</button>
+                        <button type="button" class="fa fa-save btn btn-primary" id="btn_add_storage">确定</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--更新Excel Start-->
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Coupa采购单汇入</h4>
+                </div>
+                @using (Html.BeginForm("ImportCoupaPOExcel", "StorageManage", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择档案</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="Select the file"
+                                       required data-msg-required="请选择EXCEL文件上传!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-warning btn-sm" href="../ExcelTemplate/CoupaPO_Template.xlsx">
+                            <i class="fa fa-save"></i> 范本下载
+                        </a>
+                        <button type="button" class="fa fa-times btn btn-primary" id="js_btn_clear_Update">Cancel</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update">Submit</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#inbound_pre').hide();
+            $('#inbound_next').hide();
+            $('#outbound_pre').hide();
+            $('#outbound_next').hide();
+        })
+
+        $('#js_search_modal').on('hidden.bs.modal', function (e) {
+            //$('#js_search_modal').find('input').val('');
+            //$('#js_search_modal').find('select').val('');
+        })
+        //防止keyup事件重複觸發查詢
+        var onKeyFunFlag = false;
+        $(function () {
+            var UpdateBoundSetting = (function () {
+                var urls = {
+                    queryUsers: '@Url.Action("QueryUsers", "StorageManage")',
+                    queryAllMaterial: '@Url.Action("QueryAllMaterial", "StorageManage")',
+                    queryMaterialByKey: '@Url.Action("queryMaterialByKey", "StorageManage")',
+                    //画面初始化加载
+                    queryInbounds: '@Url.Action("QueryBoundDetails", "StorageManage")',
+                    queryInboundByUid: '@Url.Action("QueryInboundByUid", "StorageManage")',
+                    approveInboundByUid: '@Url.Action("ApproveInboundByUid", "StorageManage")',
+                    //根据类别取得储位
+                    queryWarSt: '@Url.Action("QueryWarSt", "StorageManage")',
+                    queryWarStByKey: '@Url.Action("QueryWarStByKey", "StorageManage")',
+                    //取得可以出库的材料
+                    queryMatinventory: '@Url.Action("QueryMatinventory", "StorageManage")',
+                    //取得出库材料的儲位
+                    queryMatinventoryByMat: '@Url.Action("QueryMatinventoryByMat", "StorageManage")',
+                    //取得维修信息
+                    queryEqprepair: '@Url.Action("QueryEqprepair", "StorageManage")',
+                    deleteBound: '@Url.Action("DeleteBound", "StorageManage")',
+                    addOrEditOutbound: '@Url.Action("AddOrEditOutbound", "StorageManage")',
+                    //出库审核
+                    approveOutboundByUid: '@Url.Action("ApproveOutboundByUid", "StorageManage")',
+                    //取得采购数量
+                    queryPuqty: '@Url.Action("QueryPuqty", "StorageManage")',
+                    //根据op类型取得功能厂
+                    queryWarFunplantByop: '@Url.Action("QueryWarFunplantByop", "StorageManage")',
+                    //根据功能厂取得仓号
+                    queryWarIdByFunction: '@Url.Action("QueryWarIdByFunction", "StorageManage")',
+
+                    //根据出库材料获得储位
+                    queryWarStByMaterial: '@Url.Action("QueryWarStByMaterial", "StorageManage")',
+                    //根据出库单类别取得料号
+                    queryMatByOutType: '@Url.Action("QueryMatByOutType", "StorageManage")',
+                    //queryFunplantByop: Url.Action("QueryFunplantByop", "StorageManage")
+
+                    //根据OP类型取得功能厂
+                    queryFunplantByop: '@Url.Action("GetFunPlantByOPTypes", "Equipmentmaintenance")',
+                    //设置初始化预设储位
+                    queryqueryMaterialByuid: '@Url.Action("QueryMaterialByUid", "Equipmentmaintenance")',
+                    //导出全部出入库信息
+                    doAllExportUpdateBoundReprot: '@Url.Action("DoAllExportUpdateBoundReprot", "StorageManage")',
+                    //导出指定ID的出入库信息
+                    doExportUpdateBoundReprot: '@Url.Action("DoExportUpdateBoundReprot", "StorageManage")',
+                    //查询时初始化加载储位，及选择了OP类型之后加载
+                    queryWarStroge: '@Url.Action("QueryWarStroge", "StorageManage")'
+                };
+                //#region 定义字段列
+                var materialDatatable = null;
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (rowData.InOut_Type == "入库单") {
+                                if (rowData.Status == "未审核") {
+                                    $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item intype" data-type="' + rowData.InOut_Type + '"  value="' + rowData.Storage_Bound_UID + '">')
+                                        .addClass('table-col-checkbox');
+                                } else {
+                                    $(td).html('<input type="checkbox"  name="cktrans" class="js-checkbox-item2 intype" data-type="' + rowData.InOut_Type + '"  value="' + rowData.Storage_Bound_UID + '">')
+                                        .addClass('table-col-checkbox');
+                                }
+
+                            } else {
+                                if (rowData.Status == "未审核") {
+                                    $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item outtype" data-type="' + rowData.InOut_Type + '"  value="' + rowData.Storage_Bound_UID + '">')
+                                        .addClass('table-col-checkbox');
+                                } else {
+                                    $(td).html('<input type="checkbox"  name="cktrans" class="js-checkbox-item2 outtype"  data-type="' + rowData.InOut_Type + '"  value="' + rowData.Storage_Bound_UID + '">')
+                                        .addClass('table-col-checkbox');
+                                }
+                            }
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-type="' + rowData.InOut_Type + '" data-id="' + rowData.Storage_Bound_UID + '">编辑</button>';
+                            var buttonAppr = '<button type="button" class="btn btn-primary btn-xs js-grid-approve"   data-type="' + rowData.InOut_Type + '"  data-id="' + rowData.Storage_Bound_UID + '">审核</button>';
+                            var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete"   data-type="' + rowData.InOut_Type + '"  data-id="' + rowData.Storage_Bound_UID + '">删除</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '{1}' +
+                                '{2}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-view"  data-type="' + rowData.InOut_Type + '"  data-id="' + rowData.Storage_Bound_UID + '">查看</button>' +
+                                '</div>';
+                            if (rowData.Status == "未审核") {
+                                result = result.replace('{0}', buttonEdit);
+                                result = result.replace('{1}', buttonAppr);
+                                if (rowData.Status == "已删除") {
+                                    result = result.replace('{2}', '');
+                                } else {
+                                    result = result.replace('{2}', buttonDelete);
+                                }
+                            } else {
+                                result = result.replace('{0}', '');
+                                result = result.replace('{1}', '');
+                                result = result.replace('{2}', '');
+                            }
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "In_Out_Type",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Storage_Bound_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Status",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Id",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Types",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Warehouse_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Rack_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Storage_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Bound_Qty",
+                        render: function (data, type, full, meta) {
+                            if (data == 0)
+                                return "";
+                            else
+                                return data;
+                        },
+                        className: "min-col-xs text-right"
+                    }, {
+                        data: "Accepter",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ModifiedUser",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Applicant_Date",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ApproverUser",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Approver_Date",
+                        className: "min-col-xs"
+                    }];
+
+                //领料申請界面的材料列表
+                var applyMaterialDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Uid + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: "Material_Uid",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="Material_Uid" class="form-control input-sm input_update_no" data-id="td_input_Material_Uid"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "mateial",
+                    className: "min-col-xs"
+                }, {
+                    data: "Warehouse_Storage_UID",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="Warehouse_Storage_UID" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "WarehouseStorage",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var optionsHtml = '<option></option>';
+                        url = UpdateBoundSetting.urls.queryMatinventoryByMat;
+                        $.post(url, { Material_Uid: rowData.Material_Uid }, function (dataWS) {
+                            for (var i = 0; i < dataWS.length; i++) {
+                                var selectedHtml = '';
+                                if (dataWS[i].Warehouse_Storage_UID == rowData.Warehouse_Storage_UID) { selectedHtml = ' selected="true" '; }
+                                optionsHtml += '<option value="' + dataWS[i].Warehouse_Storage_UID + '" data-id="' + dataWS[i].Warehouse_Type_UID + '" '
+                                    + '" data-IQty="' + dataWS[i].Inventory_Qty + '" ' + '" data-BQty="' + dataWS[i].Be_Out_Qty + '" ' + selectedHtml + '>' //+ dataWS[i].BG + '_' + dataWS[i].Funplant + '_' 
+                                    + dataWS[i].Warehouse_ID + '_' + dataWS[i].Rack_ID + '_' + dataWS[i].Storage_ID
+                                    + '</option>';
+                            }
+                        });
+                        var selectHtml = '<select class="form-control input-sm" data-id="td_select_WarehouseStorage" data-row="' + row + '" onchange="td_select_WarehouseStorage_onChange(this)">' + optionsHtml + '</select>';
+                        $(td).html(selectHtml);
+                    },
+                    className: "min-col-lg"
+                }, {
+                    data: "PartType_UID",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="PartType_UID" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "PartType",
+                    className: "min-col-xs"
+                }, {
+                    data: "Be_Out_Qty",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<span data-id="td_span_Be_Out_Qty" data-row="' + row + '">' + rowData.Be_Out_Qty + '</span>');
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "Outbound_Qty",
+                    render: function (data, type, full, meta) {
+                        return '<input type="number" name="Outbound_Qty" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "Inventory_Qty",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<span data-id="td_span_Inventory_Qty" data-row="' + row + '">' + rowData.Inventory_Qty + '</span>');
+                    },
+                    className: "min-col-xs"
+                }];
+                //领料界面的材料列表
+                var materialDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Uid + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: "Material_Uid",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="Material_Uid" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "mateial",
+                    className: "min-col-xs"
+                }, {
+                    data: "Warehouse_Storage_UID",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="Warehouse_Storage_UID" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "WarehouseStorage",
+                    className: "min-col-xs"
+                }, {
+                    data: "PartType_UID",
+                    render: function (data, type, full, meta) {
+                        return '<input type=number" name="PartType_UID" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-lg hidden"
+                }, {
+                    data: "PartType",
+                    className: "min-col-xs"
+                }, {
+                    data: "Be_Out_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "Outbound_Qty",
+                    render: function (data, type, full, meta) {
+                        return '<input type="number" name="Outbound_Qty" class="form-control input-sm input_update_no"  value="' + data + '">';
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "Inventory_Qty",
+                    className: "min-col-xs"
+                }];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryInbounds = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryInbounds,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryInbounds(true, false);
+                    },
+                    queryInbounds: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryInbounds(false, buildCriteria);
+                    },
+                    GetMaterialDatatable: function () {
+                        materialDatatable = $('#table_material').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: applyMaterialDatatableColumns
+                        });
+                        return materialDatatable;
+                    },
+                    SetMatDatatable: function (datatable) {
+                        materialDatatable = datatable;
+                    },
+                    GetMaterialDatatable2: function () {
+                        materialDatatable2 = $('#table_material2').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: materialDatatableColumns
+                        });
+                        return materialDatatable;
+                    },
+                    SetMatDatatable2: function (datatable) {
+                        materialDatatable2 = datatable;
+                    },
+                    applyMatColumns: applyMaterialDatatableColumns,
+                    MatColumns: materialDatatableColumns
+                }
+            })();
+
+            UpdateBoundSetting.Init();
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    //UpdateBoundSetting.queryCreateBounds(true);
+                    //$('#js_search_modal').modal('hide');
+
+
+                }
+            });
+            //设定入库单栏位的显示与隐藏---START
+            function SetInboundShow(inboundtype) {
+                //fky2017/11/13
+                //if (inboundtype == "407") {
+                if (inboundtype == "432") {
+                    $('#js_edit_modal #div_s_input_PU_NO').show();
+                    $('#js_edit_modal #div_s_input_PU_qty').show();
+                    $('#js_edit_modal #div_s_input_issue_no').show();
+                    $('#js_edit_modal #div_s_input_ng_qty').show();
+                } else {
+                    $('#js_edit_modal #div_s_input_PU_NO').hide();
+                    $('#js_edit_modal #div_s_input_PU_qty').hide();
+                    $('#js_edit_modal #div_s_input_issue_no').hide();
+                    $('#js_edit_modal #div_s_input_ng_qty').hide();
+                }
+            }
+            //出库料号变更时更新储位---START
+            $('#js_select_material_out_uid').change(function () {
+                var Material_Uid = $('#js_select_material_out_uid option:selected').val();
+                SetWarStorage2(Material_Uid, '');
+            })
+            //出库料号变更时更新储位-----END
+            //仓库代码变更---START
+            $('#js_select_warehouse_id').change(function () {
+                var url = UpdateBoundSetting.urls.queryWarehouseStByuid,
+                    Warehouse_UID = $(this).val();
+                $.post(url, { Warehouse_UID: Warehouse_UID }, function (data) {
+                    $('#js_edit_modal').find('input[name=BG_Organization_UID]').val(data[0].BG_Organization);
+                })
+
+            })
+            //仓库代码变更---END
+            //建立新储位---START
+            $('#bt_add_warehouse_storage').click(function () {
+                var PartType_UID = $('#js_edit_modal').find('select[name=PartType_UID]').val();
+                PartType_UID = PartType_UID == "" ? 0 : PartType_UID;
+                $('#js_addstorage_modal').find('input[name=PartType_UID]').val(PartType_UID);
+                $('#js_addstorage_modal').modal('show');
+            })
+            //建立新储位-----END
+            //审核界面出库单类别变更---START
+            $('#s_input_storage_outbound_type').change(function () {
+                if ($(this).val() == "领料单") {
+                    $('#div_s_input_repair_id2').show();
+                    $('#div_s_input_apply_time2').show();
+                    $('#div_s_input_eqp_location2').show();
+                    $('#div_s_input_equipment2').show();
+                    $('#div_s_input_op_types2').show();
+                    $('#div_s_input_funplant2').show();
+                    $('#div_s_input_repair_reason2').show();
+                    $('#div_s_input_desc2').hide();
+                } else {
+                    $('#div_s_input_repair_id2').hide();
+                    $('#div_s_input_apply_time2').hide();
+                    $('#div_s_input_eqp_location2').hide();
+                    $('#div_s_input_equipment2').hide();
+                    $('#div_s_input_op_types2').hide();
+                    $('#div_s_input_funplant2').hide();
+                    $('#div_s_input_repair_reason2').hide();
+                    $('#div_s_input_desc2').show();
+                }
+            })
+            //审核界面出库单类别变更-----END
+            //待检数量和良品数量变更---START
+            $('#js_edit_modal #s_input_be_check_qty,#s_input_ok_qty').blur(function () {
+                var Be_Check_Qty = $('#js_edit_modal #s_input_be_check_qty').val();
+                var OK_Qty = $('#js_edit_modal #s_input_ok_qty').val();
+                if (Be_Check_Qty != '' & OK_Qty != '') {
+                    $('#js_edit_modal #s_input_ng_qty').val(Number(Be_Check_Qty) - Number(OK_Qty));
+                } else {
+                    $('#js_edit_modal #s_input_ng_qty').val('0');
+                }
+            })
+            //待检数量和良品数量变更-----END
+            //根据出库单类别取得料号并设值---START
+            function setOutMat(Out_Type_Uid, currentValue) {
+                var url = UpdateBoundSetting.urls.queryMatByOutType;
+                $('#js_select_material_out_uid').html('<optgroup label="料号_品名_型号"><option></option></optgroup>');
+                $.post(url, { Out_Type_Uid: Out_Type_Uid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_material_out_uid optgroup').append('<option value=' + data[i].Material_Uid +
+                            '>' + data[i].Material_Id + '_' + data[i].Material_Name + '_' + data[i].Material_Types + '</option>');
+                    }
+                    $('#js_select_material_out_uid').selectpicker('refresh');
+
+                    $('#js_select_material_out_uid option[value="' + currentValue + '"]').attr("selected", "true");
+                    $('#js_select_material_out_uid').selectpicker('val', currentValue);
+                    $("#js_select_material_out_uid").trigger("liszt:updated");
+                })
+            }
+            //根据出库单类别取得料号并设值-----END
+            //出库单类别变更---START
+            $('#js_select_storage_outbound_type').change(function () {
+                var outbound_type_uid = $('#js_select_storage_outbound_type option:selected').val();
+                //fky2017/11/13
+                //if ($('#js_select_storage_outbound_type option:selected').val() == 387) {
+                if ($('#js_select_storage_outbound_type option:selected').val() == 416) {
+                    $('#div_s_input_repair_id').show();
+                    $('#div_s_input_apply_time').show();
+                    $('#div_s_input_eqp_location').show();
+                    $('#div_s_input_equipment').show();
+                    $('#div_s_input_op_types').show();
+                    $('#div_s_input_funplant').show();
+                    $('#div_s_input_repair_reason').show();
+                    $('#div_s_input_desc').hide();
+                    $('#js_select_material_out_uid').html('<optgroup label="料号_品名_型号"><option></option></optgroup>');
+                } else {
+                    $('#div_s_input_repair_id').hide();
+                    $('#div_s_input_apply_time').hide();
+                    $('#div_s_input_eqp_location').hide();
+                    $('#div_s_input_equipment').hide();
+                    $('#div_s_input_op_types').hide();
+                    $('#div_s_input_funplant').hide();
+                    $('#div_s_input_repair_reason').hide();
+                    $('#div_s_input_desc').show();
+                    setOutMat(outbound_type_uid, '');
+                }
+
+                //清空维修单相关栏位
+                $('#js_outedit_modal').find('input[name=Repair_id]').val('');
+                $('#js_outedit_modal').find('input[name=Repair_Uid]').val('0');
+                $('#js_outedit_modal').find('input[name=Apply_Time]').val('');
+                $('#js_outedit_modal').find('input[name=EQP_Location]').val('');
+                $('#js_outedit_modal').find('input[name=Equipment]').val('');
+                $('#js_outedit_modal').find('input[name=OP_Types]').val('');
+                $('#js_outedit_modal').find('input[name=FunPlant]').val('');
+                $('#js_outedit_modal').find('input[name=Repair_Reason]').val('');
+                $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').selectpicker('val', '');
+                $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').trigger("liszt:updated");
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable();
+                dataTable.clear().draw();
+                //復原按扭啟用狀態
+                $('#bt_add_mat').attr('disabled', false);
+                $('#bt_remove_mat').attr('disabled', false);
+                $('#js_btn_save_out').attr('disabled', false);
+            })
+            //出库单类别变更-----END
+            //取得出库储位列表并设选中值---START
+            function SetWarStorage2(matuid, currentValue) {
+                url = UpdateBoundSetting.urls.queryWarStByMaterial;
+                $('#js_select_warehouse_storage_out_uid').html('<optgroup label="OP类型_功能厂_仓库_料架_储位_库存数量"><option></option></optgroup>');
+                $.post(url, { Material_Uid: matuid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_warehouse_storage_out_uid optgroup').append('<option value="' + data[i].Warehouse_Storage_UID +
+                            '" data-id="' + data[i].Warehouse_Type_UID + '">' + data[i].BG + '_' + data[i].Funplant + '_' + data[i].Warehouse_ID + '_' + data[i].Rack_ID + '_' + data[i].Storage_ID + '_' + data[i].Inventory_Qty + '</option>');
+                    }
+                    $('#js_select_warehouse_storage_out_uid').selectpicker('refresh');
+
+                    $('#js_select_warehouse_storage_out_uid option[value="' + currentValue + '"]').attr("selected", "true");
+                    $('#js_select_warehouse_storage_out_uid').selectpicker('val', currentValue);
+                    $("#js_select_warehouse_storage_out_uid").trigger("liszt:updated");
+                })
+            }
+            //取得出库储位列表并设选中值-----END
+            //查询按钮
+            $('#js_btn_inner_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    UpdateBoundSetting.queryInbounds(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //料號下拉選單資料載入改在Filter輸入關鍵字後才動作
+            $("#js_select_material_uid").on('shown.bs.select', function (e) {
+                $(this).parent().find("input").keyup(function (event) {
+                    if (!onKeyFunFlag) {
+                        onKeyFunFlag = true;
+                        var oldKey = $(this).attr("data-sKey");
+                        var s = this.value;
+                        if (s.length < 3) {
+                            $(this).attr("data-sKey", "");
+                            if ($('#js_select_material_uid').children('option').length != 0) {
+                                $('#js_select_material_uid').html('<option></option>');
+                                $('#js_select_material_uid').selectpicker('refresh');
+                                $('#js_select_material_uid').selectpicker('val', '');
+                                $('#js_select_material_uid').trigger("liszt:updated");
+                            }
+                        }
+                        else if (s.length == 3 || oldKey == "" || oldKey == null || s.indexOf(oldKey) < 0) {
+                            $(this).attr("data-sKey", s);
+                            $('#js_select_material_uid').html('<option></option>');
+                            $('#js_select_material_uid').selectpicker('refresh');
+                            url = UpdateBoundSetting.urls.queryMaterialByKey;
+                            $.post(url, { key: s }, function (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    $('#js_select_material_uid').append('<option value="' + data[i].Material_Uid + '">' + data[i].Material_Id + "_" + data[i].Material_Name + "_" + data[i].Material_Types + '</option>');
+                                }
+                                $('#js_select_material_uid').selectpicker('refresh');
+                            });
+                        }
+                        onKeyFunFlag = false;
+                    }
+                });
+            });
+
+            //儲位下拉選單資料載入改在Filter輸入關鍵字後才動作
+            $("#js_select_warehouse_storage_uid").on('shown.bs.select', function (e) {
+                $(this).parent().find("input").keyup(function (event) {
+                    if (!onKeyFunFlag) {
+                        onKeyFunFlag = true;
+                        var key = this.value;
+                        if (key.length == 2) {
+                            var inboundType = $('#js_select_inbound_type').val();
+                            if (inboundType.length > 0) {
+                                SetWarStorage(inboundType, 0, key, '');
+                            }
+                        }
+                        else if (key.length < 2) {
+                            if ($('#js_select_warehouse_storage_uid').children('option').length != 0) {
+                                $('#js_select_warehouse_storage_uid').html('<option></option>');
+                                $('#js_select_warehouse_storage_uid').selectpicker('refresh');
+                                $('#js_select_warehouse_storage_uid').selectpicker('val', '');
+                                $('#js_select_warehouse_storage_uid').trigger("liszt:updated");
+                            }
+                        }
+                        onKeyFunFlag = false;
+                    }
+                });
+            });
+
+            //入库按钮
+            $('#bt_add_inbound').click(function () {
+                $('#js_edit_modal h4').text('入库申请');
+                //$('#js_select_material_uid').html('<option></option>');
+                //$('#js_select_material_uid').selectpicker('refresh');
+                //url = UpdateBoundSetting.urls.queryAllMaterial;
+                //$.post(url, function (data) {
+                //    for (var i = 0; i < data.length; i++) {
+                //        $('#js_select_material_uid').append('<option value="' + data[i].Material_Uid + '">' + data[i].Material_Id + "_" + data[i].Material_Name + "_" + data[i].Material_Types + '</option>');
+
+                //    }
+                //    $('#js_select_material_uid').selectpicker('refresh');
+                //});
+            })
+
+            //出库按钮
+            $('#bt_add_outbound').click(function () {
+                $('#js_outedit_modal h4:eq(0)').text('出库申请');
+                $('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').removeAttr('disabled');
+                $('#js_select_outbound_account').html('<option></option>');
+                $('#js_select_outbound_account').selectpicker('refresh');
+                url = UpdateBoundSetting.urls.queryUsers;
+                $.post(url, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_outbound_account').append('<option value="' + data[i].EQPUser_Uid + '">' + data[i].User_Name  + '</option>');
+
+                    }
+                    $('#js_select_outbound_account').selectpicker('refresh');
+                });
+
+            })
+            //维修单号变更---START
+            $('#s_input_repair_id').blur(function () {
+                //清空UpdateBound
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable();
+                dataTable.clear().draw();
+                var url = UpdateBoundSetting.urls.queryEqprepair,
+                    repairid = $(this).val();
+                $.post(url, { Repair_id: repairid }, function (dataRepair) {
+                    var isSaveDisabled = isAddDisabled = false;
+                    if (dataRepair.length == 0) {
+                        $('#js_outedit_modal').find('input[name=Repair_Uid]').val('0');
+                        $('#js_outedit_modal').find('input[name=Apply_Time]').val('');
+                        $('#js_outedit_modal').find('input[name=EQP_Location]').val('');
+                        $('#js_outedit_modal').find('input[name=Equipment]').val('');
+                        $('#js_outedit_modal').find('input[name=OP_Types]').val('');
+                        $('#js_outedit_modal').find('input[name=FunPlant]').val('');
+                        $('#js_outedit_modal').find('input[name=Repair_Reason]').val('');
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').selectpicker('val', '');
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').trigger("liszt:updated");
+                        if ($.trim(repairid) != '') {
+                            isSaveDisabled = isAddDisabled = true;
+                            PDMS.Utility.MessageBox.info("维修单号[" + repairid + "]不存在!!");
+                        }
+                    } else {
+                        $('#js_outedit_modal').find('input[name=Repair_Uid]').val(dataRepair[0].Repair_Uid);
+                        $('#js_outedit_modal').find('input[name=Apply_Time]').val(dataRepair[0].Apply_Time);
+                        $('#js_outedit_modal').find('input[name=EQP_Location]').val(dataRepair[0].EQP_Location);
+                        $('#js_outedit_modal').find('input[name=Equipment]').val(dataRepair[0].Equipment);
+                        $('#js_outedit_modal').find('input[name=OP_Types]').val(dataRepair[0].OP_TYPES);
+                        $('#js_outedit_modal').find('input[name=FunPlant]').val(dataRepair[0].FunPlant);
+                        $('#js_outedit_modal').find('input[name=Repair_Reason]').val(dataRepair[0].Repair_Reason);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').val(dataRepair[0].EQPUser_Uid);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').selectpicker('val', dataRepair[0].EQPUser_Uid);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').trigger("liszt:updated");
+                        if (dataRepair[0].Status != 'Commit') {
+                            isSaveDisabled = isAddDisabled = true;
+                            PDMS.Utility.MessageBox.info("维修单号[" + repairid + "]的状态不为[Commit]!!");
+                        }
+                        else {
+                            debugger;
+                            //依報修單取得的料號寫入UpdateBound
+                            var isError = "";
+                            var UpdateInfo = dataRepair[0].listMeterialUpdateInfoWithWarehouse;
+                            //建立料號下拉項目 Start
+                            $('#js_select_material_out_uid').html('<optgroup label="料号_品名_型号"><option></option></optgroup>');
+                            for (var i = 0; i < UpdateInfo.length; i++) {
+                                $('#js_select_material_out_uid optgroup').append('<option value=' + UpdateInfo[i].Material_Uid +
+                                    '>' + UpdateInfo[i].Material_Id + '_' + UpdateInfo[i].Material_Name + '_' + UpdateInfo[i].Material_Types + '</option>');
+                            }
+                            $('#js_select_material_out_uid').selectpicker('refresh');
+
+                            //$('#js_select_material_out_uid option[value="' + currentValue + '"]').attr("selected", "true");
+                            //$('#js_select_material_out_uid').selectpicker('val', currentValue);
+                            //$("#js_select_material_out_uid").trigger("liszt:updated");
+                            $('#js_select_material_out_uid').selectpicker('val', '');
+                            $('#js_select_material_out_uid').trigger("liszt:updated");
+                            $('#js_select_warehouse_storage_out_uid').selectpicker('val', '');
+                            $('#js_select_warehouse_storage_out_uid').trigger("liszt:updated");
+                            //建立料號下拉項目 End
+                            //建立領料明細項目 Start
+                            for (var i = 0; i < UpdateInfo.length; i++) {
+                                var PartType_UID = "", Warehouse_Storage_UID = 0,
+                                    parttype = UpdateInfo[i].Warehouse_Type_UID; //儲位類別uid Warehouse_Type_UID
+                                //fky2017/11/13
+                                //if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val() == 388) {
+                                if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val() == 417) {
+                                    parttype = "不良品";
+                                    //fky2017/11/13
+                                    //PartType_UID = 409;
+                                    PartType_UID = 434;
+                                }
+                                //fky2017/11/13
+                                // else if (parttype==398){
+                                else if (parttype == 418) {
+                                    parttype = "非正常料";
+                                    //fky2017/11/13
+                                    //PartType_UID = 408;
+                                    PartType_UID = 433;
+                                }
+                                else {
+                                    parttype = "正常料";
+                                    //fky2017/11/13
+                                    // PartType_UID = 407;
+                                    PartType_UID = 432;
+                                }
+                                if (UpdateInfo[i].Warehouse_Storage_UID == null) {
+                                    Warehouse_Storage_UID = 0;
+                                }
+                                var row = dataTable.row.add({
+                                    "Material_Uid": UpdateInfo[i].Material_Uid,
+                                    "mateial": UpdateInfo[i].Material_Id + '_' + UpdateInfo[i].Material_Name + '_' + UpdateInfo[i].Material_Types,
+                                    "Warehouse_Storage_UID": UpdateInfo[i].Warehouse_Storage_UID,
+                                    "WarehouseStorage": "",//UpdateInfo[i].Warehouse_ID + '_' + UpdateInfo[i].Rack_ID + '_' + UpdateInfo[i].Storage_ID,
+                                    "PartType_UID": PartType_UID,
+                                    "PartType": parttype,
+                                    "Inventory_Qty": 0,//UpdateInfo[i].Inventory_Qty,
+                                    "Be_Out_Qty": 0,//UpdateInfo[i].Be_Out_Qty,
+                                    "Outbound_Qty": UpdateInfo[i].Update_No
+                                }).draw();
+
+                                //if (UpdateInfo[i].Warehouse_Storage_UID == null) {
+                                //    isError += "," + UpdateInfo[i].Material_Id + "";
+                                //    console.log("Material_Id:" + UpdateInfo[i].Material_Id + "_Warehouse_Storage_UID is null");
+                                //}
+                                //else {
+                                //var url = UpdateBoundSetting.urls.queryMatinventory;
+                                //$.post(url, { Material_Uid: UpdateInfo[i].Material_Uid, Warehouse_Storage_UID: UpdateInfo[i].Warehouse_Storage_UID }, function (data) {
+                                //    debugger;
+                                //    if (data.length == 0) {
+                                //        isError += "," + UpdateInfo[i].Material_Id + "";
+                                //        console.log("Material_Id:" + UpdateInfo[i].Material_Id + "_queryMatinventory is empty");
+                                //    } else if (data.error) {
+                                //        PDMS.Utility.MessageBox.error("料号[" + UpdateInfo[i].Material_Id + "]查询错误_" + data.message);
+                                //        console.log("Material_Id:" + UpdateInfo[i].Material_Id + "_onError_" + data.message);
+                                //        return false;
+                                //    }
+                                //    else {
+                                //        for (var j = 0; j < data.length; j++) {
+                                //            var row = dataTable.row.add({
+                                //                "Material_Uid": data[j].Material_Uid,
+                                //                "mateial": data[j].Material_Id + '_' + data[j].Material_Name + '_' + data[j].Material_Types,
+                                //                "Warehouse_Storage_UID": data[j].Warehouse_Storage_UID,
+                                //                "WarehouseStorage": data[j].Warehouse_ID + '_' + data[j].Rack_ID + '_' + data[j].Storage_ID,
+                                //                "PartType_UID": PartType_UID,
+                                //                "PartType": parttype,
+                                //                "Inventory_Qty": data[j].Inventory_Qty,
+                                //                "Be_Out_Qty": data[j].Be_Out_Qty,
+                                //                "Outbound_Qty": UpdateInfo[i].Update_No
+                                //            }).draw();
+                                //        }
+                                //    }
+                                //});
+                                //}
+                            }
+                            if (isError != "") {
+                                isSaveDisabled = isAddDisabled = true;
+                                PDMS.Utility.MessageBox.info("此维修单[" + repairid + "]的料号[" + isError.substr(1) + "]信息不正确");
+                            }
+                            else {
+                                isAddDisabled = true;
+                            }
+                            //建立領料明細項目 End
+                        }
+                    }
+                    //$('#bt_add_mat').attr('disabled', isAddDisabled);
+                    //$('#bt_remove_mat').attr('disabled', isAddDisabled);
+                    $('#js_btn_save_out').attr('disabled', isSaveDisabled);
+                })
+            })
+            //维修单号变更----END
+            //采购单号变更---START
+            $('#js_edit_modal #s_input_PU_NO').blur(function () {
+                var url = UpdateBoundSetting.urls.queryPuqty;
+                var PUNO = $(this).val();
+                Storage_Inbound_UID = $('#js_edit_modal').find('input[name=Storage_Inbound_UID]').val();
+                Storage_Inbound_UID = Storage_Inbound_UID == "" ? 0 : Storage_Inbound_UID;
+                debugger;
+                if (PUNO != "") {
+                    $.post(url, { PUNO: PUNO, Storage_Inbound_UID: Storage_Inbound_UID }, function (data) {
+                        if (data.length > 0) {
+                            $('#js_edit_modal').find('input[name=PU_Qty]').val(data[0].PU_Qty);
+                            $('#js_edit_modal').find('input[name=Sum_PuQty]').val(data[0].OK_Qty);
+                            $('#js_edit_modal').find('input[name=PU_Qty]').attr('readonly', 'readonly');
+                        } else {
+                            $('#js_edit_modal').find('input[name=PU_Qty]').val('');
+                            $('#js_edit_modal').find('input[name=Sum_PuQty]').val(0);
+                            $('#js_edit_modal').find('input[name=PU_Qty]').removeAttr('readonly');
+                        }
+                    })
+                }else
+                {
+                    $('#js_edit_modal').find('input[name=PU_Qty]').val('');
+                    $('#js_edit_modal').find('input[name=Sum_PuQty]').val(0);
+                    $('#js_edit_modal').find('input[name=PU_Qty]').removeAttr('readonly');
+                }
+            })
+            //采购单号变更------END
+            //删除出库材料 ---START
+            $('#bt_remove_mat').on('click', function () {
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable();
+                var $checkedItems = $('#table_material .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+                } else {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        dataTable.row($tr).remove().draw();
+                    });
+                    //没有序号不需从新编号
+                    //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    //});
+                }
+            });
+            //删除出库材料 -----END
+            //入库类别变更---START
+            //效能優化，不在變更類別時載入全部儲位信息，只做清空元件，改在下拉關鍵字搜尋再載入 Darren 2019-01-31
+            $('#js_select_inbound_type').change(function () {
+                //SetWarStorage($(this).val(),'');
+                $('#js_select_warehouse_storage_uid').html('<option></option>');
+                $('#js_select_warehouse_storage_uid').selectpicker('refresh');
+                $('#js_select_warehouse_storage_uid').selectpicker('val', '');
+                $('#js_select_warehouse_storage_uid').trigger("liszt:updated");
+            })
+            //入库类别变更-----END
+            //新增出库材料----START
+            $('#bt_add_mat').click(function () {
+                debugger;
+
+                var url = UpdateBoundSetting.urls.queryMatinventory;
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable(),
+                        material_uid = $('#js_select_material_out_uid').val(),
+                        warst_uid = $('#js_select_warehouse_storage_out_uid').val()
+                PartType_UID="",
+                parttype=$('#js_outedit_modal').find('select[name=Warehouse_Storage_UID]').find('option:selected').attr('data-id');
+                //fky2017/11/13
+                //if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val() == 388) {
+                if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val()==417){
+                    parttype = "不良品";
+                    //fky2017/11/13
+                    //PartType_UID = 409;
+                    PartType_UID = 434;
+                }
+                    //fky2017/11/13
+                    // else if (parttype==398){
+                else if (parttype == 418) {
+                    parttype = "非正常料";
+                    //fky2017/11/13
+                    //PartType_UID = 408;
+                    PartType_UID = 433;
+                }
+                else {
+                    parttype = "正常料";
+                    //fky2017/11/13
+                    // PartType_UID = 407;
+                    PartType_UID = 432;
+                }
+                $.post(url, { Material_Uid: material_uid, Warehouse_Storage_UID: warst_uid }, function (data) {
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_material_out_uid').selectpicker('val', '');
+                        $('#js_select_material_out_uid').trigger("liszt:updated");
+                        $('#js_select_warehouse_storage_out_uid').selectpicker('val', '');
+                        $('#js_select_warehouse_storage_out_uid').trigger("liszt:updated");
+                        var row = dataTable.row.add({
+                            "Material_Uid": data[i].Material_Uid,
+                            "mateial": data[i].Material_Id + '_' + data[i].Material_Name + '_' + data[i].Material_Types,
+                            "Warehouse_Storage_UID": data[i].Warehouse_Storage_UID,
+                            "WarehouseStorage": data[i].Warehouse_ID + '_' + data[i].Rack_ID + '_' + data[i].Storage_ID,
+                            "PartType_UID":PartType_UID,
+                            "PartType":parttype,
+                            "Inventory_Qty": data[i].Inventory_Qty,
+                            "Be_Out_Qty":data[i].Be_Out_Qty,
+                            "Outbound_Qty": ''
+                        }).draw();
+                    }
+                })
+            })
+            //新增出库材料-----END
+            //出库保存-----START
+            $('#js_btn_save_out').click(function () {
+                if ($('#js_form_outbound_edit ul.validate-error').find('li').text().length > 0)
+                    return false;
+                if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val() == "") {
+                    PDMS.Utility.MessageBox.info('请选择出库单类别');
+                    return false;
+                }
+                else {
+                    if ($('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').find('option:selected').text() == "领料单" && $('#js_outedit_modal').find('input[name=EQP_Location]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请正确填写维修单号');
+                        return false;
+                    }
+                }
+                if ($('#table_material tbody').find('tr').find('td').length <= 1) {
+                    PDMS.Utility.MessageBox.info('请至少添加一笔维修材料');
+                    return false;
+                }
+                if ($('#js_outedit_modal').find('select[name=Outbound_Account_UID]').val() == "") {
+                    PDMS.Utility.MessageBox.info('请选择领用人');
+                    return false;
+                }
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable();
+                var submitJson = $('#js_form_outbound_edit').serializeObject();
+                submitJson.Storage_Outbound_Type_UID = $('#js_select_storage_outbound_type').val();
+                var result ="";
+                var outbounddetail = [];
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var sub = {};
+                    var row = $('#table_material>tbody>tr').eq(rowIdx);
+
+                    //var Material_Uid = $.trim(row.find('input[name=Material_Uid]').val());
+                    var Material_Uid = $.trim(row.find('input[data-id="td_input_Material_Uid"]').val());
+                    sub["Material_Uid"] = Material_Uid;
+
+                    //var Warehouse_Storage_UID = $.trim(row.find('input[name=Warehouse_Storage_UID]').val());
+                    var Warehouse_Storage_UID = $.trim(row.find('select[data-id="td_select_WarehouseStorage"]').find('option:selected').val());
+                    if (Warehouse_Storage_UID == "") {
+                        result = " 第" + (rowIdx + 1) + "行,储位不能为空";
+                        return false;
+                    }
+                    sub["Warehouse_Storage_UID"] = Warehouse_Storage_UID;
+
+                    var PartType_UID = $.trim(row.find('input[name=PartType_UID]').val());
+                    sub["PartType_UID"] = PartType_UID;
+                    var Outbound_Qty = $.trim(row.find('input[name=Outbound_Qty]').val());
+                    if (Outbound_Qty == "") {
+                        result = " 第" + (rowIdx + 1) + "行,数量不能为空";
+                        return false;
+                    }
+                    if (Number(Outbound_Qty) <= 0) {
+                        result = " 第" + (rowIdx + 1) + "行,数量需要大于0";
+                        return false;
+                    }
+                    //var Inventory_Qty = $.trim(row.find('td:eq(9)').text());
+                    var Inventory_Qty = $.trim(row.find('span[data-id="td_span_Inventory_Qty"]').text());
+                    if (Number(Outbound_Qty) > Number(Inventory_Qty)) {
+                        result = " 第" + (rowIdx + 1) + "行,申请数量大于库存数量";
+                        return false;
+                    }
+                    sub["Outbound_Qty"] = Outbound_Qty;
+                    outbounddetail.push(sub);
+                });
+                if (result != "") {
+                    PDMS.Utility.MessageBox.info(result);
+                    return false;
+                }
+                var M_UID = $('#js_outedit_modal').find('input[name=Storage_Outbound_M_UID]').val();
+                if (M_UID == '')
+                    M_UID = '0';
+                submitJson.Storage_Outbound_M_UID = M_UID;
+                var repair_uid = $('#js_outedit_modal').find('input[name=Repair_Uid]').val();
+                if (repair_uid == '')
+                    repair_uid = '0';
+                submitJson.Repair_Uid = repair_uid;
+                submitJson.details = outbounddetail;
+
+                $.post(UpdateBoundSetting.urls.addOrEditOutbound, { jsonStorages: JSON.stringify(submitJson) }, function (data) {
+                    if (data == 'SUCCESS') {
+                        PDMS.Utility.MessageBox.info("新增成功");
+                        UpdateBoundSetting.queryInbounds(false);
+                        $('#js_outedit_modal').modal('hide');
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+
+            })
+            //出库保存------END
+            //入库保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_inbound_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_inbound_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_edit_modal').find('select[name=Warehouse_Storage_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择储位');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Material_Uid]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择料号');
+                            return false;
+                        }
+                        //fky2017/11/13
+                        // if ($('#js_select_inbound_type option:selected').val() == 407) {
+                        if ($('#js_select_inbound_type option:selected').val() == 432) {
+                            if ($('#js_edit_modal').find('input[name=PU_NO]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写采购单号');
+                                return false;
+                            }
+                            if ($('#js_edit_modal').find('input[name=PU_Qty]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写采购单数量');
+                                return false;
+                            } else {
+                                if (Number($('#js_edit_modal').find('input[name=PU_Qty]').val()) <= 0) {
+                                    PDMS.Utility.MessageBox.info('采购单数量需大于0');
+                                    return false;
+                                }
+                            }
+                            if ($('#js_edit_modal').find('input[name=Issue_NO]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写发料单号');
+                                return false;
+                            }
+                            if ($('#js_edit_modal').find('input[name=NG_Qty]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写不良品数量');
+                                return false;
+                            } else {
+                                if (Number($('#js_edit_modal').find('input[name=NG_Qty]').val()) < 0) {
+                                    PDMS.Utility.MessageBox.info('不良品数量需大于等于0');
+                                    return false;
+                                }
+                            }
+                        }
+
+                        if ($('#js_edit_modal').find('input[name=Be_Check_Qty]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写待检数量');
+                            return false;
+                        } else {
+                            if (Number($('#js_edit_modal').find('input[name=Be_Check_Qty]').val()) <= 0) {
+                                PDMS.Utility.MessageBox.info('待检数量需大于0');
+                                return false;
+                            }
+                        }
+                        if ($('#js_edit_modal').find('input[name=OK_Qty]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写良品数量');
+                            return false;
+                        } else {
+                            if (Number($('#js_edit_modal').find('input[name=OK_Qty]').val()) <= 0) {
+                                PDMS.Utility.MessageBox.info('良品数量需大于0');
+                                return false;
+                            }
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            if (data == "0") {
+                                PDMS.Utility.MessageBox.info('更新成功');
+                            } else {
+                                PDMS.Utility.MessageBox.info('新增成功');
+                            }
+                            UpdateBoundSetting.queryInbounds();
+                        }
+                    }
+                });
+            })
+            //入库保存----END
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_approve_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            //检测输入数据
+            $('#js_form_inbound_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            $('#s_input_outbound_date').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii'
+            })
+            $('#js_select_warehouse_storage_uid,#js_select_warehouse_storage_out_uid,#js_select_material_uid,#js_select_outbound_account').selectpicker({ 'selectedText': 'cat' });
+            //Coupa採購單匯入---start
+            //show
+            $('#js_btn_import').click(function () {
+                if ($('#js_importExcel_modal').valid()) {
+                }
+            });             
+            //Submit
+            $('#js_btn_excel_update').on('click', function () {
+                var form = $(this).parents('form:first');
+                if (!form.valid()) {
+                    return false;
+                } else {
+                    $('#js_importExcel_modal').modal('hide');
+                    $.blockUI({ message: "<h1>请等待...</h1>" });
+                    if (form) {
+                        form.ajaxSubmit({
+                            success: function (data) {
+                                $.unblockUI();
+                                if (data != '') {
+                                    PDMS.Utility.MessageBox.infohtml(data);
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.info('保存成功！');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            //Cancel
+            $('#js_btn_clear_Update').click(function () {
+                var form = $(this).parents('form:first')[0];
+                if (form)
+                    form.reset();
+                $('#js_importExcel_modal').modal('hide');
+            });
+            //Coupa採購單匯入---end
+            //入库隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('#js_select_inbound_type').val('');
+
+                $('#js_select_material_uid').selectpicker('val', '');
+                $('#js_select_material_uid').trigger("liszt:updated");
+
+
+                $('#js_select_warehouse_storage_uid').selectpicker('val', '');
+                $('#js_select_warehouse_storage_uid').trigger("liszt:updated");
+                $('.list-group.validate-error').empty();
+            });
+            //新增储位界面隐藏时清空值
+            $('#js_addstorage_modal').on('hidden.bs.modal', function (e) {
+                $('#js_addstorage_modal').find('input').val('');
+                $('#js_addstorage_modal').find('select').val('');
+            });
+            //出库隐藏编辑框时清空值
+            $('#js_outedit_modal').on('hidden.bs.modal', function (e) {
+                //復原新刪存按扭啟用
+                $('#bt_add_mat').attr('disabled', false);
+                $('#bt_remove_mat').attr('disabled', false);
+                $('#js_btn_save_out').attr('disabled', false);
+
+                $('#js_outedit_modal').find('input').val('');
+                $('#js_outedit_modal').find('select').val('');
+
+                $('#js_outedit_modal #js_select_outbound_account').selectpicker('val', '');
+                $('#js_outedit_modal #js_select_outbound_account').trigger("liszt:updated");
+
+                $('#js_outedit_modal #js_select_material_out_uid').html('<optgroup label="料号_品名_型号"><option></option></optgroup>');
+                $('#js_outedit_modal #js_select_material_out_uid').selectpicker('refresh');
+
+                $('#js_outedit_modal #js_select_warehouse_storage_out_uid').html('<optgroup label="仓库_料架_储位"><option></option></optgroup>');
+                $('#js_outedit_modal #js_select_warehouse_storage_out_uid').selectpicker('refresh');
+                $('.list-group.validate-error').empty();
+                var dataTable = UpdateBoundSetting.GetMaterialDatatable();
+                dataTable.clear().draw();
+            });
+            //删除事件-----START
+            $('body').on('click', '.js-grid-delete', function () {
+                var Storage_Bound_UID = $(this).attr('data-id'),
+                        Inout_Type = $(this).attr('data-type');
+                PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                    var url = UpdateBoundSetting.urls.deleteBound;
+                    $.post(url, { Storage_Bound_UID: Storage_Bound_UID, Inout_Type: Inout_Type }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info("删除成功");
+                            setTimeout(function () {
+                                UpdateBoundSetting.queryInbounds();
+                            }, 1000);
+
+                        }
+                    });
+                });
+            });
+            //删除事件-------END
+            //编辑--start
+            $('body').on('click', '.js-grid-edit', function () {
+                var Storage_Bound_UID = $(this).attr('data-id'),
+                    Inout_Type = $(this).attr('data-type'),
+                    url = UpdateBoundSetting.urls.queryInboundByUid;
+                $.post(url, { Storage_Bound_UID: Storage_Bound_UID, Inout_Type: Inout_Type }, function (data) {
+                    if (Inout_Type == "入库单") {
+                        $('#js_edit_modal').find('input[name=Storage_Inbound_UID]').val(Storage_Bound_UID);
+                        $('#js_edit_modal').find('select[name=PartType_UID]').val(data.PartType_UID);
+                        //SetInboundShow(data.PartType_UID);
+                        //重新綁定下拉選單項目
+                        $('#js_select_material_uid').html('<option></option>');
+                        $('#js_select_material_uid').append('<option value="' + data.Material_Uid + '">' + data.Material_Id + "_" + data.Material_Name + "_" + data.Material_Types + '</option>');
+                        $('#js_select_material_uid').selectpicker('refresh');
+                        $('#js_select_material_uid option[value="' + data.Material_Uid + '"]').attr("selected", "true");
+                        $('#js_select_material_uid').selectpicker('val', data.Material_Uid);
+                        $("#js_select_material_uid").trigger("liszt:updated");
+                        $('#js_edit_modal').find('input[name=PU_NO]').val(data.PU_NO);
+                        $('#js_edit_modal').find('input[name=PU_Qty]').val(data.PU_Qty);
+                        $('#js_edit_modal').find('input[name=Issue_NO]').val(data.Issue_NO);
+                        $('#js_edit_modal').find('input[name=Be_Check_Qty]').val(data.Be_Check_Qty);
+                        $('#js_edit_modal').find('input[name=OK_Qty]').val(data.OK_Qty);
+                        $('#js_edit_modal').find('input[name=NG_Qty]').val(data.NG_Qty);
+                        $('#js_edit_modal').find('input[name=Status]').val(data.Status);
+                        $('#js_edit_modal').modal('show', $(this));
+                        $('#js_edit_modal h4').text('入库编辑');
+                        //$('#js_edit_modal').find('select[name=Warehouse_Storage_UID]').val(data.Warehouse_Storage_UID);
+                        //$('#js_edit_modal').find('select[name=Warehouse_Storage_UID]').selectpicker('val', data.Warehouse_Storage_UID);
+                        //$('#js_edit_modal').find('select[name=Warehouse_Storage_UID]').trigger("liszt:updated");
+                        SetWarStorage(data.PartType_UID, data.Warehouse_Storage_UID, '', data.Warehouse_Storage_UID);
+                    } else {
+                        //若編輯時尚未載入領用人清單，則在此載入
+                        if ($('#js_select_outbound_account').children('option').length == 0) {
+                            url = UpdateBoundSetting.urls.queryUsers;
+                            $.post(url, function (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    $('#js_select_outbound_account').append('<option value="' + data[i].EQPUser_Uid + '">' + data[i].User_Name + '</option>');
+
+                                }
+                                $('#js_select_outbound_account').selectpicker('refresh');
+                            });
+                        }
+                        $('#js_outedit_modal').find('input[name=Storage_Outbound_M_UID]').val(Storage_Bound_UID);
+                        $('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').val(data.Storage_Outbound_Type_UID);
+                        $('#js_outedit_modal').find('select[name=Storage_Outbound_Type_UID]').attr('disabled', 'disabled');
+                        $('#js_select_storage_outbound_type').trigger('change');
+                        $('#js_outedit_modal').find('input[name=Repair_id]').val(data.Repair_id);
+                        $('#js_outedit_modal').find('input[name=Repair_id]').trigger('blur');
+                        $('#js_outedit_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                        $('#js_outedit_modal').find('input[name=EQP_Location]').val(data.EQP_Location);
+                        $('#js_outedit_modal').find('input[name=Equipment]').val(data.Equipment);
+                        $('#js_outedit_modal').find('input[name=OP_Types]').val(data.OP_Types);
+                        $('#js_outedit_modal').find('input[name=FunPlant]').val(data.FunPlant);
+                        $('#js_outedit_modal').find('input[name=Repair_Reason]').val(data.Repair_Reason);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').val(data.Outbound_Account_UID);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').selectpicker('val', data.Outbound_Account_UID);
+                        $('#js_outedit_modal').find('select[name=Outbound_Account_UID]').trigger("liszt:updated");
+                        $('#js_outedit_modal').find('input[name=Desc]').val(data.Desc);
+                        $('#js_outedit_modal h4').text('出库编辑');
+                        $('#js_outedit_modal').modal('show');
+                        var subTable = $('#table_material').DataTable({
+                            columns: UpdateBoundSetting.applyMatColumns,
+                            ordering: false,
+                            data: data.details,
+                            destroy: true
+                        });
+
+                        UpdateBoundSetting.SetMatDatatable(subTable);
+                    }
+                });
+            });
+            //编辑--en
+            //取得入库储位列表并设选中值---START   2017-03-29
+            //增加儲位搜尋關鍵字---Darren 2019-01-31
+            function SetWarStorage(inbtype, uid, key, currentValue) {
+                url = UpdateBoundSetting.urls.queryWarStByKey;
+                $('#js_select_warehouse_storage_uid').html('<optgroup label="OP类型_功能厂_仓库_料架_储位"><option></option></optgroup>');
+                $.post(url, { inboundtype: inbtype, warStUid: uid, key: key }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_warehouse_storage_uid optgroup').append('<option value=' + data[i].Warehouse_Storage_UID +
+                            '>' + data[i].BG + '_' + data[i].Funplant + '_' + data[i].Warehouse_ID + '_' + data[i].Rack_ID + '_' + data[i].Storage_ID + '</option>');
+                    }
+                    $('#js_select_warehouse_storage_uid').selectpicker('refresh');
+
+                    $('#js_select_warehouse_storage_uid option[value="' + currentValue + '"]').attr("selected", "true");
+                    $('#js_select_warehouse_storage_uid').selectpicker('val', currentValue);
+                    //$("#js_select_warehouse_storage_uid").trigger("liszt:updated");
+                })
+            }
+            $('#js_select_material_uid').change(function () {
+                var Material_Uid = $('#js_select_material_uid option:selected').val();
+                var inboundType = $('#js_select_inbound_type').val();
+                if (inboundType.length > 0) {
+                    //设置初始化预设储位
+                    url = UpdateBoundSetting.urls.queryqueryMaterialByuid;
+                    $.post(url, { Material_Uid: Material_Uid }, function (data) {
+                        //$('#js_select_warehouse_storage_uid').selectpicker('val', data[0].Warehouse_Storage_UID);
+                        //$("#js_select_warehouse_storage_uid").trigger("liszt:updated");
+                        SetWarStorage(inboundType, data[0].Warehouse_Storage_UID, '', data[0].Warehouse_Storage_UID);
+                    });
+                }
+            });
+                //取得入库储位列表并设选中值-----END
+                //查看--start
+                $('body').on('click', '.js-grid-view', function () {
+                    var Storage_Bound_UID = $(this).attr('data-id'),
+                        Inout_Type = $(this).attr('data-type');
+                    if (Inout_Type == "入库单") {
+                        $('#js_approve_modal h4').text('入库查看');
+                        $('#js_btn_approve_save').hide();
+                        showInBoundApprove(Storage_Bound_UID);
+                        $('#js_approve_modal').modal('show');
+                    } else {
+                        $('#js_outapprove_modal h4').text('出库查看');
+                        $('#btn_save_outapprove').hide();
+                        showOutBoundApprove(Storage_Bound_UID);
+                        $('#js_outapprove_modal').modal('show', $(this));
+                    }
+                });
+                //查看--end
+                //审核--start
+                $('body').on('click', '.js-grid-approve', function () {
+                    var Storage_Bound_UID = $(this).attr('data-id'),
+                        Inout_Type = $(this).attr('data-type');
+                    if (Inout_Type == "入库单") {
+                        $('#js_approve_modal h4').text('入库审核');
+                        $('#js_btn_approve_save').show();
+                        $('#inbound_pre').attr('disabled', 'disabled');
+                        $('#inbound_next').attr('disabled', 'disabled');
+                        showInBoundApprove(Storage_Bound_UID);
+                        $('#js_approve_modal').modal('show');
+                    } else {
+                        $('#js_outapprove_modal h4').text('出库审核');
+                        $('#btn_save_outapprove').show();
+                        $('#outbound_pre').attr('disabled', 'disabled');
+                        $('#outbound_next').attr('disabled', 'disabled');
+                        showOutBoundApprove(Storage_Bound_UID);
+                        $('#js_outapprove_modal').modal('show', $(this));
+                    }
+                });
+                //审核--end
+                //显示入库审核界面---START
+                function showInBoundApprove(Storage_Bound_UID) {
+                    var url = UpdateBoundSetting.urls.queryInboundByUid;
+                    $('#js_approve_modal').find('input[name=Storage_Inbound_UID]').val(Storage_Bound_UID);
+                    $.post(url, { Storage_Bound_UID: Storage_Bound_UID, Inout_Type: '入库单' }, function (data) {
+                        $('#js_approve_modal').find('input[name=Storage_Inbound_ID]').val(data.Storage_Inbound_ID);
+                        $('#js_approve_modal').find('input[name=Storage_Inbound_Type]').val(data.Storage_Inbound_Type);
+                        $('#js_approve_modal').find('input[name=PartType_UID]').val(data.PartType);
+                        $('#s_input_inbound_type').trigger('change');
+                        $('#js_approve_modal').find('input[name=Material_Id]').val(data.Material_Id);
+                        $('#js_approve_modal').find('input[name=Material_Name]').val(data.Material_Name);
+                        $('#js_approve_modal').find('input[name=Material_Types]').val(data.Material_Types);
+                        $('#js_approve_modal').find('input[name=PU_NO]').val(data.PU_NO);
+                        $('#js_approve_modal').find('input[name=PU_Qty]').val(data.PU_Qty);
+                        $('#js_approve_modal').find('input[name=Issue_NO]').val(data.Issue_NO);
+                        $('#js_approve_modal').find('input[name=Be_Check_Qty]').val(data.Be_Check_Qty);
+                        $('#js_approve_modal').find('input[name=OK_Qty]').val(data.OK_Qty);
+                        $('#js_approve_modal').find('input[name=NG_Qty]').val(data.NG_Qty);
+                        $('#js_approve_modal').find('input[name=Warehouse_ID]').val(data.Warehouse_ID);
+                        $('#js_approve_modal').find('input[name=Rack_ID]').val(data.Rack_ID);
+                        $('#js_approve_modal').find('input[name=Storage_ID]').val(data.Storage_ID);
+                        $('#js_approve_modal').find('input[name=Status]').val(data.Status);
+                        if (data.Status == "未审核") {
+                            $('#js_approve_modal #js_btn_approve_save').removeAttr('disabled');
+                        } else {
+                            $('#js_approve_modal #js_btn_approve_save').attr('disabled','disabled');
+                        }
+                    });
+                }
+                //显示入库审核界面-----END
+                //入库批量审核按钮----START
+                $('#js_btn_approve').click(function () {
+                    $('#NeedShow').val('1');
+                    var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked');
+                    var len = $selectList.length;
+                    if (len == 0) {
+                        PDMS.Utility.MessageBox.info('请先勾选未审核数据！');
+                    } else {
+                        $('#inbound_pre').show();
+                        $('#inbound_next').show();
+                        var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked:eq(0)').val();
+                        showInBoundApprove(Storage_Bound_UID);
+                        $('#js_approve_modal').modal('show');
+                        $('#currentID').val(0);
+
+                        $('#js_approve_modal h4').text('批量入库审核');
+                        $('#js_btn_approve_save').show();
+
+                        $('#inbound_pre').attr('disabled', 'disabled');
+                        var Total = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked').length;
+                        if (Total==1)
+                            $('#inbound_next').attr('disabled', 'disabled');
+                        else
+                            $('#inbound_next').removeAttr('disabled');
+                    }
+                });
+                //入库批量审核按钮------END
+                //入库审核上一笔----START
+                $('#inbound_pre').click(function () {
+                    $('#inbound_next').removeAttr('disabled', 'disabled');
+                    var currentID = $('#currentID').val();
+                    $('#currentID').val(parseInt(currentID) - 1);
+                    if (parseInt(currentID) - 1 == 0)
+                        $('#inbound_pre').attr('disabled', 'disabled');
+                    var currentID = $('#currentID').val();
+                    var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked:eq(' + currentID + ')').val();
+                    showInBoundApprove(Storage_Bound_UID);
+                })
+                //入库审核上一笔------END
+                //入库审核下一笔----START
+                $('#inbound_next').click(function () {
+                    $('#inbound_pre').removeAttr('disabled', 'disabled');
+                    var currentID = $('#currentID').val();
+                    $('#currentID').val(parseInt(currentID) + 1);
+                    var Total = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked').length;
+                    if (parseInt(currentID) + 2 == parseInt(Total)) {
+                        $('#inbound_next').attr('disabled', 'disabled');
+                    }
+                    var currentID = $('#currentID').val();
+                    var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked:eq(' + currentID + ')').val();
+                    showInBoundApprove(Storage_Bound_UID);
+                })
+                //入库审核下一笔------END
+                //入库审核返回----START
+                $('#inbound_close').click(function () {
+                    var currentID = $('#js_Bom_datatable').find('.js-checkbox-item.intype:checked').length;
+                    $('#currentID').val(currentID);
+                    $('#js_approve_modal').modal('hide');
+                })
+                //入库审核返回------END
+                //入库审核保存-----START
+                $('#js_btn_approve_save').click(function () {
+                    var Storage_Inbound_UID = $('#js_approve_modal').find('input[name=Storage_Inbound_UID]').val();
+                    url = UpdateBoundSetting.urls.approveInboundByUid;
+
+                    $.post(url, { Storage_Inbound_UID: Storage_Inbound_UID }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info('审核成功');
+                            $('#js_approve_modal').find('input[name=Status]').val('已审核');
+                            $('#js_approve_modal #js_btn_approve_save').attr('disabled', 'disabled');
+                        }
+                    })
+                })
+                //入库审核保存-------END
+                //入库审核界面隐藏时判定是否显示新的---START
+                $('#js_approve_modal').on('hidden.bs.modal', function (e) {
+                    $('#inbound_pre').hide();
+                    $('#inbound_next').hide();
+                    UpdateBoundSetting.queryInbounds();
+                })
+                //入库审核界面隐藏时判定是否显示新的-----END
+                //显示出库审核界面---START
+                function showOutBoundApprove(Storage_Bound_UID) {
+                    var url = UpdateBoundSetting.urls.queryInboundByUid;
+                    $.post(url, { Storage_Bound_UID: Storage_Bound_UID, Inout_Type: '出库单' }, function (data) {
+                        $('#js_outapprove_modal').find('input[name=Storage_Outbound_ID]').val(data.Storage_Outbound_ID);
+                        $('#js_outapprove_modal').find('input[name=Storage_Outbound_M_UID]').val(Storage_Bound_UID);
+                        $('#js_outapprove_modal').find('input[name=Storage_Outbound_Type]').val(data.Storage_Outbound_Type);
+                        $('#s_input_storage_outbound_type').trigger('change');
+                        $('#js_outapprove_modal').find('input[name=Repair_id]').val(data.Repair_id);
+                        $('#js_outapprove_modal').find('input[name=Apply_Time]').val(data.Apply_Time);
+                        $('#js_outapprove_modal').find('input[name=EQP_Location]').val(data.EQP_Location);
+                        $('#js_outapprove_modal').find('input[name=Equipment]').val(data.Equipment);
+                        $('#js_outapprove_modal').find('input[name=OP_Types]').val(data.OP_Types);
+                        $('#js_outapprove_modal').find('input[name=FunPlant]').val(data.FunPlant);
+                        $('#js_outapprove_modal').find('input[name=Repair_Reason]').val(data.Repair_Reason);
+                        $('#js_outapprove_modal').find('input[name=Outbound_Account]').val(data.Outbound_Account);
+                        $('#js_outapprove_modal').find('input[name=Desc]').val(data.Desc);
+                        $('#js_outapprove_modal').find('input[name=Status]').val(data.Status);
+                        if (data.Status == "未审核") {
+                            $('#js_outapprove_modal #btn_save_outapprove').removeAttr('disabled');
+                        } else {
+                            $('#js_outapprove_modal #btn_save_outapprove').attr('disabled','disabled');
+                        }
+                        var subTable = $('#table_material2').DataTable({
+                            columns: UpdateBoundSetting.MatColumns,
+                            ordering: false,
+                            data: data.details,
+                            destroy: true
+                        });
+                        UpdateBoundSetting.SetMatDatatable2(subTable);
+                        $('#table_material2 tbody tr').find('input[name=Outbound_Qty]').attr('readonly', 'readonly');
+                    });
+                }
+                //显示出库审核界面-----END
+                //出库批量审核按钮----START
+                $('#js_btn_outapprove').click(function () {
+                    $('#NeedShow2').val('1');
+                    var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked');
+                    var len = $selectList.length;
+                    if (len == 0) {
+                        PDMS.Utility.MessageBox.info('请先勾选未审核的数据');
+                    } else {
+                        var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked:eq(0)').val();
+                        showOutBoundApprove(Storage_Bound_UID);
+                        $('#js_outapprove_modal').modal('show', $(this));
+                        $('#currentID2').val(0);
+
+                        $('#js_outapprove_modal h4').text('批量出库审核');
+                        $('#outbound_pre').show();
+                        $('#outbound_next').show();
+                        $('#btn_save_outapprove').show();
+
+                        $('#outbound_pre').attr('disabled', 'disabled');
+                        var Total = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked').length;
+                        if (Total == 1)
+                            $('#outbound_next').attr('disabled', 'disabled');
+                        else
+                            $('#outbound_next').removeAttr('disabled');
+                    }
+                });
+                //出库批量审核按钮------END
+                //出库审核上一笔----START
+                $('#outbound_pre').click(function () {
+                    $('#outbound_next').removeAttr('disabled', 'disabled');
+                    var currentID = $('#currentID2').val();
+                    $('#currentID2').val(parseInt(currentID) - 1);
+                    if (parseInt(currentID) - 1 == 0)
+                        $('#outbound_pre').attr('disabled', 'disabled');
+                    var currentID = $('#currentID2').val();
+                    var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked:eq(' + currentID + ')').val();
+                    showOutBoundApprove(Storage_Bound_UID);
+                })
+                //出库审核上一笔------END
+                //出库审核下一笔----START
+                $('#outbound_next').click(function () {
+                    $('#outbound_pre').removeAttr('disabled', 'disabled');
+                    var currentID = $('#currentID2').val();
+                    $('#currentID2').val(parseInt(currentID) + 1);
+                    var Total = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked').length;
+                    if (parseInt(currentID) + 2 == parseInt(Total)) {
+                        $('#outbound_next').attr('disabled', 'disabled');
+                    }
+                    var currentID = $('#currentID2').val();
+                    var Storage_Bound_UID = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked:eq(' + currentID + ')').val();
+                    showOutBoundApprove(Storage_Bound_UID);
+                })
+                //出库审核下一笔------END
+                //出库审核返回----START
+                $('#outbound_close').click(function () {
+                    var currentID = $('#js_Bom_datatable').find('.js-checkbox-item.outtype:checked').length;
+                    $('#currentID2').val(currentID);
+                    $('#js_outapprove_modal').modal('hide');
+                })
+                //出库审核返回------END
+                //出库审核保存-----START
+                $('#btn_save_outapprove').click(function () {
+                    var Storage_Outbound_M_UID = $('#js_outapprove_modal').find('input[name=Storage_Outbound_M_UID]').val();
+                    url = UpdateBoundSetting.urls.approveOutboundByUid;
+
+                    $.post(url, { Storage_Outbound_M_UID: Storage_Outbound_M_UID }, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info('审核成功');
+                            $('#js_outapprove_modal').find('input[name=Status]').val('已审核');
+                            $('#js_outapprove_modal #btn_save_outapprove').attr('disabled', 'disabled');
+                        }
+                    })
+                })
+                //出库审核保存-------END
+                //出库审核界面隐藏时判定是否显示新的---START
+                $('#js_outapprove_modal').on('hidden.bs.modal', function (e) {
+                    $('#outbound_pre').hide();
+                    $('#outbound_next').hide();
+                    UpdateBoundSetting.queryInbounds();
+                })
+                //出库审核界面隐藏时判定是否显示新的-----END
+                //新增储位界面BG变更---START
+                $('#js_select_optypes').change(function () {
+                    var url = UpdateBoundSetting.urls.queryWarFunplantByop,
+                        opuid = $(this).val(),
+                        PartType_Uid = $('#js_addstorage_modal').find('input[name=PartType_UID]').val();
+                    $.post(url, { opuid: opuid, PartType_Uid: PartType_Uid }, function (data) {
+                        $('#js_select_funplan').html('<option></option>');
+                        $('#js_select_warehouse_id').html('<option></option>');
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplan').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                    })
+                })
+                //新增储位界面BG变更-----END
+                //新增储位界面功能厂变更---START
+                $('#js_select_funplan').change(function () {
+                    var url = UpdateBoundSetting.urls.queryWarIdByFunction,
+                        Functionuid = $(this).val(),
+                        PartType_Uid = $('#js_addstorage_modal').find('input[name=PartType_UID]').val();
+                    $.post(url, { Functionuid: Functionuid, PartType_Uid: PartType_Uid }, function (data) {
+                        $('#js_select_warehouse_id').html('<option></option>');
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_warehouse_id').append('<option value="' + data[i].Warehouse_UID + '">' + data[i].Warehouse_ID + '</option>');
+                        }
+                    })
+                })
+                //新增储位界面功能厂变更-----END
+                //新储位保存---START
+                $('#btn_add_storage').click(function () {
+                    $('#js_form_warehouse_storage').ajaxSubmit({
+                        beforeSubmit: function () {
+                            if ($('#js_addstorage_modal').find('select[name=Warehouse_UID]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请选择仓号');
+                                return false;
+                            }
+                            if ($('#js_addstorage_modal').find('input[name=Rack_ID]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写料架编号');
+                                return false;
+                            }
+                            if ($('#js_addstorage_modal').find('input[name=Storage_ID]').val() == "") {
+                                PDMS.Utility.MessageBox.info('请填写储位');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            if (data=="FAIL!") {
+                                PDMS.Utility.MessageBox.info(data);
+                            }
+                            else {
+                                $('#js_addstorage_modal').modal('hide');
+                                var inboundtype = $('#js_select_inbound_type option:selected').val();
+                                SetWarStorage(inboundtype, data, '', data);
+                                $('#js_edit_modal').find('input[name=Warehouse_Storage_UID]').append();
+                                PDMS.Utility.MessageBox.info('新增成功');
+                                UpdateBoundSetting.queryInbounds();
+                            }
+                        }
+                    });
+                })
+                //新储位保存-----END
+                //查询BG变更---START
+                $('#js_select_BG_Organization_UID_search').change(function () {
+                    $('#js_select_FunPlant_Organization_UID_search').html('<option></option>');
+                    var url = UpdateBoundSetting.urls.queryFunplantByop,
+                        opuid = $(this).val();
+
+
+                    //$.post(url, { opuid: opuid }, function (data) {
+                    $.post(url, { Optype: $('#js_select_BG_Organization_UID_search option:selected').val(), Optypes: $('#js_select_BG_Organization_UID_search option:selected').text() }, function (data) {
+                        $('#js_select_FunPlant_Organization_UID_search').html('<option></option>');
+
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_FunPlant_Organization_UID_search').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    })
+
+
+
+                    //加载储位
+                    $('#js_select_Warehouse_Storage').html('<option></option>');
+                    $('#js_select_Warehouse_Storage').selectpicker('refresh');
+                    url = UpdateBoundSetting.urls.queryWarStroge;
+                    $.post(url, { OPTypeID: $('#js_select_BG_Organization_UID_search option:selected').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Warehouse_Storage').append('<option value="' + data[i].Warehouse_Storage_UID + '">' + data[i].Warehouse_ID + "_" + data[i].Rack_ID + "_" + data[i].Storage_ID + '</option>');
+
+                        }
+                        $('#js_select_Warehouse_Storage').selectpicker('refresh');
+                    });
+
+
+                   //加载料号
+
+                    $('#js_select_material').html('<option></option>');
+                    $('#js_select_material').selectpicker('refresh');
+                    url = UpdateBoundSetting.urls.queryAllMaterial;
+                    $.post(url, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_material').append('<option value="' + data[i].Material_Uid + '">' + data[i].Material_Id + "_" + data[i].Material_Name + "_" + data[i].Material_Types + '</option>');
+
+                        }
+                        $('#js_select_material').selectpicker('refresh');
+                    });
+
+
+
+
+                    //加载人员
+
+                    $('#js_select_Outbound_Accounts').html('<option></option>');
+                    $('#js_select_Outbound_Accounts').selectpicker('refresh');
+                    url = UpdateBoundSetting.urls.queryUsers;
+                    $.post(url, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Outbound_Accounts').append('<option value="' + data[i].EQPUser_Uid + '">' + data[i].User_Name + '</option>');
+
+                        }
+                        $('#js_select_Outbound_Accounts').selectpicker('refresh');
+                    });
+
+
+
+
+
+
+                })
+                //查询BG变更-----END
+                //清空查询条件---START
+                $('#js_btn_clear').click(function () {
+                    PDMS.Utility.Criteria.Clear();
+                    $('#js_search_modal').find('select').val('');
+                    $('#js_search_modal #js_select_Outbound_Account').selectpicker('val', '');
+                    $("#js_search_modal #js_select_Outbound_Account").trigger("liszt:updated");
+
+                    $('#js_search_modal #js_select_Warehouse_Storage').selectpicker('val', '');
+                    $("#js_search_modal #js_select_Warehouse_Storage").trigger("liszt:updated");
+
+                    $('#js_search_modal #js_select_material').selectpicker('val', '');
+                    $("#js_search_modal #js_select_material").trigger("liszt:updated");
+                });
+                //导出按钮
+                $('#js_btn_export').click(function () {
+                    var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+
+                    var $selectList2 = $('#js_Bom_datatable').find('.js-checkbox-item2:checked');
+
+                    var len = $selectList.length;
+                    var len2 = $selectList2.length;
+                    if (len == 0 && len2==0) {
+                        //全部导出
+                        var url = UpdateBoundSetting.urls.doAllExportUpdateBoundReprot;
+                        //没有查询条件的情况，从查询页面获取
+                        if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                            PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        }
+                        url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                        window.location.href = url;
+
+                    } else {
+                        debugger;
+                        var Inout = [];
+                        var uids = $.map($selectList, function (row) {
+                            debugger;
+                            var sub = {};
+                            sub["InOutType"] = row.dataset.type;
+                            sub["InOutID"] = row.value;
+                            Inout.push(sub);
+                            return row.value;
+                        }
+                        );
+                        var uids2=  $.map($selectList2, function (row) {
+                            debugger;
+                            var sub = {};
+                            sub["InOutType"] = row.dataset.type;
+                            sub["InOutID"] = row.value;
+                            Inout.push(sub);
+                            return row.value;
+                        });
+                      debugger;
+                        $('table').find('.js-checkbox-all,.js-checkbox-item,.js-checkbox-item2').prop('checked', false);
+
+                        var url = UpdateBoundSetting.urls.doExportUpdateBoundReprot;
+
+                         url += '?InOutBounds=' + JSON.stringify(Inout);
+                         window.location.href = url;
+                    }
+                });
+        })
+
+        //領用明細储位變更---START
+        function td_select_WarehouseStorage_onChange(o) {
+            var iQty = $(o).find('option:selected').attr("data-IQty");
+            var bQty = $(o).find('option:selected').attr("data-BQty");
+            var row = $(o).attr("data-row");
+            $('span[data-id="td_span_Inventory_Qty"][data-row="' + row + '"]').text(iQty ? iQty : "");
+            $('span[data-id="td_span_Be_Out_Qty"][data-row="' + row + '"]').text(bQty ? bQty : "");
+        }
+        //領用明細储位變更---END
+    </script>
+}

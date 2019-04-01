@@ -1,0 +1,1290 @@
+﻿@model PDMS.Model.ViewModels.Fixture.Fixture_ReturnVM
+<section class="content portal-content">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button id="bt_search" type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> 查询</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">归还</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export"> 导出</button>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>归还表单编号</th>
+                        <th>领用单编号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>领用归还人员</th>
+                        <th>领用归还</th>
+                        <th>领用日期</th>
+                        <th>设备编号</th>
+                        <th>最近更新者</th>
+                        <th>最后更新日期</th>
+                    </tr>
+                </thead>
+
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>归还表单编号</th>
+                        <th>领用单编号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>领用归还人员</th>
+                        <th>领用归还</th>
+                        <th>领用日期</th>
+                        <th>设备编号</th>
+                        <th>最近更新者</th>
+                        <th>最后更新日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    @*治具归还编辑*@
+    <div class="modal fade" id="js_view_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">治具归还</h4>
+                </div>
+                @using (Html.BeginForm("QueryFixtureReturnUid", "Fixture", FormMethod.Post, new { id = "js_form_maintenance2" }))
+                {
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>基本信息</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="s_input_Fixture_Return_M_UID">治具归还UID</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="s_input_Fixture_Return_M_UID" name="Fixture_Return_M_UID" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="s_input_Return_NO">治具归还单号</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="s_input_Return_NO" name="Return_NO" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="s_input_Return_User">归还人员</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="s_input_Return_User" name="Return_User">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="s_input_Return_Name">归还人</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="s_input_Return_Name" name="Return_Name">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>治具领用归还明细</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-12 col-lg-12" style="padding-right:0px">
+                        <table class="table table-condensed col-sm-9" id="table_fixture3" name="table_fixture3">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-checkbox nosort">
+                                        <input type="checkbox" class="js-checkbox-all-return" />
+                                    </th>
+                                    <th class="padding-1-5-i text-center">治具短码</th>
+                                    <th class="padding-1-5-i text-center">治具唯一编号</th>
+                                    <th class="padding-1-5-i text-center">制程</th>
+                                    <th class="padding-1-5-i text-center">工站</th>
+                                    <th class="padding-1-5-i text-center">线别</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_edit_save"><i class="fa fa-save"></i> 保存</button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*治具归还新增*@
+    <div class="modal fade" id="js_edit_modal" role="dialog" style="x-sc">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">治具归还</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditFixtureToReturn", "Fixture", FormMethod.Post, new { id = "js_form_maintenance" }))
+                {
+                <input type="hidden" name="fixturelist" id="fixturelist" />
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>基本信息</b>
+                        </h4>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_plant">厂区</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_plant" name="Plant_Organization_UID">
+                                @if (Model.Plants.Count > 1)
+                                    {
+                                    <option value=0></option>
+                                    }
+                                @foreach (var item in Model.Plants)
+                                    {
+                                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_op_types">OP类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_op_types" name="BG_Organization_UID">
+                                @if (Model.optypes != null)
+                                    {
+                                    <option value=0></option>
+
+                                        foreach (var item in Model.optypes)
+                                        {
+                                            if (item.BG != "Support team")
+                                            {
+                                    <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                            }
+                                        }
+                                    }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_funplant">功能厂</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm" id="js_select_funplant" name="FunPlant_Organization_UID">
+                                @if (Model.funplants != null)
+                                    {
+                                    <option value=0></option>
+                                        foreach (var item in Model.funplants)
+                                        {
+                                    <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                        }
+                                    }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="s_input_Ship_Date">归还时间</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm date_time required" id="js_input_Return_Date" name="Return_Date">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Totake_Number">归还人员(NT或工号)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Return_User" name="Return_User" placeholder="领用者工号"
+                                   required data-msg-required="请输入[归还者工号]."
+                                   data-rule-maxlength="20" data-msg-maxlength="工站名称不能超过 {0} 个字符.">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_input_Totake_Name">归还人员姓名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-sm required" id="js_input_Return_Name" name="Return_Name" placeholder="领用者名称"
+                                   required data-msg-required="请输入[归还者名称]."
+                                   data-rule-maxlength="50" data-msg-maxlength="工站名称不能超过 {0} 个字符.">
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                        <label class="col-sm-4 control-label" for="js_select_Totake_NO">领用单号</label>
+                        <div class="col-sm-8">
+                            <select class="selectpicker form-control input-sm" id="js_select_Totake_NO" name="Fixture_Totake_M_UID" data-live-search="true">
+                                @*@if (Model.funplants != null)
+                                    {*@
+                                @*<option value=0></option>*@
+                                @*<option value=B20171020_001>B20171020_001</option>
+                                <option value=B20171020_002>B20171020_002</option>
+                                <option value=123>123</option>*@
+                                @*foreach (var item in Model.funplants)
+                                    {
+                                        <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                    }*@
+                                @*  *@}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-12 col-lg-12">
+
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-bottom:0px">
+                    <div class="col-sm-12" style="text-align:left">
+                        <h4>
+                            <b>治具领用归还明细</b>
+                        </h4>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                        <table class="table table-condensed col-sm-9" id="table_fixture2" name="table_fixture2">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-checkbox nosort">
+                                        <input type="checkbox" class="js-checkbox-all-return" />
+                                    </th>
+                                    <th class="padding-1-5-i text-center">治具短码</th>
+                                    <th class="padding-1-5-i text-center">治具唯一编号</th>
+                                    <th class="padding-1-5-i text-center">制程</th>
+                                    <th class="padding-1-5-i text-center">工站</th>
+                                    <th class="padding-1-5-i text-center">线别</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_save" type="button"><i class="fa fa-save"></i> 保存</button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*查询model*@
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_Return_NO">领用归还单编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Return_NO" class="form-control input-sm" id="js_input_Return_NO" placeholder="Return_NO">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_input_TakenNO">原领用单编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Taken_NO" class="form-control input-sm" id="js_input_TakenNO" placeholder="Taken_NO">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_plant_search">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_plant_search" name="Plant_Organization_UID">
+                                            @if (Model.Plants.Count > 1)
+                                            {
+                                            <option value=0></option>
+                                            }
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_op_types_search">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_op_types_search" name="BG_Organization_UID">
+                                            @if (Model.optypes != null)
+                                            {
+                                            <option value=0></option>
+                                                foreach (var item in Model.optypes)
+                                                {
+                                                    if (item.BG != "Support team")
+                                                    {
+                                            <option value=@item.BG_OrganizationUID>@item.BG</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_funplant_search">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_select_funplant_search" name="FunPlant_Organization_UID">
+                                            @if (Model.funplants != null)
+                                            {
+                                            <option value=0></option>
+                                                foreach (var item in Model.funplants)
+                                                {
+                                            <option value=@item.System_FunPlant_UID>@item.FunPlant</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Process_ID_search">制程</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Process_Name" class="form-control input-sm" id="js_s_input_Process_ID_search" placeholder="Process_Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_WorkStation_ID_search">工站</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="WorkStation_Name" class="form-control input-sm" id="js_s_input_WorkStation_ID_search" placeholder="WorkStation_Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Production_Line_UID">产线</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Line_NO" class="form-control input-sm" id="js_s_input_Production_Line_UID" placeholder="Line_NO">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Fixture_M_UID">治具编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Fixture_NO" class="form-control input-sm" id="js_s_input_Fixture_M_UID" placeholder="Fixture_NO">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Fixture_Machine_UID_search">设备编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Machine_ID" class="form-control input-sm" id="js_s_input_Fixture_Machine_UID_search" placeholder="Machine_ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Workshop_UID_search">生产地点</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Workshop_Name" class="form-control input-sm" id="js_s_input_Workshop_UID_search" placeholder="Workshop_Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Modified_UID_search">最新修改者NTID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_UserNTID" class="form-control input-sm" id="js_s_input_Modified_UID_search" placeholder="Modified_UserNTID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_ShortCode_search">治具短码</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="ShortCode" class="form-control input-sm" id="js_s_input_ShortCode_search" placeholder="ShortCode">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Fixture_Unique_ID">治具唯一编号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Fixture_Unique_ID" class="form-control input-sm" id="js_s_input_Fixture_Unique_ID" placeholder="Fixture_Unique_ID">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_Return_User">领用归还者</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Return_User" class="form-control input-sm" id="js_s_input_Return_User" placeholder="Return_User">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" data-type="date-interval">修改日期</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_from" class="form-control input-sm date" id="js_s_input_Modified_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_to" class="form-control input-sm date" id="js_s_input_Modified_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#bt_add_fixture').hide();
+            $('#bt_remove_fixture').hide();
+        })
+
+        $('#js_btn_clear').click(function () {
+            $('#js_select_plant_search').val(0);
+            $('#js_select_op_types_search').val(0);
+            $('#js_select_funplant_search').val(0);
+            $('#js_select_Account_UID_search').val(0);
+            $('#js_select_Workshop_ID_search').val(0);
+            $('#js_select_Workshop_UID_search').val(0);
+            $('#js_select_Account_UID_search').selectpicker('val', '');
+            $("#js_select_Account_UID_search").trigger("liszt:updated");
+            PDMS.Utility.Criteria.Clear();
+        });
+
+
+        //#endregion
+        $(function () {
+            var FixtureTotakeRul = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryFixtureToReturn: '@Url.Action("QueryFixtureToReturn", "Fixture")',
+
+                    getOrgByParant: '@Url.Action("GetOrgByParant", "Fixture")',
+                    //根据ID查询页面归还的所有信息
+                    queryFixtureReturnByUid: '@Url.Action("QueryFixtureReturnUid", "Fixture")',
+
+                    queryFixtureByUid: '@Url.Action("QueryFixtureByUid", "Fixture")',
+                    //导出excel
+                    doExportFunction: '@Url.Action("DoFTExportFunction", "Fixture")',
+                    //获取领用单号，其中包含为归还的
+                    fetchFixtureTotakeforFixtureReturn: '@Url.Action("FetchFixtureTotakeforFixtureReturn", "Fixture")',
+                    //根据领用单获取治具
+                    fetchAllFixturesBasedTakeNo: '@Url.Action("FetchAllFixturesBasedTakeNo", "Fixture")',
+                    //根据Return_M_UID获取所有Return_D信息
+                    fetchAllFixturesBasedReturnMUID: '@Url.Action("FetchAllFixturesBasedReturnMUID", "Fixture")',
+
+                    //插入治具
+                    insertFixtureReturn: '@Url.Action("InsertFixtureReturn", "Fixture")',
+
+                    //编辑页面，更新治具归还人员以及名字，修改治具是否归还
+                    updateFixtureReturn: '@Url.Action("UpdateFixtureReturn", "Fixture")',
+                    //查阅视图
+                    viewFixtureTotakeDetails: '@Url.Action("FixtureReturnDetail", "Fixture")',
+                    //删除
+                    delFixtureReturnM: '@Url.Action("DelFixtureReturnM", "Fixture")',
+
+                    getUserByOp: '@Url.Action("GetUserByOpLY", "Fixture")',
+                    getUserByWorkshop: '@Url.Action("GetUserByWorkshop", "Fixture")',
+
+                    doAllExportFunction: '@Url.Action("ExportFixtrueReturn2Excel", "Fixture")',
+
+                };
+
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Return_M_UID + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Fixture_Return_M_UID + '">查看</button>' +
+                                             '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Fixture_Return_M_UID + '$' + rowData.Return_NO + '$' + rowData.Return_User + '$' + rowData.Return_Name + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-del" data-id="' + rowData.Fixture_Return_M_UID + '">删除</button>' +
+                                        '</div>';
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                     {
+                         data: "Return_NO",
+                         className: "min-col-xs"
+                     },
+                    {
+                        data: "Taken_NO",
+                        className: "min-col-xs"
+                    },
+                     {
+                         data: "Plant",
+                         className: "min-col-xs"
+                     },
+                     {
+                         data: "BG",
+                         className: "min-col-xs"
+                     },
+                    {
+                        data: "FunPlant",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Return_User",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Return_Name",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Totake_Date",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Machine_ID",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Modified_UserName",
+                        className: "min-col-xs"
+                    },
+                    {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }];
+                //治具添加的表格
+                var fixtureDatatableColumns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IS_Return == 0) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Totake_D_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        } else {
+
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" checked="true" disabled="disabled" value="' + rowData.Fixture_Totake_D_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        }
+
+                    },
+                    className: "text-center min-col-xs"
+                },
+                {
+                    data: "ShortCode",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Fixture_Unique_ID",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "WorkStation",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Line",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "IS_Return",
+                    className: "hidden"
+                }, {
+                    data: "Fixture_Totake_M_UID",
+                    className: "hidden"
+                },{
+                        data: "Fixture_Totake_D_UID",
+                        className: "hidden"
+                },
+                {
+                    data: "Fixture_M_UID",
+                    className: "hidden"
+                }
+                ];
+                //#endregion 定义字段列
+                var fixtureDatatableColumns3 = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IS_Return == 0) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Return_D_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        } else {
+
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" checked="true" disabled="disabled" value="' + rowData.Fixture_Return_D_UID + '">')
+                                 .addClass('table-col-checkbox');
+                        }
+
+                    },
+                    className: "text-center min-col-xs"
+                },
+                {
+                    data: "ShortCode",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Fixture_Unique_ID",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "WorkStation",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Line",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "IS_Return",
+                    className: "hidden"
+                }, {
+                    data: "Fixture_Return_D_UID",
+                    className: "hidden"
+                }
+                ];
+                var _getParams = function () {
+
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    var formdata = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return formdata;
+
+                };
+
+                var _queryFixtureTotake = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryFixtureToReturn,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryFixtureTotake(true, false);
+
+                    },
+                    queryFixtureTotake: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryFixtureTotake(false, true);
+                    },
+                    GetFixtureDatatable: function () {
+                        fixtureDatatable = $('#table_fixture2').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            scrollY: "200px",
+                            scrollCollapse: true,
+                            columns: fixtureDatatableColumns
+                        });
+                        return fixtureDatatable;
+                    },
+                    GetFixtureDatatable3: function () {
+                        fixtureDatatable = $('#table_fixture3').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: fixtureDatatableColumns3
+                        });
+                        return fixtureDatatable;
+                    },
+                    SetFixtureDatatable: function (datatable) {
+                        fixtureDatatable = datatable;
+                    },
+                    FixtureColumns: fixtureDatatableColumns
+                }
+            })();
+
+            FixtureTotakeRul.Init();
+            //--新建归还的时厂区的三联动
+            $('#js_select_plant').change(function () {
+                var plantuid = $('#js_select_plant option:selected').val();
+                SetOpByPlantCreate(plantuid, 0);
+            })
+            function SetOpByPlantCreate(Plant_Organization_UID, BG_Organization_UID) {
+                url = FixtureTotakeRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types').change(function () {
+                var bgorg = $('#js_select_op_types option:selected').val();
+                SetFunPlantByOp2(bgorg, 0);
+            })
+            function SetFunPlantByOp2(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant').html('<option value=0></option>');
+                url = FixtureTotakeRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant').val(FunPlant_Organization_UID);
+                    });
+                }
+            }
+            //---end---
+            $('#js_select_plant,#js_select_op_types,#js_select_funplant').change(function () {
+                $('#js_select_fixture').html('<option value=0></option>');
+                var plant_ID = $('#js_select_plant').val(),//厂区
+                    op_type = $('#js_select_op_types').val(),//op类型
+                    funPlant = $('#js_select_funplant').val(),//功能厂
+                    url = FixtureTotakeRul.urls.fetchFixtureTotakeforFixtureReturn;
+                if (plant_ID == '0' || op_type === '0' || funPlant == '0') {
+                    return;
+                }
+                $.post(url, { plant_ID: plant_ID, op_type: op_type, funPlant: funPlant }, function (data) {
+                    if (data.length > 0) {
+                        $('#js_select_Totake_NO').html('<option value="">' + '</option>');
+                        $.each(data, function (index, item) {
+                            $('#js_select_Totake_NO').append('<option value="' + item + '">' + item + '</option>');
+                            $('#js_select_Totake_NO').selectpicker('refresh');
+                            $("#js_select_Totake_NO").trigger('change');
+                        });
+                    } else {
+                        $('#js_select_Totake_NO').html('<option value="">' + '</option>');
+                        $('#js_select_Totake_NO').selectpicker('refresh');
+                        $("#js_select_Totake_NO").trigger('change');
+                    }
+                });
+            })
+            //领用单号改变时发出请求
+            $('#js_select_Totake_NO').change(function () {
+                var Take_NO = $('#js_select_Totake_NO').val();
+                if (Take_NO == null) {
+                    return;
+                }
+                if (Take_NO != 0) {
+                    var url = FixtureTotakeRul.urls.fetchAllFixturesBasedTakeNo;
+                    var dataTable = FixtureTotakeRul.GetFixtureDatatable();
+                    $.post(url, { Take_NO: Take_NO }, function (data) {
+                        if (data == null) {
+                            return;
+                        }
+                        var $checkedItems = $('#table_fixture2 .js-checkbox-item');
+                        $.map($checkedItems, function (checkbox) {
+                            var $sender = $(checkbox);
+                            var $tr = $sender.closest('tr');
+                            var trIndex = $tr.index();
+                            dataTable.row($tr).remove().draw();
+                        });
+                        dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                            dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                        });
+
+                        $.each(data, function (index, item) {
+                            //var ret = JudgeFixExist(item.Fixture_Totake_D_UID);
+                            //if (ret) {
+                                var row = dataTable.row.add({
+                                    "Fixture_M_UID": item.Fixture_M_UID,
+                                    "ShortCode": item.ShortCode == null ? "" : item.ShortCode,
+                                    "Fixture_Unique_ID": item.Fixture_Unique_ID,
+                                    "Process": (item.Process_ID == null ? "" : item.Process_ID + '_') + (item.Process_Info == null ? "" : item.Process_Info),
+                                    "WorkStation": (item.WorkStation_ID == null ? "" : item.WorkStation_ID + '_') + (item.Workstation == null ? "" : item.Workstation),
+                                    "Line": (item.Line_ID == null ? "" : item.Line_ID + '_') + (item.Line_Name == null ? "" : item.Line_Name),
+                                    "IS_Return": item.IS_Return,
+                                    "Fixture_Totake_M_UID": item.Fixture_Totake_M_UID,
+                                    "Fixture_Totake_D_UID": item.Fixture_Totake_D_UID,
+                                }).draw();
+                            //} else {
+                            //    return true;
+                            //}
+                        })
+                    });
+                    //$("#js_select_Totake_NO option[value='" + Take_NO + "']").attr('disabled', 'disabled');
+
+                    //$('#js_select_Totake_NO').selectpicker('refresh');
+                }
+            })
+            //判断这个治具是不是已经在表格中了
+            function JudgeFixExist(data) {
+                var ret = true;
+                var $checkedItems = $('#table_fixture2 .js-checkbox-item');
+                if ($checkedItems.length > 0) {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        var Fixture_M_UID = $sender.val();
+                        if (Fixture_M_UID == data)
+                            ret = false;
+                    });
+                }
+                return ret;
+            }
+
+            // 领用保存
+            $('#js_btn_save').click(function () {
+                var parameters = [];
+                var isValid = true;
+                var errorMsg = "";
+                //if ($('#table_fixture2 tbody').find('tr').find('td').length <= 1) {
+                //    errorMsg += '请选择治具;  ';
+                //    isValid = false;
+                //}
+                if ($('#js_edit_modal').find('select[name=Plant_Organization_UID] option:selected').text() == "") {
+                    errorMsg += '请选择[厂区];  ';
+                    isValid = false;
+                }
+                if ($('#js_edit_modal').find('select[name=BG_Organization_UID] option:selected').text() == "") {
+                    errorMsg += '请选择[OP类型];  ';
+                    isValid = false;
+                }
+                //if ($('#js_edit_modal').find('select[name=Shiper_UID] option:selected').text() == "") {
+                //    errorMsg += '请选择[发货者];  ';
+                //    isValid = false;
+                //}
+                if ($('#js_edit_modal').find('input[name=Return_Date]').val() == "") {
+                    errorMsg += '请填写[归还日期];  ';
+                    isValid = false;
+                }
+                if ($('#js_edit_modal').find('input[name=Return_User]').val() == "") {
+                    errorMsg += '请填写[归还人员工号];  ';
+                    isValid = false;
+                }
+                if ($('#js_edit_modal').find('input[name=Return_Name]').val() == "") {
+                    errorMsg += '请填写[归还人名称];  ';
+                    isValid = false;
+                }
+                //if ($('#js_edit_modal').find('input[name=Totake_Date]').val() == "") {
+                //    errorMsg += '请填写[领用时间];  ';
+                //    isValid = false;
+                //}
+                if (!isValid) {
+                    if (errorMsg != "") {
+                        PDMS.Utility.MessageBox.info(errorMsg);
+                    }
+                    return false;
+                }
+                var dataTable = FixtureTotakeRul.GetFixtureDatatable();
+                var $checkedItems = $('#table_fixture2 .js-checkbox-item:checked:not(:disabled)');
+                if ($checkedItems.length == 0) {
+                    PDMS.Utility.MessageBox.info("Please select data");
+                    return;
+                } else {
+                    $.map($checkedItems, function (checkbox) {
+                        var $sender = $(checkbox);
+                        //var Fixture_M_UID = $sender.val();
+                        var $tr = $sender.closest('tr');
+                        var trIndex = $tr.index();
+                        var Fixture_Totake_M_UID = $('#table_fixture2 tbody tr:eq(' + trIndex + ') td:eq(7)').text();
+                        var Fixture_Totake_D_UID = $('#table_fixture2 tbody tr:eq(' + trIndex + ') td:eq(8)').text();
+                        var Fixture_M_UID = $('#table_fixture2 tbody tr:eq(' + trIndex + ') td:eq(9)').text();
+                        parameters.push({
+                            Fixture_Totake_M_UID: Fixture_Totake_M_UID,
+                            Fixture_M_UID: Fixture_M_UID,
+                            Plant_Organization_UID: $('#js_select_plant').val(),//厂区
+                            BG_Organization_UID: $('#js_select_op_types').val(),//op类型
+                            FunPlant_Organization_UID: $('#js_select_funplant').val(),
+                            Fixture_Totake_D_UID: Fixture_Totake_D_UID,
+                            Return_Date: $('#js_input_Return_Date').val(),
+                            Return_User: $('#js_input_Return_User').val(),
+                            Return_Name: $('#js_input_Return_Name').val()
+                        })
+                    });
+                    var url = FixtureTotakeRul.urls.insertFixtureReturn;
+                    $.post(url, { model: JSON.stringify(parameters) }, function (data) {
+                        if (data.status == 1) {
+                            PDMS.Utility.MessageBox.info('添加成功,归还单号为：' + data.success);
+                            //$('#js_select_Totake_NO').html('');
+                            //$("#js_select_Totake_NO").selectpicker('refresh');
+                            //$("#js_select_Totake_NO").trigger('change');
+                            ////1.清空所有输入框
+                            //$('#js_edit_modal').find('input').val('');
+
+                            //2.清空表格
+                            var dataTable = FixtureTotakeRul.GetFixtureDatatable();
+                            var $checkedItems = $('#table_fixture2 .js-checkbox-item');
+                            $.map($checkedItems, function (checkbox) {
+                                var $sender = $(checkbox);
+                                var $tr = $sender.closest('tr');
+                                var trIndex = $tr.index();
+                                dataTable.row($tr).remove().draw();
+                            });
+                            dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                                dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                            });
+                            //3.隐藏模态框
+                            //$('#js_edit_modal').modal('toggle');
+                            
+                        } else {
+                            PDMS.Utility.MessageBox.info('添加失败');
+                        }
+                    });
+                }
+            })
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('#js_select_Totake_NO').html('');
+                $('#js_select_Totake_NO').selectpicker('refresh');
+                $("#js_select_Totake_NO").trigger('change');
+                var dataTable = FixtureTotakeRul.GetFixtureDatatable();
+                var $checkedItems = $('#table_fixture2 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+                });
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                });
+                window.location.reload();
+            });
+            $('body').on('click', '.js-grid-edit', function () {
+                var uids = $(this).data('id');
+                var uid = uids.split('$')[0];
+                //var $sender = $(this);
+                //var $tr = $sender.parent('td').parent();//寻找第一个父控件
+                //var trIndex = $tr.index();
+                //var Fixture_Totake_M_UID = $('#table_fixture2 tbody tr:eq(' + trIndex + ') td:eq(7)').text();
+                //var tds = $tr.children('td');
+                var Return_NO = uids.split('$')[1];
+                var Fixture_Return_User = uids.split('$')[2];
+                var Fixture_Return_Name = uids.split('$')[3];
+                $('#s_input_Fixture_Return_M_UID').val(uid);
+                $('#s_input_Return_NO').val(Return_NO);
+                $('#s_input_Return_User').val(Fixture_Return_User);
+                $('#s_input_Return_Name').val(Fixture_Return_Name);
+                var dataTable = FixtureTotakeRul.GetFixtureDatatable3();
+                var url = FixtureTotakeRul.urls.fetchAllFixturesBasedReturnMUID;
+                $.post(url, { uid: uid }, function (data) {
+                    if (data.length <= 0) {
+                        return;
+                    }
+                    $.each(data, function (index, item) {
+                        var row = dataTable.row.add({
+                            "Fixture_M_UID": item.Fixture_M_UID,
+                            "ShortCode": item.ShortCode == null ? "" : item.ShortCode,
+                            "Fixture_Unique_ID": item.Fixture_Unique_ID,
+                            "Process": (item.Process_ID == null ? "" : item.Process_ID + '_') + (item.Process_Info == null ? "" : item.Process_Info),
+                            "WorkStation": (item.WorkStation_ID == null ? "" : item.WorkStation_ID + '_') + (item.Workstation == null ? "" : item.Workstation),
+                            "Line": (item.Line_ID == null ? "" : item.Line_ID + '_') + (item.Line_Name == null ? "" : item.Line_Name),
+                            "IS_Return": item.IS_Return,
+                            "Fixture_Return_D_UID": item.Fixture_Return_D_UID
+
+                        }).draw();
+                    })
+                });
+                $('#js_view_modal').modal('show', $(this));
+
+            });
+            //修改提交
+            $('#js_btn_edit_save').on('click', function () {
+                var parameters = [];
+                var dataTable = FixtureTotakeRul.GetFixtureDatatable3();
+                var $checkedItems = $('#table_fixture3 .js-checkbox-item:checked:not(:disabled)');
+                //if ($checkedItems.length == 0) {
+                //    PDMS.Utility.MessageBox.info("Please select data");
+                //    return;
+                //} else {
+                    //$.map($checkedItems, function (checkbox) {
+                    //    var $sender = $(checkbox);
+                    //    var Fixture_Return_D_UID = $sender.val();
+                    //    var $tr = $sender.closest('tr');
+                    //    var trIndex = $tr.index();
+                    //    parameters.push({
+                    //        //Fixture_Return_D_UID: Fixture_Return_D_UID,
+                    //        Fixture_Return_M_UID: $('#s_input_Fixture_Return_M_UID').val(),
+                    //        Return_User: $('#s_input_Return_User').val(),
+                    //        Return_Name: $('#s_input_Return_Name').val(),
+                    //    })
+                //});
+                parameters.push({
+                    Fixture_Return_M_UID: $('#s_input_Fixture_Return_M_UID').val(),
+                    Return_User: $('#s_input_Return_User').val(),
+                    Return_Name: $('#s_input_Return_Name').val()
+                });
+                        if (parameters.length <= 0){
+                            return;
+                        }
+
+
+                    var url = FixtureTotakeRul.urls.updateFixtureReturn;
+                    $.post(url, { model: JSON.stringify(parameters) }, function (data) {
+                        if (data.success != 'False') {
+                            PDMS.Utility.MessageBox.info('修改成功!');
+                            ////1.清空所有输入框
+                            //$('#js_view_modal').find('input').val('');
+
+                            ////2.清空表格
+                            //var dataTable = FixtureTotakeRul.GetFixtureDatatable();
+                            //var $checkedItems = $('#table_fixture3 .js-checkbox-item');
+                            //$.map($checkedItems, function (checkbox) {
+                            //    var $sender = $(checkbox);
+                            //    var $tr = $sender.closest('tr');
+                            //    var trIndex = $tr.index();
+                            //    dataTable.row($tr).remove().draw();
+                            //});
+                            //dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                            //    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                            //});
+                            ////3.隐藏模态框
+                            //$('#js_view_modal').modal('toggle');
+
+                        } else {
+                            PDMS.Utility.MessageBox.info('修改失败');
+                        }
+                    });
+                //}
+
+            });
+
+            //隐藏编辑框时清空值
+            $('#js_view_modal').on('hidden.bs.modal', function (e) {
+                $('#js_view_modal').find('input').val('');
+                var dataTable = FixtureTotakeRul.GetFixtureDatatable3();
+                var $checkedItems = $('#table_fixture3 .js-checkbox-item');
+                $.map($checkedItems, function (checkbox) {
+                    var $sender = $(checkbox);
+                    var $tr = $sender.closest('tr');
+                    var trIndex = $tr.index();
+                    dataTable.row($tr).remove().draw();
+                });
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                });
+                window.location.reload();
+            });
+            $(document).on('click', '.js-checkbox-all-return', function () {
+                debugger;
+                var $self = $(this);
+                $self.closest('.dataTables_wrapper').find('.js-checkbox-item:not(:disabled),.js-checkbox-item2').prop('checked', $self.prop('checked'));
+            });
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    FixtureTotakeRul.queryFixtureTotake();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //隐藏查询框时清空值
+            $('#js_search_modal').on('hidden.bs.modal', function (e) {
+                $('#js_search_modal').find('input').val('');
+            });
+
+            $('#js_select_Account_UID,#js_select_Account_UID_search').selectpicker({ 'selectedText': 'cat' });
+
+
+
+
+            //根据厂区设定OP,并设定初始值---------START
+            function SetOpByPlant2(Plant_Organization_UID, BG_Organization_UID) {
+                $('#js_select_op_types').html('<option value=0></option>');
+                url = FixtureTotakeRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types').val(BG_Organization_UID);
+                    });
+                }
+            }
+            //根据厂区设定OP,并设定初始值-----------END
+
+
+
+
+            //--搜索画面，厂区三联动厂区变更
+            $('#js_select_plant_search').change(function () {
+                var plantuid = $('#js_select_plant_search option:selected').val();
+                SetOpByPlant(plantuid, 0);
+            })
+            function SetOpByPlant(Plant_Organization_UID, BG_Organization_UID) {
+                url = FixtureTotakeRul.urls.getOrgByParant;
+                if (Plant_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: Plant_Organization_UID, type: 1 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_op_types_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_op_types_search').val(BG_Organization_UID);
+                    });
+                }
+            }
+            $('#js_select_op_types_search').change(function () {
+                var bgorg = $('#js_select_op_types_search option:selected').val();
+                SetFunPlantByOp(bgorg, 0);
+            })
+            function SetFunPlantByOp(BG_Organization_UID, FunPlant_Organization_UID) {
+                $('#js_select_funplant_search').html('<option value=0></option>');
+                url = FixtureTotakeRul.urls.getOrgByParant;
+                if (BG_Organization_UID != 0) {
+                    $.post(url, { Parant_UID: BG_Organization_UID, type: 2 }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                        }
+                        $('#js_select_funplant_search').val(FunPlant_Organization_UID);
+                    });
+                }
+            }
+            //------------END---
+
+
+            $('#btn_add').click(function () {
+                $('#js_edit_modal').modal('show', $(this));
+            })
+
+
+            //为新增或修改Modal，注册事件-------START
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+            });
+            //为新增或修改Modal，注册事件---------END
+
+            //查看+修改
+            $('body').on('click', '.js-grid-view', function () {
+                var uid = $(this).data('id')
+                url = FixtureTotakeRul.urls.viewFixtureTotakeDetails + '?uid=' + uid;
+                window.location.href = url;
+            });
+
+            $('body').on('click', '.js-grid-del', function () {
+                var uid = $(this).data('id')
+                url = FixtureTotakeRul.urls.delFixtureReturnM;
+                $.post(url, { uid: uid }, function (data) {
+                    PDMS.Utility.MessageBox.info(data.success);
+                    if (data.success == '删除成功') {
+                        window.location.reload()
+                    }
+                });
+
+            });
+
+
+
+            $('#js_btn_save').mouseover(function () {
+
+                var fixturedata = FixtureTotakeRul.GetFixtureDatatable();
+                var FunctionFixtures = [];
+                fixturedata.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var sub = {};
+                    var row = $('#table_fixture2>tbody>tr').eq(rowIdx);
+                    sub["Fixture_M_UID"] = $.trim(row.find('input[name=cktrans]').val());
+                    FunctionFixtures.push(sub);
+                });
+                $('#fixturelist').val(JSON.stringify(FunctionFixtures));
+            })
+
+
+            //导出----------START
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = FixtureTotakeRul.urls.doAllExportFunction;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                    //PDMS.Utility.MessageBox.info('please select datas to export!');
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = FixtureTotakeRul.urls.doExportFunction;
+                    url += "?uids=" + uids.toString() + '';
+                    window.location.href = url;
+                }
+            });
+
+
+            $('#s_input_Ship_Date,#s_input_Totake_Date').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii'
+            })
+        })
+    </script>
+}

@@ -1,0 +1,543 @@
+﻿
+<section class="content portal-content" style="font-family:微軟正黑體">
+    <!--My task Header Tab/-->
+    <div class="nav-tabs-custom">
+        <!-- Nav tabs -->
+        <ul id="DIV1" class="nav nav-tabs" ro le="tablist">
+            <li role="presentation" class="active"><a href="#Processing" aria-controls="Processing" role="tab" data-toggle="tab">&nbsp;<span id="sp_Processing_Total" class="pull-right badge bg-red"></span>@T("ME.Processing_Equipment")</a></li>
+            <li role="presentation"><a href="#Auto" aria-controls="Auto" role="tab" data-toggle="tab">&nbsp;<span id="sp_Auto_Total" class="pull-right badge bg-yellow"></span>@T("ME.Automation_Equipment")</a></li>
+            <li role="presentation"><a href="#Auxiliary" aria-controls="Auxiliary" role="tab" data-toggle="tab">&nbsp;<span id="sp_Auxiliary_Total" class="pull-right badge bg-yellow"></span>@T("ME.Auxiliary_Equipment")</a></li>
+        </ul>
+        <div id="DIV2">
+            <a  class="btn btn-primary btn-sm" role="button" onclick="javascript: self.location = document.referrer;"> @T("Common.Back")</a>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="Processing">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title" data-toggle="collapse" data-target="#Equipment-Processing">
+                                        @T("ME.Processing_Equipment")&nbsp;<span id="sp_Processing_open" class="badge bg-red notification_Icon"></span>
+                                        <i class="chevron fa fa-fw pull-right"></i>
+                                    </h4>
+                                </div>
+                                <div id="Equipment-Processing" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="col-md-12 no-padding pre-scrollable">
+                                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_processing">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                                                        <th class="js-sort" name="Process_Seq">@T("ME.Process_Seq")</th>
+                                                        <th class="js-sort" name="Process_Station">@T("ME.Process_Station")</th>
+                                                        <th class="js-sort" name="FunPlant_Organization_Name">@T("ME.FunPlant")</th>
+                                                        <th class="js-sort" name="Process">@T("ME.Process")</th>
+                                                        <th class="js-sort" name="Equipment_Name">@T("ME.Equipment_Name")</th>
+                                                        <th class="js-sort" name="Equipment_Qty">@T("ME.Equipment_RequstQty")</th>
+                                                        <th class="js-sort" name="Ratio">@T("ME.Manpower_Ratio")</th>
+                                                        <th class="js-sort" name="Request_Qty">@T("ME.Request_Qty")</th>
+                                                        <th class="js-sort" name="EQP_Variable_Qty">@T("ME.EQP_Variable_Qty")</th>
+                                                        <th class="js-sort" name="NPI_Current_Qty">@T("ME.NPI_Current_Qty")</th>
+                                                        <th class="js-sort" name="MP_Current_Qty">@T("ME.NPI_Current_Qty")</th>
+                                                        <th class="js-sort" name="Capacity_ByDay">@T("ME.Capacity_ByDay")</th>
+                                                        <th class="js-sort" name="Capacity_ByHour">@T("ME.Capacity_ByHour")</th>
+                                                        <th class="js-sort" name="Plan_CT">@T("ME.Plan_CT")</th>
+                                                        <th class="js-sort" name="ME_Estimate_Yield">@T("ME.Estimate_Yield")</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div id="page_equipment_processing" class="row"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="Auto">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group">
+                            <!-- Capacity-Report Panel -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title" data-toggle="collapse" data-target="#Equipment-Auto">
+                                        @T("ME.Automation_Equipment")&nbsp;<span id="sp_Auto_revoke" class="badge bg-yellow notification_Icon"></span>
+                                        <i class="chevron fa fa-fw pull-right"></i>
+                                    </h4>
+                                </div>
+                                <div id="Equipment-Auto" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="col-md-12 no-padding pre-scrollable">
+                                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_Auto">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                                                        <th class="js-sort" name="Process_Seq">@T("ME.Process_Seq")</th>
+                                                        <th class="js-sort" name="Process_Station">@T("ME.Process_Station")</th>
+                                                        <th class="js-sort" name="FunPlant_Organization_Name">@T("ME.FunPlant")</th>
+                                                        <th class="js-sort" name="Process">@T("ME.Process")</th>
+                                                        <th class="js-sort" name="Equipment_Name">@T("ME.Equipment_Name")</th>
+                                                        <th class="js-sort" name="Equipment_Qty">@T("ME.Equipment_RequstQty")</th>
+                                                        <th class="js-sort" name="Ratio">@T("ME.Manpower_Ratio")</th>
+                                                        <th class="js-sort" name="Request_Qty">@T("ME.Request_Qty")</th>
+                                                        <th class="js-sort" name="EQP_Variable_Qty">@T("ME.EQP_Variable_Qty")</th>
+                                                        <th class="js-sort" name="NPI_Current_Qty">@T("ME.NPI_Current_Qty")</th>
+                                                        <th class="js-sort" name="MP_Current_Qty">@T("ME.NPI_Current_Qty")</th>
+                                                        <th class="js-sort" name="Capacity_ByDay">@T("ME.Capacity_ByDay")</th>
+                                                        <th class="js-sort" name="Capacity_ByHour">@T("ME.Capacity_ByHour")</th>
+                                                        <th class="js-sort" name="Plan_CT">@T("ME.Plan_CT")</th>
+                                                        <th class="js-sort" name="ME_Estimate_Yield">@T("ME.Estimate_Yield")</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div id="page_equipment_auto" class="row"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="Auxiliary">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group">
+                            <!-- Capacity-Report Panel -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title" data-toggle="collapse" data-target="#Equipment-Auxiliary">
+                                        @T("ME.Auxiliary_Equipment")&nbsp;<span id="sp_Auxiliary_revoke" class="badge bg-yellow notification_Icon"></span>
+                                        <i class="chevron fa fa-fw pull-right"></i>
+                                    </h4>
+                                </div>
+                                <div id="Equipment-Auxiliary" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="col-md-12 no-padding pre-scrollable">
+                                            <table class="table table-striped table-hover table-condensed nowrap" id="js_tb_Auxiliary">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                                                        <th class="js-sort" name="Process_Seq">@T("ME.Process_Seq")</th>
+                                                        <th class="js-sort" name="Process_Station">@T("ME.Process_Station")</th>
+                                                        <th class="js-sort" name="FunPlant_Organization_Name">@T("ME.FunPlant")</th>
+                                                        <th class="js-sort" name="Process">@T("ME.Process")</th>
+                                                        <th class="js-sort" name="Equipment_Name">@T("ME.Equipment_Name")</th>
+                                                        <th class="js-sort" name="Equipment_Qty">@T("ME.Equipment_RequstQty")</th>
+                                                        <th class="js-sort" name="Ratio">@T("ME.Manpower_Ratio")</th>
+                                                        <th class="js-sort" name="Request_Qty">@T("ME.Request_Qty")</th>
+                                                        <th class="js-sort" name="EQP_Variable_Qty">@T("ME.EQP_Variable_Qty")</th>
+                                                        <th class="js-sort" name="NPI_Current_Qty">@T("ME.NPI_Current_Qty")</th>
+                                                        <th class="js-sort" name="MP_Current_Qty">@T("ME.MP_Current_Qty")</th>
+                                                        <th class="js-sort" name="Capacity_ByDay">@T("ME.Capacity_ByDay")</th>
+                                                        <th class="js-sort" name="Capacity_ByHour">@T("ME.Capacity_ByHour")</th>
+                                                        <th class="js-sort" name="Plan_CT">@T("ME.Plan_CT")</th>
+                                                        <th class="js-sort" name="ME_Estimate_Yield">@T("ME.Estimate_Yield")</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div id="page_equipment_auxiliary" class="row"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /Main content -->
+@section ViewModals{
+<div class="modal fade" id="js_Equipment_model" tabindex="-1" role="dialog" style="font-family:微軟正黑體">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("Common.Edit")</h4>
+                <input type="hidden" id="js_hid_RP_Flowchart_Detail_ME_Equipment_UID">
+            </div>
+            <div class="modal-body form-horizontal">
+                <form role="form" id="js_form_query">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_lbl_Process_Seq">@T("ME.Process_Seq")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Process_Seq" class="form-control input-sm" readonly="readonly" id="js_s_input_Process_Seq" placeholder="@T("ME.Process_Seq")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_lbl_Process_Station">@T("ME.Process_Station")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Process_Station" class="form-control input-sm" readonly="readonly" id="js_s_input_Process_Station" placeholder="@T("ME.Process_Station")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("ME.FunPlant")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="FunPlant" class="form-control input-sm" readonly="readonly" id="js_s_input_FunPlant" placeholder="@T("ME.FunPlant")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Process">@T("ME.Process")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Process" class="form-control input-sm" readonly="readonly" id="js_s_input_Process" placeholder="@T("ME.Process")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Equipment_Name">@T("ME.Equipment_Name")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Equipment_Name" class="form-control input-sm" readonly="readonly" id="js_s_input_Equipment_Name" placeholder="@T("ME.Equipment_Name")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Equipment_RequstQty">@T("ME.Equipment_RequstQty")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Equipment_RequstQty" class="form-control input-sm" readonly="readonly" id="js_s_input_Equipment_RequstQty" placeholder="@T("ME.Equipment_RequstQty")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Equipment_Manpower_Ratio">@T("ME.Manpower_Ratio")</label>
+                            <div class="col-sm-7 validate-group">
+                                <input type="text" name="Equipment_Manpower_Ratio" maxlength="6" class="form-control input-sm" id="js_s_input_Equipment_Manpower_Ratio" placeholder="@T("ME.Manpower_Ratio")"  onKeyUp="this.value = this.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); limitInput(this);">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_inputt_Request_Qty">@T("ME.Request_Qty")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Request_Qty" class="form-control input-sm" readonly="readonly" id="js_s_input_Request_Qty" placeholder="@T("ME.Request_Qty")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_EQP_Variable_Qty">@T("ME.EQP_Variable_Qty")</label>
+                            <div class="col-sm-7 validate-group">
+                                <input type="text" name="EQP_Variable_Qty" maxlength="8" class="form-control input-sm" id="js_s_input_EQP_Variable_Qty" placeholder="@T("ME.EQP_Variable_Qty")" onKeyUp="checkInteger($(this));">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_NPI_Current_Qty">@T("ME.NPI_Current_Qty")</label>
+                            <div class="col-sm-7 validate-group">
+                                <input type="text" name="NPI_Current_Qty" maxlength="8" class="form-control input-sm" id="js_s_input_NPI_Current_Qty" placeholder="@T("ME.NPI_Current_Qty")" onKeyUp="checkInteger($(this));">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_MP_Current_Qty">@T("ME.MP_Current_Qty")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="MP_Current_Qty" class="form-control input-sm" readonly="readonly" id="js_s_input_MP_Current_Qty" placeholder="@T("ME.MP_Current_Qty")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Capacity_ByDay">@T("ME.Capacity_ByDay")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Capacity_ByDay" class="form-control input-sm" readonly="readonly" id="js_s_input_Capacity_ByDay" placeholder="@T("ME.Capacity_ByDay")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Capacity_ByHour">@T("ME.Capacity_ByHour")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Capacity_ByHour" class="form-control input-sm" readonly="readonly" id="js_s_input_Capacity_ByHour" placeholder="@T("ME.Capacity_ByHour")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Plan_CT">@T("ME.Plan_CT")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Plan_CT" class="form-control input-sm" readonly="readonly" id="js_s_input_Plan_CT" placeholder="@T("ME.Plan_CT")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Estimate_Yield">@T("ME.Estimate_Yield")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Estimate_Yield" class="form-control input-sm" readonly="readonly" id="js_s_input_Estimate_Yield" placeholder="@T("ME.Estimate_Yield")">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-label="Close">@T("Common.Cancel")</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="js_btn_Save"><i class="fa fa-search"></i> @T("Common.Save")</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+}
+
+
+@section ViewScripts{
+    <style type="text/css">
+        #DIV1 {
+            line-height: 50px;
+            padding: 20px;
+            float: left;
+        }
+
+        #DIV2 {
+            line-height: 50px;
+            padding: 20px;
+            float: right;
+        }
+    </style>
+    <script type="text/javascript">
+        // 限制input不可大於1000,否則清空input
+        function limitInput(o) {
+            debugger;
+            var value = o.value;
+            var min = 1;
+            var max = 1000;
+            if (parseInt(value) < min || parseInt(value) > max) {
+                o.value = '';
+            }
+        }
+        $(function () {
+            //儲存驗證
+            $('#js_form_query').validate({
+                rules: {
+                    Equipment_Manpower_Ratio: {
+                        required: true
+                    },
+                    EQP_Variable_Qty: {
+                        required: true
+                    },
+                    NPI_Current_Qty: {
+                        required: true
+                    }
+                },
+                messages: {
+                    Equipment_Manpower_Ratio: {
+                        required: "Manpower Ratio is required."
+                    },
+                    EQP_Variable_Qty: {
+                        required: "EQP Variable Qty is required."
+                    },
+                    NPI_Current_Qty: {
+                        required: "NPI Current Qty is required."
+                    }
+                },
+                submitHandler: function (form, submitButton) {
+                    Save();
+                },
+                highlight: function (element) {
+                    $(element).closest('.validate-group').removeClass('has-success').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.validate-group').removeClass('has-error').addClass('has-success');
+                },
+                errorClass: 'help-block',
+                errorPlacement: function (error, element) {
+                    if (element.parent('.validate-group').length) {
+                        error.insertAfter(element);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+
+            var urls = {
+                GetME_D_Equipments: '@Url.Action("GetME_D_Equipments", "ProductionResourcePlan")',
+                GetME_D_Equipment: '@Url.Action("GetME_D_Equipment", "ProductionResourcePlan")',
+                SaveME_D_Equipment: '@Url.Action("SaveME_D_Equipment", "ProductionResourcePlan")',
+            };
+            var BindEquipment = (function () {
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<a tabindex="0" class="btn btn-primary btn-xs" rel="action-popover" role="button"><i class="fa fa-reorder"></i></a>' +
+                                        '<div class="hidden popover-content">' +
+                                           '<a type="button" class="btn btn-primary btn-sm js-grid-edit" data-RP_Flowchart_Detail_ME_Equipment_UID="' + rowData.RP_Flowchart_Detail_ME_Equipment_UID + '" role="button" data-toggle="modal" data-target="#js_Equipment_model">' + '@T("Common.Edit")' + '</a>' + "<br>" +
+                                        '</div>');
+                    },
+                    className: "text-center min-col-xs"
+                }, {
+                    data: "Process_Seq",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process_Station",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs"
+                }, {
+                    data: "Equipment_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Equipment_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "Ratio",
+                    className: "min-col-xs"
+                }, {
+                    data: "Request_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "EQP_Variable_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NPI_Current_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "MP_Current_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "Capacity_ByDay",
+                    className: "min-col-xs"
+                }, {
+                    data: "Capacity_ByHour",
+                    className: "min-col-xs"
+                }, {
+                    data: "Plan_CT",
+                    className: "min-col-xs"
+                }, {
+                    data: "ME_Estimate_Yield",
+                    className: "min-col-xs"
+                }];
+
+                var _BindEquipment_processing = function (firstLoad) {
+                    var config = {
+                        pageId: "#page_equipment_processing",
+                        tableId: "#js_tb_processing",
+                        remoteUrl: urls.GetME_D_Equipments,
+                        searchParams: { RP_Flowchart_Master_UID: '@ViewBag.RP_Flowchart_Master_UID', Equipment_Type: "主加工设备" },
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page_equipment_processing').page('destroy');
+                    }
+
+                    PDMS.Utility.Settings.Pages.pageSize = 30;
+                    PDMS.Utility.Pages.Set(config);
+                    //SetPageNumber();
+                };
+
+                var _BindEquipment_auto = function (firstLoad) {
+                    var config = {
+                        pageId: "#page_equipment_auto",
+                        tableId: "#js_tb_Auto",
+                        remoteUrl: urls.GetME_D_Equipments,
+                        searchParams: { RP_Flowchart_Master_UID: '@ViewBag.RP_Flowchart_Master_UID', Equipment_Type: "自动化设备" },
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page_equipment_auto').page('destroy');
+                    }
+
+                    PDMS.Utility.Settings.Pages.pageSize = 30;
+                    PDMS.Utility.Pages.Set(config);
+                    //SetPageNumber();
+                };
+
+                var _BindEquipment_auxiliary = function (firstLoad) {
+                    var config = {
+                        pageId: "#page_equipment_auxiliary",
+                        tableId: "#js_tb_Auxiliary",
+                        remoteUrl: urls.GetME_D_Equipments,
+                        searchParams: { RP_Flowchart_Master_UID: '@ViewBag.RP_Flowchart_Master_UID', Equipment_Type: "辅助设备" },
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page_equipment_auxiliary').page('destroy');
+                    }
+
+                    PDMS.Utility.Settings.Pages.pageSize = 30;
+                    PDMS.Utility.Pages.Set(config);
+                    //SetPageNumber();
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _BindEquipment_processing(true);
+                        _BindEquipment_auto(true);
+                        _BindEquipment_auxiliary(true);
+                    },
+                    ReBindAll: function () {
+                        _BindEquipment_processing(false);
+                        _BindEquipment_auto(false);
+                        _BindEquipment_auxiliary(false);
+                    },
+                }
+            })();
+
+            BindEquipment.Init();
+
+            $('body').on('click', '.js-grid-edit', function () {
+                var RP_Flowchart_Detail_ME_Equipment_UID = $(this).attr('data-RP_Flowchart_Detail_ME_Equipment_UID');
+                $.ajax({
+                    type: "POST",
+                    url: urls.GetME_D_Equipment,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ rP_Flowchart_Detail_ME_Equipment_UID: RP_Flowchart_Detail_ME_Equipment_UID }),
+                    dataType: "json",
+                    success: function (result) {
+                        $("#js_hid_RP_Flowchart_Detail_ME_Equipment_UID").val(result.RP_Flowchart_Detail_ME_Equipment_UID);
+                        $("#js_s_input_Process_Seq").val(result.Process_Seq);
+                        $("#js_s_input_Process_Station").val(result.Process_Station);
+                        $("#js_s_input_FunPlant").val(result.FunPlant_Organization_Name);
+                        $("#js_s_input_Process").val(result.Process);
+                        $("#js_s_input_Equipment_Name").val(result.Equipment_Name);
+                        $("#js_s_input_Equipment_RequstQty").val(result.Equipment_Qty);
+                        $("#js_s_input_Equipment_Manpower_Ratio").val(result.Ratio);
+                        $("#js_s_input_Request_Qty").val(result.Request_Qty);
+                        $("#js_s_input_EQP_Variable_Qty").val(result.EQP_Variable_Qty);
+                        $("#js_s_input_NPI_Current_Qty").val(result.NPI_Current_Qty);
+                        $("#js_s_input_MP_Current_Qty").val(result.MP_Current_Qty);
+                        $("#js_s_input_Capacity_ByDay").val(result.Process_Station);
+                        $("#js_s_input_Capacity_ByHour").val(result.Process_Station);
+                        $("#js_s_input_Plan_CT").val(result.Process_Station);
+                        $("#js_s_input_Estimate_Yield").val(result.Process_Station);
+                    }
+                });
+            });
+            //$('#js_btn_Save').on('click', function () {
+
+            //});
+            function Save() {
+                var RP_Flowchart_Detail_ME_Equipment_UID = $("#js_hid_RP_Flowchart_Detail_ME_Equipment_UID").val();
+                var Equipment_Manpower_Ratio = $("#js_s_input_Equipment_Manpower_Ratio").val();
+                var EQP_Variable_Qty = $("#js_s_input_EQP_Variable_Qty").val();
+                var NPI_Current_Qty = $("#js_s_input_NPI_Current_Qty").val();
+                $.ajax({
+                    type: "POST",
+                    url: urls.SaveME_D_Equipment,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        rP_Flowchart_Detail_ME_Equipment_UID: RP_Flowchart_Detail_ME_Equipment_UID,
+                        equipment_Manpower_Ratio: Equipment_Manpower_Ratio,
+                        eQP_Variable_Qty: EQP_Variable_Qty,
+                        nPI_Current_Qty: NPI_Current_Qty,
+                    }),
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.IsSuccess) {
+                            PDMS.Utility.MessageBox.info('@T("ME.MS.SaveSuccessfully")');
+                            BindEquipment.ReBindAll();
+                        } else {
+                            PDMS.Utility.MessageBox.info(result.Message);
+                        }
+                    }
+                }).done(function () {
+                    debugger;
+                    $('#js_Equipment_model').modal('hide');
+                });
+            }
+        });
+    </script>
+}

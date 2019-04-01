@@ -1,0 +1,1711 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{98369D5B-836B-4EE8-810E-1DF6D66F8E70}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PDMS.Web</RootNamespace>
+    <AssemblyName>PDMS.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>true</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DataTables.AspNet.Core, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DataTables.AspNet.Core.2.0.2\lib\net45\DataTables.AspNet.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DataTables.AspNet.Mvc5, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DataTables.AspNet.Mvc5.2.0.2\lib\net45\DataTables.AspNet.Mvc5.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Hangfire.Core, Version=1.6.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.6.18\lib\net45\Hangfire.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.6.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.6.18\lib\net45\Hangfire.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.0\lib\net451\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Business\FlowChart\AbsFlowchart.cs" />
+    <Compile Include="Business\FlowChart\FlowchartContext.cs" />
+    <Compile Include="Business\FlowChart\FlowchartCTUImport.cs" />
+    <Compile Include="Business\FlowChart\FlowchartEtransferImport.cs" />
+    <Compile Include="Business\FlowChart\FlowchartImportCommon.cs" />
+    <Compile Include="Business\FlowChart\FlowchartWXImport.cs" />
+    <Compile Include="Business\LanguageCommon.cs" />
+    <Compile Include="Business\ProductiongPlanning\ProductiongPlanningImport.cs" />
+    <Compile Include="Business\WebViewPage.cs" />
+    <Compile Include="Controllers\BoardController.cs" />
+    <Compile Include="Controllers\ChartController.cs" />
+    <Compile Include="Controllers\CNCMachine\CNCMachineController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Controllers\EQPBoardController.cs" />
+    <Compile Include="Controllers\EquipmentmaintenanceController.cs" />
+    <Compile Include="Controllers\EventReportManagerController.cs" />
+    <Compile Include="Controllers\ExceptionController.cs" />
+    <Compile Include="Controllers\FixtureController.cs" />
+    <Compile Include="Controllers\FixturePartController.cs" />
+    <Compile Include="Controllers\FlowChartController.cs" />
+    <Compile Include="Controllers\GoldenLineController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\GLQAReport\GLQAReportController.cs" />
+    <Compile Include="Controllers\OEE\OEEController.cs" />
+    <Compile Include="Controllers\PlayBoardController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PISSyncFailedRecord\PISSyncFailedRecordController.cs" />
+    <Compile Include="Controllers\ProcessIDTraConfig\ProcessIDTraConfigController.cs" />
+    <Compile Include="Controllers\MachineController.cs" />
+    <Compile Include="Controllers\ProductionPlanningController\PPFlowchartController.cs" />
+    <Compile Include="Controllers\ProductionPlanningController\ProductionPlanningController.cs" />
+    <Compile Include="Controllers\ProductionPlanningController\ProductionPlanningReportController.cs" />
+    <Compile Include="Controllers\ProductionResourcePlan\ProductionResourcePlanController.cs" />
+    <Compile Include="Controllers\QAProductSaleReportController.cs" />
+    <Compile Include="Controllers\OtherSystemController.cs" />
+    <Compile Include="Controllers\ProductInputController.cs" />
+    <Compile Include="Controllers\OQCQualityController .cs" />
+    <Compile Include="Controllers\QualityController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\StorageManageController.cs" />
+    <Compile Include="Controllers\TaskManagerController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Tasks\GoldenLine\TaskGLMESDataSync.cs" />
+    <Compile Include="Tasks\Machine\TaskMachineConnection.cs" />
+    <Compile Include="Tasks\Message\TaskMessageMail.cs" />
+    <Compile Include="Tasks\PISTaskBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\AdminLTE\bootstrap\css\bootstrap.css" />
+    <Content Include="Content\AdminLTE\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\AdminLTE\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\AdminLTE\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\AdminLTE\bootstrap\js\npm.js" />
+    <Content Include="Content\AdminLTE\dist\css\AdminLTE.css" />
+    <Content Include="Content\AdminLTE\dist\css\AdminLTE.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\font-awesome.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\ionicons.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-black-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-black-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-black.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-black.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-blue-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-blue-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-blue.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-blue.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-green-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-green-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-green.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-green.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-purple-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-purple-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-purple.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-purple.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-red-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-red-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-red.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-red.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-yellow-light.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-yellow-light.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-yellow.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\skin-yellow.min.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\_all-skins.css" />
+    <Content Include="Content\AdminLTE\dist\css\skins\_all-skins.min.css" />
+    <Content Include="Content\AdminLTE\dist\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\AdminLTE\dist\fonts\ionicons.svg" />
+    <Content Include="Content\AdminLTE\dist\img\boxed-bg.jpg" />
+    <Content Include="Content\AdminLTE\dist\img\boxed-bg.png" />
+    <Content Include="Content\AdminLTE\dist\img\default-50x50.gif" />
+    <Content Include="Content\AdminLTE\dist\img\icons.png" />
+    <Content Include="Content\AdminLTE\dist\img\user2-160x160.jpg" />
+    <Content Include="Content\AdminLTE\dist\js\app.js" />
+    <Content Include="Content\AdminLTE\dist\js\app.min.js" />
+    <Content Include="Content\AdminLTE\dist\js\bootstrap-hover-dropdown.min.js" />
+    <Content Include="Content\AdminLTE\dist\js\demo.js" />
+    <Content Include="Content\AdminLTE\dist\js\pages\dashboard.js" />
+    <Content Include="Content\AdminLTE\dist\js\pages\dashboard2.js" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-slider\bootstrap-slider.js" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-slider\slider.css" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.js" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.min.js" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.css" />
+    <Content Include="Content\AdminLTE\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\buttons.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.bootstrap.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.bootstrap.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.colVis.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.colVis.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.flash.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.flash.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.foundation.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.foundation.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.html5.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.html5.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.jqueryui.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.jqueryui.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.print.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\buttons.print.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\dataTables.buttons.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\js\dataTables.buttons.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\swf\flashExport.swf" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\css\colReorder.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\js\dataTables.colReorder.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\ColReorder-1.2.0\js\dataTables.colReorder.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\dataTables.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\jquery.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\jquery.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\images\sort_asc.png" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\images\sort_asc_disabled.png" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\images\sort_both.png" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\images\sort_desc.png" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\images\sort_desc_disabled.png" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.bootstrap.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.bootstrap.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.foundation.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.foundation.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.jqueryui.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\dataTables.jqueryui.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\jquery.dataTables.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\DataTables-1.10.9\js\jquery.dataTables.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\datatables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\datatables.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\datatables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\datatables.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\css\fixedColumns.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\js\dataTables.fixedColumns.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\FixedColumns-3.1.0\js\dataTables.fixedColumns.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\css\responsive.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\js\dataTables.responsive.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Responsive-1.0.7\js\dataTables.responsive.min.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.bootstrap.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.bootstrap.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.dataTables.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.dataTables.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.foundation.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.foundation.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.jqueryui.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\css\select.jqueryui.min.css" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\js\dataTables.select.js" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Select-1.0.1\js\dataTables.select.min.js" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\all.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\aero%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\aero.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\aero.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\blue%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\blue.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\blue.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\flat%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\flat.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\flat.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\green%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\green.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\green.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\grey%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\grey.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\grey.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\orange%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\orange.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\orange.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\pink%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\pink.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\pink.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\purple%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\purple.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\purple.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\red%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\red.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\red.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\yellow%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\yellow.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\yellow.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\flat\_all.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\futurico\futurico%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\futurico\futurico.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\futurico\futurico.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\icheck.js" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\icheck.min.js" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\aero.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\blue.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\green.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\grey.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\line%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\line.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\line.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\orange.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\pink.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\purple.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\red.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\yellow.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\line\_all.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\aero%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\aero.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\aero.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\blue%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\blue.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\blue.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\green%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\green.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\green.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\grey%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\grey.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\grey.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\minimal%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\minimal.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\minimal.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\orange%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\orange.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\orange.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\pink%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\pink.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\pink.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\purple%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\purple.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\purple.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\red%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\red.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\red.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\yellow%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\yellow.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\yellow.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\minimal\_all.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\polaris\polaris%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\polaris\polaris.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\polaris\polaris.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\aero%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\aero.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\aero.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\blue%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\blue.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\blue.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\green%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\green.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\green.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\grey%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\grey.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\grey.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\orange%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\orange.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\orange.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\pink%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\pink.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\pink.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\purple%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\purple.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\purple.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\red%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\red.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\red.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\square%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\square.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\square.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\yellow%402x.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\yellow.css" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\yellow.png" />
+    <Content Include="Content\AdminLTE\plugins\iCheck\square\_all.css" />
+    <Content Include="Content\AdminLTE\plugins\jQueryUI\jquery-ui.js" />
+    <Content Include="Content\AdminLTE\plugins\jQueryUI\jquery-ui.min.js" />
+    <Content Include="Content\AdminLTE\plugins\jQuery\jQuery-2.1.4.min.js" />
+    <Content Include="Content\app\bi-CompetitorCapabilityMatrix.html" />
+    <Content Include="Content\app\bi-ConsumerElectronicsReports.html" />
+    <Content Include="Content\app\bi-CustomerCapabilityMatrix.html" />
+    <Content Include="Content\app\bi-RnDReference.html" />
+    <Content Include="Content\app\bi-ShareOfWallet.html" />
+    <Content Include="Content\app\bp-MachineUtilizationReport.html" />
+    <Content Include="Content\app\menu-sample.html" />
+    <Content Include="Content\app\pm-InitiativeConsolidate.html" />
+    <Content Include="Content\css\bootstrap-select.css" />
+    <Content Include="Content\css\OeeFontClass.css" />
+    <Content Include="Content\css\icomoonFonts.css" />
+    <Content Include="Content\css\jquery-ui.css" />
+    <Content Include="Content\css\jquery.multiselect.css" />
+    <Content Include="Content\css\keyTable.bootstrap.min.css" />
+    <Content Include="Content\css\mediaelementplayer.min.css" />
+    <Content Include="Content\css\pdms-style.css" />
+    <Content Include="Content\css\Program.css" />
+    <Content Include="Content\css\Portal-lg.css" />
+    <Content Include="Content\css\Portal-md.css" />
+    <Content Include="Content\css\Portal-sm.css" />
+    <Content Include="Content\css\Portal-xs.css" />
+    <Content Include="Content\css\Portal.css" />
+    <Content Include="Content\css\select-multiple.css" />
+    <Content Include="Content\css\select2-bootstrap.css" />
+    <Content Include="Content\css\select2.css" />
+    <Content Include="Content\css\Special.css" />
+    <Content Include="Content\css\video-js.min.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\fonts\icomoon.eot" />
+    <Content Include="Content\fonts\icomoon.svg" />
+    <Content Include="Content\fonts\icomoon.ttf" />
+    <Content Include="Content\fonts\icomoon.woff" />
+    <Content Include="Content\img\app-ios-AD-Integration.png" />
+    <Content Include="Content\img\app-ios-Non-AD-Integration.png" />
+    <Content Include="Content\img\bp\machine-utilization-report\MachineUtilizationReport_1.jpg" />
+    <Content Include="Content\img\bp\machine-utilization-report\MachineUtilizationReport_2.jpg" />
+    <Content Include="Content\img\bp\machine-utilization-report\MachineUtilizationReport_3.jpg" />
+    <Content Include="Content\img\coming-soon.png" />
+    <Content Include="Content\img\customer_1.png" />
+    <Content Include="Content\img\customer_2.png" />
+    <Content Include="Content\img\customer_3.png" />
+    <Content Include="Content\img\customer_4.png" />
+    <Content Include="Content\img\Eboard\board-bg-left-1.png" />
+    <Content Include="Content\img\Eboard\board-bg-right-1.png" />
+    <Content Include="Content\img\Eboard\btn-back-hover.png" />
+    <Content Include="Content\img\Eboard\btn-back.png" />
+    <Content Include="Content\img\Eboard\btn-next-hover.png" />
+    <Content Include="Content\img\Eboard\btn-next.png" />
+    <Content Include="Content\img\Eboard\btn-pause-hover.png" />
+    <Content Include="Content\img\Eboard\btn-pause.png" />
+    <Content Include="Content\img\Eboard\btn-play-hover.png" />
+    <Content Include="Content\img\Eboard\btn-play.png" />
+    <Content Include="Content\img\Eboard\btn-pre-hover.png" />
+    <Content Include="Content\img\Eboard\btn-pre.png" />
+    <Content Include="Content\img\Eboard\check-mark.png" />
+    <Content Include="Content\img\Eboard\上一页.png" />
+    <Content Include="Content\img\Eboard\下一页.png" />
+    <Content Include="Content\img\Eboard\回退主页.png" />
+    <Content Include="Content\img\Eboard\播放.png" />
+    <Content Include="Content\img\Eboard\暂停.png" />
+    <Content Include="Content\img\header-bg.png" />
+    <Content Include="Content\img\home\2.png" />
+    <Content Include="Content\img\home\arrow.png" />
+    <Content Include="Content\img\home\banner.png" />
+    <Content Include="Content\img\home\contact-banner.png" />
+    <Content Include="Content\img\home\line1.png" />
+    <Content Include="Content\img\index-contact.png" />
+    <Content Include="Content\img\index-manual.png" />
+    <Content Include="Content\img\index-map.png" />
+    <Content Include="Content\img\index-news.png" />
+    <Content Include="Content\img\logo\logo.png" />
+    <Content Include="Content\img\logo\logo1.png" />
+    <Content Include="Content\img\logo\logo14.png" />
+    <Content Include="Content\img\logo\logo16.png" />
+    <Content Include="Content\img\logo\PIS-M-Login-Logo.png" />
+    <Content Include="Content\img\mail\mai01l-body.png" />
+    <Content Include="Content\img\mail\mail01-foot01.png" />
+    <Content Include="Content\img\mail\mail01-foot02.png" />
+    <Content Include="Content\img\mail\mail01-foot03.png" />
+    <Content Include="Content\img\mail\mail01-gotoSPP.png" />
+    <Content Include="Content\img\mail\mail01-head01.png" />
+    <Content Include="Content\img\mail\mail01-head02.png" />
+    <Content Include="Content\img\mail\mail01-head03.png" />
+    <Content Include="Content\img\mail\mail01-system-info01.png" />
+    <Content Include="Content\img\mail\mail01-system-info02.png" />
+    <Content Include="Content\img\mail\mail01-system-info03.png" />
+    <Content Include="Content\img\unauthorized-request.png" />
+    <Content Include="Content\img\user2-160x160.jpg" />
+    <Content Include="Content\Marquee_CN.txt" />
+    <Content Include="Content\Marquee_EN.txt" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Movie\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\bootstrap-select.min.js" />
+    <Content Include="Scripts\ECharts.js" />
+    <Content Include="Scripts\ECharts\echarts-3.8.4.js" />
+    <Content Include="Scripts\ECharts\echarts-3.8.4.min.js" />
+    <Content Include="Scripts\ECharts\echarts.min.js" />
+    <Content Include="Scripts\EQP\bootstrap-select.js" />
+    <Content Include="Scripts\js\jquery.min.js" />
+    <Content Include="Scripts\js\paging.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\PDMSJS\Common.js" />
+    <Content Include="Scripts\PDMSJS\EquipmentRequestJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\EquipmentRequestJS\DataBind.js" />
+    <Content Include="Scripts\PDMSJS\EventReportJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\FixturePartPurchaseJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\FixturePartPurchaseJS\DataBind.js" />
+    <Content Include="Scripts\PDMSJS\ManPowerRequestJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\PlanAndActualReportJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\PlanAndActualReportJS\DataBind.js" />
+    <Content Include="Scripts\PDMSJS\ProductInputJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\ProductInputJS\DataBind.js" />
+    <Content Include="Scripts\PDMSJS\ProductInputJS\DataSubmit.js" />
+    <Content Include="Scripts\PDMSJS\ProductInputJS\ReworkEvent.js" />
+    <Content Include="Scripts\PDMSJS\QAReportJS\ClickEvent.js" />
+    <Content Include="Scripts\PDMSJS\QAReportJS\WIPAlterDetial.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\css\bootstrap-datetimepicker.css" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ar.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.bg.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ca.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.cs.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.da.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.de.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ee.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.el.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.es.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.fi.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.fr.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.he.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.hr.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.hu.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.hy.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.id.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.is.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.it.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ja.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ko.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.lt.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.lv.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ms.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.nb.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.nl.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.no.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.pl.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.pt-BR.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.pt.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ro.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.rs-latin.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.rs.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ru.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.sk.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.sl.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.sv.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.sw.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.th.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.tr.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.ua.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.uk.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.zh-CN.js" />
+    <Content Include="Scripts\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.zh-TW.js" />
+    <Content Include="Scripts\plugins\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\bar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\chord.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\eventRiver.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\force.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\funnel.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\gauge.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\heatmap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\k.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\line.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\map.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\pie.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\radar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\scatter.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\tree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\treemap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\venn.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\chart\wordCloud.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\echarts-all.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\dist\echarts.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\echarts-optimize-conf.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\bar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\chord.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\eventRiver.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\force.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\funnel.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\gauge.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\heatmap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\k.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\line.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\map.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\pie.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\radar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\scatter.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\tree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\treemap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\venn.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\chart\wordCloud.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\echarts-all.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\build\source\echarts.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\bar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\base.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\chord.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\eventRiver.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\force.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\funnel.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\gauge.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\heatmap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\island.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\k.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\line.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\map.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\pie.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\radar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\scatter.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\tree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\treemap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\venn.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\chart\wordCloud.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\axis.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\base.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\categoryAxis.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\dataRange.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\dataView.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\dataZoom.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\grid.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\legend.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\polar.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\roamController.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\timeline.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\title.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\toolbox.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\tooltip.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\component\valueAxis.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\config.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\data\Graph.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\data\KDTree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\data\quickSelect.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\data\Tree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\echarts.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layer\heatmap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\Chord.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\EdgeBundling.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\eventRiver.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\Force.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\forceLayoutWorker.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\Tree.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\TreeMap.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\WordCloud.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\layout\WordCloudRectZero.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\theme\default.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\theme\infographic.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\theme\macarons.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\accMath.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\coordinates.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\date.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\ecAnimation.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\ecData.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\ecEffect.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\ecQuery.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\kwargs.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoCoord.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\an_hui_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\ao_men_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\bei_jing_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\china_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\chong_qing_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\fu_jian_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\gan_su_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\guang_dong_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\guang_xi_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\gui_zhou_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\hai_nan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\hei_long_jiang_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\he_bei_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\he_nan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\hu_bei_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\hu_nan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\jiang_su_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\jiang_xi_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\ji_lin_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\liao_ning_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\nei_meng_gu_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\ning_xia_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\qing_hai_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\shang_hai_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\shan_dong_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\shan_xi_1_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\shan_xi_2_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\si_chuan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\tai_wan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\tian_jin_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\world_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\xiang_gang_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\xin_jiang_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\xi_zang_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\yun_nan_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\geoJson\zhe_jiang_geo.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\params.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\encode.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\textFixed.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\ndarray.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\number.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\projection\albers.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\projection\mercator.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\projection\normal.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\projection\svg.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Candle.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Chain.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Cross.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\GaugePointer.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\HalfSmoothPolygon.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\HandlePolygon.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Icon.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\MarkLine.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\normalIsCover.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Ribbon.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\shape\Symbol.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\smartLogSteps.js" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\smartSteps.js" />
+    <Content Include="ExcelTemplate\FlowChart_Template.xlsx" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="ExcelTemplate\BadType_Template.xlsx" />
+    <Content Include="ExcelTemplate\BadTypeProcess_Template.xlsx" />
+    <Content Include="ExcelTemplate\FlowChart_Etransfer_Template.xlsx" />
+    <Content Include="ExcelTemplate\Flowchart_ProductionPlanning_Template.xlsx" />
+    <Content Include="ExcelTemplate\CurrentStuff.xlsx" />
+    <Content Include="ExcelTemplate\DemissionRateAndWorkSchedule.xlsx" />
+    <Content Include="ExcelTemplate\EQPPowerOn_Template.xlsx" />
+    <Content Include="ExcelTemplate\Maintenance_Plan.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_Maintenance_Profile.xlsx" />
+    <Content Include="ExcelTemplate\Language_Template.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_M.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_User_Workshop.xlsx" />
+    <Content Include="ExcelTemplate\FixtureDefectCode_Setting.xlsx" />
+    <Content Include="ExcelTemplate\Repair_Location.xlsx" />
+    <Content Include="ExcelTemplate\Vendor_Info.xlsx" />
+    <Content Include="ExcelTemplate\DefectCode_Group.xlsx" />
+    <Content Include="ExcelTemplate\DefectCode_RepairSolution.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_DefectCode.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_Machine.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_RepairSolution.xlsx" />
+    <Content Include="ExcelTemplate\Process_Info.xlsx" />
+    <Content Include="ExcelTemplate\Production_Line.xlsx" />
+    <Content Include="ExcelTemplate\Workshop.xlsx" />
+    <Content Include="ExcelTemplate\WorkStation.xlsx" />
+    <Content Include="ExcelTemplate\EQPType.xlsx" />
+    <Content Include="ExcelTemplate\EQP_Storage.xlsx" />
+    <Content Include="ExcelTemplate\EQP_Warehouse.xlsx" />
+    <Content Include="ExcelTemplate\PowerOn_Template.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_Part.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_Storage.xlsx" />
+    <Content Include="ExcelTemplate\Fixture_Warehouse.xlsx" />
+    <Content Include="ExcelTemplate\FixturePartRatio.xlsx" />
+    <Content Include="ExcelTemplate\FixturePartSetting.xlsx" />
+    <Content Include="ExcelTemplate\EQPMaterial.xlsx" />
+    <Content Include="ExcelTemplate\PIS-MES-ProcessTraConfig.xlsx" />
+    <Content Include="ExcelTemplate\ModelLine_HR.xlsx" />
+    <Content Include="ExcelTemplate\GoldenLine_FlowChart.xlsx" />
+    <Content Include="ExcelTemplate\OEE_DownTimeCode.xlsx" />
+    <Content Include="ExcelTemplate\OEE_MachineSetting.xlsx" />
+    <Content Include="ExcelTemplate\OEE_StationDefectCode.xlsx" />
+    <Content Include="ExcelTemplate\CNCMachine.xlsx" />
+    <Content Include="ExcelTemplate\EQPMaintenance_Template.xlsx" />
+    <Content Include="ExcelTemplate\EQPMaintenance_Repair_Template.xlsx" />
+    <Content Include="ExcelTemplate\EQPMaintenance_Close.xlsx" />
+    <None Include="Properties\PublishProfiles\SPPMVC.pubxml" />
+    <None Include="Scripts\plugins\jquery-validate\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\plugins\jquery-validate\jquery.validate.js" />
+    <Content Include="Scripts\plugins\jquery-validate\jquery.validate.min.js" />
+    <Content Include="Scripts\plugins\jquery.blockUI.js" />
+    <Content Include="Scripts\plugins\jquery.dragsort-0.5.2.js" />
+    <Content Include="Scripts\plugins\jquery.form.js" />
+    <Content Include="Scripts\plugins\jquery.marquee.js" />
+    <Content Include="Scripts\plugins\jquery.multiselect.js" />
+    <Content Include="Scripts\plugins\jquery.pagination-1.2.7.js" />
+    <Content Include="Scripts\plugins\jquery.select-multiple.js" />
+    <Content Include="Scripts\plugins\jquery.storageapi.min.js" />
+    <Content Include="Scripts\plugins\JqueryAutoComplete\countries.js" />
+    <Content Include="Scripts\plugins\JqueryAutoComplete\demo.js" />
+    <Content Include="Scripts\plugins\JqueryAutoComplete\jquery.autocomplete.js" />
+    <Content Include="Scripts\plugins\JqueryAutoComplete\jquery.mockjax.js" />
+    <Content Include="Scripts\plugins\js.cookie.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.af-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.af.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.am-ET.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.am.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-AE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-BH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-DZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-EG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-IQ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-JO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-KW.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-LB.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-LY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-MA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-OM.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-QA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-SA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-SY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-TN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar-YE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ar.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.arn-CL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.arn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.as-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.as.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.az-Cyrl-AZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.az-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.az-Latn-AZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.az-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.az.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ba-RU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ba.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.be-BY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.be.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bg-BG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bg.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bn-BD.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bn-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bo-CN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bo.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.br-FR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.br.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bs-Cyrl-BA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bs-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bs-Latn-BA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bs-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.bs.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ca-ES.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ca.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.co-FR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.co.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.cs-CZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.cs.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.cy-GB.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.cy.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.da-DK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.da.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de-AT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de-CH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de-DE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de-LI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de-LU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.de.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.dsb-DE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.dsb.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.dv-MV.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.dv.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.el-GR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.el.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-029.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-AU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-BZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-CA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-GB.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-IE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-JM.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-MY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-NZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-PH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-SG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-TT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-US.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en-ZW.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.en.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-AR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-BO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-CL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-CO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-CR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-DO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-EC.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-ES.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-GT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-HN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-MX.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-NI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-PA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-PE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-PR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-PY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-SV.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-US.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-UY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es-VE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.es.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.et-EE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.et.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.eu-ES.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.eu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fa-IR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fa.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fi-FI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fi.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fil-PH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fil.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fo-FO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fo.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-BE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-CA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-CH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-FR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-LU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr-MC.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fy-NL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.fy.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ga-IE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ga.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gd-GB.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gd.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gl-ES.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gsw-FR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gsw.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gu-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.gu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ha-Latn-NG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ha-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ha.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.he-IL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.he.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hi-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hi.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hr-BA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hr-HR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hsb-DE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hsb.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hu-HU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hy-AM.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.hy.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.id-ID.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.id.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ig-NG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ig.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ii-CN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ii.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.is-IS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.is.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.it-CH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.it-IT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.it.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.iu-Cans-CA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.iu-Cans.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.iu-Latn-CA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.iu-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.iu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ja-JP.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ja.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ka-GE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ka.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kk-KZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kk.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kl-GL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.km-KH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.km.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kn-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ko-KR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ko.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kok-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.kok.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ky-KG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ky.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lb-LU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lb.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lo-LA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lo.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lt-LT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lt.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lv-LV.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.lv.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mi-NZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mi.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mk-MK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mk.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ml-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ml.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mn-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mn-MN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mn-Mong-CN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mn-Mong.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.moh-CA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.moh.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mr-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ms-BN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ms-MY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ms.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mt-MT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.mt.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nb-NO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nb.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ne-NP.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ne.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nl-BE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nl-NL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nn-NO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.no.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nso-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.nso.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.oc-FR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.oc.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.or-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.or.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pa-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pa.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pl-PL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.prs-AF.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.prs.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ps-AF.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ps.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pt-BR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pt-PT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.pt.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.qut-GT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.qut.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.quz-BO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.quz-EC.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.quz-PE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.quz.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.rm-CH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.rm.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ro-RO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ro.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ru-RU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ru-UA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ru.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.rw-RW.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.rw.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sa-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sa.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sah-RU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sah.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.se-FI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.se-NO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.se-SE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.se.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.si-LK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.si.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sk-SK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sk.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sl-SI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sma-NO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sma-SE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sma.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.smj-NO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.smj-SE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.smj.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.smn-FI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.smn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sms-FI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sms.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sq-AL.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sq.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Cyrl-BA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Cyrl-CS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Cyrl-ME.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Cyrl-RS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Latn-BA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Latn-CS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Latn-ME.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Latn-RS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sv-FI.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sv-SE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sv.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sw-KE.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.sw.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.syr-SY.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.syr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ta-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ta.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.te-IN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.te.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tg-Cyrl-TJ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tg-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tg.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.th-TH.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.th.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tk-TM.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tk.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tn-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tr-TR.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tr.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tt-RU.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tt.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tzm-Latn-DZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tzm-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.tzm.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ug-CN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ug.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uk-UA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uk.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ur-PK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.ur.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uz-Cyrl-UZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uz-Cyrl.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uz-Latn-UZ.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uz-Latn.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.uz.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.vi-VN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.vi.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.wo-SN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.wo.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.xh-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.xh.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.yo-NG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.yo.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-CHS.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-CHT.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-CN.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-Hans.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-Hant.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-HK.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-MO.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-SG.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh-TW.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zh.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zu-ZA.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\cultures\kendo.culture.zu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\jquery.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.all.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.autocomplete.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.binder.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.calendar.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.colorpicker.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.columnmenu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.combobox.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.core.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.data.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.data.odata.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.data.xml.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.datepicker.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.datetimepicker.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.draganddrop.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.dropdownlist.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.editable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.editor.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.filtermenu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.fx.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.grid.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.groupable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.imagebrowser.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.list.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.listview.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.menu.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.mobile.scroller.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.multiselect.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.numerictextbox.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.pager.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.panelbar.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.popup.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.reorderable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.resizable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.router.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.agendaview.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.dayview.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.monthview.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.recurrence.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.scheduler.view.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.selectable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.slider.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.sortable.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.splitter.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.tabstrip.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.timepicker.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.timezones.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.tooltip.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.treeview.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.upload.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.userevents.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.validator.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.view.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.web.min.js" />
+    <Content Include="Scripts\plugins\kendo\2013.2.716\kendo.window.min.js" />
+    <Content Include="Scripts\plugins\mediaelement-and-player.min.js" />
+    <Content Include="Scripts\plugins\moment.min.js" />
+    <Content Include="Scripts\plugins\photo-swipe\css\default-skin\default-skin.css" />
+    <Content Include="Scripts\plugins\photo-swipe\css\default-skin\default-skin.png" />
+    <Content Include="Scripts\plugins\photo-swipe\css\default-skin\default-skin.svg" />
+    <Content Include="Scripts\plugins\photo-swipe\css\default-skin\preloader.gif" />
+    <Content Include="Scripts\plugins\photo-swipe\css\photoswipe.css" />
+    <Content Include="Scripts\plugins\photo-swipe\js\photoswipe-ui-default.min.js" />
+    <Content Include="Scripts\plugins\photo-swipe\js\photoswipe.min.js" />
+    <Content Include="Scripts\plugins\select2.min.js" />
+    <Content Include="Scripts\plugins\taffy-min.js" />
+    <Content Include="Scripts\plugins\video.min.js" />
+    <Content Include="Scripts\rowspam.js" />
+    <Content Include="Scripts\spp-common.js" />
+    <Content Include="Scripts\spp.js" />
+    <Content Include="Scripts\underscore-min.js" />
+    <Content Include="Scripts\underscore.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Home\MenuListPartial.cshtml" />
+    <Content Include="Views\Settings\UserMaintenance.cshtml" />
+    <Content Include="Views\Shared\UnauthorizedRequest.cshtml" />
+    <Content Include="Views\Shared\ComingSoon.cshtml" />
+    <Content Include="Views\Settings\BUMasterMaintenance.cshtml" />
+    <Content Include="Views\Settings\RoleMaintenance.cshtml" />
+    <Content Include="Views\Settings\BUDetailMaintenance.cshtml" />
+    <Content Include="Views\Settings\PlantMaintenance.cshtml" />
+    <Content Include="Views\Settings\SystemFunctionMaintenance.cshtml" />
+    <Content Include="Views\Settings\RoleFunctionSetting.cshtml" />
+    <Content Include="Views\Settings\UserBUSetting.cshtml" />
+    <Content Include="Views\Settings\OrganizationBomMaintenance.cshtml" />
+    <Content Include="Views\Settings\OrgMaintenance.cshtml" />
+    <Content Include="Views\Settings\UserPlantSetting.cshtml" />
+    <Content Include="Views\Settings\OrganizationBomMaintenance.cshtml" />
+    <Content Include="Views\Settings\OrgMaintenance.cshtml" />
+    <Content Include="Views\Settings\UserRoleSetting.cshtml" />
+    <Content Include="Views\Settings\UserOrgSetting.cshtml" />
+    <Content Include="Views\EventReportManager\PPCheckData.cshtml" />
+    <Content Include="Views\EventReportManager\ProductReportDisplay.cshtml" />
+    <Content Include="Views\FlowChart\FlowChartList.cshtml" />
+    <Content Include="Views\FlowChart\FlowChartDetail.cshtml" />
+    <Content Include="Views\EventReportManager\WarningList.cshtml" />
+    <Content Include="Views\FlowChart\ProjectList.cshtml" />
+    <Content Include="Views\FlowChart\FlowChartPlanManager.cshtml" />
+    <Content Include="Views\Chart\Yield.cshtml" />
+    <Content Include="Views\Settings\MainProcessSetting.cshtml" />
+    <Content Include="Views\Settings\FuncPlantMatenance.cshtml" />
+    <Content Include="Views\Settings\UserFuncPlantSetting.cshtml" />
+    <Content Include="Views\Settings\EditData.cshtml" />
+    <Content Include="Views\FlowChart\FlowChart_BindBom.cshtml" />
+    <Content Include="Views\Quality\QAExcetionType.cshtml" />
+    <Content Include="Views\Quality\CheckPointsList.cshtml" />
+    <Content Include="Views\Quality\QAMaster.cshtml" />
+    <Content Include="Views\Quality\QAInputDetail.cshtml" />
+    <Content Include="Views\Quality\QAReport.cshtml" />
+    <Content Include="Views\Quality\TargetYield.cshtml" />
+    <Content Include="Views\Quality\QAInputModifyQuery.cshtml" />
+    <Content Include="Views\Quality\QAFlowChartList.cshtml" />
+    <Content Include="Views\ProductInput\ProductData.cshtml" />
+    <Content Include="Views\Settings\ProjectMaintanance.cshtml" />
+    <Content Include="Views\OQCQuality\OQCMaster.cshtml" />
+    <Content Include="Views\Quality\ExcetetionTypeProcess.cshtml" />
+    <Content Include="Views\OQCQuality\OQCReport.cshtml" />
+    <Content Include="Views\OQCQuality\OQCHistorySearch.cshtml" />
+    <Content Include="Views\Board\Index.cshtml" />
+    <Content Include="Views\Board\Notice.cshtml" />
+    <Content Include="Views\Board\SelectPart.cshtml" />
+    <Content Include="Views\FlowChart\PlanManager.cshtml" />
+    <Content Include="Views\Board\EBoardShow.cshtml" />
+    <Content Include="Views\Quality\QAMasterHistory.cshtml" />
+    <Content Include="Views\ProductInput\ProductDataInputForEmergency.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\BasicInfo.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPError.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPMaintenance.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPUser.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EquipmentInfo.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\MaterialInfo.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPMaintenanceReport.cshtml" />
+    <Content Include="Views\MaterialManage\MaterialManage.cshtml" />
+    <Content Include="Views\MaterialManage\StoreManage.cshtml" />
+    <Content Include="Views\EQPBoard\EQPBoardShow.cshtml" />
+    <Content Include="Views\EQPBoard\Index.cshtml" />
+    <Content Include="Views\QAProductSaleReport\ProSaleReport.cshtml" />
+    <Content Include="Views\Quality\IPQCQAReportSum.cshtml" />
+    <Content Include="Views\QAProductSaleReport\ProSaleReportDistributeRate.cshtml" />
+    <Content Include="Views\QAProductSaleReport\TimeIntervalFPYReport.cshtml" />
+    <Content Include="Views\Quality\QABackToFunPlant.cshtml" />
+    <Content Include="Views\StorageManage\Warehouse.cshtml" />
+    <Content Include="Views\StorageManage\CreateBound.cshtml" />
+    <Content Include="Views\StorageManage\UpdateBound.cshtml" />
+    <Content Include="Views\StorageManage\StorageCheck.cshtml" />
+    <Content Include="Views\StorageManage\StorageDetail.cshtml" />
+    <Content Include="Views\StorageManage\StorageTransfer.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPType.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPMaterial.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPPowerOn.cshtml" />
+    <Content Include="Views\StorageManage\MaterialNormalDemandList.cshtml" />
+    <Content Include="Views\StorageManage\MaterialNormalDemandDetail.cshtml" />
+    <Content Include="Views\StorageManage\MaterialInventory.cshtml" />
+    <Content Include="Views\StorageManage\MaterialInventoryDetail.cshtml" />
+    <Content Include="Views\StorageManage\MaterialSparepartsDemandList.cshtml" />
+    <Content Include="Views\StorageManage\MaterialSparepartsDemandDetail.cshtml" />
+    <Content Include="Views\ProductionPlanning\FlowchartListIE.cshtml" />
+    <Content Include="Views\ProductionPlanning\FlowchartListIEMatching.cshtml" />
+    <Content Include="Views\ProductionPlanning\ProductionPlanningList.cshtml" />
+    <Content Include="Views\ProductionPlanning\FlowchartMEDetailList.cshtml" />
+    <Content Include="Views\ProductionPlanning\FlowchartMEquipmentList.cshtml" />
+    <Content Include="Views\ProductionPlanning\FlowchartMENPIList.cshtml" />
+    <Content Include="Views\PPFlowchart\FLowchartPPList.cshtml" />
+    <Content Include="Views\PPFlowchart\FLowchartPPMPMaintenanceList.cshtml" />
+    <Content Include="Views\PPFlowchart\FlowchartPPMPMaintenanceInfo.cshtml" />
+    <Content Include="Views\PPFlowchart\FlowchartPPDetailList.cshtml" />
+    <Content Include="Views\StorageManage\MaterialRepairDemandList.cshtml" />
+    <Content Include="Views\StorageManage\MaterialRepairDemandDetail.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\MaterialReason.cshtml" />
+    <Content Include="Views\StorageManage\MaterialDemandSummaryDetail.cshtml" />
+    <Content Include="Views\StorageManage\MaterialDemandSummaryList.cshtml" />
+    <Content Include="Views\StorageManage\StorageReport.cshtml" />
+    <Content Include="Views\ProductionPlanningReport\EquipmentRequestList.cshtml" />
+    <Content Include="Views\PPFlowchart\CurrentStaffList.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EQPForecastPowerOn.cshtml" />
+    <Content Include="Views\PPFlowchart\TurnoverSchedulingList.cshtml" />
+    <Content Include="Views\PPFlowchart\ActualPowerList.cshtml" />
+    <Content Include="Views\Settings\BUOrganization.cshtml" />
+    <Content Include="Views\ProductionPlanning\HumanResourcesSummary.cshtml" />
+    <Content Include="Views\ProductionPlanningReport\PlanAndActualReportList.cshtml" />
+    <Content Include="Views\ProductionPlanningReport\ManpowerDemandForecastReport.cshtml" />
+    <Content Include="Views\PPFlowchart\ActualEquipList.cshtml" />
+    <Content Include="Views\ProductionPlanningReport\DLSummary.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EquipmentNOTReport.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\EquipmentReport.cshtml" />
+    <Content Include="Views\Common\LanguageSelector.cshtml" />
+    <Content Include="Views\Settings\LanguageMaintenance.cshtml" />
+    <Content Include="Views\Settings\LocaleStringResourceMaintenance.cshtml" />
+    <Content Include="Views\Settings\LanguageDataMaintenance.cshtml" />
+    <Content Include="Views\ProductionPlanningReport\ManPowerRequestList.cshtml" />
+    <Content Include="Views\EventReportManager\LocationList.cshtml" />
+    <Content Include="Views\Settings\WorkshopMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureDataMaintain.cshtml" />
+    <Content Include="Views\Fixture\MaintenancePlan.cshtml" />
+    <Content Include="Views\Fixture\FixtureMaintenanceProfile.cshtml" />
+    <Content Include="Views\Fixture\FixtureUserWorkshop.cshtml" />
+    <Content Include="Views\Fixture\RepairLocation.cshtml" />
+    <Content Include="Views\Settings\ProcessInfoMaintenance.cshtml" />
+    <Content Include="Views\Fixture\ProductionLineMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureAbnormalReason.cshtml" />
+    <Content Include="Views\Fixture\FixtureRepair.cshtml" />
+    <Content Include="Views\Fixture\FixtureAbnormalReasonGroup.cshtml" />
+    <Content Include="Views\Fixture\FixtureMachineMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureDefectCodeMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureRepairSolutionMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureNotMaintained.cshtml" />
+    <Content Include="Views\Fixture\FixtureRecipients.cshtml" />
+    <Content Include="Views\Fixture\VendorInfo.cshtml" />
+    <Content Include="Views\Fixture\FixtureResume.cshtml" />
+    <Content Include="Views\Fixture\FixtureMaintenance.cshtml" />
+    <Content Include="Views\Fixture\DefectRepairSolution.cshtml" />
+    <Content Include="Views\Fixture\WorkStationMaintenance.cshtml" />
+    <Content Include="Views\Fixture\FixtureTotakeDetail.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByRepair.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByRepairPerson.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByPage.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportTimeAnalisis.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByDetail.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByStatus.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByStatusAnalisis.cshtml" />
+    <Content Include="Views\Fixture\FixtureReportByFMT.cshtml" />
+    <Content Include="Views\Settings\BatchEmailSetting.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartMaintenance.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartSetting.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartWarehouse.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartCreatebound.cshtml" />
+    <Content Include="Views\FixturePart\PurchaseOrderMaintain.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartUpdatebound.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartDemand.cshtml" />
+    <Content Include="Views\Board\StaticQEBordAndQETopTen.cshtml" />
+    <Content Include="Views\Settings\SystemLocalizedPropertyMaintenance.cshtml" />
+    <Content Include="Views\FixturePart\FixtureStorageTransfer.cshtml" />
+    <Content Include="Views\FixturePart\FixtureStorageCheck.cshtml" />
+    <Content Include="Views\Quality\QAReportSum.cshtml" />
+    <Content Include="Views\FlowChart\WipDetail.cshtml" />
+    <Content Include="Views\FixturePart\FixtureInAndOutStorageDetial.cshtml" />
+    <Content Include="Views\FlowChart\WipDetail.cshtml" />
+    <Content Include="Views\FixturePart\StoryDetialReport.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartStorageReport.cshtml" />
+    <Content Include="Views\Quality\CheckPointsListo.cshtml" />
+    <Content Include="Views\EventReportManager\ProductReport.cshtml" />
+    <Content Include="Views\ProductionResourcePlan\DepartureSchedulePlan.cshtml" />
+    <Content Include="Views\ProductionResourcePlan\Current_Manpower.cshtml" />
+    <Content Include="Views\ProductionResourcePlan\ProductionPlanMeList.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\Material_Maintenance_Record.cshtml" />
+    <Content Include="Views\EventReportManager\ProductReportInterval.cshtml" />
+    <Content Include="Views\Fixture\FixtureStatusMoniter.cshtml" />
+    <Content Include="Views\ProcessIDTraConfig\ProcessIDTraConfig.cshtml" />
+    <Content Include="Views\Board\ORTImgSetting.cshtml" />
+    <Content Include="Views\Machine\MachineYieldReport.cshtml" />
+    <Content Include="Views\Machine\MachineDetail.cshtml" />
+    <Content Include="Views\PISSyncFailedRecord\PISSyncFailedRecord.cshtml" />
+    <Content Include="Views\Board\ModelLineHRMaintenance.cshtml" />
+    <Content Include="Views\GoldenLine\Customer.cshtml" />
+    <Content Include="Views\GoldenLine\Show.cshtml" />
+    <Content Include="Views\GoldenLine\Station.cshtml" />
+    <Content Include="Views\GoldenLine\WIPHourOutput.cshtml" />
+    <Content Include="Views\GoldenLine\BuildPlan.cshtml" />
+    <Content Include="Views\GoldenLine\FlowChart.cshtml" />
+    <Content Include="Views\GoldenLine\HCActual.cshtml" />
+    <Content Include="Views\GoldenLine\HCPlan.cshtml" />
+    <Content Include="Views\GoldenLine\LineSetup.cshtml" />
+    <Content Include="Views\GoldenLine\ShiftTime.cshtml" />
+    <Content Include="Views\ProductionResourcePlan\ProductionPlanMe_Equipment.cshtml" />
+    <Content Include="Views\ProcessIDTraConfig\MESSyncReport.cshtml" />
+    <Content Include="Views\PlayBoard\PictureShow.cshtml" />
+    <Content Include="Views\PlayBoard\ORTSHow.cshtml" />
+    <Content Include="Views\PlayBoard\Setting.cshtml" />
+    <Content Include="Views\GoldenLine\FlowChartStation.cshtml" />
+    <Content Include="Views\OEE\OEE_MachineInfo.cshtml" />
+    <Content Include="Views\OEE\OEE_StationDefectCode.cshtml" />
+    <Content Include="Views\OEE\OEE_DownTimeCode.cshtml" />
+    <Content Include="Views\OEE\StationDataMaintence.cshtml" />
+    <Content Include="Views\PlayBoard\PictureSetting.cshtml" />
+    <Content Include="Views\OEE\DefectCodeMaintence.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartScanCode.cshtml" />
+    <Content Include="Views\OEE\OEE_EveryDayMachine.cshtml" />
+    <Content Include="Views\OEE\OEE_DownType.cshtml" />
+    <Content Include="Views\FixturePart\FixturePartScanCodeClear.cshtml" />
+    <Content Include="Views\OEE\OEE_Report.cshtml" />
+    <Content Include="Views\CNCMachine\CNCMachine.cshtml" />
+    <Content Include="Views\CNCMachine\CNCMachineReport.cshtml" />
+    <Content Include="Views\GoldenLine\OperatorList.cshtml" />
+    <Content Include="Views\OEE\OEE_MetricsPhotoReport.cshtml" />
+    <Content Include="Views\PlayBoard\PPTSetting.cshtml" />
+    <Content Include="Views\PlayBoard\PPTShow.cshtml" />
+    <Content Include="Views\PlayBoard\EBoardShow.cshtml" />
+    <Content Include="Views\PlayBoard\EBoardShowSetting.cshtml" />
+    <Content Include="Views\PlayBoard\EBoardShowSettingSelectPart.cshtml" />
+    <Content Include="Views\PlayBoard\Index.cshtml" />
+    <Content Include="Views\OEE\OEE_MachinePieReport.cshtml" />
+    <Content Include="Views\GLQAReport\GLQAStation.cshtml" />
+    <Content Include="Views\GLQAReport\GLQAYield.cshtml" />
+    <Content Include="Views\GLQAReport\IPQCQualityReport.cshtml" />
+    <Content Include="Views\GLQAReport\IPQCQualityMonthReport.cshtml" />
+    <Content Include="Views\Home\MargueeUpload.cshtml" />
+    <Content Include="Views\PlayBoard\VideoShow.cshtml" />
+    <Content Include="Views\PlayBoard\VideoSetting.cshtml" />
+    <Content Include="Views\OEE\OEE_LineStaticReport.cshtml" />
+    <Content Include="Views\GoldenLine\RestTime.cshtml" />
+    <Content Include="Views\Equipmentmaintenance\CostCenterMaintenance.cshtml" />
+    <Content Include="Views\OEE\OEEFourQReport.cshtml" />
+    <Content Include="Views\Exception\ExceptionAllocateIndex.cshtml" />
+    <Content Include="Views\Exception\ExceptionInfoIndex.cshtml" />
+    <Content Include="Views\Exception\ExceptionRecordIndex.cshtml" />
+    <Content Include="Views\Fixture\FixtureReturnDetail.cshtml" />
+    <Content Include="Views\Fixture\FixtureReturnIndex.cshtml" />
+    <Content Include="Views\FlowChart\FlowChartIEManager.cshtml" />
+    <Content Include="Views\GoldenLine\LineGroup.cshtml" />
+    <Content Include="Views\Exception\ExceptionDeptIndex.cshtml" />
+    <Content Include="Views\Exception\ExceptionTimeIndex.cshtml" />
+    <Content Include="Views\Exception\ViewRecordReply.cshtml" />
+    <Content Include="Views\OEE\OEE_MeetingTypeInfo.cshtml" />
+    <Content Include="Views\OEE\OEE_MetricInfo.cshtml" />
+    <Content Include="Views\GoldenLine\ActionTask.cshtml" />
+    <Content Include="Views\OEE\OEE_ImprovementPlan.cshtml" />
+    <Content Include="Views\OEE\OEE_RealStatus.cshtml" />
+    <Content Include="Views\Exception\DowntimeIndex.cshtml" />
+    <Content Include="Views\GoldenLine\GL_MeetingTypeInfo.cshtml" />
+    <Content Include="Views\GoldenLine\GLFourQReport.cshtml" />
+    <Content Include="Views\GoldenLine\GL_MetricInfo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FixturePart\FixturePartDemandSummary.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\AdminLTE\dist\img\Dashboard\" />
+    <Folder Include="Content\AdminLTE\dist\img\WebPages\" />
+    <Folder Include="Content\files\Report\Capability Summary\" />
+    <Folder Include="Content\img\bi\" />
+    <Folder Include="Content\img\bp\capability-summary-map\" />
+    <Folder Include="Content\img\manual-video\" />
+    <Folder Include="Content\img\report\capability-summary-map\" />
+    <Folder Include="Content\manual\bp\capacity\" />
+    <Folder Include="Models\" />
+    <Folder Include="Scripts\SPPModules\" />
+    <Folder Include="Service References\App_Data\" />
+    <Folder Include="Views\BaseDataManager\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="Content\AdminLTE\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Content\AdminLTE\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\AdminLTE\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\AdminLTE\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\AdminLTE\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\AdminLTE\dist\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\AdminLTE\dist\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\AdminLTE\dist\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\AdminLTE\dist\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\AdminLTE\dist\fonts\FontAwesome.otf" />
+    <Content Include="Content\AdminLTE\dist\fonts\ionicons.eot" />
+    <Content Include="Content\AdminLTE\dist\fonts\ionicons.ttf" />
+    <Content Include="Content\AdminLTE\dist\fonts\ionicons.woff" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\common.scss" />
+    <Content Include="Content\AdminLTE\plugins\DataTables\Buttons-1.0.3\css\mixins.scss" />
+    <None Include="Project_Readme.html" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\an_hui_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\ao_men_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\bei_jing_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\china_city.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\china_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\chong_qing_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\fu_jian_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\gan_su_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\guang_dong_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\guang_xi_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\gui_zhou_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\hai_nan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\hei_long_jiang_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\he_bei_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\he_nan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\hu_bei_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\hu_nan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\jiang_su_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\jiang_xi_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\ji_lin_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\liao_ning_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\nei_meng_gu_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\ning_xia_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\qing_hai_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\shang_hai_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\shan_dong_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\shan_xi_1_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\shan_xi_2_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\si_chuan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\tai_wan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\tian_jin_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\world_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\xiang_gang_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\xin_jiang_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\xi_zang_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\yun_nan_geo.json" />
+    <Content Include="Scripts\plugins\echarts-2.2.7\src\util\mapData\rawData\geoJson\zhe_jiang_geo.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDMS.Common\PDMS.Common.csproj">
+      <Project>{09b6a6ab-8dc7-4d94-8ee4-248360ac54b3}</Project>
+      <Name>PDMS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Core\PDMS.Core.csproj">
+      <Project>{210e62f8-fe07-4f9e-95f2-672d3b96a76c}</Project>
+      <Name>PDMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Model\PDMS.Model.csproj">
+      <Project>{1bee001d-ddeb-47fc-a64c-4d65d83f3774}</Project>
+      <Name>PDMS.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Service\PDMS.Service.csproj">
+      <Project>{8241f397-d5a6-41da-937d-cdec0efa6e85}</Project>
+      <Name>PDMS.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>56843</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/PDMS.Web</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost/PDMS.Web</IISAppRootUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

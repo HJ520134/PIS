@@ -1,0 +1,159 @@
+﻿@model PDMS.Model.ViewModels.EQPRoleVM
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary btn-lg" id="bt_eqp" href="../Equipmentmaintenance/EquipmentInfo">
+                导入设备信息
+            </a>
+            <a class="btn btn-primary btn-lg" id="bt_user" href="../Equipmentmaintenance/EQPUser">
+                导入人员账号
+            </a>
+            <a class="btn btn-primary btn-lg" id="bt_material" href="../Equipmentmaintenance/MaterialInfo">
+                导入料号关系
+            </a>
+            <a class="btn btn-primary btn-lg" id="SafeStock">
+                维护安全库存参数
+            </a>
+            <a class="btn btn-primary btn-lg" id="bt_error" href="../Equipmentmaintenance/EQPError">
+                维护故障种类
+            </a>
+            <a class="btn btn-primary btn-lg" id="bt_reason" href="../Equipmentmaintenance/MaterialReason">
+                维护重要料号原因
+            </a>
+        </div>
+    </div>
+</section>
+@section ViewModals{
+<div class="modal fade" id="js_edit_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">安全数据维护明细</h4>
+            </div>
+            @using (Html.BeginForm("EditSafeStocko", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit" }))
+            {
+                <div class="modal-body form-horizontal">
+
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_id">最大安全库存系数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_op_types" name="Safe_Stock_Max" placeholder="Safe Stock Max"
+                                        required data-msg-required="Please enter Max Safe Stock">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">之前开机数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required needint" id="s_input_last" name="Safe_Stock_LastOpenEQP" placeholder="Safe Stock LastOpenEQP"
+                                       required data-msg-required="Please enter Last open machine number" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_d_id">计划开机数</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required needint" id="s_input_plan" name="Safe_Stock_PlanOpenEQP" placeholder="Safe Stock PlanOpenEQP"
+                                       required data-msg-required="Please enter plant open machine number" min="1">
+                            </div>
+                        </div>
+                        <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                        <input type="hidden" id="EQPUser_Uid" name="EQPUser_Uid" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+}
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var BasicInfoUrl = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryBasicInfo: '@Url.Action("GetSafeStockparameter", "Equipmentmaintenance")'
+                };
+                return {
+                    urls: urls                  
+                }
+            })();
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal .list-group.validate-error').empty();
+            });
+            //#region 点击GridView上的Edit按钮事件
+            $('#SafeStock').click(function () {
+                var url = BasicInfoUrl.urls.queryBasicInfo;
+                $('#js_edit_modal').modal('show', $(this));
+                $.post(url, function (data) {
+                    $('#js_edit_modal').find('input[name=Safe_Stock_Max]').val(data[0].Safe_Stock_Max);
+                    $('#js_edit_modal').find('input[name=Safe_Stock_LastOpenEQP]').val(data[0].Safe_Stock_LastOpenEQP);
+                    $('#js_edit_modal').find('input[name=Safe_Stock_PlanOpenEQP]').val(data[0].Safe_Stock_PlanOpenEQP);
+                });
+            });
+            //#endregion 点击Edit按钮事件
+
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_edit_modal').find('input[name=Safe_Stock_Max]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入最大安全库存系数');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=Safe_Stock_LastOpenEQP]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入之前开机数');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=Safe_Stock_PlanOpenEQP]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入计划开机数');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('更新成功');
+                        }
+                    }
+                });
+            })
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //为新增或修改Modal，注册事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+            });
+
+            $('.needint').keydown(function (event) {
+                var value = event.key;
+                if (value.length > 1)
+                    return true;
+                if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                    return false;
+            })
+        })
+    </script>
+}
+
+

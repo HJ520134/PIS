@@ -1,0 +1,392 @@
+﻿@{ 
+    ViewBag.AddPage = T("Common.NewPage").Text;
+    ViewBag.Imported = T("QA.Imported").Text;
+    ViewBag.EditPage = T("Common.EditPage").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+
+}
+
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-7">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-5">
+@using (Html.BeginForm("DownloadLocalLanguageExcel", "Settings", FormMethod.Post, new { id = "js_form_excel_languagedownload" }))
+{
+    @*<button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">@T("Common.DownloadExcel")</button>*@
+    <a href="~/ExcelTemplate/Language_Template.xlsx" class="fa fa-download btn btn-primary" target="_blank">@T("Common.DownloadExcel")</a>
+    <a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal"> @T("Common.UploadExcel")</a>
+    <a class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+    <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_bu">@T("Common.AddNew")</a>
+    <button type="button" class="fa fa-reply btn btn-primary" id="btn_back"> @T("Common.Back")</button>
+}
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_language_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("System.Language.ResourceName")</th>
+                        <th>@T("System.Language.ResourceValue")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("System.Language.ResourceName")</th>
+                        <th>@T("System.Language.ResourceValue")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("Common.Search")</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_ResourceName">@T("System.Language.ResourceName")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="ResourceName" class="form-control input-sm" id="js_s_input_ResourceName" placeholder="@T("System.Language.ResourceName")">
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_ResourceValue">@T("System.Language.ResourceValue")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="ResourceValue" class="form-control input-sm" id="js_s_input_ResourceValue" placeholder="@T("System.Language.ResourceValue")">
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="fa fa-times btn btn-primary" id="js_btn_clear">@T("Common.Clear")</button>
+                <button id="btn_search" type="button" class="fa fa-search btn btn-primary">@T("Common.Search")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_edit_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title-add">编辑</h4>
+            </div>
+            @using (Html.BeginForm("SaveResourceInfo", "Settings", FormMethod.Post, new { id = "js_form_edit_fl" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ResourceName">@T("System.Language.ResourceName")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_ResourceName" name="ResourceName" placeholder="@T("System.Language.ResourceName")" required data-msg-required="@T("System.Language.InputResourceName")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ResourceValue">@T("System.Language.ResourceValue")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_ResourceValue" name="ResourceValue" placeholder="@T("System.Language.ResourceValue")" required data-msg-required="@T("System.Language.InputResourceValue")">
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="hidResourceID" name="System_LocaleStringResource_UID"/>
+                        <input type="hidden" id="hidLanguageUID" name="System_Language_UID" />
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <button class="fa fa-times btn btn-primary" data-dismiss="modal">@T("Common.Clear")</button>
+                                <button type="button" class="fa fa-save btn btn-primary" id="btn_save_edit"> @T("Common.Save")</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                    <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("Common.Import")</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    @using (Html.BeginForm("ImportLocalExcel", "Settings", FormMethod.Post, new { id = "js_form_excel_add" }))
+                    {
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_upload">@T("QA.SelecttheExcelfile")</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" id="js_s_input_upload" name="upload_excel" placeholder="@T("QA.PleaseselectExcelfile")" />
+                            </div>
+                        </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            </div>
+                            <input type="hidden" id="hidSystem_Language_UID" name="System_Language_UID" value="@ViewBag.System_Language_UID" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var ResourceMaintenance = (function () {
+                var urls = {
+                    LocaleStringResourceInfo: '@Html.Raw(Url.Action("LocaleStringResourceInfo", "Settings", new { System_Language_UID = ViewBag.System_Language_UID }))',
+                    QueryLanguage: '@Url.Action("QueryLanguage", "Settings")',
+                    AddLanguage: '@Url.Action("AddLanguageAPI", "Settings")',
+                    SaveResourceInfo: '@Html.Raw(Url.Action("SaveResourceInfo", "Settings"))',
+                    backFL: '@Url.Action("languagemaintenance", "Settings")',
+                };
+
+                var columns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+
+                        var hidResource_UID = '<input type="hidden" id=hidResource_UID value=' + rowData.System_LocaleStringResource_UID + '>';
+                        var hidLanguage_UID = '<input type="hidden" id=hidLanguage_UID value="' + rowData.System_Language_UID + '">';
+                        var hidResourceName = '<input type="hidden" id=hidResourceName value="' + rowData.ResourceName + '">';
+                        var hidResourceValue = '<input type="hidden" id=hidResourceValue value="' + rowData.ResourceValue + '">';
+
+                        var buttonEdit = '<button type="button" class="btn btn-default btn-sm" data-id="' + rowData.System_LocaleStringResource_UID + '">编辑</button>';
+                        var result = '<button type="button" class="btn btn-default" rel="action-popover">' +
+                            '<i class="fa fa-reorder"></i>' +
+                            '</button>' +
+                            '<div class="hidden popover-content">';
+                        result = hidResource_UID + hidLanguage_UID + hidResourceName + hidResourceValue + buttonEdit;
+                        $(td).html(result);
+
+                    },
+                    className: "js-grid-edit"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "ResourceName",
+                    className: "min-col-xs"
+                }, {
+                    data: "ResourceValue",
+                    className: "min-col-xs"
+                }];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryLanguages = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_language_datatable",
+                        remoteUrl: urls.LocaleStringResourceInfo,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                }
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryLanguages(true);
+                    },
+                    SearchResource: function () {
+                        _queryLanguages(false);
+                    },
+
+                }
+            })();
+            ResourceMaintenance.Init();
+
+            //#region 第一个Tab标签
+            $('#js_form_edit_fl').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            $('#js_language_datatable tbody').on("click", ".js-grid-edit", function () {
+                if ($(this).html() != '') {
+                    $(".modal-title-add").text('@ViewBag.EditPage');
+                    $('#js_edit_modal').modal('show');
+                }
+                $('#s_input_ResourceName').val($(this).find("#hidResourceName").val());
+                $('#s_input_ResourceValue').val($(this).find("#hidResourceValue").val());
+                $('#hidResourceID').val($(this).find("#hidResource_UID").val());
+                $('#hidLanguageUID').val($(this).find("#hidLanguage_UID").val());
+
+            });
+
+            $('#js_btn_add_bu').on('click', function () {
+                $(".modal-title-add").text('@ViewBag.AddPage');
+            });
+
+            //#region 保存单笔修改的信息
+            $('#btn_save_edit').on('click', function () {
+                //新增单笔资源信息没有主见和LanguageUID
+                if ($('#hidResourceID').val() == '') {
+                    $('#hidLanguageUID').val('@ViewBag.System_Language_UID');
+                }
+
+                var model = $('#js_form_edit_fl').serialize();
+                $('#js_form_edit_fl').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_edit_fl').valid()) {
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            ResourceMaintenance.SearchResource(false);
+                        }
+                    }
+                });
+            });
+            //#endregion 保存单笔修改的信息
+
+            //#region 下载Excel模板
+            $('#btn_download_fl').on('click', function () {
+                var formHtml = this.form;
+                var CheckUrl = Plan.urls.CheckDownloadNPIExcel;
+
+                var url = '@Html.Raw(Url.Action("DownloadLocalLanguageExcel", "Settings", new { id= ViewBag.ID}))';
+                formHtml.action = url;
+                $('#js_form_excel_languagedownload').submit();
+
+            });
+            //#endregion
+
+
+            $('#btn_import_fl').on('click', function () {
+                var formHtml = this.form;
+                $('#js_import_modal').modal('hide');
+                $.blockUI({ message: "<h1>@ViewBag.Imported</h1>" });
+                $('#js_form_excel_add').ajaxSubmit({
+                    beforeSubmit: function () {
+                        var input1 = $('#js_s_input_upload').val();
+
+                        if (input1 == '') {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseselectExcelfile');
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data, function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('@ViewBag.Updatecompleted', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+
+
+            $('#btn_search').click(function () {
+                ResourceMaintenance.SearchResource();
+                $('#js_search_modal').modal('hide');
+            });
+
+            $('#btn_back').on('click', function () {
+                var url = ResourceMaintenance.urls.backFL;
+                window.location.href = url;
+            });
+
+            $('#js_btn_clear').click(function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                //PDMS.Utility.Criteria.Clear();
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+        });
+
+    </script>
+
+}
+

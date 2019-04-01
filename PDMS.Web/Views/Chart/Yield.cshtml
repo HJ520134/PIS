@@ -1,0 +1,1742 @@
+﻿
+@{
+    ViewBag.Title = "图表";
+    ViewBag.TubiaoInfo1 = T("FlowChart.TubiaoInfo1").Text;
+    ViewBag.From = T("FlowChart.From").Text;
+    ViewBag.To = T("FlowChart.To").Text;
+    ViewBag.TubiaoInfo2 = T("FlowChart.TubiaoInfo2").Text;
+    ViewBag.BaobiaoInfo2 = T("FlowChart.BaobiaoInfo2").Text;
+    ViewBag.TubiaoInfo3 = T("FlowChart.TubiaoInfo3").Text;
+    ViewBag.TubiaoInfo4 = T("FlowChart.TubiaoInfo4").Text;
+    ViewBag.TubiaoInfo5 = T("FlowChart.TubiaoInfo5").Text;
+    ViewBag.TubiaoInfo6 = T("FlowChart.TubiaoInfo6").Text;
+    ViewBag.chart = T("FlowChart.chart").Text;
+    ViewBag.PlanYield = T("FlowChart.PlanYield").Text;
+    ViewBag.ActualYield = T("FlowChart.ActualYield").Text;
+    ViewBag.Yield = T("QA.Yield").Text;
+    ViewBag.Color = T("QA.Colour").Text;
+    ViewBag.MasterPlan = T("FlowChart.MasterPlan").Text;
+    ViewBag.TotalOutput = T("FlowChart.TotalOutput").Text;
+    ViewBag.TotalReachRate = T("FlowChart.TotalReachRate").Text;
+    ViewBag.TargetRate = T("FlowChart.TargetRate").Text;
+    ViewBag.output = T("FlowChart.output").Text;
+    ViewBag.ReachRate = T("FlowChart.ReachRate").Text;
+    ViewBag.KeyProcess = T("FlowChart.KeyProcess").Text;
+}
+<style>
+    body {
+        background-color: Transparent;
+    }
+</style>
+<div style="height:30px !important;">
+    <div class="col-xs-3 col-xs-offset-9  position-static search-field col-lg-3" style="margin-top:10px;">
+
+        <a class="btn btn-default btn-lg" data-toggle="modal" data-target="#js_search_modal" id="btn-search"><i class="fa fa-search"></i>@T("Common.Search")</a>
+
+    </div>
+
+</div>
+<div id="main" position-static></div>
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_customer">@T("QA.Client")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_customer" name="Customer"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_project">@T("QA.Project")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_project" name="Project"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Product_Phase">@T("QA.Productionstage")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_Product_Phase" name="Product_Phase"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_part_scope">@T("QA.Parttype")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_part_types" name="Part_Types"></select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_range">@T("FlowChart.ProcessRange")</label>
+                            <div class="col-sm-7 ">
+                                <select class="form-control input-sm " id="js_s_input_range" name="FunPlant">
+                                    @*<option value="Key_Process" selected="selected">关键制程</option>*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_report_type">@T("FlowChart.ChartType")</label>
+                            <div class="col-sm-7">
+                                <select id="js_s_report_type" name="Report_Type" class="form-control input-sm">
+                                    <option value="achieving" selected="selected">@T("FlowChart.ReachRate")</option>
+                                    <option value="yield">@T("QA.Yield")</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6" id="yield_Select_type">
+                            <label class="col-sm-5 control-label" for="js_s_select_type">@T("QA.Querytype")</label>
+                            <div class="col-sm-7">
+                                <select id="js_s_select_type" name="Select_Type" class="form-control input-sm">
+                                    <option value="daily" selected="selected">@T("QA.Daily")</option>
+                                    <option value="weekly">@T("FlowChart.weekly")</option>
+                                    <option value="monthly">@T("FlowChart.Monthly")</option>
+                                    <option value="time">@T("QA.Period")</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        @*日报选项*@
+                        <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                            <label class="col-sm-5 control-label" for="js_s_input_date">@T("Common.Date")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Reference_Date" class="form-control input-sm date" id="js_s_input_date">
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">时段选择</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Interval_Time"></select>
+                                </div>
+                            </div>*@
+                        @*周报选项*@
+                        <div class="form-group col-xs-12 col-md-6" id="week_Select_start" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_weekdate_start">@T("FlowChart.WeekDate")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Week_Date_Start" class="form-control input-sm date" id="js_s_input_weekdate_start">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="week_Select_end" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_ref_date">@T("FlowChart.cycle")</label>
+                            <div class="col-sm-7">
+                                <input type="text" disabled="disabled" name="week_interval" class="form-control input-sm" id="js_s_input_week_interval">
+                            </div>
+
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="week_version" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_week_verion">@T("QA.Version")</label>
+                            <div class="col-sm-7">
+                                <select class="form-control input-sm " id="js_s_input_week_verion" name="Week_Version"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="week_version_date" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_week_verion_date">@T("FlowChart.VersionPeriod")</label>
+                            <div class="col-sm-7">
+                                <input type="text" disabled="disabled" name="week_interval" class="form-control input-sm" id="js_s_input_week_verion_date">
+                            </div>
+                        </div>
+                        @*月报选项*@
+                        <div class="form-group col-xs-12 col-md-6" id="month_Select" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_begin_date_month">@T("FlowChart.MonthDate")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Month_Date_Start" class="form-control input-sm date" id="js_s_begin_date_month">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="month_label" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_mounth_interval">@T("FlowChart.cycle")</label>
+                            <div class="col-sm-7">
+                                <input type="text" disabled="disabled" name="month_interval" class="form-control input-sm" id="js_s_input_mounth_interval">
+                                @*<input type="text" hidden="hidden" name="Interval_Date_Start" id="Interval_Date_Start">
+                                    <input type="text" hidden="hidden" name="Interval_Date_End" id="Interval_Date_End">*@
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="month_version" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_month_verion">@T("QA.Version")</label>
+                            <div class="col-sm-7">
+                                <select class="form-control input-sm " id="js_s_input_month_verion" name="Month_Version"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="month_version_date" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_input_month_verion_date">@T("FlowChart.VersionPeriod")</label>
+                            <div class="col-sm-7">
+                                <input type="text" disabled="disabled" name="month_interval" class="form-control input-sm" id="js_s_input_month_verion_date">
+                            </div>
+                        </div>
+                        @*时间段*@
+                        <div class="form-group col-xs-12 col-md-6" id="time_Select_Start" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_start_date_interval">@T("Common.StartDate")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Interval_Date_Start" class="form-control input-sm date" id="Interval_Date_Start">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="time_Select_End" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_end_date_interval">@T("Common.EndDate")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Interval_Date_End" class="form-control input-sm date" id="Interval_Date_End">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="time_version" hidden="hidden">
+                            <label class="col-sm-5 control-label" for="js_s_verion_interval">@T("QA.Version")</label>
+                            <div class="col-sm-7">
+                                <select class="form-control input-sm " id="js_s_verion_interval" name="js_s_verion_interval"></select>
+                                <input type="hidden" name="Verion_Interval" id="Verion_Interval" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-search-inner" type="button" class="btn btn-primary btn-query">
+                    <i class="fa fa-search"></i>
+                    @T("QA.Queryreport")
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section ViewModals{
+    <script src="~/Scripts/ECharts/echarts.min.js"></script>
+    <script type="text/javascript">
+            $(function () {
+                var YieldChartUrls = {
+                    QueryYieldDatas: '@Url.Action("Chart", "QueryYieldDatas")',
+                    QueryWeekData: '@Url.Action("QueryWeekData", "EventReportManager")',
+                    QueryPPCheckDatas: '@Url.Action("QueryReportDatas", "EventReportManager")',
+                    GetCustomerSource: '@Url.Action("GetCustomerSource", "EventReportManager")',
+                    GetProjectSource: '@Url.Action("GetProjectSource", "EventReportManager")',
+                    GetProductPhaseSource: '@Url.Action("GetProductPhaseSource", "EventReportManager")',
+                    GetPartTypesSource: '@Url.Action("GetPartTypesSource", "EventReportManager")',
+                    GetColorSource: '@Url.Action("GetColorSource", "Chart")',
+                    GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")',
+
+                    GetFunPlant: '@Url.Action("GetFunPlantForChart", "EventReportManager")',
+                    GetVersionSource: '@Url.Action("GetVersionSource", "EventReportManager")',
+                    GetWeekVersionSource: '@Url.Action("GetWeekVersionSource", "EventReportManager")',
+                    GetDateTime: '@Url.Action("GetDateTime", "EventReportManager")',
+                    QueryTimeSpanReport: '@Url.Action("QueryTimeSpanReport", "EventReportManager")',
+                    QueryWeekReport: '@Url.Action("QueryWeekReport", "EventReportManager")',
+                    QueryVersionInterval: '@Url.Action("GetVersionBeginEndDate", "EventReportManager")',
+                    QueryMonthlyData: '@Url.Action("QueryMonthlyData", "EventReportManager")',
+                    QueryDailyData: '@Url.Action("QueryDailyData", "EventReportManager")',
+                    GetDailyVersion: '@Url.Action("GetDailyVersion", "EventReportManager")',
+
+                    GetYield: '@Url.Action("QueryDailyYield", "EventReportManager")',
+                };
+                GetCustomer();
+                GetInterval();
+
+                $("#js_s_input_customer").change(function ff() {
+                    GetProject();
+                });
+                $("#js_s_input_project").change(function ff() {
+                    GetProductPhase();
+                    $("#js_s_input_date").val('');
+                    $("#js_s_input_weekdate_start").val('');
+                    $("#js_s_input_week_verion").val('');
+                    $("#js_s_input_month_verion").val('');
+                    $("#js_s_begin_date_month").val('');
+                    $("#Interval_Date_End").val('');
+                });
+                $("#js_s_input_Product_Phase").change(function ff() {
+                    GetPartTypes();
+                });
+                $("#js_s_input_part_types").change(function ff() {
+                    GetColor();
+
+                });
+                $("#js_s_input_color").change(function ff() {
+
+                    GetFunPlant();
+                });
+                boxheight(); //执行函数
+                function boxheight() { //函数：获取尺寸
+                    //获取浏览器窗口高度
+                    var winHeight = 0;
+
+                    winHeight = document.documentElement.clientHeight;
+                    var winWidth = 0;
+
+                    winWidth = document.documentElement.clientWidth;
+
+                    //DIV高度为浏览器窗口高度
+                    document.getElementById("main").style.height = winHeight + "px";
+                    //document.getElementById("main").style.width = winWidth- + "px";
+                    $("#main").width = winWidth + "px";
+                }
+                window.onresize = boxheight; //窗口或框架被调整大小时执行
+
+
+                //报表类型改变时候
+                $("#js_s_select_type").change(function () {
+                    $("#js_s_input_month_verion").val('');
+                    $("#js_s_input_week_verion").val('');
+                    if ($("#js_s_select_type").val() == "daily")  //选择的类型为日报表
+                    {
+
+                        $("#week_label_th").hide();
+                        $("#day_label_th").show();
+
+                        $("#day_time_select").show();
+                        if ($("#js_ppcheckdata_mounth_wrapper").length > 0) {
+                            $("#js_ppcheckdata_mounth_wrapper").hide();
+                        }
+                        if ($("#js_ppcheckdata_week_wrapper").length > 0) {
+                            $("#js_ppcheckdata_week_wrapper").hide();
+                        }
+                        $("#js_ppcheckdata_datatable").show();
+                        $("#js_ppcheckdata_mounth").hide();
+                        $("#js_ppcheckdata_week").hide();
+                        $("#day_Select").show();
+
+                        $("#week_Select_start").hide();
+                        $("#week_Select_end").hide();
+                        $("#week_version").hide();
+                        $("#week_version_date").hide();
+                        $("#month_version_date").hide();
+                        $("#month_Select").hide();
+                        $("#month_label").hide();
+                        $("#month_version").hide();
+                        $("#time_Select_Start").hide();
+                        $("#time_Select_End").hide();
+                        $("#time_version").hide();
+                    }
+                    if ($("#js_s_select_type").val() == "weekly")  //选择的类型为周报表
+                    {
+
+                        if ($("#js_ppcheckdata_mounth_wrapper").length > 0) {
+                            $("#js_ppcheckdata_mounth_wrapper").hide();
+                        }
+                        if ($("#js_ppcheckdata_datatable_wrapper").length > 0) {
+                            $("#js_ppcheckdata_datatable_wrapper").hide();
+                        }
+                        $("#week_label_th").show();
+                        $("#day_label_th").hide();
+                        $("#js_ppcheckdata_week").show();
+                        $("#js_ppcheckdata_datatable").hide();
+                        $("#js_ppcheckdata_mounth").hide();
+                        $("#day_time_select").hide();
+                        $("#day_Select").hide();
+                        $("#week_Select_start").show();
+                        $("#week_Select_end").show();
+                        $("#week_version").show();
+                        $("#week_version_date").hide();
+                        $("#month_version_date").hide();
+                        $("#month_Select").hide();
+                        $("#month_label").hide();
+                        $("#month_version").hide();
+                        $("#time_Select_Start").hide();
+                        $("#time_Select_End").hide();
+                        $("#time_version").hide();
+
+                        var myDate = new Date();
+                        myDate = myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate();
+                        $("#js_s_input_weekdate_start").val(myDate);
+                        GetIntervel(myDate);
+                        GetweekVersion("js_s_input_week_verion", myDate);
+
+                    }
+                    if ($("#js_s_select_type").val() == "monthly")  //选择的类型为月报表
+                    {
+
+                        if ($("#js_ppcheckdata_week_wrapper").length > 0) {
+                            $("#js_ppcheckdata_week_wrapper").hide();
+                        }
+                        if ($("#js_ppcheckdata_datatable_wrapper").length > 0) {
+                            $("#js_ppcheckdata_datatable_wrapper").hide();
+                        }
+
+                        $("#week_label_th").show();
+                        $("#day_label_th").hide();
+                        $("#js_ppcheckdata_week").hide();
+                        $("#js_ppcheckdata_datatable").hide();
+                        $("#js_ppcheckdata_mounth").show();
+                        $("#day_time_select").hide();
+                        $("#day_Select").hide();
+                        $("#week_Select_start").hide();
+                        $("#week_Select_end").hide();
+                        $("#week_version").hide();
+                        $("#week_version_date").hide();
+                        $("#month_version_date").hide();
+                        $("#month_Select").show();
+                        $("#month_label").show();
+                        $("#month_version").show();
+                        $("#time_Select_Start").hide();
+                        $("#time_Select_End").hide();
+                        $("#time_version").hide();
+                        var myDate = new Date();
+                        var startDay = getCurrentMonthFirst(myDate);
+                        var endDay = getCurrentMonthLast(myDate);
+                        var currentDay = myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate();
+                        var myDateStart = startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate();
+                        var myDateEnd = endDay.getFullYear() + "-" + (endDay.getMonth() + 1) + "-" + endDay.getDate();
+
+                        $('#Interval_Date_Start').val(myDateStart);
+                        $('#Interval_Date_End').val(myDateEnd);
+                        $('#js_s_begin_date_month').val(currentDay);
+                        $("#js_s_input_mounth_interval").val("@ViewBag.From： " + myDateStart + "  @ViewBag.To：" + myDateEnd);
+                        GetVersion("js_s_input_month_verion", myDateStart, myDateEnd);
+                        $("#interval_week_date").text($("#js_s_input_mounth_interval").val());
+                    }
+                    if ($("#js_s_select_type").val() == "time")  //选择的类型为时间段报表
+                    {
+                        if ($("#js_ppcheckdata_week_wrapper").length > 0) {
+                            $("#js_ppcheckdata_week_wrapper").hide();
+                        }
+                        if ($("#js_ppcheckdata_datatable_wrapper").length > 0) {
+                            $("#js_ppcheckdata_datatable_wrapper").hide();
+                        }
+
+                        $("#week_label_th").show();
+                        $("#day_label_th").hide();
+
+                        $("#js_ppcheckdata_week").hide();
+                        $("#js_ppcheckdata_datatable").hide();
+                        $("#js_ppcheckdata_mounth").show();
+                        $("#day_time_select").hide();
+                        $("#day_Select").hide();
+                        $("#week_Select_start").hide();
+                        $("#week_Select_end").hide();
+                        $("#week_version").hide();
+                        $("#week_version_date").hide();
+                        $("#month_version_date").hide();
+                        $("#month_Select").hide();
+                        $("#month_label").hide();
+                        $("#month_version").hide();
+                        $("#time_Select_Start").show();
+                        $("#time_Select_End").show();
+                        $("#time_version").show();
+                        if ($('#Interval_Date_Start').val() != "" && $('#Interval_Date_End').val() != "") {
+                            GetVersion("js_s_verion_interval", $('#Interval_Date_Start').val(), $('#Interval_Date_End').val());
+
+                        }
+                        $("#Interval_Date_Start").val('');
+                        $("#Interval_Date_End").val('');
+                    }
+                });
+
+                $("#js_s_report_type").change(function ff() {
+
+                    if ($("#js_s_report_type").val() == "yield") {
+                        $("#js_s_select_type").val('daily');
+                        $("#js_s_select_type").change();
+                        $("#js_s_select_type").attr("disabled", true);
+                    }
+                    else {
+                        $("#js_s_select_type").attr("disabled", false);
+                    }
+                });
+                //日版中查询日期选择后，根据选择的日期获取选择日期所在的版本号
+                $("#js_s_input_date").change(function () {
+                    var myDateStart = $("#js_s_input_date").val();
+
+                    GetVersion("js_s_verion_interval", myDateStart, myDateStart);
+                    $("#js_s_verion_interval").text();
+                    $("#Verion_Interval").val()
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    var tempPartTypes = $("#js_s_input_part_types").val();
+                    var startDay;
+                    var endDay;
+                    $.post(YieldChartUrls.GetDailyVersion, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes, "referenceDay": myDateStart }, function (data) {
+                        if (data != "") {
+                            $("#js_s_verion_interval").text(data);
+                            $("#Verion_Interval").val(data);
+                            //$("#time_version").show();
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.error("@ViewBag.TubiaoInfo1");
+
+                        }
+                    });
+                });
+                //查询版本日期时间段
+                function getVersionInterval(type) {
+                    var startDay;
+                    var endDay;
+
+                    if (type == "monthly") {
+                        var myDate;
+                        if ($("#js_s_begin_date_month").val() != null && $("#js_s_begin_date_month").val() != "") {
+                            myDate = new Date($("#js_s_begin_date_month").val());
+                        }
+                        else
+                            myDate = new Date();
+
+                        myDateStart = getCurrentMonthFirst(myDate);
+                        myDateEnd = getCurrentMonthLast(myDate);
+                        var Version = $("#js_s_input_month_verion").val();
+                        startDay = myDateStart.getFullYear() + "-" + (myDateStart.getMonth() + 1) + "-" + myDateStart.getDate();
+                        endDay = myDateEnd.getFullYear() + "-" + (myDateEnd.getMonth() + 1) + "-" + myDateEnd.getDate();
+                    }
+                    else {
+                        startDay = $("#Interval_Date_Start").val().substring(0, 10);
+                        endDay = $("#Interval_Date_End").val();
+                        var Version = $("#js_s_verion_interval").val();
+                    }
+                    var customer = $("#js_s_input_customer").val();
+                    var ProjectName = $("#js_s_input_project").val();
+                    var ProductPhaseName = $("#js_s_input_Product_Phase").val();
+                    var PartTypesName = $("#js_s_input_part_types").val();
+
+                    $.post(YieldChartUrls.QueryVersionInterval, { "CustomerName": customer, "ProjectName": ProjectName, "ProductPhaseName": ProductPhaseName, "PartTypesName": PartTypesName, "Version": Version, "startDay": startDay, "endDay": endDay }, function (data) {
+
+                        $("#interval_week_date").text(data.Interval);
+                        $("#Interval_Date_Start").val(formatDate(new Date(data.VersionBeginDate)));
+                        $("#Interval_Date_End").val(formatDate(new Date(data.VersionEndDate)));
+                    });
+                }
+
+                //月报版本选择变化时候
+                $("#js_s_input_month_verion").bind('change', function () {
+                    var customer = $("#js_s_input_customer").val();
+                    var ProjectName = $("#js_s_input_project").val();
+                    var ProductPhaseName = $("#js_s_input_Product_Phase").val();
+                    var PartTypesName = $("#js_s_input_part_types").val();
+                    var Version = $("#js_s_input_month_verion").val();
+                    $.post(YieldChartUrls.QueryVersionInterval, { "CustomerName": customer, "ProjectName": ProjectName, "ProductPhaseName": ProductPhaseName, "PartTypesName": PartTypesName, "Version": Version }, function (data) {
+                        $("#js_s_input_month_verion_date").val(data.Interval);
+                        $("#interval_week_date").text(data.Interval);
+                        $("#Interval_Date_Start").val(formatDate(new Date(data.VersionBeginDate)));
+                        $("#Interval_Date_End").val(formatDate(new Date(data.VersionEndDate)));
+                    });
+                });
+                //周报日期选择变化时候
+                $("#js_s_input_weekdate_start").change(function () {
+                    var myDate = $("#js_s_input_weekdate_start").val();
+                    //获取时间段
+                    GetIntervel(myDate);
+                    GetweekVersion("js_s_input_week_verion", myDate);
+                    $("#interval_week_date").text($("#js_s_input_week_interval").val());
+                });
+                // 月报日期变化时候执行
+                $("#js_s_begin_date_month").change(function () {
+                    var myDate = new Date($("#js_s_begin_date_month").val());
+                    var startDay = getCurrentMonthFirst(myDate);
+                    var endDay = getCurrentMonthLast(myDate);
+                    var currentDay = formatDate(myDate);
+                    var myDateStart = formatDate(startDay);
+                    var myDateEnd = formatDate(endDay);
+                    $('#js_s_begin_date_month').val(currentDay);
+                    $('#Interval_Date_Start').val(myDateStart);
+                    $('#Interval_Date_End').val(myDateEnd);
+                    $("#js_s_input_mounth_interval").val("@ViewBag.From： " + myDateStart + "  @ViewBag.To：" + myDateEnd);
+                    GetVersion("js_s_input_month_verion", myDateStart, myDateEnd);
+                    $("#interval_week_date").text($("#js_s_input_mounth_interval").val());
+                });
+
+
+                /// 时间段版本发生更改时
+                $("#js_s_input_month_verion").change(function () {
+                    $("#js_s_verion_interval option:selected").text($("#js_s_input_month_verion option:selected").text());
+                });
+                $("#js_s_verion_interval").bind('change', function () {
+                    var customer = $("#js_s_input_customer").val();
+                    var ProjectName = $("#js_s_input_project").val();
+                    var ProductPhaseName = $("#js_s_input_Product_Phase").val();
+                    var PartTypesName = $("#js_s_input_part_types").val();
+                    var Version = $("#js_s_verion_interval").val();
+                    $.post(YieldChartUrls.QueryVersionInterval, { "CustomerName": customer, "ProjectName": ProjectName, "ProductPhaseName": ProductPhaseName, "PartTypesName": PartTypesName, "Version": Version }, function (data) {
+                        //$("#js_s_input_month_verion_date").val(data.Interval);
+                        $("#interval_week_date").text(data.Interval);
+                        $("#Interval_Date_Start").val(formatDate(new Date(data.VersionBeginDate)));
+                        $("#Interval_Date_End").val(formatDate(new Date(data.VersionEndDate)));
+                    });
+                });
+                //比较日期大小
+                function validTime(startTime, endTime) {
+                    var arr1 = startTime.split("-");
+                    var arr2 = endTime.split("-");
+                    var date1 = new Date(parseInt(arr1[0]), parseInt(arr1[1]) - 1, parseInt(arr1[2]), 0, 0, 0);
+                    var date2 = new Date(parseInt(arr2[0]), parseInt(arr2[1]) - 1, parseInt(arr2[2]), 0, 0, 0);
+                    if (date1.getTime() > date2.getTime()) {
+                        alert('结束日期不能小于开始日期', this);
+
+                        $("#Interval_Date_End").val("");
+                        return false;
+                    } else {
+                        return true;
+                    }
+                    return false;
+                }
+                // 时间段中日期发生变化
+                $("#Interval_Date_End").change(function () {
+                    var startDate = $("#Interval_Date_Start").val();
+                    var endDate = $("#Interval_Date_End").val();
+                    if (startDate == null || endDate == null || startDate == '') {
+                        alert("开始日期或者结束日期不能为空。")
+                        return;
+                    }
+                    validTime(startDate, endDate);
+                    GetVersion("js_s_verion_interval", startDate, endDate);
+                    var interval_time = "@ViewBag.From：" + startDate + " @ViewBag.To" + endDate;
+                    $("#interval_week_date").text(interval_time);
+                });
+
+                $("#Interval_Date_Start").change(function () {
+
+                    $("#Interval_Date_End").val('');
+                });
+
+                function GetIntervel(myDate) {
+                    $.post(YieldChartUrls.GetDateTime, { "mydate": myDate }, function (data) {
+                        $("#js_s_input_week_interval").val(data);
+                    });
+                };
+
+                /* 获取当前月的第一天*/
+                function getCurrentMonthFirst(date) {
+
+                    date.setDate(1);
+                    return date;
+                }
+                /* 获取当前月的最后一天*/
+                function getCurrentMonthLast(date) {
+
+                    var currentMonth = date.getMonth();
+                    var nextMonth = ++currentMonth;
+                    var nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+                    var oneDay = 1000 * 60 * 60 * 24;
+                    return new Date(nextMonthFirstDay - oneDay);
+                }
+                //获取数据
+                function GetCustomer() {
+                    $("#js_s_input_customer").empty();
+                    $.post(YieldChartUrls.GetCustomerSource, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_customer"));
+                            });
+                            GetProject();
+                        }
+                    });
+                }
+
+                function GetProject() {
+                    $("#js_s_input_project").empty();
+                    var temp = $("#js_s_input_customer").val();
+                    $.post(YieldChartUrls.GetProjectSource, { "CustomerName": temp }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_project"));
+                            });
+                            GetProductPhase();
+                        }
+                    });
+                }
+
+                function GetProductPhase() {
+                    $("#js_s_input_Product_Phase").empty();
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    $.post(YieldChartUrls.GetProductPhaseSource, { "CustomerName": tempCustomer, "ProjectName": tempProject }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_Product_Phase"));
+                            });
+                            GetPartTypes();
+                        }
+                    });
+                }
+
+                function GetPartTypes() {
+                    $("#js_s_input_part_types").empty();
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    $.post(YieldChartUrls.GetPartTypesSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_part_types"));
+                            });
+                            GetColor();
+                        }
+                    });
+                }
+                ///获取版本号
+                function GetVersion(version, beginTime, endTime) {
+                    $("#" + version).empty();
+
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    var tempPartTypes = $("#js_s_input_part_types").val();
+                    var startDay;
+                    var endDay;
+                    $.post(YieldChartUrls.GetVersionSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes, "beginTime": beginTime, "endTime": endTime }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#" + version));
+                            });
+                            var customer = $("#js_s_input_customer").val();
+                            var ProjectName = $("#js_s_input_project").val();
+                            var ProductPhaseName = $("#js_s_input_Product_Phase").val();
+                            var PartTypesName = $("#js_s_input_part_types").val();
+                            var Version = $("#" + version).val();
+                            $.post(YieldChartUrls.QueryVersionInterval, { "CustomerName": customer, "ProjectName": ProjectName, "ProductPhaseName": ProductPhaseName, "PartTypesName": PartTypesName, "Version": Version, "startDay": beginTime, "endDay": endTime }, function (data) {
+
+                                $("#interval_week_date").text(data.Interval);
+                                $("#Interval_Date_Start").val(formatDate(new Date(data.VersionBeginDate)));
+                                $("#Interval_Date_End").val(formatDate(new Date(data.VersionEndDate)));
+                            });
+                        }
+                    });
+                }
+
+                //将后台传过来的datetime格式转换为date类型
+                var formatDate = function (date) {
+                    var y = date.getFullYear();
+                    var m = date.getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = date.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    return y + '-' + m + '-' + d;
+                };
+
+                function GetweekVersion(version, myDate) {
+                    $("#" + version).empty();
+
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    var tempPartTypes = $("#js_s_input_part_types").val();
+                    var startDay;
+                    var endDay;
+                    $.post(YieldChartUrls.GetWeekVersionSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes, "myDate": myDate }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#" + version));
+                            });
+                        }
+                    });
+                }
+                function GetColor() {
+                    $("#js_s_input_color").empty();
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    var tempPartTypes = $("#js_s_input_part_types").val();
+                    $.post(YieldChartUrls.GetColorSource, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_color"));
+                            });
+                        }
+                        GetFunPlant();
+                    });
+
+                }
+                function GetInterval() {
+                    $("#js_s_input_interval_time").empty();
+                    $.post(YieldChartUrls.GetIntervalTime, { "PageName": "ProductReport" }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $('<option></option>').val(item["Enum_Value"]).text(item["Enum_Value"]).appendTo($("#js_s_input_interval_time"));
+                            });
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+
+                $('#btn-search-inner').click(function () {
+                    if ($("#js_s_report_type").val() == "yield") //判断查询的是达成率还是良率报表
+                    {
+                        var banBen = $("#js_s_input_date").val();
+                        if (banBen == "" || banBen == null) {
+                            alert("@ViewBag.TubiaoInfo2。");
+                            return;
+                        }
+                        else
+                            SetDailyYield();
+                    }
+                    else {
+                        //选择日报表时的逻辑
+                        if ($("#js_s_select_type").val() == "daily") {
+
+                            var banBen = $("#js_s_input_date").val();
+                            if (banBen == "" || banBen == null) {
+                                alert("@ViewBag.BaobiaoInfo2。");
+                                return;
+                            }
+                            if ($("#Verion_Interval").val() == "") {
+                                alert("@ViewBag.TubiaoInfo3！");
+                                return;
+                            }
+                            else
+                                SetDailyReport();
+                        }
+
+
+                        else if ($("#js_s_select_type").val() == "weekly") {
+                            var banBen = $("#js_s_input_week_verion").val();
+                            if (banBen == "" || banBen == null) {
+                                alert("@ViewBag.BaobiaoInfo2。");
+                                return;
+                            }
+                            SetWeekReport();
+                            // SetTestReport();
+                        }
+
+
+                        else if ($("#js_s_select_type").val() == "monthly" || $("#js_s_select_type").val() == "time") {
+                            if ($("#js_s_select_type").val() == "monthly") {
+
+                                var banBen = $("#js_s_input_month_verion").val();
+                                if (banBen == "" || banBen == null) {
+                                    alert("@ViewBag.BaobiaoInfo2。");
+                                    return;
+                                }
+                                $("#Verion_Interval").val($("#js_s_input_month_verion option:selected").text());
+                                //给时间段赋值
+                                getVersionInterval("monthly");
+                            }
+                            else {
+                                var banBen = $("#js_s_verion_interval").val();
+                                if (banBen == "" || banBen == null) {
+                                    alert("@ViewBag.BaobiaoInfo2。");
+                                    return;
+                                }
+                                $("#Verion_Interval").val($("#js_s_verion_interval option:selected").text());
+                                //给时间段赋值
+                                getVersionInterval("time");
+                            }
+
+                            $('#js_search_modal').modal('hide');
+
+                            if ($("#js_form_query").valid()) {
+                                SetMonthlyReport();
+
+                            }
+                        }
+                    }
+
+
+                    $('#js_search_modal').modal('hide');
+                });
+                function GetFunPlant() {
+                    $("#js_s_input_range").empty();
+                    var tempCustomer = $("#js_s_input_customer").val();
+                    var tempProject = $("#js_s_input_project").val();
+                    var tempPhaseName = $("#js_s_input_Product_Phase").val();
+                    var tempPartTypes = $("#js_s_input_part_types").val();
+                    $.post(YieldChartUrls.GetFunPlant, { "CustomerName": tempCustomer, "ProjectName": tempProject, "ProductPhaseName": tempPhaseName, "PartTypesName": tempPartTypes }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_range"));
+                            });
+                        }
+                    });
+                }
+
+                //获取日报良率数据
+                function SetDailyYield() {
+                    var myChart = echarts.init(document.getElementById('main'));
+                    var submitJson = $('#js_form_query').serializeObject();
+                    $.post(YieldChartUrls.GetYield, { searchStr: JSON.stringify(submitJson) }, function (returnData) {
+                        if (returnData != null) {
+                            if (returnData != "") {
+                                option = {
+                                    title: {
+                                        show: true,
+                                        text: '\n' + $("#js_s_input_project").val() + " " + $("#js_s_input_date").val() + $("#js_s_input_color option:selected").text() + "  " + $("#js_s_input_range option:selected").text() + "  " + $("#js_s_report_type option:selected").text() + "  " + "@ViewBag.chart",
+                                        x: 'center',
+                                        y: 'top',
+                                    },
+                                    tooltip: {
+                                        trigger: 'axis'
+                                    },
+                                    toolbox: {
+                                        show: true,
+                                        feature: {
+                                            mark: { show: true },
+                                            dataView: { show: true, readOnly: true },
+                                            magicType: { show: true, type: ['line', 'bar'] },
+                                            restore: { show: true },
+                                            saveAsImage: { show: true },
+                                            dataZoom: { show: true },
+                                        }
+                                    },
+                                    calculable: true,
+                                    legend: {
+                                        data: ['@ViewBag.PlanYield', '@ViewBag.ActualYield'],
+                                        selected: {
+                                            //'总计划': false,
+                                            //'总产量': false
+                                        },
+
+                                    },
+                                    calculable: true,
+
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            data: (function () {
+                                                var result = [];
+                                                for (var i = 0; i < returnData.length; i++) {
+                                                    result.push(returnData[i].Process);
+                                                }
+                                                return result;
+                                            })(),
+                                            axisLabel: {
+                                                //X轴刻度配置
+                                                interval: 0, //0：表示全部显示不间隔；auto:表示自动根据刻度个数和宽度自动设置间隔个数
+                                                rotate: 45,
+                                                margin: 2,
+                                            }
+                                        }
+                                    ],
+                                    yAxis: [
+                                        //{
+                                        //    type: 'value',
+                                        //    name: '产量',
+                                        //    min: 0,
+                                        //    axisLabel: {
+                                        //        formatter: '{value}'
+                                        //    }
+                                        //},
+                                         {
+                                             type: 'value',
+                                             name: '@ViewBag.Yield',
+                                             min: 85,
+                                             max: 105,
+                                             axisLabel: {
+                                                 formatter: '{value} %'
+                                             }
+                                         }
+                                    ],
+                                    series: [
+                                        //{
+                                        //    name: '计划产量',
+                                        //    type: 'bar',
+                                        //    yAxisIndex: 0,
+                                        //    data: (function () {
+                                        //        var result = [];
+                                        //        for (var i = 0; i < returnData.length; i++) {
+                                        //            result.push(returnData[i].Product_Plan);
+                                        //        }
+                                        //        return result;
+                                        //    })(),
+                                        //    itemStyle: {
+                                        //        normal: {
+                                        //            label: {
+                                        //                show: true,
+                                        //                formatter: '{b} : {c} :({d}%)'
+                                        //            },
+                                        //            labelLine: { show: true }
+                                        //        }
+                                        //    }
+                                        //},
+                                 {
+                                     name: '@ViewBag.PlanYield',
+                                     type: 'line',
+
+                                     //yAxisIndex: 0,
+                                     data: (function () {
+                                         var result1 = [];
+                                         for (var i = 0; i < returnData.length; i++) {
+                                             result1.push(returnData[i].Target_Yield);
+                                         }
+                                         return result1;
+                                     })(),
+                                     //itemStyle: {
+                                     //    normal: {
+                                     //        label: {
+                                     //            show: true,
+                                     //            formatter: '{b} : {c} '
+                                     //        },
+                                     //        labelLine: { show: true }
+                                     //    }
+                                     //}
+                                 },
+                                {
+                                    name: '@ViewBag.ActualYield',
+                                    type: 'line',
+                                    min: 95,
+                                    //yAxisIndex: 1,
+                                    itemStyle: {
+
+                                        normal: {
+                                            label: {
+                                                show: true,
+                                                borderColor: 'rgba(255,215,0,0.4)',
+                                                textStyle: {
+                                                    color: '#333'
+                                                }
+                                            },
+                                            color: '#032ef3'
+                                        },// for legend
+
+                                        emphasis: { label: { show: true } }
+
+                                    },
+                                    data: (function () {
+                                        var result2 = [];
+                                        for (var i = 0; i < returnData.length; i++) {
+                                            result2.push(returnData[i].Good_yield);
+                                        }
+                                        return result2;
+                                    })(),
+                                    //itemStyle: {
+                                    //    normal: {
+                                    //        label: {
+                                    //            show: true,
+                                    //            formatter: '{b} : {c}'
+                                    //        },
+                                    //        labelLine: { show: true }
+                                    //    }
+                                    //}
+                                },
+                                    ]
+                                };
+
+                                myChart.setOption(option);
+                                window.onresize = myChart.resize;
+                            }
+                            else PDMS.Utility.MessageBox.error("@ViewBag.TubiaoInfo4");
+                        } else {
+                            PDMS.Utility.MessageBox.error("@ViewBag.TubiaoInfo5！");
+                        }
+
+                    });
+                }
+
+                //获取日报关键制程数据
+                function SetDailyReport() {
+                    var myChart = echarts.init(document.getElementById('main'));
+                    var submitJson = $('#js_form_query').serializeObject();
+                    $.post(YieldChartUrls.QueryDailyData, { searchStr: JSON.stringify(submitJson) }, function (returnData) {
+                        if (returnData != null) {
+                            option = {
+                                title: {
+                                    show: true,
+                                    text: '\n' + $("#js_s_input_date").val() + " " + $("#js_s_input_project").val() + " @ViewBag.Color： " + $("#js_s_input_color").val() + "  " + $("#js_s_input_range option:selected").text() + "   " + $("#js_s_report_type option:selected").text() + "   " + "@ViewBag.chart",
+                                    x: 'center',
+                                    y: 'top',
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        mark: { show: true },
+                                        dataView: { show: true, readOnly: true },
+                                        //magicType: { show: true, type: ['line', 'bar'] },
+                                        restore: { show: true },
+                                        saveAsImage: { show: true }
+                                    }
+                                },
+                                calculable: true,
+                                legend: {
+                                    data: ['@ViewBag.MasterPlan', '@ViewBag.TotalOutput', '@ViewBag.TotalReachRate', '@ViewBag.TargetRate', 'WIP','Proper WIP'],
+                                    selected: {
+                                        '@ViewBag.MasterPlan': false,
+                                        '@ViewBag.TotalOutput': false
+                                    },
+
+                                },
+
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].Process);
+                                            }
+                                            return result;
+                                        })(),
+                                        axisLabel: {
+                                            //X轴刻度配置
+                                            interval: 0,//0：表示全部显示不间隔；auto:表示自动根据刻度个数和宽度自动设置间隔个数
+                                            rotate: 45,
+                                            margin: 4,
+                                        },
+                                        grid: { // 控制图的大小，调整下面这些值就可以，
+                                            x: 40,
+                                            x2: 100,
+                                            y2: 250,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        name: '@ViewBag.output',
+                                        min: 0,
+                                        axisLabel: {
+                                            formatter: '{value}'
+                                        }
+                                    },
+                                     {
+                                         type: 'value',
+                                         name: '@ViewBag.ReachRate',
+
+                                         axisLabel: {
+                                             formatter: '{value} %'
+                                         }
+                                     }
+                                ],
+                                series: [
+                                    {
+                                        name: '@ViewBag.MasterPlan',
+                                        type: 'bar',
+                                        yAxisIndex: 0,
+                                        itemStyle: {
+
+                                            normal: {
+                                                label: {
+                                                    show: false,
+
+                                                    textStyle: {
+                                                        color: '#333'
+                                                    }
+
+                                                },
+                                                borderColor: 'rgba(255,215,0,0.4)',
+                                                color: 'rgba(235,8,288,1)'
+                                            },// for legend
+
+                                            emphasis: { label: { show: true }, color: '#FF00FF' }
+
+                                        },
+
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].SumPlan);
+                                            }
+                                            return result;
+                                        })(),
+
+                                    },
+                             {
+                                 name: '@ViewBag.TotalOutput',
+                                 type: 'bar',
+                                 yAxisIndex: 0,
+                                 itemStyle: {
+
+                                     normal: {
+                                         label: {
+                                             show: false,
+
+                                             textStyle: {
+                                                 color: '#333'
+                                             }
+                                         },
+                                         borderColor: 'rgba(255,215,0,0.4)',
+                                         color: 'rgba(45,220,22,0.7)'
+                                     },// for legend
+
+                                     emphasis: { label: { show: true } }
+
+                                 },
+                                 tooltip: {
+                                     formatter: function (param) {
+                                         param = param[0];
+                                         return
+                                             '@ViewBag.TotalOutput :' + param.SumGoodQty + '<hr size=1 style="margin: 3px 0">',
+                                             'WIP: ' + param.WIP + '<br/>'
+
+                                     }
+                                 },
+                                 //barGap: '-100%', // Make series be overlap
+                                 data: (function () {
+                                     var result1 = [];
+                                     for (var i = 0; i < returnData.Items.length; i++) {
+                                         result1.push(returnData.Items[i].SumGoodQty);
+                                     }
+                                     return result1;
+                                 })(),
+                             },
+                         {
+                             name: 'WIP',
+                             type: 'bar',
+                             yAxisIndex: 0,
+                             itemStyle: {
+
+                                 normal: {
+                                     label: {
+                                         show: false,
+
+                                         textStyle: {
+                                             color: 'blue'
+                                         }
+                                     },
+                                     borderColor: 'rgba(255,215,0,0.4)',
+                                     color: 'rgba(56,135,216,0.8)'
+                                 },// for legend
+
+                                 emphasis: { label: { show: true } }
+
+                             },
+                             tooltip: {
+                                 formatter: function (param) {
+                                     param = param[0];
+                                     return [
+                                         'WIP :' + param.WIP + '<hr size=1 style="margin: 3px 0">',
+                                         'WIP: ' + param.WIP + '<br/>'
+                                     ].join('');
+                                 }
+                             },
+                             //barGap: '-100%', // Make series be overlap
+                             data: (function () {
+                                 var result1 = [];
+                                 for (var i = 0; i < returnData.Items.length; i++) {
+                                     result1.push(returnData.Items[i].WIP);
+                                 }
+                                 return result1;
+                             })(),
+                         },
+                              {
+                                  name: 'Proper WIP',
+                                  type: 'bar',
+                                  yAxisIndex: 0,
+                                  itemStyle: {
+
+                                      normal: {
+                                          label: {
+                                              show: false,
+
+                                              textStyle: {
+                                                  color: 'blue'
+                                              }
+                                          },
+                                          borderColor: 'rgba(255,215,0,0.4)',
+                                          color: '#00c0ef'
+                                      },// for legend
+
+                                      emphasis: { label: { show: true } }
+
+                                  },
+                                  tooltip: {
+                                      formatter: function (param) {
+                                          param = param[0];
+                                          return [
+                                              'WIP :' + param.WIP + '<hr size=1 style="margin: 3px 0">',
+                                              'WIP: ' + param.WIP + '<br/>'
+                                          ].join('');
+                                      }
+                                  },
+                                  //barGap: '-100%', // Make series be overlap
+                                  data: (function () {
+                                      var result1 = [];
+                                      for (var i = 0; i < returnData.Items.length; i++) {
+                                          result1.push(returnData.Items[i].Proper_WIP);
+                                      }
+                                      return result1;
+                                  })(),
+                              },
+                            {
+                                name: '@ViewBag.TotalReachRate',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                itemStyle: {
+
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            borderColor: 'rgba(255,215,0,0.4)',
+                                            textStyle: {
+                                                color: '#333'
+                                            }
+                                        },
+                                        color: '#032ef3'
+                                    },// for legend
+
+                                    emphasis: { label: { show: true } }
+
+                                },
+                                data: (function () {
+                                    var result2 = [];
+                                    for (var i = 0; i < returnData.Items.length; i++) {
+                                        if (returnData.Items[i].SumPlan != 0)
+                                            result2.push(((returnData.Items[i].SumGoodQty / returnData.Items[i].SumPlan) * 100).toFixed(2));
+                                        else
+                                            result2.push(100)
+                                    }
+                                    return result2;
+                                })(),
+                                //markLine: {
+                                //    data: [
+                                //         { type: 'average', name: '平均值' }
+                                //    ]
+                                //}
+                            },
+                               {
+                                   name: '@ViewBag.TargetRate',
+                                   type: 'line',
+                                   yAxisIndex: 1,
+                                   data: (function () {
+                                       var result2 = [];
+                                       for (var i = 0; i < returnData.Items.length; i++) {
+                                           result2.push(100);
+                                       }
+                                       return result2;
+                                   })(),
+
+                               },
+                                ]
+                            };
+
+                            myChart.setOption(option);
+                            window.onresize = myChart.resize;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+                }
+                //获取周报数据
+                function SetWeekReport() {
+                    var myChart = echarts.init(document.getElementById('main'));
+                    var submitJson = $('#js_form_query').serializeObject();
+                    $.post(YieldChartUrls.QueryWeekData, { searchStr: JSON.stringify(submitJson) }, function (returnData) {
+                        if (returnData != null) {
+                            option = {
+                                title: {
+                                    show: true,
+                                    text: '\n' + $("#js_s_input_project").val() + " " + $("#js_s_input_week_interval").val() + " @ViewBag.Color: " + $("#js_s_input_color option:selected").text() + "  " + $("#js_s_input_range option:selected").text() + "  " + $("#js_s_report_type option:selected").text() + "  " + "@ViewBag.chart",
+                                    x: 'center',
+                                    y: 'top',
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        mark: { show: true },
+                                        dataView: { show: true, readOnly: true },
+                                        //magicType: { show: true, type: ['line', 'bar'] },
+                                        restore: { show: true },
+                                        saveAsImage: { show: true }
+                                    }
+                                },
+                                calculable: true,
+                                legend: {
+                                    data: ['@ViewBag.MasterPlan', '@ViewBag.TotalOutput', '@ViewBag.TotalReachRate', '@ViewBag.TargetRate'],
+                                    selected: {
+                                        //'总计划': false,
+                                        //'总产量': false
+                                    },
+
+                                },
+
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].Process);
+                                            }
+                                            return result;
+                                        })(),
+                                        axisLabel: {
+                                            //X轴刻度配置
+                                            interval: 0, //0：表示全部显示不间隔；auto:表示自动根据刻度个数和宽度自动设置间隔个数
+                                            rotate: 45,
+                                            margin: 2,
+                                        }
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        name: '@ViewBag.output',
+                                        min: 0,
+                                        axisLabel: {
+                                            formatter: '{value}'
+                                        }
+                                    },
+                                     {
+                                         type: 'value',
+                                         name: '@ViewBag.ReachRate',
+
+                                         axisLabel: {
+                                             formatter: '{value} %'
+                                         }
+                                     }
+                                ],
+                                series: [
+                                    {
+                                        name: '@ViewBag.MasterPlan',
+                                        type: 'bar',
+                                        yAxisIndex: 0,
+                                        itemStyle: {
+
+                                            normal: {
+                                                label: {
+                                                    show: false,
+
+                                                    textStyle: {
+                                                        color: '#333'
+                                                    }
+                                                },
+                                                borderColor: 'rgba(255,215,0,0.4)',
+                                                color: '#da70d6'
+                                            },// for legend
+
+                                            emphasis: { label: { show: true }, color: '#FF00FF' }
+
+                                        },
+
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].SumPlan);
+                                            }
+                                            return result;
+                                        })(),
+                                    },
+                             {
+                                 name: '@ViewBag.TotalOutput',
+                                 type: 'bar',
+                                 yAxisIndex: 0,
+                                 itemStyle: {
+
+                                     normal: {
+                                         label: {
+                                             show: false,
+
+                                             textStyle: {
+                                                 color: '#333'
+                                             }
+                                         },
+                                         borderColor: 'rgba(255,215,0,0.4)',
+                                         color: '#54d66a'
+                                     },// for legend
+
+                                     emphasis: { label: { show: true } }
+
+                                 },
+                                 data: (function () {
+                                     var result1 = [];
+                                     for (var i = 0; i < returnData.Items.length; i++) {
+                                         result1.push(returnData.Items[i].SumGoodQty);
+                                     }
+                                     return result1;
+                                 })(),
+                             },
+                            {
+                                name: '@ViewBag.TotalReachRate',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                itemStyle: {
+
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            borderColor: 'rgba(255,215,0,0.4)',
+                                            textStyle: {
+                                                color: '#333'
+                                            }
+                                        },
+                                        color: '#032ef3'
+                                    },// for legend
+
+                                    emphasis: { label: { show: true } }
+
+                                },
+                                data: (function () {
+                                    var result2 = [];
+                                    for (var i = 0; i < returnData.Items.length; i++) {
+                                        if (returnData.Items[i].SumPlan != 0)
+                                            result2.push(((returnData.Items[i].SumGoodQty / returnData.Items[i].SumPlan) * 100).toFixed(2));
+                                        else
+                                            result2.push(100);
+                                    }
+                                    return result2;
+                                })(),
+                            },
+                             {
+                                 name: '@ViewBag.TargetRate',
+                                 type: 'line',
+                                 yAxisIndex: 1,
+                                 data: (function () {
+                                     var result2 = [];
+                                     for (var i = 0; i < returnData.Items.length; i++) {
+                                         result2.push(100);
+                                     }
+                                     return result2;
+                                 })(),
+
+                             }
+                                ]
+                            };
+
+                            myChart.setOption(option);
+                            window.onresize = myChart.resize;
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+
+                    });
+                }
+
+                ////获取日报关键制程数据
+                function SetMonthlyReport() {
+                    var myChart = echarts.init(document.getElementById('main'));
+                    var submitJson = $('#js_form_query').serializeObject();
+                    $.post(YieldChartUrls.QueryMonthlyData, { searchStr: JSON.stringify(submitJson) }, function (returnData) {
+                        if (returnData.Items != null && returnData.Items.length != 0) {
+                            option = {
+                                title: {
+                                    show: true,
+                                    text: '\n' + $("#js_s_input_project").val() + " " + "@ViewBag.From:" + $("#Interval_Date_Start").val() + "@ViewBag.To:" + $("#Interval_Date_End").val() + " @ViewBag.Color: " + $("#js_s_input_color option:selected").text() + "  " + $("#js_s_input_range option:selected").text() + "  " + $("#js_s_report_type option:selected").text() + "  " + "@ViewBag.chart",
+                                    x: 'center',
+                                    y: 'top',
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                calculable: true,
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        mark: { show: true },
+                                        dataView: { show: true, readOnly: true },
+                                        //magicType: { show: true, type: ['line', 'bar'] },
+                                        restore: { show: true },
+                                        saveAsImage: { show: true },
+
+                                    }
+                                },
+                                calculable: true,
+                                legend: {
+                                    data: ['@ViewBag.MasterPlan', '@ViewBag.TotalOutput', '@ViewBag.TotalReachRate', '@ViewBag.TargetRate'],
+                                    selected: {
+                                        //'总计划': false,
+                                        //'总产量': false
+                                    },
+
+                                },
+
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].Process);
+                                            }
+                                            return result;
+                                        })(),
+                                        axisLabel: {
+                                            //X轴刻度配置
+                                            interval: 0, //0：表示全部显示不间隔；auto:表示自动根据刻度个数和宽度自动设置间隔个数
+                                            rotate: 45,
+                                            margin: 2,
+                                        }
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        name: '@ViewBag.output',
+                                        min: 0,
+                                        axisLabel: {
+                                            formatter: '{value}'
+                                        }
+                                    },
+                                     {
+                                         type: 'value',
+                                         name: '@ViewBag.ReachRate',
+
+                                         axisLabel: {
+                                             formatter: '{value} %'
+                                         }
+                                     }
+                                ],
+                                series: [
+                                    {
+                                        name: '@ViewBag.MasterPlan',
+                                        type: 'bar',
+                                        yAxisIndex: 0,
+                                        itemStyle: {
+
+                                            normal: {
+                                                label: {
+                                                    show: false,
+
+                                                    textStyle: {
+                                                        color: '#333'
+                                                    }
+                                                },
+                                                borderColor: 'rgba(255,215,0,0.4)',
+                                                color: '#da70d6'
+                                            },// for legend
+
+                                            emphasis: { label: { show: true }, color: '#FF00FF' }
+
+                                        },
+                                        data: (function () {
+                                            var result = [];
+                                            for (var i = 0; i < returnData.Items.length; i++) {
+                                                result.push(returnData.Items[i].SumPlan);
+                                            }
+                                            return result;
+                                        })(),
+                                    },
+                             {
+                                 name: '@ViewBag.TotalOutput',
+                                 type: 'bar',
+                                 yAxisIndex: 0,
+                                 itemStyle: {
+
+                                     normal: {
+                                         label: {
+                                             show: false,
+
+                                             textStyle: {
+                                                 color: '#333'
+                                             }
+                                         },
+                                         borderColor: 'rgba(255,215,0,0.4)',
+                                         color: '#54d66a'
+                                     },// for legend
+
+                                     emphasis: { label: { show: true } }
+
+                                 },
+                                 data: (function () {
+                                     var result1 = [];
+                                     for (var i = 0; i < returnData.Items.length; i++) {
+                                         result1.push(returnData.Items[i].SumGoodQty);
+                                     }
+                                     return result1;
+                                 })(),
+                             },
+                            {
+                                name: '@ViewBag.TotalReachRate',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                itemStyle: {
+
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            borderColor: 'rgba(255,215,0,0.4)',
+                                            textStyle: {
+                                                color: '#333'
+                                            }
+                                        },
+                                        color: '#032ef3'
+                                    },// for legend
+
+                                    emphasis: { label: { show: true } }
+
+                                },
+                                data: (function () {
+                                    var result2 = [];
+                                    for (var i = 0; i < returnData.Items.length; i++) {
+                                        if (returnData.Items[i].SumPlan != 0)
+                                            result2.push(((returnData.Items[i].SumGoodQty / returnData.Items[i].SumPlan) * 100).toFixed(2));
+                                        else
+                                            result2.push(100);
+                                    }
+                                    return result2;
+                                })(),
+                            },
+                             {
+                                 name: '@ViewBag.TargetRate',
+                                 type: 'line',
+                                 yAxisIndex: 1,
+                                 data: (function () {
+                                     var result2 = [];
+                                     for (var i = 0; i < returnData.Items.length; i++) {
+                                         result2.push(100);
+                                     }
+                                     return result2;
+                                 })(),
+
+                             }
+                                ]
+                            };
+
+                            myChart.setOption(option);
+                            window.onresize = myChart.resize;
+                        } else {
+                            PDMS.Utility.MessageBox.error("@ViewBag.TubiaoInfo6");
+                        }
+
+                    });
+                }
+            });
+    </script>
+}

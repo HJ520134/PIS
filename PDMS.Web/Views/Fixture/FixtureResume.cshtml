@@ -1,0 +1,1038 @@
+﻿
+@model PDMS.Model.ViewModels.FixtureVM
+@{
+    ViewBag.View = T("Common.View").Text;
+
+}
+
+
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題 與 搜尋-->
+        <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+        </div><!--/次標題 與 搜尋-->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-7">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+        <div class="col-md-5 search-field col-lg-5">
+            <a class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> 搜索</a>
+            <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl"> 导出</button>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Resume_datatable">
+                <thead>
+                    <tr id="js_FL_tr">
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        @*<th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Fixture.Source_NO")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.BusinessGroup")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("Production.JustProcess")</th>
+                        <th>@T("Production.Process_Station")</th>
+                        <th>@T("Fixture.Line_Name")</th>
+                        <th>@T("Fixture.Equipment_No")</th>
+                        <th>@T("Fixture.Fixture_NO")</th>
+                        <th>@T("Fixture.ShortCode")</th>
+                        <th>@T("Fixture.Status")</th>
+                        <th>@T("Fixture.Modifier")</th>
+                        <th>@T("Fixture.Modified_Date")</th>*@
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>表单编号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>制程</th>
+                        <th>工站</th>
+                        <th>线别</th>
+                        <th>设备编号</th>
+                        <th>治具编号</th>
+                        <th>治具唯一编号</th>
+                        <th>治具短码</th>
+                        <th>备注</th>
+                        <th>更新者</th>
+                        <th>更新日期</th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_FL_foot">
+                        <th class="table-col-checkbox nosort"></th>
+                        @*<th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Fixture.Source_NO")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.BusinessGroup")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("Production.JustProcess")</th>
+                        <th>@T("Production.Process_Station")</th>
+                        <th>@T("Fixture.Line_Name")</th>
+                        <th>@T("Fixture.Equipment_No")</th>
+                        <th>@T("Fixture.Fixture_NO")</th>
+                        <th>@T("Fixture.ShortCode")</th>
+                        <th>@T("Fixture.Status")</th>
+                        <th>@T("Fixture.Modifier")</th>
+                        <th>@T("Fixture.Modified_Date")</th>*@
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>表单编号</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>制程</th>
+                        <th>工站</th>
+                        <th>线别</th>
+                        <th>设备编号</th>
+                        <th>治具编号</th>
+                        <th>治具唯一编号</th>
+                        <th>治具短码</th>
+                        <th>备注</th>
+                        <th>更新者</th>
+                        <th>更新日期</th>
+
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">搜索</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_plant">厂区</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_plant" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_group">OP类型</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_group" name="BG_Organization_UID" data-live-search="true"></select>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_FunPlant">功能厂</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_FunPlant" name="FunPlant_Organization_UID" data-live-search="true"></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Process_Info_UID_query">制程</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Process_Info_UID_query" name="Process_Info_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_WorkStation_UID">工站</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_WorkStation_UID" name="WorkStation_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Line_Name">线别</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_Line_Name" name="Production_Line_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Fixture_Unique_ID">治具唯一编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Fixture_Unique_ID" class="form-control input-sm" id="js_s_input_Fixture_Unique_ID" placeholder="治具唯一编号">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Equipment_No">设备编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Equipment_No" class="form-control input-sm" id="js_s_input_Equipment_No" placeholder="设备编号">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Fixture_NO">治具编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Fixture_NO" class="form-control input-sm" id="js_s_input_Fixture_NO" placeholder="治具编号">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Status">治具状态</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_s_input_Status" name="Status" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.FixtureStatus)
+                                    {
+                                        <option value=@item.Status>@item.StatuName</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Version">版本</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Version" class="form-control input-sm" id="js_s_input_Version" placeholder="版本">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Vendor_Name">供应商</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Vendor_Name" class="form-control input-sm" id="js_s_input_Vendor_Name" placeholder="供应商">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Source_NO">表单编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Source_NO" class="form-control input-sm" id="js_s_input_Source_NO" placeholder="表单编号">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_ShortCode">治具短码</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="ShortCode" class="form-control input-sm" id="js_s_input_ShortCode" placeholder="治具短码">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_Fixture_Name">治具名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Fixture_Name" class="form-control input-sm" id="js_s_input_Fixture_Name" placeholder="治具名称">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">更新日期</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <span class="input-group-addon">From</span>
+                                        <input type="text" name="End_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                        <span class="input-group-addon">To</span>
+                                        <input type="text" name="End_Date_To" class="form-control input-sm date" id="js_s_input_modified_to">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-xs-12">
+                                <ul class="list-group validate-error"></ul>
+                            </div>
+                            <input type="hidden" id="hidTab" name="hidTab" />
+                    </form>
+            </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                @*<button id="btn_search" type="button" class="btn btn-primary btn-query">搜索</button>*@
+                <button type="button" class="btn btn-primary btn-sm" id="btn_search" title="查询7天前的数据请选择[更新日期]"><i class="fa fa-search"></i> 搜索</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="js_view_R_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">治具维修明细</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_plant_r">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_plant_r">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_group_r">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_group_r">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FunPlant_r">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_FunPlant_r">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Customer_r">客户</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Customer_r">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SendDate">送修时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_SendDate">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SentOut_Number">送修者编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_SentOut_Number">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SendName">送修者</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_SendName">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Process_Station_r">工站</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Process_Station_r">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Repair_NO_r">维修单号</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Repair_NO_r">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ShortCode_r">治具短码</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_ShortCode_r">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-md-6">维修原因及解决对策</label>
+                            </div>
+                            <!--表格-->
+                            <div class="col-md-12 table-container" id="js_saveall_datatables">
+                                <table class="table table-striped table-hover table-condensed nowrap" id="js_DR_datatable">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-seq nosort">序号</th>
+                                            <th>维修原因</th>
+                                            <th>解决对策</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="table-col-seq nosort">序号</th>
+                                            <th>维修原因</th>
+                                            <th>解决对策</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div><!--/表格-->
+                        </div>
+
+
+                        
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_view_B_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">领用单明细</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_plant_b">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_plant_b">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_group_b">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_group_b">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FunPlant_b">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_FunPlant_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Customer_b">客户</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Customer_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SendDate_b">送修时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_SendDate_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SendName_b">送修者</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_SendName_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Process_Station_b">工站</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Process_Station_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Totake_Date_b">领用时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Totake_Date_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Totake_Number">领用者编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Totake_Number">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_TotakeName_b">领用者</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_TotakeName_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_StatusName_b">维修状态</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_StatusName_b">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Totake_NO_b">维修单号</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Totake_NO_b">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ShortCode_b">治具短码</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_ShortCode_b">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-md-6">维修原因及解决对策</label>
+                            </div>
+                            <!--表格-->
+                            <div class="col-md-12 table-container" id="js_saveall_datatables">
+                                <table class="table table-striped table-hover table-condensed nowrap" id="js_DR_B_datatable">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-seq nosort">序号</th>
+                                            <th>维修原因</th>
+                                            <th>解决对策</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="table-col-seq nosort">序号</th>
+                                            <th>维修原因</th>
+                                            <th>解决对策</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div><!--/表格-->
+                        </div>
+
+
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_view_M_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">资料明细</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row">
+                    <form id="js_form_query" data-need-validate="true">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_plant_m">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_plant_m">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_group_m">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_group_m">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FunPlant_m">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_FunPlant_m">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Customer_m">客户</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Customer_m">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_CycleValue">保养类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_CycleValue">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Cycle_ID">保养类别代码</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Cycle_ID">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Cycle_Interval">间隔时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Cycle_Interval">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Cycle_Unit">保养单位</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Cycle_Unit">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Person_Number">保养人编号</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Person_Number">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Person_Name">保养人</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Person_Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Date">保养时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Maintenance_Date">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ConfirmorName">确认人</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_ConfirmorName">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Confirm_Date">确认时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Confirm_Date">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Modified_UID">更新者</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Modified_UID">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Modified_Date">更新时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" readonly class="form-control input-sm" id="s_input_Modified_Date">
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+}
+
+
+
+@section ViewScripts{
+<script type="text/javascript" src="~/Scripts/PDMSJS/Common.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var Resume = (function () {
+            var urls = {
+                queryResume: '@Html.Raw(Url.Action("QueryFixtureResume", "Fixture"))',
+                viewResume: '@Html.Raw(Url.Action("QueryFixtureResumeByUID", "Fixture"))',
+                exprot: '@Html.Raw(Url.Action("ExportFixtureResumeByUID", "Fixture"))',
+                doAllExportFunction: '@Url.Action("DoAllExportFixtureResumeReprot", "Fixture")',
+            };
+
+            var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Resume_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: ""
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var view_Flag = rowData.Source_NO.substr(0, 1);
+                            if (view_Flag != 'M' && view_Flag != 'B' && view_Flag != 'R') {
+                                $(td).html('');
+                            }
+                            else {
+                                var buttonEdit = '<button type="button" class="btn btn-default btn-sm"  data-nid=' + rowData.Fixture_Resume_UID + '>查看</button>';
+                                var hidPlant = '<input type="hidden" id=hidPlant value=' + rowData.PlantName + '>';
+                                var hidOptype = '<input type="hidden" id=hidOptype value=' + rowData.OpType_Name + '>';
+                                var hidFunc = '<input type="hidden" id=hidFunc value=' + rowData.Func_Name + '>';
+                                var hidFixUID = '<input type="hidden" id=hidFixUID value=' + rowData.Fixture_M_UID + '>';
+                                var hidFixUnique_ID = '<input type="hidden" id=hidFixUnique_ID value=' + rowData.Fixture_Unique_ID + '>';
+                                var hidFixture_NO = '<input type="hidden" id=hidFixture_NO value=' + rowData.Fixture_NO + '>';
+                                var hidVersion = '<input type="hidden" id=hidVersion value=' + rowData.Version + '>';
+                                var hidStatus = '<input type="hidden" id=hidStatus value=' + rowData.Status + '>';
+                                var hidResume_Notes = '<input type="hidden" id=hidResume_Notes value=' + rowData.Resume_Notes + '>';
+                                var hidFixture_Name = '<input type="hidden" id=hidFixture_Name value=' + rowData.Fixture_Name + '>';
+                                var hidShortCode = '<input type="hidden" id=hidShortCode value=' + rowData.ShortCode + '>';
+                                var hidProcess_Name = '<input type="hidden" id=hidProcess_Name value=' + rowData.Process_Name + '>';
+                                var hidWorkStation_Name = '<input type="hidden" id=hidWorkStation_Name value=' + rowData.WorkStation_Name + '>';
+                                var hidEquipment_No = '<input type="hidden" id=hidEquipment_No value=' + rowData.Equipment_No + '>';
+                                var hidVendor_Name = '<input type="hidden" id=hidVendor_Name value=' + rowData.Vendor_Name + '>';
+                                var hidLine_Name = '<input type="hidden" id=hidLine_Name value=' + rowData.Line_Name + '>';
+                                var hidModified_Date = '<input type="hidden" id=hidModified_Date value=' + rowData.Modified_Date + '>';
+                                var hidFixture_Resume_UID = '<input type="hidden" id=hidFixture_Resume_UID value=' + rowData.Fixture_Resume_UID + '>';
+                                var hidSourceNo = '<input type="hidden" id=hidSourceNo value=' + rowData.Source_NO + '>';
+                                var hidFixture_M_UID = '<input type="hidden" id=hidFixture_M_UID value=' + rowData.Fixture_M_UID + '>';
+
+
+                                var result = buttonEdit + hidPlant + hidOptype + hidFunc + hidFixUID + hidFixUnique_ID + hidFixture_NO + hidVersion +
+                                    hidStatus + hidResume_Notes + hidFixture_Name + hidShortCode + hidProcess_Name + hidWorkStation_Name + hidShortCode +
+                                    hidProcess_Name + hidWorkStation_Name + hidEquipment_No + hidVendor_Name + hidLine_Name + hidModified_Date +
+                                    hidFixture_Resume_UID + hidSourceNo + hidFixture_M_UID;
+                                $(td).html(result);
+                            }
+                        },
+                        className: "js-grid-edit"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Source_NO",
+                        className: "min-col-xs"
+                    }, {
+                        data: "PlantName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OpType_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Func_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Process_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "WorkStation_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Line_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Equipment_No",
+                        className: "min-col-xs"
+                    },{
+                        data: "Fixture_NO",
+                        className: "min-col-xs"
+                    },{
+                        data: "Fixture_Unique_ID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "ShortCode",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Resume_Notes",
+                        className: "min-col-xs"
+                    }, {
+                        data: "User_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }
+            ];
+
+            var subcolumn = [
+                {
+                    data: null,
+                    render: function (data, type, row, rowIndex) {
+                        var index = rowIndex.row + 1;
+                        return index;
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "DefectCode_Name",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "RepairSolution_Name",
+                    className: "min-col-xs"
+                }
+            ];
+
+            var _getParams = function () {
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryResume = function (firstLoad) {
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Resume_datatable",
+                    remoteUrl: urls.queryResume,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        scrollX: true,
+                        autoWidth: true,
+                        columns: columns
+                    }
+                };
+
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                }
+
+                var chk_value = [];
+                table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+
+            }
+
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    RefreshOPTypesQuery();
+                    _queryResume(true);
+                },
+                QueryResume: function () {
+                    _queryResume(false);
+                },
+                SubColumn: subcolumn
+
+            }
+        })();
+
+        Resume.Init();
+
+        $('#btn_search').click(function () {
+            Resume.QueryResume();
+            $('#js_search_modal').modal('hide');
+        });
+
+        $('body').on("click", ".js-grid-edit", function () {
+            //var tr = $(this).closest('tr');
+            //var row = table.row(tr).data();
+            var uid = $(this).find('#hidFixture_Resume_UID').val();
+            var muid = $(this).find('#hidFixture_M_UID').val();
+            var plant = $(this).find('#hidPlant').val();
+            var optype = $(this).find('#hidOptype').val();
+            var func = '';
+            if ($(this).find('#hidFunc').val() != 'null') {
+                func = $(this).find('#hidFunc').val();
+            }
+            var workstionName = $(this).find('#hidWorkStation_Name').val();
+            var number = $(this).find('#hidSourceNo').val();
+            var shortCode = $(this).find('#hidShortCode').val();
+            
+
+
+            var view_Flag = $(this).find('#hidSourceNo').val().substr(0, 1);
+            var url = Resume.urls.viewResume;
+
+
+
+            var params = {};
+            params["Fixture_Resume_UID"] = uid;
+            params["Fixture_M_UID"] = muid;
+            $.get(url, params, function (data) {
+                if (data != '') {
+                    var obj = JSON.parse(data);
+                    $('#s_input_plant_m').val(plant);
+                    $('#s_input_plant_b').val(plant);
+                    $('#s_input_plant_r').val(plant);
+
+                    $('#s_input_group_m').val(optype);
+                    $('#s_input_group_b').val(optype);
+                    $('#s_input_group_r').val(optype);
+
+
+                    $('#s_input_FunPlant_m').val(func);
+                    $('#s_input_FunPlant_b').val(func);
+                    $('#s_input_FunPlant_r').val(func);
+
+                    $('#s_input_Customer_m').val(obj.Customer);
+                    $('#s_input_Customer_b').val(obj.Customer);
+                    $('#s_input_Customer_r').val(obj.Customer);
+
+                    $('#s_input_SendDate').val(obj.SendDate);
+                    $('#s_input_SendDate_b').val(obj.SendDate);
+
+                    $('#s_input_SentOut_Number').val(obj.SentOut_Number);
+
+                    $('#s_input_SendName').val(obj.SendName);
+                    $('#s_input_SendName_b').val(obj.SendName);
+
+                    $('#s_input_Process_Station_r').val(workstionName);
+                    $('#s_input_Process_Station_m').val(workstionName);
+                    $('#s_input_Process_Station_b').val(workstionName);
+
+                    $('#s_input_Totake_Number').val(obj.Totake_Number);
+                    $('#s_input_Totake_Date_b').val(obj.Totake_Date);
+                    $('#s_input_TotakeName_b').val(obj.TotakeName);
+
+                    $('#s_input_StatusName_b').val(obj.StatusName);
+
+                    $('#s_input_Repair_NO_r').val(number);
+                    $('#s_input_Repair_NO_m').val(number);
+                    $('#s_input_Totake_NO_b').val(number);
+
+                    $('#s_input_ShortCode_r').val(shortCode);
+                    $('#s_input_ShortCode_m').val(shortCode);
+                    $('#s_input_ShortCode_b').val(shortCode);
+
+                    $('#s_input_CycleValue').val(obj.CycleValue);
+                    $('#s_input_Cycle_ID').val(obj.Cycle_ID);
+                    $('#s_input_Cycle_Interval').val(obj.Cycle_Interval);
+                    $('#s_input_Cycle_Unit').val(obj.Cycle_Unit);
+                    $('#s_input_Person_Number').val(obj.Maintenance_Person_Number);
+                    $('#s_input_Person_Name').val(obj.Maintenance_Person_Name);
+                    $('#s_input_Maintenance_Date').val(obj.Maintenance_Date);
+                    $('#s_input_ConfirmorName').val(obj.ConfirmorName);
+                    $('#s_input_Confirm_Date').val(obj.Confirm_Date);
+                    $('#s_input_Modified_UID').val(obj.UpdateName);
+                    $('#s_input_Modified_Date').val(obj.Modified_Date);
+
+
+                    var subTable = $('#js_DR_datatable').DataTable({
+                        columns: Resume.SubColumn,
+                        ordering: false,
+                        data: obj.DRList,
+                        destroy: true
+                    });
+
+                    $('#js_DR_B_datatable').DataTable({
+                        columns: Resume.SubColumn,
+                        ordering: false,
+                        data: obj.DRList,
+                        destroy: true
+                    });
+                }
+            });
+
+            if (view_Flag == 'M') {
+                $('#js_view_M_modal').modal('show');
+            }
+            else if (view_Flag == 'B') {
+                $('#js_view_B_modal').modal('show');
+            }
+            else if (view_Flag == 'R') {
+                $('#js_view_R_modal').modal('show');
+            }
+        });
+
+        $('#btn_download_fl').click(function () {
+            var $selectList = $('#js_Resume_datatable').find('.js-checkbox-item:checked');
+            var len = $selectList.length;
+            if (len == 0) {
+
+                //全部导出
+                var url = Resume.urls.doAllExportFunction;
+                //没有查询条件的情况，从查询页面获取
+                if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+                url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                window.location.href = url;
+                //PDMS.Utility.MessageBox.info('please select datas to export!');
+            } else {
+                var uids = $.map($selectList, function (row) {
+                    return row.value;
+                });
+                $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                var url = Resume.urls.exprot;
+                url += "?uids=" + uids.toString();
+                window.location.href = url;
+            }
+        });
+
+
+        //隐藏modal框时清空值
+        $('#js_btn_clear').on('click', function (e) {
+
+            $('#js_search_modal').find('input').val('');
+            $('#js_search_modal').find('textarea').val('');
+            var $searchform = $('#js_form_query');
+            $searchform.find("select").each(function () {
+                $(this).find("option").attr("selected", false);
+                //$(this).find("option").first().attr("selected", true);
+                $(this).selectpicker('refresh');
+            });
+            PDMS.Utility.Criteria.Clear();
+
+        });
+
+        $('#js_view_M_modal').on('hidden.bs.modal', function (e) {
+            $('#js_view_M_modal').find('input').val('');
+            $('#js_view_M_modal').find('textarea').val('');
+            $('.list-group.validate-error').empty();
+        });
+
+        $('#js_view_B_modal').on('hidden.bs.modal', function (e) {
+            $('#js_view_B_modal').find('input').val('');
+            $('#js_view_B_modal').find('textarea').val('');
+            $('.list-group.validate-error').empty();
+        });
+
+        $('#js_view_R_modal').on('hidden.bs.modal', function (e) {
+            $('#js_view_R_modal').find('input').val('');
+            $('#js_view_R_modal').find('textarea').val('');
+            $('.list-group.validate-error').empty();
+        });
+        //#endregion 隐藏modal框时清空值
+
+
+
+
+    });
+</script>
+
+}
+
+
+

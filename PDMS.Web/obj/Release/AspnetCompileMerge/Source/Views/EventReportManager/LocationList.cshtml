@@ -1,0 +1,164 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <input type="hidden" id="js_inputData_FlowChart_Master_UID" value=@ViewBag.FlowChart_Master_UID />
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" onclick="javascript: self.location = document.referrer;"> @T("Common.Back")</a>      
+        </div>
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Flowchart_Detail_Data">
+                <thead>
+                    <tr>                     
+                                  
+                        <th>@T("Production.Equip")</th>
+                        <th>@T("Production.EquipChange")</th>
+                        <th>@T("Production.FixedOP")</th>
+                        <th>@T("Production.OPChange")</th>
+                        <th>@T("Production.MonitorRatioRule")</th>
+                        <th>@T("Production.MonitorRatioRatio")</th>
+                        <th>@T("Production.MonitorChange")</th>
+                        <th>@T("Production.TechnicalRatio")</th>
+                        <th>@T("Production.TechnicalChange")</th>                  
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>     
+                                     
+                        <th>@T("Production.Equip")</th>
+                        <th>@T("Production.EquipChange")</th>
+                        <th>@T("Production.FixedOP")</th>
+                        <th>@T("Production.OPChange")</th>
+                        <th>@T("Production.MonitorRatioRule")</th>
+                        <th>@T("Production.MonitorRatioRatio")</th>
+                        <th>@T("Production.MonitorChange")</th>
+                        <th>@T("Production.TechnicalRatio")</th>
+                        <th>@T("Production.TechnicalChange")</th>
+                 
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row" style="display:none;">
+            </div>
+            <div class="row">
+                <!--次標題與Search keyword-->
+                <div class="col-md-12 col-lg-9">
+                </div><!-- /col-次標題與Search keyword -->
+                <!--col-右方搜尋與功能按鈕列-->
+                <div class="col-md-12 search-field col-lg-3">
+                    <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" onclick="javascript: self.location = document.referrer;"> @T("Common.Back")</a>                
+                </div>
+            </div><!--/次標題 與 搜尋-->
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+
+</section><!-- /.content -->
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var FlowChartsForIE = (function () {
+                var urls = {
+                    QueryFlowCharts: '@Url.Action("QueryLocationLists", "EventReportManager")',
+             };
+            var columns = [
+                {
+                    data: "Process_Seq",
+                    className: "min-col-xs"
+                }, {
+                    data: "Funplant",
+                    className: "min-col-xs"
+                }, {
+                    data: "Process",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Total_CycletimeVM",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Manpower_RatioVM",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Estimate_YieldVM",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Capacity_ByHourVM",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Capacity_ByDayVM",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Equipment_RequstQtyVM",
+                    className: "min-col-xs text-right"
+                }
+            ];
+
+            var _getParams = function () {
+                var FlowChartMasterUID = $('#js_inputData_FlowChart_Master_UID').val();
+                var result = {};
+                result["FlowChart_Master_UID"] = FlowChartMasterUID;
+                return result;
+            };
+
+            var _queryFLS = function (firstLoad) {
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Flowchart_Detail_Data",
+                    remoteUrl: urls.QueryFlowCharts,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        scrollX: true,
+                        autoWidth: true,
+                        columns: columns
+                    }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryFLS(true);
+                },
+                QueryFLCharts: function () {
+                    _queryFLS(false);
+                }
+              }
+
+            })();
+           // FlowChartsForIE.Init();
+
+
+            //$('body').on('click', '.js-grid-view', function () {
+            //    var FlowChart_Master_UID = $(this).attr('data-id');
+            //    var ProjectName = $(this).attr('data-project');
+
+
+            //    var url = FlowChartsForIE.urls.FlowchartListIEMatching;
+            //    url += "?FlowChart_Master_UID=" + FlowChart_Master_UID + "&&ProjectName=" + ProjectName;
+            //    window.location.href = url;
+
+            //});
+        });
+    </script>
+}

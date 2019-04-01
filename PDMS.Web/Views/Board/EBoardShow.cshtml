@@ -1,0 +1,2359 @@
+﻿@{
+    ViewBag.Building = T("FlowChart.Building").Text;
+    ViewBag.yichangjitai = T("FlowChart.yichangjitai").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.Report = T("QA.Report").Text;
+    ViewBag.BaobiaoInfo2 = T("ViewBag.BaobiaoInfo2").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PPConfirm = T("FlowChart.PPConfirm").Text;
+    ViewBag.BaobiaoInfo1 = T("FlowChart.BaobiaoInfo1").Text;
+    ViewBag.PassYield = T("FlowChart.PassYield").Text;
+    ViewBag.Assembly = T("QA.Assembly").Text;
+    ViewBag.Anode = T("QA.Anode").Text;
+    ViewBag.Surface = T("QA.Surface").Text;
+}
+
+<style type="text/css">
+    .FunPlantDisplay {
+        display: none;
+    }
+
+
+    .main-header {
+        display: none;
+    }
+
+    .main-footer {
+        display: none;
+    }
+
+    .main-sidebar {
+        display: none;
+    }
+
+    .content-wrapper {
+        margin-left: 0px !important;
+    }
+
+    .displaySorting {
+        sorting: null;
+    }
+
+    #js_DayCapacity_datatable, #js_NightCapacity_datatable, #js_TotalCapacity_datatable {
+        font-size: 10px;
+        display: none;
+    }
+
+        #js_DayCapacity_datatable tbody tr td, #js_NightCapacity_datatable tbody tr td, #js_TotalCapacity_datatable tbody tr td {
+            vertical-align: middle;
+            padding: 0;
+            height: 10px;
+        }
+</style>
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+    }
+
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    }
+</script>
+<script src="~/Scripts/plugins/video.min.js"></script>
+<link href="~/Content/css/video-js.min.css" rel="stylesheet" />
+<input type="hidden" id="opType" value="@ViewBag.opType" />
+<input type="hidden" id="MenuShowState" value="1" />
+<input type="hidden" id="location" value=@ViewBag.location />
+<div id="ThingWorx" style="display:none">
+    <iframe id="iframeId"></iframe>
+</div>
+
+<div id="PIS">
+    <div id="head_text" style="border-color:darkgray;background-color: #ecf0f5;font-size: X-large">
+        <div class="row">
+            <div class="col-md-2" style="margin-top:15px;">
+                <div class="form-group">
+                    <button class="btn  btn-lg" style="margin-left: 20px;" id="menu_btn"> <b>@T("FlowChart.menu")</b> </button>
+                    <input type="number" id="pageSize" value=@ViewBag.PageSize style="display: none" />
+                </div>
+
+            </div>
+            <div class="nav navbar-nav" style="float: right; padding-top: 10px; padding-right: 10px;">
+                @Html.Action("LanguageSelector", "Common")
+            </div>
+            <div class="col-md-8" style="margin-top:15px;">
+                <div id="HeadNamedDiv" class="col-md-6">
+                    @T("Eboard.Title")
+                    <label id="TitleTimeInterval">
+                        <label id="Titlelocation"> </label>
+                        <label id="TitleProject"> </label>
+                        <label id="Part_Types"> </label>
+
+                    </label> <label id="AlldayFlag" style="background-color: greenyellow;">@T("FlowChart.leiji")</label>
+                    <label id="TitleFunPlants"> </label> @*<b>产能汇总报告</b>*@
+                </div>
+                <div id="All_Yield_Div" class="col-md-6" style="margin-top:-35px;">
+                    <div class="form-group">
+                        <label id="All_Yield"></label>
+                        <label id="All_Yield_hiden" style="display: none"></label>
+                    </div>
+                </div>
+            </div>
+            <div id="TopTenHeadNameDiv" class="col-md-8">
+                <label class="col-md-7" id="TopTenName">V16BG品质电子看板-不良项目Top10</label>
+                <label class="col-md-offset-1" id="TimeRange" style="font-size: large;  margin-top:+5px"></label>
+            </div>
+        </div>
+
+        <form id="js_form_query">
+            <input type="hidden" id="selectProjects" name="selectProjects" value="@ViewBag.Projects" />
+            <input type="hidden" id="selectFunplants" name="selectFunplants" value="@ViewBag.Parts" />
+            <input type="hidden" id="Part_Types" name="Part_Types" value="@ViewBag.Parts" />
+            <input type="hidden" id="opType1" name="Optype" value="@ViewBag.opType" />
+            <input type="hidden" id="QE_location" name="QE_location" value="@ViewBag.location" />
+        </form>
+
+        <form id="js_form_query_EQP">
+            <input type="hidden" id="location_blue" name="EQP_Location" value="@ViewBag.location" />
+        </form>
+        <input type="hidden" id="CurrentPageNumber" value=0 />
+        <input type="hidden" id="totalPageCount" value=0 />
+        <input type="hidden" id="CurrentShowTable" value="EBoard" />
+
+        @*//TopTen不良数*@
+        <div id="TopTenDiv" class="col-md-12" @*style="width:100%;"*@>
+            <label id="TopTenProcess" class="col-md-3" style="display:inline;font-size:18px"></label>
+            <label id="TopTenCheckNum" class="col-md-3" style="display:inline;font-size:18px"></label>
+            <label id="TopTenTotalNGNUm" class="col-md-3" style="display:inline;font-size:18px"> </label>
+            <label id="TopTenTotalNGRate" class="col-md-3" style="display:inline;font-size:18px"></label>
+        </div>
+
+        <div id="main_content" style="font-size: large;">
+            <div class="row">
+                <!--表格-->
+                <div class="col-md-12 table-container">
+                    <table class="table table-striped table-hover table-condensed nowrap" id="js_role_datatable">
+                        <thead>
+                            <tr>
+                                <th>@T("QA.Process")</th>
+                                <th style="display: none">@T("QA.Functionfactory")</th>
+                                <th>@T("FlowChart.place")</th>
+                                <th>@T("Production.TargetYield")%</th>
+                                <th>@T("FlowChart.Plan")</th>
+                                <th>@T("FlowChart.PickMater")</th>
+
+                                <th>@T("FlowChart.GoodProd")</th>
+                                <th>@T("FlowChart.PickWare")</th>
+                                @*<th>@T("FlowChart.TryMachine")</th>*@
+                                <th>@T("FlowChart.Warehousing")</th>
+                                <th>@T("QA.NG")</th>
+                                <th>@T("FlowChart.ReachRate")%</th>
+                                <th>@T("QA.Yield")%</th>
+                                <th style="display: none">@T("QA.Project")</th>
+                                <th style="display: none">@T("FlowChart.Logo")</th>
+                                <th>WIP</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_EQP_datatable">
+                        <thead>
+                            <tr>
+                                <th>@T("FlowChart.Shenqingdan")</th>
+                                <th>@T("QA.Functionfactory")</th>
+                                <th>@T("QA.Project")</th>
+                                <th>@T("FlowChart.machinetype")</th>
+                                <th>@T("QA.Process")</th>
+                                <th>@T("FlowChart.jitaihao")</th>
+                                <th>@T("FlowChart.guzhang")</th>
+                                <th>@T("FlowChart.lianxiren")</th>
+                                <th>@T("FlowChart.lianxidianh")</th>
+                                <th>@T("FlowChart.weixiustatus")</th>
+                                <th>@T("FlowChart.chulijieg")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_VBG_datatable">
+                        <thead>
+                            <tr>
+                                @*<th id="th1" width="10%">No.</th>*@
+                                @*<th class="table-col-seq nosort">Seq</th>*@
+                                <th id="th2" width="15%">不良项目</th>
+                                <th id="th3" width="10%">不良数量</th>
+                                <th id="th4" width="15%">
+                                    不良率
+                                </th>
+                                @*<th id="th5" width="15%">不良类型</th>*@
+                                <th id="th5" width="20%"></th>
+                                <th style="display:none"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" style="display:none" id="js_QEboard_datatable">
+                        <thead>
+                            <tr>
+                                <th>制程</th>
+                                <th>一次检验数</>
+                                <th>一次检验OK</th>
+                                <th>NG可重工数</>
+                                <th>NG报废数</th>
+                                <th>一次目标良率</th>
+                                <th>一次实际良率</th>
+                                <th>返回OK数</th>
+                                <th>二次目标良率</th>
+                                <th>二次实际良率</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" id="js_DayCapacity_datatable">
+                        <thead>
+                            <tr>
+                                <th>Shift</th>
+                                <th>Line</th>
+                                <th>Category</th>
+                                <th>TotalDay</th>
+                                <th>06:00-08:00</th>
+                                <th>08:00-10:00</th>
+                                <th>10:00-12:00</th>
+                                <th>12:00-14:00</th>
+                                <th>14:00-16:00</th>
+                                <th>16:00-18:00</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" id="js_NightCapacity_datatable">
+                        <thead>
+                            <tr>
+                                <th>Shift</th>
+                                <th>Line</th>
+                                <th>Category</th>
+                                <th>TotalDay</th>
+                                <th>18:00-20:00</th>
+                                <th>20:00-22:00</th>
+                                <th>22:00-00:00</th>
+                                <th>00:00-02:00</th>
+                                <th>02:00-04:00</th>
+                                <th>04:00-06:00</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" id="js_TotalCapacity_datatable">
+                        <thead>
+                            <tr>
+                                <th>Shift</th>
+                                <th>Line</th>
+                                <th>Category</th>
+                                <th>TotalDay</th>
+                                <th>06:00-08:00</th>
+                                <th>08:00-10:00</th>
+                                <th>10:00-12:00</th>
+                                <th>12:00-14:00</th>
+                                <th>14:00-16:00</th>
+                                <th>16:00-18:00</th>
+                                <th>18:00-20:00</th>
+                                <th>20:00-22:00</th>
+                                <th>22:00-00:00</th>
+                                <th>00:00-02:00</th>
+                                <th>02:00-04:00</th>
+                                <th>04:00-06:00</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-hover table-condensed nowrap" style="display:none;" id="js_ModelLineHR_datatable">
+                        <thead>
+                            <tr>
+                                <th>工站</th>
+                                <th>总人力</th>
+                                <th>应到</th>
+                                <th>实到</th>
+                                <th>休息</th>
+                                <th>事假</th>
+                                <th>病假</th>
+                                <th>旷工</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="MoiveShowDiv" style="display:none">
+                        <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="3840" height="2160"
+                               data-setup='{}'>
+                            @*width="3840" height="2160"*@
+                            @*<source src="~/Movie/op2.mp4" type="video/mp4" />*@
+
+                        </video>
+                    </div>
+                    <div id="ORT-panel" style="width:100%;text-align:center;display:none;">
+                        @*<img src="//wxinasfile01/Windchill_Backup_WXI/temp/B3.PNG">*@
+                        <img id="ORT-img" style="max-width:100%; max-height:100%">
+                    </div>
+                    <div class="form-group" style="display:none">
+                        <button class="btn  btn-lg" style="margin-left: 20px;" id="showTableVBG"> <b>TOP</b> </button>
+                        <button class="btn  btn-lg" style="margin-left: 20px;" id="QE"> <b>QE</b> </button>
+                    </div>
+                    <div id="page" class="row" style="display:none"></div>
+                    <input type="hidden" id="CurrentLocation" value="0" />
+                </div><!--/表格-->
+            </div><!-- / 內容 表格列 -->
+        </div>
+        <div class="row" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:3px;width:100%; z-index: 1;background-color: #EBEBEB" id="control_menu">
+            @*<div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 bg-black-01 col-md-1 col-xs-2 text-center" style="padding-left:20px">
+                    <span class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block "></span>
+                </div>*@
+
+            <div class="col-lg-1" style="font-size: large; margin-top: 23px;">
+                @*CNC连线数据展示开关*@
+                @*品质数据:&nbsp;<label><input type="radio" name="Switch" checked="checked" value="PowerOff" />关</label> &nbsp;&nbsp;
+                    <label><input type="radio" name="Switch" value="PowerOn" />开</label>*@
+                <button id="view-fullscreen" onclick="fullSr()">@T("Common.FullScreen")</button>
+
+            </div>
+            <div class="col-lg-2" style="font-size: large; margin-top: 23px;">
+
+                <button id="cancel-fullscreen" onclick="cancFullSr()">@T("Common.CancelFullScreen")</button>
+            </div>
+            <div class="col-lg-1">
+                <button type="button" onclick="javascript:history.back(-1);" id="Back_Index">
+                    <img src="~/Content/img/Eboard/btn-back.png" />
+                </button>
+            </div>
+            <div class="col-lg-1">
+                <button type="button" id="Previous_Page">
+                    <img src="~/Content/img/Eboard/btn-pre.png" />
+                </button>
+            </div>
+            <div class="col-lg-1" id="divSuspend">
+                <button type="button" id="Suspend">
+                    <img src="~/Content/img/Eboard/btn-pause.png" />
+                </button>
+            </div>
+            <div class="col-lg-1" id="divPlay" style="display:none">
+                <button type="button" id="Play">
+                    <img src="~/Content/img/Eboard/btn-play.png" />
+                </button>
+            </div>
+            <div class="col-lg-1">
+                <button type="button" id="Next_Page">
+                    <img src="~/Content/img/Eboard/btn-next.png" />
+                </button>
+            </div>
+            <div class="col-lg-1"></div>
+
+            <div class="col-lg-4" style="font-size: large; margin-top: 17px;">
+                @T("FlowChart.gundongshijian")：<input type="number" id="interval" value="15" style="width: 60px;" /> @T("FlowChart.miao") &nbsp&nbsp&nbsp&nbsp
+                <button id="increase" style="width: 80px; height: 50px;">@T("FlowChart.Add")</button>   &nbsp&nbsp&nbsp&nbsp
+                <button id="reduce" style="width: 80px; height: 50px;">@T("FlowChart.reduce")</button>
+            </div>
+            @*<div class="col-lg-3" style="font-size: large; margin-top: 17px;">
+                    字体： <button id="bigger" style="width: 80px; height: 50px;" >放大</button>   &nbsp&nbsp&nbsp&nbsp    <button id="smaller"  style="width: 80px; height: 50px;" >缩小</button>
+                </div>*@
+        </div>
+        <div class="bg-orange-active row" id="divMar_System_Announcement" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:3px;width:100%; z-index:-1">
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 bg-black-01 col-md-1 col-xs-2 text-center" style="padding-left: 20px;font-size: X-large;">
+                <i class="icon fa fa-warning"></i> <span class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block "><b>@T("FlowChart.Notice")</b></span>
+            </div>
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 col-md-11 col-xs-10" style="font-size: X-large;">
+                <marquee id="mar_System_Announcement" onmouseover="this.stop()" onmouseout="this.start();" scrollamount="10" behavior="scroll" direction="left"></marquee>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        var RoleMaintenance = null;
+        var freshMain = null;
+        var ORTTimeOutInt;
+        var freshMoive = null;
+        var EQPData = null;
+        var CurrentPageNumber = $("#CurrentPageNumber").val();
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        function sleep(d) {
+            for (var t = Date.now() ; Date.now() - t <= d;);
+        }
+        function EBoard() {
+            var current = parseInt($("#CurrentPageNumber").val())
+            $("#page").page('remote', current);
+
+            //获取当前页中的颜色Titlelocation
+            var color;
+            var flag = false;
+            var trs = $("#js_role_datatable tbody tr");
+
+            $.each(trs,
+                function (i, item) {
+                    var funplant = $($(item).children()[1]).text();
+                    if (funplant == "ADDValue") {
+                        $(item).hide();
+                    }
+                });
+
+            try {
+                $("#TitleTimeInterval").text($($($("#js_role_datatable tbody tr")[0]).children()[10]).children()[0].title.split('-')[1]);
+                $("#TitleTimeInterval").show();
+                //$("#Titlelocation").text($("#location").val());
+                $("#TitleProject").text($($($("#js_role_datatable tbody tr")[0]).children()[12]).text());
+                $("#Part_Types").text($($($("#js_role_datatable tbody tr")[0]).children()[15]).text());
+                $("#TitleFunPlants").text($($($("#js_role_datatable tbody tr")[0]).children()[1]).text());
+                $(".content-wrapper").css("cssText", "margin-left:0px !important");
+                $("#AlldayFlag").text($($($("#js_role_datatable tbody tr")[0]).children()[13]).text());
+                if ($("#AlldayFlag").text() == "全天累计" || $("#AlldayFlag").text() == "Throughout The Day") {
+                    //      $("#TitleTimeInterval").hide();
+                }
+            }
+            catch (error) {
+                $("#Next_Page").trigger("click");
+            }
+            if ($("#AlldayFlag").text() != "" && $("#ddlLanguageSelect").text() == "English ") {
+                $("#AlldayFlag").text("  Throughout The Day  ");
+            }
+            //隐藏额外的专案
+            if ($("#TitleFunPlants").html() == "ADDValue") {
+                $("#Next_Page").trigger("click");
+            }
+            $.each(trs,
+                     function (i, item) {
+                         if ($($(item).children()[0]).text().split('_').length > 1) {
+                             color = $($(item).children()[0]).text().split('_')[1];
+                             flag = true;
+                         }
+                     });
+
+            var ProjectYieldText = "";
+            $.each($("#All_Yield_hiden").html().split("<br>"),
+                function (i, item) {
+                    var project = item.split(',')[0].split('_')[0];
+                    var Parts = item.split(',')[0].split('_')[1];
+                    var currentColor = item.split(',')[1];
+                    if (project == $("#TitleProject").text() && $("#Part_Types").text() == Parts && ((flag && currentColor == color) || !flag && currentColor == "")) {
+                        ProjectYieldText = ProjectYieldText + '<br>' + project + ' ' + Parts + currentColor + item.split(',')[2] + '</br>';
+                    }
+                });
+            $("#All_Yield").html(ProjectYieldText);
+        }
+
+        //获取URL传参数
+        function getQueryString(name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
+            return null;
+        }
+
+        function startRequest() {
+            //RoleMaintenance.QueryRoles();
+            var totalPageCount = parseInt($("#totalPageCount").val());
+            var current = parseInt($("#CurrentPageNumber").val()) + 1;
+            try
+            {
+                $("#TitleTimeInterval").text($($($("#js_role_datatable tbody tr")[0]).children()[10]).children()[0].title.split('-')[1]);
+            }
+            catch (ex)
+            {
+                totalPageCount = 0;
+            }
+            $("#TitleTimeInterval").show();
+            if ($("#CurrentShowTable").val() == "Movie") {
+                $("#js_EQP_datatable").hide();
+                //$("#js_VBG_datatable").show();
+                $("#js_role_datatable").hide();
+
+                return;
+            }
+
+            // 将切换到另外一个内容进行播放
+            if (totalPageCount <= current) {
+                current = -1;
+                $("#CurrentPageNumber").val(current);
+                if ($("#CurrentShowTable").val() == "EBoard")  //显示设备内容
+                {
+                    if ($("#opType").val() == "WUXI Metal") {
+                        if ($('#location').val() == "ModelLine") {
+                            if ($("#js_DayCapacity_datatable").is(':visible')) {
+                                $("#js_DayCapacity_datatable").hide();
+                                $("#js_NightCapacity_datatable").hide();
+                                $("#js_TotalCapacity_datatable").hide();
+                                clearInterval(freshMain);//取消定时执行
+                                //无锡只显示战情报表，战情报表显示完了就显示ORT
+                                showModelLineHR();
+                                //轮播时间结束后刷新页面
+                                var intervalCookie = getCookie('IntervalTime');
+                                if (intervalCookie == null) {
+                                    intervalCookie = 15;
+                                }
+                                ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                                return;
+                            }
+                            else {
+                                showTwoHourCapacity();
+                                return;
+                            }
+                        }
+                        clearInterval(freshMain);//取消定时执行
+                        //无锡只显示战情报表，战情报表显示完了就显示ORT
+                        showORT();
+                        //轮播时间结束后刷新页面
+                        var intervalCookie = getCookie('IntervalTime');
+                        if (intervalCookie == null) {
+                            intervalCookie = 15;
+                        }
+                        ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+
+                        //if ($('#location').val() == "ModelLine") {
+                        //    showTwoHourCapacity();
+                        //}
+                        //if ($("#js_DayCapacity_datatable").is(':visible')) {
+                        //    $("#js_DayCapacity_datatable").hide();
+                        //    $("#js_NightCapacity_datatable").hide();
+                        //    $("#js_TotalCapacity_datatable").hide();
+                        //    clearInterval(freshMain);//取消定时执行
+                        //    //无锡只显示战情报表，战情报表显示完了就显示ORT
+                        //    showORT();
+                        //    //轮播时间结束后刷新页面
+                        //    var intervalCookie = getCookie('IntervalTime');
+                        //    if (intervalCookie == null) {
+                        //        intervalCookie = 15;
+                        //    }
+                        //    ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                        //}
+                        //else {
+                        //    showTwoHourCapacity();//两小时产能看板
+                        //}
+                    }
+                    else if ($("#opType").val() != "OP3") {  //不是OP3没有数据需要显示 重新加载页面
+                        //location.reload();
+                    }
+                    else {
+                        $("#CurrentShowTable").val("QASum");
+
+                        //$("#js_EQP_datatable").show();
+                        //V16BG品质电子看板
+                        showTableQASum();
+                        var numRegexp = /\d+/g;
+                        //var total = parseInt($(".m-pagination-info").text().split('共')[1]);
+                        var numArr = $(".m-pagination-info").text().match(numRegexp);
+                        var total = numArr[2];
+                        if (total == 0) {
+                            //location.reload();
+                        }
+                        $("#page").page('remote', current);
+                        $("#CurrentPageNumber").val(current);
+
+                        return;
+                    }
+                }
+                else if ($("#CurrentShowTable").val() == "QASum") {
+
+                    $("#CurrentShowTable").val("QATopTen");
+                    showTableTopTen();
+                    //$("#js_EQP_datatable").show();
+
+                    $("#page").page('remote', current);
+                    $("#CurrentPageNumber").val(current);
+                    var trsVBG = $("#js_VBG_datatable tbody tr");
+                    $.each(trsVBG,
+                        function (i, item) {
+                            var funplant = $($(item).children()[0]).text();
+                            if (funplant == "") {
+                                $(item).hide();
+                            }
+                        });
+                }
+                else if ($("#CurrentShowTable").val() == "QATopTen" || ($("#opType").val() != "OP3" && $('#location').val() == "/" && $("#CurrentShowTable").val() == "EBoard")) //重新开始滚动播放
+                {
+                    $("#CurrentShowTable").val("EBoard");
+                    showTableRole();
+                    $("#page").page('remote', current);
+                    $("#CurrentPageNumber").val(current);
+                    var trsVBG = $("#js_role_datatable tbody tr");
+                    $.each(trsVBG,
+                        function (i, item) {
+                            var funplant = $($(item).children()[0]).text();
+                            if (funplant == "") {
+                                $(item).hide();
+                            }
+                        });
+                }
+            }
+            else {
+                $("#CurrentShowTable").val("EBoard");
+                showTableRole();
+                $("#page").page('remote', current);
+                $("#CurrentPageNumber").val(current);
+                var trsVBG = $("#js_role_datatable tbody tr");
+                $.each(trsVBG,
+                    function (i, item) {
+                        var funplant = $($(item).children()[0]).text();
+                        if (funplant == "") {
+                            $(item).hide();
+                        }
+                    });
+            }
+        }
+
+        function showTableTopTen() {
+            $("#js_role_datatable").hide();
+            $("#js_EQP_datatable").hide();
+            $("#HeadNamedDiv").hide();
+            $("#All_Yield").hide();
+            $("#js_VBG_datatable").show();
+            $("#TopTenHeadNameDiv").show();
+            $("#All_Yield_Div").hide();
+            $("#TopTenDiv").css("display", "");
+            $("#page").css("display", "none");
+            document.getElementById('TopTenName').innerHTML = "V16BG品质电子看板-不良项目Top10";
+            $("#js_QEboard_datatable").hide();
+
+            VBGEQPData.Init();
+            VBGEQPData.QueryRoles();
+        }
+
+        function showTableQASum() {
+            $("#js_role_datatable").hide();
+            $("#js_EQP_datatable").hide();
+            $("#HeadNamedDiv").hide();
+            $("#js_VBG_datatable").hide();
+            $("#All_Yield_Div").hide();
+            $("#TopTenHeadNameDiv").show();
+            $("#page").css("display", "none");
+            document.getElementById('TopTenName').innerHTML = "V16BG品质电子看板";
+            $("#TopTenDiv").css("display", "");
+            $("#js_QEboard_datatable").show();
+
+            QEboardData.Init();
+            QEboardData.QueryRoles();
+        }
+
+        function showTableRole() {
+            $("#js_role_datatable").show();
+            $("#js_EQP_datatable").hide();
+            $("#HeadNamedDiv").show();
+            $("#js_VBG_datatable").hide();
+            $("#All_Yield_Div").hide();
+            $("#TopTenHeadNameDiv").hide();
+            $("#page").css("display", "none");
+            $("#TopTenDiv").css("display", "none");
+            $("#js_QEboard_datatable").hide();
+            RoleMaintenance.QueryRoles();
+        }
+
+        function showORT() {
+
+            //在$.post()前把ajax设置为同步
+            $.ajaxSettings.async = false;
+            $.post(RoleMaintenance.urls.getORTImgByBuildingName,
+                { "buildingName": $("#location").val() },
+                function (data) {
+                    if (data != "") {
+
+                        var src = '\\PIS_M\\Upload\\ORTImg\\' + data + "?t=" + Math.random();
+                        //var imgHtml = '<img id="ORT-img" src="' + src + '" style="width:85%">';
+                        //$("#ORT-panel").innerHtml = imgHtml;
+                        $("#ORT-img").attr("src", src);
+
+                        $("#js_role_datatable").hide();
+                        $("#js_EQP_datatable").hide();
+                        $("#HeadNamedDiv").hide();
+                        $("#js_VBG_datatable").hide();
+                        $("#All_Yield_Div").hide();
+                        $("#TopTenHeadNameDiv").hide();
+                        $("#page").css("display", "none");
+                        document.getElementById('TopTenName').innerHTML = "ORT电子看板";
+                        //$("#TopTenDiv").css("display", "");
+                        $("#TopTenDiv").show();
+                        $("#js_QEboard_datatable").hide();
+
+                        var panelHeight = window.innerHeight - 80;
+                        document.getElementById("ORT-panel").style.height = panelHeight + 'px';
+                        $("#ORT-panel").show();
+
+                        //从Cookie 获取时间间隔，若没有则默认15秒
+                        //var intervalCookie = getCookie('IntervalTime');
+                        //if (intervalCookie == null) {
+                        //    intervalCookie = 15;
+                        //}
+                        //ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                        //clearTimeout(ORTTimeOutInt);
+                    }
+                    else {
+                        //location.reload();
+                    }
+                });
+        }
+
+        //2小时产能看板(白班)
+        function showTwoHourCapacity() {
+            $("#js_role_datatable").hide();
+            $("#js_EQP_datatable").hide();
+            $("#HeadNamedDiv").hide();
+            $("#js_VBG_datatable").hide();
+            $("#All_Yield_Div").hide();
+            $("#TopTenHeadNameDiv").show();
+            $("#page").css("display", "none");
+            document.getElementById('TopTenName').innerHTML = "BC41 Assembly Output";
+            $("#TopTenDiv").css("display", "");
+
+            $("#js_DayCapacity_datatable").show();
+            $("#js_NightCapacity_datatable").show();
+            $("#js_TotalCapacity_datatable").show();
+
+            CapacityDayData.Init();
+            CapacityDayData.QueryRoles();
+
+            CapacityNightData.Init();
+            CapacityNightData.QueryRoles();
+
+            CapacityTotalData.Init();
+            CapacityTotalData.QueryRoles();
+            //$(".table tody tr td").attr("vertical-align", "middle");
+        }
+
+        //ModelLine 看板
+        function showModelLineHR() {
+            $("#js_role_datatable").hide();
+            $("#js_EQP_datatable").hide();
+            $("#HeadNamedDiv").hide();
+            $("#js_VBG_datatable").hide();
+            $("#All_Yield_Div").hide();
+            $("#TopTenHeadNameDiv").show();
+            $("#page").css("display", "none");
+            document.getElementById('TopTenName').innerHTML = "BC41 Assembly Output";
+            $("#TopTenDiv").css("display", "");
+
+            $("#js_DayCapacity_datatable").hide();
+            $("#js_NightCapacity_datatable").hide();
+            $("#js_TotalCapacity_datatable").hide();
+
+            $("#js_ModelLineHR_datatable").show();
+
+            ModelLineHRData.Init();
+            ModelLineHRData.QueryRoles();
+            //$(".table tody tr td").attr("vertical-align", "middle");
+        }
+
+        //function sleep(numberMillis) {
+        //    var now = new Date();
+        //    var exitTime = now.getTime() + numberMillis;
+        //    while (true) {
+        //        now = new Date();
+        //        if (now.getTime() > exitTime)
+        //            return;
+        //    }
+        //}
+        //)
+
+        ////移除Sorting()
+        //function ReMoveSorting() {
+        //    for (var i = 1; i <= 5; i++) {
+        //        var RemoveName = "th" + i.toString();
+        //        document.getElementById(RemoveName).className = "min-col-xs text-center";
+        //    }
+        //}
+
+        function startRequest1() {
+            $.post(RoleMaintenance.urls.getNoticeContent,
+                { "optype": $("#opType1").val() },
+                function (data) {
+                    if (data != "") {
+                        var warningText = data;
+                        //$("#divMar_System_Announcement").css(style)
+                        $("#divMar_System_Announcement").show();
+
+                        $("#mar_System_Announcement").html(warningText);
+                        var marquee = document.getElementById("mar_System_Announcement");
+                        //判断长度是否大于六十个
+                        if (warningText.length > 60) {
+                            marquee.stop();
+                            marquee.start();
+                        }
+
+                    }
+                    else {
+                        $("#divMar_System_Announcement").hide();
+                        var marquee = document.getElementById("mar_System_Announcement");
+                        marquee.stop();
+                    }
+                });
+        }
+
+        function toThousands(num) {
+            var num = (num || 0).toString(), result = '';
+            while (num.length > 3) {
+                result = ',' + num.slice(-3) + result;
+                num = num.slice(0, num.length - 3);
+            }
+            if (num) { result = num + result; }
+            return result;
+        }
+        function refresh() {
+            //var ShowFlag = $("#CurrentShowTable").val();
+            //if (ShowFlag != "Movie")
+            //    location.reload();
+        }
+
+        $(function () {
+            RoleMaintenance = (function () {
+                var urls = {
+                    getTopTenBoard: '@Url.Action("GetTopTenQeboardInfo", "Board")',
+                    GetTopTenQeboardTotalData: '@Url.Action("GetTopTenQeboardTotalData", "Board")',
+                    GetQEboardTotalData: '@Url.Action("GetQEboardSumDetailData", "Board")',
+                    getEQPBoard: '@Url.Action("GetEQPBoard", "Board")',
+                    getShowContent: '@Url.Action("getShowContent", "Board")',
+                    getNoticeContent: '@Url.Action("getNoticeContent", "Board")',
+                    getMovieUrl: '@Url.Action("getMovieUrl", "Board")',
+                    getPartTypes: '@Url.Action("getPartTypes", "Board")',
+                    ToIndex: '@Url.Action("Index", "Board")',
+                    GetFinnalYield: '@Url.Action("GetFinnalYield", "Board")',
+                    GetPageSize: '@Url.Action("GetPageSize", "Board")',
+                    getORTImgByBuildingName: '@Url.Action("GetORTImgByBuildingName", "Board")',
+                    getCapacity: '@Url.Action("GetCapacity", "Board")',
+                    getTotalCapacity: '@Url.Action("GetTotalCapacity", "Board")',
+                    GetModelLineHRTotalData: '@Url.Action("QueryModelLineHRs", "Board")'
+                };
+                var columns = [
+                    {
+                        data: "Process",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "FunPlant",
+                        className: "FunPlantDisplay"
+                    },
+                    {
+                        data: "place",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                    rowData.Target_Yield +
+                                    '%');
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.Prouct_Plan)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.Picking_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+
+
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.Good_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                     {
+
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+
+                             $(td)
+                                 .html(
+                                  toThousands(rowData.WH_Picking_QTY)
+                                     );
+                         },
+                         className: "min-col-xs text-center"
+                     },
+
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.WH_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.NG_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(' <label title="' +
+                                    rowData.Time_Interval +
+                                    '" style="background-color:' +
+                                    rowData.ReachColor +
+                                    ';width:70px; text-align: center">' +
+                                    rowData.Reach_yield +
+                                    '%</label>');
+                        },
+                        className: "min-col-xs  yield text-center"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td)
+                                .html(' <label style="background-color:' +
+                                    rowData.GoodColor +
+                                    ';width:70px; text-align: center">' +
+                                    rowData.Good_yield +
+                                    '%</label>');
+
+                        },
+                        className: "min-col-xs yield text-center"
+                    },
+                     {
+                         data: "Project",
+                         className: "FunPlantDisplay"
+                     },
+                       {
+                           data: "flag",
+                           className: "FunPlantDisplay"
+                       },
+                    {
+
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            $(td)
+                                .html(
+                                 toThousands(rowData.WIP_QTY)
+                                    );
+                        },
+                        className: "min-col-xs text-center"
+                    }
+                    ,
+                     {
+                         data: "Part_Types",
+                         className: "FunPlantDisplay"
+                     }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+
+                    var config = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_role_datatable",
+                        remoteUrl: urls.getShowContent,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                        getFinnalYield();
+
+                    }
+                    PDMS.Utility.Pages.CustomSet(config);
+
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                        //initStyle();
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+
+            })();
+            RoleMaintenance.Init();
+
+            function initStyle() {
+                $("td.yield").each(function () {
+                    var result1 = $(this).text();
+                    result1 += '%';
+                    $(this).text(result1);
+                });
+            }
+
+            //EQP表初始化绑定
+            var EQPDatatable = null;
+            EQPData = (function () {
+                var columns = [
+                     {
+                         data: "Repair_id",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "FunPlant",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Project_Name",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "Class_Desc",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Process",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Mfg_Serial_Num",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Repair_Reason",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Contact",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Contact_tel",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Status",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "Repair_Result",
+                         className: "min-col-xs text-center"
+                     }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query_EQP').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+
+                    var config = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_EQP_datatable",
+                        remoteUrl: RoleMaintenance.urls.getEQPBoard,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                        getFinnalYield();
+                    }
+                    PDMS.Utility.Pages.CustomSet(config);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //TopTEN
+            var VBGDatatable = null;
+            VBGEQPData = (function () {
+                var columns = [
+                     {
+                         data: "DefectName",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "NG",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "Yield",
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             $(td)
+                                 .html((rowData.Yield * 100).toFixed('2') + '%')
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                      {
+                          data: null,
+                          createdCell: function (td, cellData, rowData, row, col) {
+                              $(td)
+                                  .html('<div class="progress" style="height:30px;margin-top:0">  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60"  aria-valuemin="0" aria-valuemax="100"+ style="background: linear-gradient(to bottom right, red, white);width:' + rowData.HistogramRate + ';"> <span class="sr-only">40% 完成</span> </div> </div>')
+                          },
+                      },
+                       {
+                           data: null,
+                           createdCell: function (td, cellData, rowData, row, col) {
+                               dataT = cellData.Process;
+                               if (cellData.FlowChartMaster_UID != 0) {
+                                   document.getElementById('TopTenProcess').innerText = "制程：" + cellData.Process;
+                                   document.getElementById('TopTenCheckNum').innerHTML = "总检验数：" + cellData.CheckNum;
+                                   var TotolNG = "<font color='red'>" + cellData.TotolNG + "</font>";
+                                   document.getElementById('TopTenTotalNGNUm').innerHTML = "总不良数 ：" + TotolNG;
+                                   var TotalYidld = "<font color='red'>" + (cellData.TotalYidld * 100).toFixed('2') + '%' + "</font>";
+                                   document.getElementById('TopTenTotalNGRate').innerHTML = "总不良率：" + TotalYidld;
+                                   document.getElementById('TimeRange').innerText = "时间段：" + cellData.Product_Date + " " + cellData.Time_Interval;
+                               }
+                           },
+                           className: "FunPlantDisplay"
+                       },
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_VBG_datatable",
+                        remoteUrl: RoleMaintenance.urls.getTopTenBoard,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.CustomSet(config);
+
+                    //重新设置总的条数
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //QEboard
+            var QEboardDatatable = null;
+            QEboardData = (function () {
+
+                var columns = [
+                     {
+                         data: "Process",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "OneCheck_QTY",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "OneCheck_OK",
+                         className: "min-col-xs text-center"
+
+                     },
+                     {
+                         data: "NGReuse",
+                         className: "min-col-xs text-center"
+                     }, {
+                         data: "NGReject",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             $(td).html(' <label style="width:100px; text-align: center">' + (rowData.OneTargetYield * 100).toFixed(2) + '%</label>');
+                         },
+
+                         className: "min-col-xs text-center"
+                     },
+                     {
+
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             if (rowData.OneYield < rowData.OneTargetYield) {
+                                 $(td).html(' <label style="background-color:rgba(255, 0, 0, 0.44);width:100px; text-align: center">' + (rowData.OneYield * 100).toFixed(2) + '%</label>');
+                             } else {
+                                 $(td).html(' <label style="width:100px; text-align: center">' + (rowData.OneYield * 100).toFixed(2) + '%</label>');
+                             }
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: "RepairOK",
+                         className: "min-col-xs text-center"
+                     },
+                     {
+
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             $(td).html(' <label style="width:100px; text-align: center">' + (rowData.SecondTargetYield * 100).toFixed(2) + '%</label>');
+                         },
+                         className: "min-col-xs text-center"
+                     },
+                     {
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             if (rowData.SecondYield < rowData.SecondTargetYield) {
+                                 $(td).html(' <label style="background-color:rgba(255, 0, 0, 0.44);width:100px; text-align: center">' + (rowData.SecondYield * 100).toFixed(2) + '%</label>');
+                             } else {
+                                 $(td).html(' <label style="width:100px; text-align: center">' + (rowData.SecondYield * 100).toFixed(2) + '%</label>');
+                             }
+                         },
+                         className: "min-col-xs text-center"
+                     },
+
+                     {
+                         data: null,
+                         createdCell: function (td, cellData, rowData, row, col) {
+                             //判断是否显示一次直通的背景
+                             var IsOneBackgroundColor = "";
+                             if (cellData.OneDirectTargetActual < cellData.OneDirectTarget) {
+                                 IsOneBackgroundColor = "<label style = 'background-color:rgba(255, 0, 0, 0.44);width:100px; text-align: center'>" + cellData.OneDirectTargetActual + " </label> "
+                             } else {
+                                 IsOneBackgroundColor = "<label style = 'text-align: center'>" + cellData.OneDirectTargetActual + " </label> "
+                             }
+                             document.getElementById('TopTenProcess').innerText = "一次直通目标：" + cellData.OneDirectTarget;
+                             document.getElementById('TopTenCheckNum').innerHTML = "一次直通实际：" + IsOneBackgroundColor;
+
+                             //判断是否显示二次直通的背景
+                             var isTwoBackgroundColor = "";
+                             if (cellData.TwoDirectTargetActual < cellData.TwoDirectTarget) {
+                                 isTwoBackgroundColor = "<label style = 'background-color:rgba(255, 0, 0, 0.44);width:100px; text-align: center'>" + cellData.TwoDirectTargetActual + " </label> "
+                             } else {
+                                 isTwoBackgroundColor = "<label style = 'text-align: center'>" + cellData.TwoDirectTargetActual + " </label> "
+                             }
+
+                             document.getElementById('TopTenTotalNGNUm').innerHTML = "二次直通目标 ：" + cellData.TwoDirectTarget;
+                             document.getElementById('TopTenTotalNGRate').innerHTML = "二次直通实际：" + isTwoBackgroundColor;
+                             document.getElementById('TimeRange').innerText = "时间段：" + cellData.Product_Date + " " + cellData.Time_Interval;
+
+                         },
+                         className: "FunPlantDisplay"
+                     },
+
+
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_QEboard_datatable",
+                        remoteUrl: RoleMaintenance.urls.GetQEboardTotalData,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.CustomSet(config);
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //ModelLine 看板
+            var ModelLineHRDatatable = null;
+            ModelLineHRData = (function () {
+
+                var columns = [
+                    {
+                        data: "Station",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Total",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "ShouldCome",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "ActualCome",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "VacationLeave",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "PersonalLeave",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "SickLeave",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "AbsentLeave",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        //pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_ModelLineHR_datatable",
+                        remoteUrl: RoleMaintenance.urls.GetModelLineHRTotalData,
+                        //searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.CustomSet(config);
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //两小时产能看板_白班
+            var CapacityDayDatatable = null;
+            CapacityDayData = (function () {
+                var columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row == 0) {
+                                $(td).attr("rowspan", "1000");//设置大一点
+                                $(td).attr("vertical-align", "middle");
+                                $(td).html('白班');
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row % 5 == 0) {
+                                $(td).attr("rowspan", "5");
+                                $(td).attr("vertical-align", "middle");
+                                $(td).attr("valign", "middle");
+                                $(td).html(rowData.Line);
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                        //data: "Line",
+                        //className: "min-col-xs text-center",
+                    }, {
+                        data: "Category",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Total",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom06",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom08",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom10",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom12",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom14",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom16",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+
+                //var _getParams = function () {
+                //    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                //};
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        height: 500,
+                        //height: 100,
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_DayCapacity_datatable",
+                        remoteUrl: RoleMaintenance.urls.getCapacity,
+                        //searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.CustomSet(config);
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //两小时产能看板_晚班
+            var CapacityNightDatatable = null;
+            CapacityNightData = (function () {
+                var columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row == 0) {
+                                $(td).attr("rowspan", "1000");//设置大一点
+                                $(td).attr("vertical-align", "middle");
+                                $(td).html('晚班');
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row % 5 == 0) {
+                                $(td).attr("rowspan", "5");
+                                $(td).attr("vertical-align", "middle");
+                                $(td).attr("valign", "middle");
+                                $(td).html(rowData.Line);
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                        //data: "Line",
+                        //className: "min-col-xs text-center",
+                    }, {
+                        data: "Category",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Total",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom18",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom20",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom22",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom00",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom02",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom04",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+
+                //var _getParams = function () {
+                //    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                //};
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        height: 500,
+                        //height: 100,
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_NightCapacity_datatable",
+                        remoteUrl: RoleMaintenance.urls.getCapacity,
+                        //searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.CustomSet(config);
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            //两小时产能看板_汇总
+            var CapacityTotalDatatable = null;
+            CapacityTotalData = (function () {
+                var columns = [
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row == 0) {
+                                $(td).attr("rowspan", "1000");//设置大一点
+                                $(td).attr("vertical-align", "middle");
+                                $(td).html('汇总');
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                    }, {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+
+                            if (row % 5 == 0) {
+                                $(td).attr("rowspan", "5");
+                                $(td).attr("vertical-align", "middle");
+                                $(td).attr("valign", "middle");
+                                $(td).html(rowData.Line);
+                            }
+                            else {
+                                $(td).remove();
+                            }
+                        },
+                        className: "min-col-xs  yield text-center"
+                        //data: "Line",
+                        //className: "min-col-xs text-center",
+                    }, {
+                        data: "Category",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Total",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom06",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom08",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom10",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom12",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom14",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom16",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom18",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom20",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom22",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom00",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom02",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "HourFrom04",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+
+                //var _getParams = function () {
+                //    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                //};
+
+                var _queryRoles = function (firstLoad) {
+                    var config = {
+                        height: 500,
+                        //height: 100,
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_TotalCapacity_datatable",
+                        remoteUrl: RoleMaintenance.urls.getTotalCapacity,
+                        //searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.CustomSet(config);
+                    var numRegexp = /\d+/g;
+                    var numArr = $(".m-pagination-info").text().match(numRegexp);
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                };
+
+                return {
+                    urls: RoleMaintenance.urls,
+                    Init: function () {
+
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+            })();
+
+            // 设置刷新频率
+            $('#interval')
+                .blur(function () {
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff == NaN) {
+                        $("#interval").val(15);
+                        ff = 15;
+                    }
+
+                    freshMain = setInterval("startRequest()", 1000 * ff);
+
+                    //设定cookies
+
+                    document.cookie = "IntervalTime=" + ff;
+                });
+
+            function getCookie(name) {
+                var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+                if (arr = document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+            $("#increase")
+                .click(function () {
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff != NaN) {
+                        ff += 5;
+                    }
+                    if (ff == NaN) {
+                        $("#interval").val(15);
+                        ff = 15;
+                    }
+                    $("#interval").val(ff);
+                    freshMain = setInterval("startRequest()", 1000 * ff);
+
+                });
+
+            $("#reduce")
+                  .click(function () {
+                      clearInterval(freshMain);
+                      var ff = parseInt($("#interval").val());
+                      if (ff != NaN && ff > 5) {
+                          ff -= 5;
+                      }
+                      if (ff == NaN) {
+                          $("#interval").val(15);
+                          ff = 15;
+                      }
+                      $("#interval").val(ff);
+                      freshMain = setInterval("startRequest()", 1000 * ff);
+
+                  });
+
+            //初始化当前页的专案 功能厂信息
+            function getTitle() {
+                var project = $($(".odd").children(":first").text().split('_')[1]);
+            }
+
+            killAside();
+
+            function killAside() {
+                var trs = $("#js_role_datatable tbody tr");
+
+                $.each(trs,
+                    function (i, item) {
+                        var funplant = $($(item).children()[1]).text();
+                        if (funplant == "ADDValue") {
+                            $(item).hide();
+                        }
+
+                    });
+
+                var trsVBG = $("#js_VBG_datatable tbody tr");
+                $.each(trsVBG,
+                    function (i, item) {
+                        var funplant = $($(item).children()[0]).text();
+                        if (funplant == "") {
+                            $(item).hide();
+                        }
+                    });
+                try {
+                    $("#TitleTimeInterval")
+                        .text($($($("#js_role_datatable tbody tr")[0]).children()[10]).children()[0].title.split('-')[1]);
+                    $("#TitleTimeInterval").show();
+                    $("#TitleProject").text($($($("#js_role_datatable tbody tr")[0]).children()[12]).text());
+                    $("#TitleFunPlants").text($($($("#js_role_datatable tbody tr")[0]).children()[1]).text());
+                    $(".content-wrapper").css("cssText", "margin-left:0px !important");
+                    $("#AlldayFlag").text($($($("#js_role_datatable tbody tr")[0]).children()[13]).text());
+                    if ($("#AlldayFlag").text() != "" && $("#ddlLanguageSelect").text() == "English ") {
+                        $("#AlldayFlag").text("  Throughout The Day  ");
+                    }
+
+                    if ($("#AlldayFlag").text() == "全天累计" || $("#AlldayFlag").text() == "Throughout The Day") {
+                        //   $("#TitleTimeInterval").hide();
+                    }
+                    $("#Part_Types").text($($($("#js_role_datatable tbody tr")[0]).children()[15]).text());
+                }
+                catch (error) {
+
+                }
+            }
+
+            getFinnalYield();
+            //   NoticeFuc();
+
+            function NoticeFuc() {
+                $.post(RoleMaintenance.urls.getNoticeContent,
+                    { "optype": $("#opType").val() },
+                    function (data) {
+                        if (data != "") {
+                            var warningText = data;
+                            $("#divMar_System_Announcement").show();
+                            $("#mar_System_Announcement").html(warningText);
+                            var marquee = document.getElementById("mar_System_Announcement");
+                            //判断长度是否大于六十个
+                            if (warningText.length > 60) {
+                                marquee.stop();
+                                marquee.start();
+                            }
+
+                        }
+                    });
+            }
+
+            function getFinnalYield() {
+                //用正则表达式提取数字
+                var numRegexp = /\d+/g;
+                //var total = parseInt($(".m-pagination-info").text().split('共')[1]);
+                var numArr = $(".m-pagination-info").text().match(numRegexp);
+                if (numArr != null) {
+                    var total = numArr[2];
+                    var totalPageCount = 0;
+                    var pageSize = parseInt($("#pageSize").val());
+                    if (pageSize == NaN) pageSize = 11;
+                    if (total > 0) {
+                        totalPageCount = Math.ceil(total / pageSize);
+                    }
+                    $("#totalPageCount").val(totalPageCount);
+                    $.post(RoleMaintenance.urls.GetFinnalYield,
+                        { "Projects": $("#selectProjects").val() },
+                        function (data) {
+                            if (data != "") {
+                                var lbltext = "";
+                                $.each(data,
+                                    function (i, item) {
+                                        //if (item.toString().indexOf($("#TitleProject").val)!=-1)
+                                        lbltext += item + "</br>";
+                                    });
+                                $("#All_Yield").html(lbltext);
+                                $("#All_Yield_hiden").html(lbltext);
+                                hideProject();
+                            }
+                        });
+
+                    //隐藏额外的专案
+                    $("#TopTenHeadNameDiv").hide();
+                    $("#TopTenDiv").css("display", "none");
+                    //document.getElementById("TopTenDiv").css = "none";
+                    //$("#All_Yield_Div").hide();
+                    // hideProject();
+                }
+            }
+
+            $("#Play")
+                .click(function () {
+
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff == NaN) {
+                        ff = 15;
+                        $("#interval").val(15);
+                    }
+
+                    freshMain = setInterval("startRequest()", ff * 1000);
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+
+                    //ORT 代码
+                    if ($("#ORT-panel").is(':visible')) {
+                        //轮播时间结束后刷新页面
+                        var intervalCookie = getCookie('IntervalTime');
+                        if (intervalCookie == null) {
+                            intervalCookie = 15;
+                        }
+                        ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                    }
+                });
+            $("#Suspend")
+                .click(function () {
+                    $("#divPlay").show();
+                    $("#divSuspend").hide();
+                    clearInterval(freshMain);
+                    freshMain = setInterval("startRequest()", 10000000);
+                    //ORT画面暂停begin
+
+                    if (ORTTimeOutInt != undefined) {
+                        clearTimeout(ORTTimeOutInt);
+                    }
+                    //ORT画面暂停end
+                });
+            $("#menu_btn")
+                .click(function () {
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+                    //$("#interval").val(30);
+                    if ($("#menu_btn").attr('style') == 'margin-left: 30px;background-color:#5CACEE') {
+                        $("#menu_btn").removeAttr('style');
+                        $("#menu_btn").attr('style', 'margin-left: 30px');
+                    } else {
+                        $("#menu_btn").attr('style', 'margin-left: 30px;background-color:#5CACEE');
+                    }
+                    $("#control_menu").toggle(1000);
+                });
+            $('#main_content')
+                .click(function () {
+                    if ($("#CurrentShowTable").val() == "Movie") return;
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+                    //$("#interval").val(30);
+                    if ($("#menu_btn").attr('style') == 'margin-left: 30px;background-color:#5CACEE') {
+                        $("#menu_btn").removeAttr('style');
+                        $("#menu_btn").attr('style', 'margin-left: 30px');
+                    } else {
+                        $("#menu_btn").attr('style', 'margin-left: 30px;background-color:#5CACEE');
+                    }
+
+                    var trsVBG = $("#js_VBG_datatable tbody tr");
+                    $.each(trsVBG,
+                        function (i, item) {
+                            var funplant = $($(item).children()[0]).text();
+                            if (funplant == "") {
+                                $(item).hide();
+                            }
+                        });
+                    $("#control_menu").toggle(1000);
+                });
+            // 控制按钮
+            //$("#Back_Index").click(function () {
+            //    url = RoleMaintenance.urls.ToIndex;
+            //    window.location.href = url;
+            //});
+
+            $("#Previous_Page")
+                .click(function () {
+                    var current = parseInt($("#CurrentPageNumber").val()) - 1;
+                    var totalPageCount = parseInt($("#totalPageCount").val());
+
+                    if (current < 0)
+                        current = totalPageCount - 1;
+                    $("#page").page('remote', current);
+                    $("#CurrentPageNumber").val(current);
+                    var trs = $("#js_role_datatable tbody tr");
+
+                    $.each(trs,
+                        function (i, item) {
+                            var funplant = $($(item).children()[1]).text();
+                            if (funplant == "ADDValue") {
+                                $(item).hide();
+                            }
+
+                        });
+
+                    var trsVBG = $("#js_VBG_datatable tbody tr");
+                    $.each(trsVBG,
+                        function (i, item) {
+                            var funplant = $($(item).children()[0]).text();
+                            if (funplant == "") {
+                                $(item).hide();
+                            }
+                        });
+
+                    $("#TitleTimeInterval")
+                        .text($($($("#js_role_datatable tbody tr")[0]).children()[11]).children()[0].title.split('-'[1]));
+                    $("#TitleTimeInterval").show();
+                    $("#TitleProject").text($($($("#js_role_datatable tbody tr")[0]).children()[13]).text());
+                    $("#TitleFunPlants").text($($($("#js_role_datatable tbody tr")[0]).children()[1]).text());
+                    $(".content-wrapper").css("cssText", "margin-left:0px !important");
+                    $("#AlldayFlag").text($($($("#js_role_datatable tbody tr")[0]).children()[14]).text());
+                    if ($("#AlldayFlag").text() != "" && $("#ddlLanguageSelect").text() == "English ") {
+                        $("#AlldayFlag").text("  Throughout The Day  ");
+                    }
+                    if ($("#AlldayFlag").text() == "全天累计" || $("#AlldayFlag").text() == "Throughout The Day") {
+                        //   $("#TitleTimeInterval").hide();
+                    }
+                    $("#Part_Types").text($($($("#js_role_datatable tbody tr")[0]).children()[16]).text());
+                    //隐藏额外的专案
+                    hideProject();
+                });
+
+            function hideProject() {
+                if ($("#TitleFunPlants").html() == "ADDValue") {
+                    $("#Next_Page").trigger("click");
+                }
+                var trsVBG = $("#js_VBG_datatable tbody tr");
+                $.each(trsVBG,
+                    function (i, item) {
+                        var funplant = $($(item).children()[0]).text();
+                        if (funplant == "") {
+                            $(item).hide();
+                        }
+                    });
+
+                //获取当前页中的颜色
+                var trs = $("#js_role_datatable tbody tr");
+                var color;
+                var flag = false;
+                $.each(trs,
+                    function (i, item) {
+                        if ($($(item).children()[0]).text().split('_').length > 1) {
+                            color = $($(item).children()[0]).text().split('_')[1];
+                            flag = true;
+                        }
+                    });
+
+                var ProjectYieldText = "";
+                $.each($("#All_Yield_hiden").html().split("<br>"),
+                    function (i, item) {
+                        var project = item.split(',')[0].split('_')[0];
+                        var Parts = item.split(',')[0].split('_')[1];
+                        var currentColor = item.split(',')[1];
+                        if (project == $("#TitleProject").text() && $("#Part_Types").text() == Parts && ((flag && currentColor == color) || !flag && currentColor == "")) {
+                            ProjectYieldText = ProjectYieldText + '<br>' + project + ' ' + Parts + currentColor + item.split(',')[2] + '</br>';
+                        }
+                    });
+                $("#All_Yield").html(ProjectYieldText);
+
+            }
+
+
+            // 播放
+            function EBoard() {
+                var current = parseInt($("#CurrentPageNumber").val())
+                $("#page").page('remote', current);
+
+                var color;
+                var flag = false;
+                var trs = $("#js_role_datatable tbody tr");
+
+                $.each(trs,
+                    function (i, item) {
+                        var funplant = $($(item).children()[1]).text();
+                        if (funplant == "ADDValue") {
+                            $(item).hide();
+                        }
+                    });
+
+                var trsVBG = $("#js_VBG_datatable tbody tr");
+
+                try {
+                    //$("#Titlelocation").text($("#location").val());
+                    $("#TitleTimeInterval").text($($($("#js_role_datatable tbody tr")[0]).children()[10]).children()[0].title.split('-')[1]);
+                    $("#TitleTimeInterval").show();
+                    $("#TitleProject").text($($($("#js_role_datatable tbody tr")[0]).children()[12]).text());
+                    $("#TitleFunPlants").text($($($("#js_role_datatable tbody tr")[0]).children()[1]).text());
+                    $(".content-wrapper").css("cssText", "margin-left:0px !important");
+                    $("#AlldayFlag").text($($($("#js_role_datatable tbody tr")[0]).children()[13]).text());
+                    if ($("#AlldayFlag").text() == "全天累计" || $("#AlldayFlag").text() == "Throughout The Day") {
+                        //   $("#TitleTimeInterval").hide();
+                    }
+                }
+                catch (error) {
+                    $("#Next_Page").trigger("click");
+
+                }
+                if ($("#AlldayFlag").text() != "" && $("#ddlLanguageSelect").text() == "English ") {
+                    $("#AlldayFlag").text("  Throughout The Day  ");
+                }
+                $("#Part_Types").text($($($("#js_role_datatable tbody tr")[0]).children()[15]).text());
+                //隐藏额外的专案
+                if ($("#TitleFunPlants").html() == "ADDValue") {
+                    $("#Next_Page").trigger("click");
+                }
+                $.each(trs,
+                     function (i, item) {
+                         if ($($(item).children()[0]).text().split('_').length > 1) {
+                             color = $($(item).children()[0]).text().split('_')[1];
+                             flag = true;
+                         }
+                     });
+
+                var ProjectYieldText = "";
+                $.each($("#All_Yield_hiden").html().split("<br>"),
+                    function (i, item) {
+                        var project = item.split(',')[0].split('_')[0];
+                        var Parts = item.split(',')[0].split('_')[1];
+                        var currentColor = item.split(',')[1];
+                        if (project == $("#TitleProject").text() && $("#Part_Types").text() == Parts && ((flag && currentColor == color) || !flag && currentColor == "")) {
+                            ProjectYieldText = ProjectYieldText + '<br>' + project + ' ' + Parts + currentColor + item.split(',')[2] + '</br>';
+                        }
+                    });
+                $("#All_Yield").html(ProjectYieldText);
+            }
+
+
+            $("#Next_Page")
+                .click(function () {
+
+                    var totalPageCount = parseInt($("#totalPageCount").val());
+                    var current = parseInt($("#CurrentPageNumber").val()) + 1;
+                    if ($("#CurrentShowTable").val() == "Movie") {
+                        $("#js_EQP_datatable").hide();
+                        //$("#js_VBG_datatable").show();
+                        $("#js_role_datatable").hide();
+
+                        return;
+                    }
+                    // 将切换到另外一个内容进行播放
+                    if (totalPageCount <= current) {
+                        current = 0;
+                        $("#CurrentPageNumber").val(current);
+                        if ($("#CurrentShowTable").val() == "EBoard")  //显示设备内容
+                        {
+                            if ($("#opType").val() == "WUXI Metal") {
+                                //Model Line 单独处理
+                                if ($("#location").val() == "ModelLine") {
+                                    if ($("#js_DayCapacity_datatable").is(':visible')) {
+                                        $("#js_DayCapacity_datatable").hide();
+                                        $("#js_NightCapacity_datatable").hide();
+                                        $("#js_TotalCapacity_datatable").hide();
+                                        clearInterval(freshMain);//取消定时执行
+                                        //无锡只显示战情报表，战情报表显示完了就显示ORT
+                                        showModelLineHR();
+                                        //轮播时间结束后刷新页面
+                                        var intervalCookie = getCookie('IntervalTime');
+                                        if (intervalCookie == null) {
+                                            intervalCookie = 15;
+                                        }
+                                        ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                                        return;
+                                    } else {
+                                        showTwoHourCapacity();//两小时产能看板
+                                    }
+                                }
+                                else {
+                                    clearInterval(freshMain);//取消定时执行
+                                    //无锡只显示战情报表，战情报表显示完了就显示ORT
+                                    showORT();
+                                    //若果在播放状态，则继续播放，即定时刷新
+                                    if ($("#divSuspend").is(':visible')) {
+                                        //轮播时间结束后刷新页面
+                                        var intervalCookie = getCookie('IntervalTime');
+                                        if (intervalCookie == null) {
+                                            intervalCookie = 15;
+                                        }
+                                        ORTTimeOutInt = setTimeout("location.reload()", intervalCookie * 1000);
+                                    }
+                                }
+                            }
+                            else if ($("#opType").val() != "OP3") {  //不是OP3没有数据需要显示 重新加载页面
+                                //location.reload();
+                            }
+                            else {
+
+                                if ($("#opType").val() != "OP3")  //不是OP3没有数据需要显示 重新加载页面
+                                {
+                                    //location.reload();
+                                }
+                                $("#CurrentShowTable").val("QASum");
+
+                                //$("#js_EQP_datatable").show();
+                                showTableQASum();
+                                var numRegexp = /\d+/g;
+                                //var total = parseInt($(".m-pagination-info").text().split('共')[1]);
+                                var numArr = $(".m-pagination-info").text().match(numRegexp);
+                                var total = numArr[2];
+                                if (total == 0) {
+                                    //location.reload();
+                                }
+                                $("#page").page('remote', current);
+                                $("#CurrentPageNumber").val(current);
+
+                                return;
+                            }
+                        }
+                        else if ($("#CurrentShowTable").val() == "QASum") {
+                            $("#CurrentShowTable").val("QATopTen");
+                            showTableTopTen();
+                            //$("#js_EQP_datatable").show();
+
+                            $("#page").page('remote', current);
+                            $("#CurrentPageNumber").val(current);
+                            var trsVBG = $("#js_VBG_datatable tbody tr");
+                            $.each(trsVBG,
+                                function (i, item) {
+                                    var funplant = $($(item).children()[0]).text();
+                                    if (funplant == "") {
+                                        $(item).hide();
+                                    }
+                                });
+                        }
+                        else if ($("#CurrentShowTable").val() == "QATopTen" || ($("#opType").val() != "OP3" && $('#location').val() == "/" && $("#CurrentShowTable").val() == "EBoard")) //重新开始滚动播放
+                        {
+                            $("#CurrentShowTable").val("EBoard");
+                            showTableRole();
+                            $("#page").page('remote', current);
+                            $("#CurrentPageNumber").val(current);
+                            var trsVBG = $("#js_role_datatable tbody tr");
+                            $.each(trsVBG,
+                                function (i, item) {
+                                    var funplant = $($(item).children()[0]).text();
+                                    if (funplant == "") {
+                                        $(item).hide();
+                                    }
+                                });
+                        }
+                    }
+                    else {
+                        $("#CurrentShowTable").val("EBoard");
+                        showTableRole();
+                        $("#page").page('remote', current);
+                        $("#CurrentPageNumber").val(current);
+                        var trsVBG = $("#js_role_datatable tbody tr");
+                        $.each(trsVBG,
+                            function (i, item) {
+                                var funplant = $($(item).children()[0]).text();
+                                if (funplant == "") {
+                                    $(item).hide();
+                                }
+                            });
+                    }
+                });
+        });
+
+        $(document)
+            .ready(function ss() {
+                if ($('#selectFunplants').val() == "全部制程" || $('#selectFunplants').val() == "AllProcess") {
+                    $("#TitleFunPlants").hide();
+                }
+                var intervalCookie = getCookie('IntervalTime');
+
+                if (intervalCookie == null) {
+                    intervalCookie = 15;
+                }
+                if ($("#location").val() == "/" || $("#location").val() == "") {
+                } else {
+                    $("#Titlelocation").text($("#location").val());
+                }
+                freshMain = setInterval("startRequest()", intervalCookie * 1000);
+                var freshNotice = setInterval("startRequest1()", 30000);
+
+                //如果是WUXI Metal 并且ModelLine 跳过第一个画面，因为这个画面不好去掉，直接跳过
+                if ($("#opType").val() == "WUXI Metal" && $("#location").val() == "ModelLine") {
+                    startRequest();
+                }
+                //freshMoive = setInterval("getMovie()", 30000);
+                //var refresh = setInterval("refresh()", 3600000);
+
+            });
+
+    </script>
+
+}
+
+

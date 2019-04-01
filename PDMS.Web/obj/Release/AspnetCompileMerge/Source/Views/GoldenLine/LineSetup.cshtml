@@ -1,0 +1,627 @@
+﻿@model PDMS.Model.ViewModels.Fixture_PartVM
+@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.FlowChart = T("GL.FlowChart").Text;
+    ViewBag.BuildPlan = T("GL.BuildPlan").Text;
+    ViewBag.PlanHC = T("GL.PlanHC").Text;
+    ViewBag.ActualHC = T("GL.ActualHC").Text;
+    ViewBag.OEENGAccout = T("GL.OEENGAccout").Text;
+}
+<section class="content portal-content">
+    <div class="row col-lg-12">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "queryForm", @class = "form-inline" }))
+        {
+            <div class="form-group">
+                <label class="titlewhite">@T("GL.Site"):</label>
+                <select class="btn btn-default" name="Plant_Organization_UID">
+                    <option value="0"></option>
+                    @foreach (var item in Model.Plants)
+                    {
+                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="titlewhite">@T("GL.BG"):</label>
+                <select class="btn btn-default" name="BG_Organization_UID"></select>
+            </div>
+            <div class="form-group">
+                <label class="titlewhite">@T("GL.FunctionPlant"):</label>
+                <select class="btn btn-default" name="FunPlant_Organization_UID"></select>
+            </div>
+            <div class="form-group">
+                <label  class="titlewhite">@T("Common.Published"):</label>              
+                    <select class="btn btn-default" id="js_input_Is_Enable_Add" name="IsEnabled" >
+                        <option value=""></option>
+                        <option value="true">启用</option> 
+                        <option value="false">禁用</option>
+                                    
+                    </select>             
+            </div>
+            <input type="hidden" id="hid_key" name="LineID" value=1 />
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-sm" id="js_btn_search">@T("Common.Search")</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_add_line">@T("Common.AddNew")</button>
+            </div>
+        }
+    </div>
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_line_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                                            
+                        <th>@T("GL.Site")</th>
+                        <th>@T("GL.BG")</th> 
+                        <th>@T("GL.FunctionPlant")</th>
+                        <th>Project Name</th>
+                        <th>MES Project Name</th>
+                        <th>Phase</th>
+                        <th>Line</th>
+                        <th>MES Line</th>
+                        <th>Line CT</th>
+                        <th>@T("GL.Sequence")</th>
+                        <th>@T("GL.ResponsibleUser")</th>
+                        <th>@T("GL.IsEnabled")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row"></div>
+        </div>
+    </div>
+</section>
+
+@section ViewModals{
+
+<div class="modal fade" id="js_edit_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Line</h4>
+            </div>
+            @using (Html.BeginForm("AddOrUpdateLine", "GoldenLine", FormMethod.Post, new { id = "js_form_user_edit" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label">@T("GL.Site")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" name="Plant_Organization_UID">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-12 col-md-6 col-lg-6'>
+                            <label class="col-sm-5 control-label">@T("GL.BG")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" name="BG_Organization_UID"></select>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-12 col-md-6 col-lg-6'>
+                            <label class="col-sm-5 control-label">@T("GL.FunctionPlant")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" name="FunPlant_Organization_UID"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_is_show">@T("GL.Project")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="CustomerID" name="CustomerID"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_is_show">Phase</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" name="Phase">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_name">Line Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="LineName" placeholder="LineName"
+                                       required data-msg-required="Line Name is blank or missing">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_is_show">MES Line Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" name="MESLineName">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_d_id">Line CT</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" name="CycleTime" placeholder="CycleTime"
+                                       required data-msg-required="Cycle time is required">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_bu_d_id">@T("GL.Sequence")</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm required" id="js_input_Seq" name="Seq" min="1" step="1"
+                                       required data-msg-required='@T("GL.Sequence") is required'>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_input_Is_Enable_Add">@T("Common.Published")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm required" id="js_input_Is_Enable" name="IsEnabled" data-live-search="true">
+                                    <option value="true">启用</option>
+                                    <option value="false">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="LineID" value="0" />
+                        <input type="hidden" name="isEdit" value="false" />
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                    <div class="row" id="js-responsible-user">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+}
+
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        // data table init
+        $(function () {
+            var dataSource = (function () {
+                var urls = {
+                    getLines: '@Url.Action("GetLine","GoldenLine")',
+                    getLineByID: '@Url.Action("GetLineByID","GoldenLine")',
+                    removeLineByID: '@Url.Action("RemoveLineByID","GoldenLine")',
+                    getCustomers: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")'
+                }
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var responsibleUserJson = "[";
+                            rowData.GL_LineShiftResposibleUserList.forEach(function (val, index) {
+                                responsibleUserJson += '{ NTID:"' + val.ResponsibleUser.User_NTID + '", Name:"' + val.ResponsibleUser.User_Name + '"] '
+                            });
+                            responsibleUserJson += ']';
+                            
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.LineID + '">@ViewBag.Edit</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '{0}' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.LineID + '">@ViewBag.Delete</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-flowChart" data-id="' + rowData.LineID + '">@ViewBag.FlowChart</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-buildPlan" data-id="' + rowData.LineID + '">@ViewBag.BuildPlan</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-planHC" data-id="' + rowData.LineID + '">@ViewBag.PlanHC</button>' +
+                                '<button type="button" class="btn btn-primary btn-xs js-grid-actualHC" data-id="' + rowData.LineID + '">@ViewBag.ActualHC</button>' +
+                                 '<button type="button" class="btn btn-primary btn-xs js-grid-Operator" data-id="' + rowData.LineID + '">@ViewBag.OEENGAccout</button>' +
+                                '</div>';
+                            result = result.replace('{0}', buttonEdit);
+                            $(td).html(result);
+                        },
+                        className: "text-center"
+                    }, {
+                        className: "table-col-seq"
+                    }, {
+                        data: 'System_Organization.Organization_Name',
+                        className: "min-col-xs text-center"
+                    },  {
+                        data: 'System_Organization1.Organization_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'System_Organization2',
+                        render: function (data, type, full, meta) {
+                            return data ? data.Organization_Name : '';
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'System_Project.Project_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'System_Project.MESProject_Name',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'Phase',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "LineName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'MESLineName',
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: 'CycleTime',
+                        className: "text-center"
+                    }, {
+                        data: 'Seq',
+                        className: "text-center"
+                    }, {
+                        data: 'GL_LineShiftResposibleUserList',
+                        render: function (data, type, full, meta) {
+                            
+                            var html = '';
+                            data.forEach(function (item, index) {
+                                html += '[' + item.GL_ShiftTime.Shift + ' - ' + item.ResponsibleUser.User_Name + '] ';
+                            });
+                            return html;
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "IsEnabled",
+                        render: function (data, type, full, meta) {
+                            return data ? 'Y' : 'N';
+                        },
+                        className: "text-center"
+                    }, {
+                        data: 'System_Users.User_Name',
+                        className: "min-col-lg text-center"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-lg text-center"
+                    }]
+                var getLines = function (params) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_line_datatable",
+                        searchParams: params,
+                        remoteUrl: urls.getLines,
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                }
+                return {
+                    urls: urls,
+                    Init: function () {
+                        getLines();
+                        $(".text-center").removeClass("sorting");
+                        $('.text-center').removeAttr('onclick');
+                    },
+                    getLines: function (params) {
+                        $('#page').page('destroy');
+                        getLines(params);
+                    }
+                }
+            })();
+            dataSource.Init();
+
+            // add button click event - add
+            $('body').on('click', '#js_btn_add_line', function () {
+                $('#js_edit_modal').find('input[name=isEdit]').val(false);
+                $('#js_edit_modal').find('input[name=LineID]').val(0);
+                $('#js_edit_modal').isEdit = false;
+                $('#js_edit_modal').data('entity', { isEdit: false }).modal('show', $(this));
+                Seteditadd();
+            });
+            function Seteditadd() {
+
+                $('#js_edit_modal').find('select[name=Plant_Organization_UID]').trigger('change');
+                $('#js_edit_modal').find('input[name=Phase]').val('');
+                $('#js_edit_modal').find('input[name=LineName]').val('');
+                $('#js_edit_modal').find('input[name=MESLineName]').val('');
+                $('#js_edit_modal').find('input[name=CycleTime]').val('');
+                $('#js_edit_modal').find('input[name=Seq]').val('');
+                //$('#js_edit_modal').find('input[name=Break_Time]').val('');
+                //$('#js_edit_modal').find('input[name=Sequence]').val('');
+                //$('#js_edit_modal').find('select[name=Is_Enable]').val('');
+            }
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                
+                var responsibleUserArray = new Array();
+                var responsibleInputList = $('#js_edit_modal').find('input[name=ResponsibleUserName]');
+                $(responsibleInputList).each(function () {
+                    var responsibleUser = new Object();
+                    responsibleUser.User_UID = $(this).attr('data-Account_UID');
+                    responsibleUser.ShiftTimeID = $(this).attr('data-ShiftTimeID');
+                    responsibleUserArray.push(responsibleUser);
+                });
+
+                var submitObject = $("#js_form_user_edit").serializeObject();
+                //var submitJson = submitJson.parseJSON();
+                submitObject.GL_LineShiftResposibleUserList = responsibleUserArray;
+
+                $('#js_form_user_edit').ajaxSubmit({
+                    data: submitObject,//$("#js_form_user_edit").serializeObject(),
+                    beforeSubmit: function () {
+                        if ($('#js_edit_modal').find('select[name=Plant_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseSite');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseOPType');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('select[name=CustomerID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择专案');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=Phase]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写Phase');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=LineName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写LineName');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=MESLineName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写MESLineName');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('input[name=CycleTime]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请填写CycleTime');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+
+                        if (data.length > 4) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('保存成功');
+                            dataSource.getLines();
+                        }
+                    }
+                });
+            })
+
+            //新增保存----END
+            // add button click event - grid row edit
+            //$('body').on('click', '.js-grid-edit', function () {
+                
+            //    var id = $(this).attr('data-id'),
+            //        url = dataSource.urls.getLineByID;
+            //    if (id) {
+            //        var form = $('#js_edit_modal');
+            //        $.post(url, { id: id }, function (data) {
+            //            if (data) {
+            //                data.isEdit = true;
+            //                $('#js_edit_modal').data('entity', data).modal('show', $(this));
+                            
+            //               // $('#js_edit_modal').find('select[name=CustomerID]').val(data.CustomerID);
+            //                $('#CustomerID').selectpicker('val', data.CustomerID);
+            //                $("#CustomerID").trigger("liszt:updated");
+            //            }
+            //        });
+            //    }
+            //});
+
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').find('input[name=isEdit]').val(true);
+                $('#js_edit_modal').modal('show', $(this));
+                var id = $(this).attr('data-id'),
+                 url = dataSource.urls.getLineByID;
+                $('#js_edit_modal').find('input[name=LineID]').val(id);
+                $.post(url, { id: id }, function (data) {
+                    $('#js_edit_modal').find('select[name=Plant_Organization_UID]').val(data.Plant_Organization_UID);
+                    $('#js_edit_modal').find('select[name=Plant_Organization_UID]').trigger('change');
+                    $('#js_edit_modal').find('select[name=BG_Organization_UID]').val(data.BG_Organization_UID);
+                    $('#js_edit_modal').find('select[name=BG_Organization_UID]').trigger('change');
+                    
+                    $('#js_edit_modal').find('select[name=FunPlant_Organization_UID]').val(data.FunPlant_Organization_UID);
+                    $('#js_edit_modal').find('select[name=FunPlant_Organization_UID]').trigger('change');
+
+                    $('#js_edit_modal').find('select[name=CustomerID]').val(data.CustomerID);
+
+                    $('#js_edit_modal').find('input[name=Phase]').val(data.Phase);
+                    $('#js_edit_modal').find('input[name=LineName]').val(data.LineName);
+                    $('#js_edit_modal').find('input[name=MESLineName]').val(data.MESLineName);
+                    $('#js_edit_modal').find('input[name=CycleTime]').val(data.CycleTime);
+                    $('#js_edit_modal').find('input[name=Seq]').val(data.Seq);
+
+                    var isenable = '' + data.IsEnabled;
+                    $('#js_input_Is_Enable').selectpicker('val', isenable);
+                    $("#js_input_Is_Enable").trigger("liszt:updated");
+                    debugger;
+                    if (data.GL_LineShiftResposibleUserList != null) {
+                        data.GL_LineShiftResposibleUserList.forEach(function (val, index) {
+                            var responsibleUserNTID = $('#js_edit_modal').find('input[name=ResponsibleUserNTID][data-ShiftTimeID=' + val.ShiftTimeID + ']');
+                            responsibleUserNTID.val(val.ResponsibleUser.User_NTID);
+                            responsibleUserNTID.trigger("change");
+                            //responsibleUserJson += '{ NTID:"' + val.ResponsibleUser.User_NTID + '", Name:"' + val.ResponsibleUser.User_Name + '"] '
+                        });
+                    }
+                });
+            });
+
+
+            //刷新负责人输入框
+            function refreashResponsibleUserInput() {
+                var plantUID = $('#js_edit_modal').find('select[name=Plant_Organization_UID]').val();
+                var opUID = $('#js_edit_modal').find('select[name=BG_Organization_UID]').val();
+                if (plantUID == "" || opUID == "") {
+                    //厂区或OP 为选中，清空输入框
+                    $("#js-responsible-user").children().remove();
+                } else {
+                    //厂区和OP 均有选中，刷新输入框，列出产线的所有班次
+                    //先删除
+                    $("#js-responsible-user").children().remove();
+                    //获取班别, 构造班次的输入框
+                    var getShiftTimeDTOsUrl = dataSource.urls.getShiftTimeDTOs;
+                    $.get(getShiftTimeDTOsUrl, { Plant_Organization_UID: plantUID, BG_Organization_UID: opUID }, function (data) {
+                        if (data.length > 0) {
+                            $("#js-responsible-user").append('<hr class="hr-custom">');
+                            for (var i = 0; i < data.length; i++) {
+                                $("#js-responsible-user").append('<div class="form-group col-xs-12 col-md-12 col-lg-12">&nbsp;&nbsp;&nbsp;&nbsp;<b>' + data[i].Shift + '&nbsp;@T("GL.ResponsibleUser")</b></div>');
+                                $("#js-responsible-user").append('<div class="form-group col-xs-12 col-md-6 col-lg-6"><label class="col-sm-5 control-label">NTID</label><div class="col-sm-7"><input type="text" class="form-control input-sm" name="ResponsibleUserNTID" data-ShiftTimeID="' + data[i].ShiftTimeID + '" onchange="getResponsibleUserByNTID(this,' + data[i].ShiftTimeID + ')"></div></div>');
+                                $("#js-responsible-user").append('<div class="form-group col-xs-12 col-md-6 col-lg-6"><label class="col-sm-5 control-label">@T("Common.Name")</label><div class="col-sm-7"><input type="text" class="form-control input-sm" name="ResponsibleUserName" data-Account_UID="" data-responsible-NTID="" data-ShiftTimeID="' + data[i].ShiftTimeID + '" readonly></div></div>');
+                                //$('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-delete', function () {
+                var id = $(this).attr('data-id'),
+                    url = dataSource.urls.removeLineByID;
+                if (id) {
+                    PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                        $.post(url, { id: id }, function (data) {
+                            if (data && data.Result)
+                                dataSource.getLines();
+                            else
+                                PDMS.Utility.MessageBox.error("线别已在使用中或者使用过因此不能删除，如果不用此线别，请在编辑中禁用！");
+                        });
+                    });
+                }
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-flowChart', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("FlowChartStation", "GoldenLine")';
+                window.location.href = url + "?LineID=" + id;
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-buildPlan', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("BuildPlan", "GoldenLine")';
+                window.location.href = url + "?LineID=" + id;
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-planHC', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("HCPlan", "GoldenLine")';
+                window.location.href = url + "?LineID=" + id;
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-actualHC', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("HCActual", "GoldenLine")';
+                window.location.href = url + "?LineID=" + id;
+            });
+            // add button click event - grid row delete
+            $('body').on('click', '.js-grid-Operator', function () {
+                var id = $(this).attr('data-id'),
+                    url = '@Url.Action("OperatorList", "GoldenLine")';
+                window.location.href = url + "?LineID=" + id;
+            });
+
+
+            // query form submit
+            $('#queryForm').submit(function () {
+                var queryData = $(this).serialize();
+                dataSource.getLines(queryData);
+                return false;
+            });
+            $('form select').change(function () {
+                form = $(this).parents('form:first');
+                var opt2 = form.find('select[name=BG_Organization_UID]');
+                var opt3 = form.find('select[name=FunPlant_Organization_UID]');
+                var opt4 = form.find('select[name=CustomerID]');
+                value = $(this).val();
+                switch ($(this)[0].name) {
+                    case 'Plant_Organization_UID':
+                        opt2.empty();
+                        opt3.empty();
+                        if (value != 0) {
+                            url = '@Url.Action("GetCurrentOPType", "Fixture")';
+                            $.post(url, { plant_OrganizationUID: value }, function (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    opt2.append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                                opt2.selectpicker('refresh');
+                            });
+                            opt2.trigger('change');
+
+                            //刷新责任人输入框
+                            refreashResponsibleUserInput();
+                        }
+                        break;
+                    case 'BG_Organization_UID':
+                        
+                        opt3.empty();
+                        if (value != 0) {
+                            url = '@Url.Action("GetFunPlantByOPTypes", "Fixture")';
+                            $.post(url, { Optype: value }, function (data) {
+                                opt3.append('<option value=""></option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    opt3.append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                                }
+                                opt3.selectpicker('refresh');
+                            });
+
+                            //刷新责任人输入框
+                            refreashResponsibleUserInput();
+                        }
+                       // if (opt4) {
+                            opt4.empty();
+                            if (value != 0) {
+                                url = '@Url.Action("GetCustomerDTOs", "GoldenLine")';
+                                $.post(url, { BG_Organization_UID: value }, function (data) {
+                                    for (var i = 0; i < data.length; i++) {
+                                        opt4.append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                                    }
+                                    opt4.selectpicker('refresh');
+                                });
+                            }
+                      //  }
+                        break;
+                    case 'FunPlant_Organization_UID':
+
+                        break;
+                }
+            });
+            $('form select[name=Plant_Organization_UID]').trigger('change');
+        })
+        // modal event
+
+        function getResponsibleUserByNTID(element, shifTimeID) {
+            var refreshElement = $('#js_edit_modal').find('input[name=ResponsibleUserName][data-ShiftTimeID=' + shifTimeID + ']');
+            refreshStaffNameByNTID($(element), refreshElement);
+        }
+        //根据NTID获取用户名称
+        function refreshStaffNameByNTID(element, refreshElemnt) {
+            var NTID = $.trim(element.val());
+            if (NTID == '') {
+                refreshElemnt.val('');
+                refreshElemnt.attr("data-Account_UID", 0);
+            }
+            else {
+                $.get('/PIS_M/Fixture/GetSystemUserByNTId', { NTID: NTID }, function (data) {
+                    if (data != null && data != "") {
+                        var userName = data.User_Name;
+                        var accountUId = data.Account_UID;
+                        refreshElemnt.val(userName);
+                        refreshElemnt.attr("data-Account_UID", accountUId);
+                    }
+                    else {
+                        refreshElemnt.val('');
+                        refreshElemnt.attr("data-Account_UID", 0);
+                    }
+                });
+            }
+        }
+    </script>
+}

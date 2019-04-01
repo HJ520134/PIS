@@ -1,0 +1,1293 @@
+﻿<!-- Main content -->
+@{
+
+    ViewBag.Naturalnumber = T("QA.Naturalnumber").Text;
+    ViewBag.Pleaseproduction = T("QA.Pleaseproduction").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+    ViewBag.Selectnewtype = T("QA.Selectnewtype").Text;
+}
+<style type="text/css">
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: lightgray !important;
+    }
+</style>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-2" id="js_save_status_div">
+                <h4 class="margin-td-5" id="js_save_status"></h4>
+            </div>
+            <div class="col-md-12 col-lg-10"></div>
+        </div>
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div> <!-- /col-次標題與Search keyword -->
+
+        <div class="col-md-12 search-field col-lg-3">
+            <button id="btn-edit" type="button" class="btn btn-primary ">@T("QA.Edit")</button>
+            <button id="btn-return" type="button" onclick="javascript: self.location = document.referrer;" class="btn btn-primary ">@T("QA.Return")</button>
+        </div>
+    </div>
+    <hr class="hr-custom">
+    <div>
+        <ul id="myTab" class="nav nav-tabs"></ul>
+        <div id="myTabContent" class="tab-content">
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <form id="js_form_org_query" class="form-horizontal clearfix">
+            <br /><br />
+
+            <label class="hidden col-xs-12 col-md-6" id="js_s_input_OQCMasterUID"></label>
+            <label class="hidden col-xs-12 col-md-6" id="js_s_input_Project_UID"></label>
+            <label class="hidden col-xs-12 col-md-6" id="ModifyFlag"></label>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input">@T("QA.Numberinputs")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="input" class="form-control input-sm" id="js_s_input_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numberinputs")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_goodQty">@T("QA.Goodnumber")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="GoodQty" class="form-control input-sm" id="js_s_input_goodQty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Goodnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_NGParts_Qty">@T("QA.Badnumber")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="NGParts_Qty" class="form-control input-sm" id="js_s_input_NGParts_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Badnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input_Rework">返修数</label>
+                <div class="col-sm-7">
+                    <input type="text" name="Rework" class="form-control input-sm" id="js_s_input_Rework" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" @*placeholder="@T("QA.Productionrepair")"*@>
+                </div>
+            </div>
+            <br /><br />
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_ReworkQtyFromOQC">返修OK数</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ReworkQtyFromOQC" class="form-control input-sm" id="js_s_input_ReworkQtyFromOQC" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_input_ProductLineRework">前制程返回</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ProductLineRework" class="form-control input-sm" id="js_s_input_ProductLineRework" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" @*placeholder="@T("QA.Backassembly")"*@>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_ReworkQtyFromAssemble">返前制程</label>
+                <div class="col-sm-7">
+                    <input type="text" name="ReworkQtyFromAssemble" class="form-control input-sm" id="js_s_input_ReworkQtyFromAssemble" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="返前制程">
+                </div>
+            </div>
+
+
+
+
+
+            @*<div class="col-md-3"  style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_Storage_Qty">@T("QA.Numberwarehouses")</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="Storage_Qty" class="form-control input-sm" id="js_s_input_Storage_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numberwarehouses")">
+                    </div>
+                </div>
+
+                <div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_WaitStorage_Qty">@T("QA.Numbertorage")</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="WaitStorage_Qty" class="form-control input-sm" id="js_s_input_WaitStorage_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.Numbertorage")">
+                    </div>
+                </div>*@
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_WIP">@T("QA.WIPCrude")</label>
+                <div class="col-sm-7">
+                    <input type="text" @*disabled="disabled"*@ name="WIP" class="form-control input-sm" id="js_s_WIP" />
+                </div>
+            </div>
+
+
+            <br /><br />
+
+            @*<div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_NG_Yield">@T("QA.NGdefectrate")</label>
+                    <div class="col-sm-7">
+                        <input type="text" disabled="disabled" name="NG_Yield" class="form-control input-sm" id="js_s_NG_Yield" />
+                    </div>
+                </div>*@
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_NG_Qty">@T("QA.NGNumberdefects")</label>
+                <div class="col-sm-7">
+                    <input type="text" name="NG_Qty" disabled="disabled" class="form-control input-sm" id="js_s_input_NG_Qty" data-rule-digits="true" data-msg-digits="@T("QA.Naturalnumber")" placeholder="@T("QA.NGNumberdefects")">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_RepairNG_Qty">@T("QA.Numberofdefects")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="RepairNG_Qty" class="form-control input-sm" id="js_s_RepairNG_Qty" />
+                </div>
+            </div>
+
+            @*<div class="col-md-3" style="display:none">
+                    <label class="col-sm-5 control-label" for="js_s_RepairNG_Yield">@T("QA.Defectrate")</label>
+                    <div class="col-sm-7">
+                        <input type="text" disabled="disabled" name="RepairNG_Yield" class="form-control input-sm" id="js_s_RepairNG_Yield" />
+                    </div>
+                </div>
+
+                <br /><br />*@
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_FirstYieldRate">@T("QA.Ayield")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="FirstYieldRate" class="form-control input-sm" id="js_s_FirstYieldRate" />
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <label class="col-sm-5 control-label" for="js_s_SecondYieldRate">@T("QA.Secondaryyield")</label>
+                <div class="col-sm-7">
+                    <input type="text" disabled="disabled" name="SecondYieldRate" class="form-control input-sm" id="js_s_SecondYieldRate" />
+                </div>
+            </div>
+
+
+
+            <br /><br />
+
+        </form>
+
+    </div>
+    <br />
+    <br />
+
+    <div class="col-md-12 col-lg-9" style="margin-top:10px;">
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button class="btn btn-primary" id="btn-RadioNGDetail" disabled="disabled">@T("QA.Baddetail")</button>
+            <button class="btn btn-primary" id="btn-RadioReworkDetail">@T("QA.Repairdetails")</button>
+        </div>
+    </div>
+    <div class="col-md-12 search-field col-lg-3">
+        @*<button class="btn btn-primary " type="button" id="btn-search ">查询</button>*@
+        <button class="btn btn-primary" data-toggle="modal" data-target="#js_search_add_modal" id="js_btn_add_role_function">
+            <i class="fa fa-plus"></i> @T("QA.Adddetails")
+        </button>
+        <br /><br />
+    </div>
+
+
+
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_NGDetail">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_NGDetail_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Type")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Exceptionname")</th>
+                        <th>@T("QA.Quantity")</th>
+                        <th>@T("QA.Defectrateallday")</th>
+                        <th>@T("QA.Defectratedayshift")</th>
+                        <th>@T("QA.Defectratenightshift")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="NGDetail_page" class="row" hidden="hidden"> </div>
+        </div><!--/表格-->
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_reworkDetail">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_reworkDetail_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Type")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Exceptionname")</th>
+                        <th>@T("QA.Quantity")</th>
+                        <th>@T("QA.Defectrateallday")</th>
+                        <th>@T("QA.Defectratedayshift")</th>
+                        <th>@T("QA.Defectratenightshift")</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="reworkDetail_page" class="row" hidden="hidden"></div>
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+    <div class=" col-md-12 col-lg-9"></div>
+
+    <div class="col-md-12 search-field col-lg-3" style="margin-top:10px;">
+        <button id="btn-submit-inner" type="button" class="btn btn-primary ">@T("QA.Submit")</button>
+    </div>
+
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Queryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <input type="hidden" id="js_search_FlowChart_Detail_UID" name="FlowChart_Detail_UID" value="@ViewBag.Flowchart_Detail_UID" />
+                            <input type="hidden" id="js_search_Process_seq" name="Process_seq" value="@ViewBag.Process_seq" />
+                            <input type="hidden" id="js_search_FlowchartMaster_UID" name="FlowChart_Master_UID" value="@ViewBag.Flowchart_Master_UID" />
+
+                            <label class="col-xs-3 control-label" for="js_s_input_plant_Project">@T("QA.Project")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="ProjectName" value="@ViewBag.Project" class="form-control input-xs" id="js_s_input_plant_Project">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_plant_Process">@T("QA.Checkpointname")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="Process" value="@ViewBag.Process" class="form-control input-xs" id="js_s_input_plant_Process">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_plant_MaterialType">@T("QA.Materialtypes")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="MaterialType" value="@ViewBag.MaterialType" class="form-control input-xs" id="js_s_input_plant_MaterialType">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_plant_Color">@T("QA.Colour")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="Color" value="@ViewBag.Color" class="form-control input-xs" id="js_s_input_plant_Color">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_place">@T("QA.Factorybuilding")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="Place" value="@ViewBag.Place" class="form-control input-xs" id="js_s_input_place">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="ProductDate" value="@ViewBag.ProductDate" class="form-control input-xs" id="js_s_input_date">
+                            </div>
+
+                            <label class="col-xs-3 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="Time_interval" value="@ViewBag.Time_interval" class="form-control input-xs" id="js_s_input_interval_time">
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Badinformationpage")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_edit_fl" data-need-validate="true">
+                            <input type="hidden" id="QualityAssurance_InputMaster_UID" name="QualityAssurance_InputMaster_UID" />
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-5 control-label" readonly="readonly" for="s_input_Input">@T("QA.Numberinputs")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="Input" name="Input">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-5 control-label" for="s_input_FirstCheck_Qty">@T("QA.Numbertests")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="FirstCheck_Qty" name="FirstCheck_Qty" placeholder="@T("QA.Numbertests")"
+                                           required data-msg-required="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-5 control-label" for="s_input_FirstOK_Qty">@T("QA.OnceOK")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="FirstOK_Qty" name="FirstOK_Qty" placeholder="@T("QA.OnceOK")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_FirstRejectionRate">@T("QA.Abadrate")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" readonly="readonly" id="FirstRejectionRate" name="FirstRejectionRate" placeholder="@T("QA.Abadrate")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Abadrate")"
+                                           data-rule-digits="true">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_NG_Qty">@T("QA.NGnumber")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" readonly="readonly" id="NG_Qty" name="NG_Qty" placeholder="@T("QA.NGnumber")"
+                                           data-rule-required="true" data-msg-required="@T("QA.NGnumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_SurfaceSA_Qty">@T("QA.Exterior")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="SurfaceSA_Qty" name="SurfaceSA_Qty" readonly="readonly" placeholder="@T("QA.Exterior")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Exterior")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_SizeSA_Qty">@T("QA.Sizenumber")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="SizeSA_Qty" name="SizeSA_Qty" readonly="readonly" placeholder="@T("QA.Sizenumber")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Sizenumber")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_RepairCheck_Qty">@T("QA.Numberrework")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="RepairCheck_Qty" readonly="readonly" name="RepairCheck_Qty" placeholder="@T("QA.Numberrework")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Numberrework")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_RepairOK_Qty">@T("QA.Reworkreturned")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="RepairOK_Qty" name="RepairOK_Qty" placeholder="@T("QA.Reworkreturned")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Reworkreturned")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Shipment_Qty">@T("QA.Exportquantity")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" readonly="readonly" id="Shipment_Qty" name="Shipment_Qty" placeholder="@T("QA.Exportquantity")"
+                                           data-rule-required="true" data-msg-required="@T("QA.Exportquantity")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_WIPForCheck_Qty">@T("QA.WIPchecked")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" readonly="readonly" id="WIPForCheck_Qty" name="WIPForCheck_Qty" placeholder="@T("QA.WIPchecked")"
+                                           data-rule-required="true" data-msg-required="@T("QA.WIPchecked")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-12">
+                            <div class=" pull-right">
+                                <button class="btn btn-primary btn-sm" id="btn_save_edit"><i class="fa fa-save"></i>@T("QA.Save")</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 不良类型新增Search Modal -->
+    <div class="modal fade" id="js_search_add_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Search")</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="js_form_add_query" class="form-horizontal" data-need-validate="true">
+                        <input type="hidden" id="js_search_add_FlowchartMaster_UID" name="FlowChart_Master_UID" value="@ViewBag.Flowchart_Master_UID" />
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" data-type="select" for="js_s_add_first_type">@T("QA.Badspecies")</label>
+                            <div class="col-sm-8">
+                                <select class="form-control input-sm" id="js_s_add_first_type" name="First_Type"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-sm-6">
+                                <select class="form-control input-sm" id="js_s_add_second_type" name="Second_Type"></select>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control input-sm" id="js_s_add_three_type" name="Three_Type"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" for="js_s_add_type_name">@T("QA.Typename")</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="TypeName" class="form-control input-sm" id="js_s_add_type_name" placeholder="@T("QA.Typename")">
+                                <input type="hidden" name="Project" id="js_s_add_project_name">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" for="js_s_add_function_id">@T("QA.Referredto")</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="ShortName" class="form-control input-sm" id="js_s_add_function_id" placeholder="@T("QA.Referredto")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" for="js_s_add_typeClassify">@T("QA.Detailtype")</label>
+                            <div class="col-sm-8">
+                                <select class="form-control input-sm" id="js_s_add_typeClassify" name="TypeClassify">
+                                    <option value="不良明细">不良明细</option>
+                                    <option value="返修明细">返修明细</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6" id="FunPlant_div">
+                            <label class="col-sm-4 control-label" for="js_s_add_funPlant">@T("QA.Functionfactory")</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="FunPlant" class="form-control input-sm" id="js_s_add_funPlant" placeholder="@T("QA.Functionfactory")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12" hidden="hidden">
+                            @*<input type="hidden" name="IsContainsChild" id="IsContainsChild" />*@
+                            <label class="col-sm-4 control-label">@T("QA.Includesubclasses"): <input type="radio" checked="checked" name="IsContainsChild" value=true /></label>
+                            <label class="col-sm-4 control-label">@T("QA.Notcontainsubclasses"): <input type="radio" name="IsContainsChild" value=false /> </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="js_btn_add_clear" type="button"><i class="fa fa-eraser"></i> @T("QA.Emptied")</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_add_query" type="button"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 不良类型新增Edit Modal -->
+    <div class="modal fade" id="js_edit_add_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Edit")</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query_add" class="form-horizontal" data-need-validate="true">
+                        <div class="container-fluid">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="row-fluid">
+                                        <div class="col-sm-4">
+                                            @T("QA.Badtypelist"):<br />
+                                            <select class="form-control input-sm" id="sourceSelect" multiple="multiple"></select>
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <br />
+                                            <input type="button" class="btn btn-primary btn-sm" style="width:90px;" value="@T("QA.Select")" onclick="moveRight();"><br /><br />
+                                            <input type="button" class="btn btn-primary btn-sm" style="width:90px;" value="@T("QA.Removed")" onclick="moveLeft();">
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            @T("QA.Selectedbadtypes"):<br />
+                                            <select class="form-control input-sm" id="targetSelect" multiple="multiple"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("QA.Emptied")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_add_save"><i class="fa fa-save"></i> @T("QA.Save")</button>
+                    </div>
+                    <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function() {
+            var reworkDetailDatatable = null;
+            var NGDetailDatatable = null;
+            //#endregion
+            var QAMasterUrls = {
+                QueryOQCNGDetails: '@Url.Action("QueryOQCNGDetails", "OQCQuality")',
+                QueryOQCReworkDetails: '@Url.Action("QueryOQCReworkDetails", "OQCQuality")',
+                QueryOQCMasterData: '@Url.Action("QueryOQCMasterData", "OQCQuality")',
+                SaveOQCData: '@Url.Action("SaveOQCData", "OQCQuality")',
+                getAddSearchType: '@Url.Action("QueryQAExceptionType", "Quality")',
+                getAddType: '@Url.Action("QueryExceptionType", "Quality")',
+                CheckWIPNeedUpdate: '@Url.Action("CheckWIPNeedUpdate", "EventReportManager")',
+                AddTExceptionTypesoFlowChart: '@Url.Action("AddTExceptionTypesoFlowChart", "OQCQuality")'
+            };
+            var NGDetail = (function () {
+                //#region columns
+                var columns = [
+                {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                },
+                {
+                    data: "TypeClassify",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                }, {
+                    data: "ExcetionTypeName",
+                    className: "min-col-xs"
+                },  {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (!rowData.CanModify)
+                        {
+                            $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled"   name="Qty"  value="' + rowData.Qty + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">');
+                        }
+                        else
+                        {
+                            $(td).html(' <input type="text" class="form-control input-xs text-center"  name="Qty"  value="' + "" + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">'
+                                       );
+                        }
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "DayDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "SunDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "NightDefectRate",
+                    className: "min-col-xs"
+                }
+                ];
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryQAMasterData
+                var _queryQueryOQCNGDetails = function (firstLoad) {
+                    var config = {
+                        pageId: "#NGDetail_page",
+                        tableId: "#js_NGDetail_datatable",
+                        remoteUrl: QAMasterUrls.QueryOQCNGDetails,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#NGDetail_page').page('destroy');
+                        //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryQueryOQCNGDetails(true);
+                    },
+                    QueryQAMasterDatas: function() {
+                        _queryQueryOQCNGDetails(false);
+                    },
+                    GetNGDetailDatatable: function () {
+                        if (NGDetailDatatable == null) {
+                            NGDetailDatatable = $('#js_NGDetail_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        }
+                        return NGDetailDatatable;
+                    }
+                }
+            })();
+            var reworkDetail = (function () {
+                //#region columns
+                var columns = [
+                {
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                },  {
+                    data: "TypeClassify",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                }, {
+                    data: "ExcetionTypeName",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (!rowData.CanModify)
+                        {
+                            $(td).html('<input type="text" class="form-control input-xs text-center" disabled="disabled"   name="Qty"  value="' + rowData.Qty + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">');
+                        }
+                        else {
+                            $(td).html(' <input type="text" class="form-control input-xs text-center"  name="Qty"  value="' + "" + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="ExceptionType_UID"  value="' + rowData.ExceptionType_UID + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="OQCDetail_UID"  value="' + rowData.OQCDetail_UID + '">' +
+                                       '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="FunPlant"  value="' + rowData.FunPlant + '">' +
+                                        '<input type="text" class="form-control input-xs text-center" style="display:none;"  name="TypeClassify"  value="' + rowData.TypeClassify + '">'
+                                       );
+                        }
+                    },
+                    className: "min-col-xs"
+                },
+                {
+                    data: "DayDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "SunDefectRate",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "NightDefectRate",
+                    className: "min-col-xs"
+                }
+                ];
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                //#region _queryQAMasterData
+                var _queryQueryOQCReworkDetails = function (firstLoad) {
+                    var config = {
+                        pageId: "#reworkDetail_page",
+                        tableId: "#js_reworkDetail_datatable",
+                        remoteUrl: QAMasterUrls.QueryOQCReworkDetails,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#reworkDetail_page').page('destroy');
+                        //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                //#endregion
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryQueryOQCReworkDetails(true);
+                    },
+                    QueryQAMasterDatas: function () {
+                        _queryQueryOQCReworkDetails(false);
+                    },
+                    GetreworkDetailDatatable: function () {
+                        if (reworkDetailDatatable == null) {
+                            reworkDetailDatatable = $('#js_reworkDetail_datatable').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: columns
+                            });
+                        }
+                        return reworkDetailDatatable;
+                    }
+                }
+            })();
+            function MakeWIPUnchange() {
+                $.post(QAMasterUrls.CheckWIPNeedUpdate, { "Op_Type": "OP2" }, function (data) {
+                    if (data != "") {
+                        if (data == "Yes")
+                            $("#js_s_WIP").removeAttr({ "disabled": "disabled" });
+                        else
+                            $("#js_s_WIP").attr({ "disabled": "disabled" });
+                    }
+                });
+            }
+            function Initial() {
+                MakeWIPUnchange();
+                var submitJson = $('#js_form_query').serializeObject();
+                $.post(QAMasterUrls.QueryOQCMasterData, { jsonWithData: JSON.stringify(submitJson) }, function (data) {
+                    if (data != "") {
+                        $('#js_s_input_Project_UID').val(data.Project_UID);
+                        var modifyFlag = $('#ModifyFlag').val();
+                        $('#js_s_input_Qty').val(data.Input);
+                        if (data.NGParts_Qty != null) {
+                            $('#js_s_input_NGParts_Qty').val(data.NGParts_Qty);
+                        }
+                        if (data.GoodParts_Qty != null) {
+                            $('#js_s_input_goodQty').val(data.GoodParts_Qty);
+                        }
+                        if (data.WIP != null) {
+                            $('#js_s_WIP').val(data.WIP);
+                        }
+                        if (data.Storage_Qty != null) {
+                            $('#js_s_input_Storage_Qty').val(data.Storage_Qty);
+                        }
+                        if (modifyFlag == "" || modifyFlag == null || modifyFlag == false) {
+                            if (data.OQCMater_UID != null && data.OQCMater_UID != 0) {
+                                $('#js_s_input_OQCMasterUID').val(data.OQCMater_UID);
+                                var uiNGDetailsBtn = document.getElementById("js_btn_add_role_function");
+                                uiNGDetailsBtn.disabled = true;
+                                if (data.NGParts_Qty != null) {
+                                    $('#js_s_input_NGParts_Qty').val(data.NGParts_Qty);
+                                }
+                                if (data.ReworkQtyFromAssemble != null) {
+                                    $('#js_s_input_ReworkQtyFromAssemble').val(data.ReworkQtyFromAssemble);
+                                }
+                                if (data.Rework != null) {
+                                    $('#js_s_input_Rework').val(data.Rework);
+                                }
+                                if (data.ProductLineRework != null) {
+                                    $('#js_s_input_ProductLineRework').val(data.ProductLineRework);
+                                }
+                                if (data.WaitStorage_Qty != null) {
+                                    $('#js_s_input_WaitStorage_Qty').val(data.WaitStorage_Qty);
+                                }
+                                if (data.NG_Qty != null) {
+                                    $('#js_s_input_NG_Qty').val(data.NG_Qty);
+                                }
+                                if (data.SecondYieldRate != null) {
+                                    $('#js_s_SecondYieldRate').val(data.SecondYieldRate);
+                                }
+                                if (data.FirstYieldRate != null) {
+                                    $('#js_s_FirstYieldRate').val(data.FirstYieldRate);
+                                }
+                                if (data.RepairNG_Yield != null) {
+                                    $('#js_s_RepairNG_Yield').val(data.RepairNG_Yield);
+                                }
+                                if (data.RepairNG_Qty != null) {
+                                    $('#js_s_RepairNG_Qty').val(data.RepairNG_Qty);
+                                }
+                                if (data.NG_Yield != null) {
+                                    $('#js_s_NG_Yield').val(data.NG_Yield);
+                                }
+                                if (data.ReworkQtyFromOQC != null) {
+                                    $('#js_s_input_ReworkQtyFromOQC').val(data.ReworkQtyFromOQC);
+                                }
+                                $('#js_s_input_ReworkQtyFromOQC').attr({ "disabled": "disabled" });
+                                $("#js_s_input_NG_Qty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_WaitStorage_Qty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_Storage_Qty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_ProductLineRework").attr({ "disabled": "disabled" });
+                                $("#js_s_input_NGParts_Qty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_Rework").attr({ "disabled": "disabled" });
+                                $("#js_s_input_Qty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_goodQty").attr({ "disabled": "disabled" });
+                                $("#js_s_input_ReworkQtyFromAssemble").attr({ "disabled": "disabled" });
+                            }
+                        }
+                        else {
+                            SetCanModify();
+                        }
+                    }
+                });
+                NGDetail.QueryQAMasterDatas();
+                reworkDetail.QueryQAMasterDatas();
+                HiddenTableIntial();
+            }
+            Initial();
+            //#region  ----- 编辑
+            $('#btn-edit').on('click', function () {
+                var OQCMasterUID = $('#js_s_input_OQCMasterUID').val();
+                if (OQCMasterUID != null || OQCMasterUID != 0)
+                {
+                    $('#ModifyFlag').val(true);
+                    SetCanModify();
+                }
+            });
+            function SetCanModify() {
+                $("#js_s_input_WaitStorage_Qty").removeAttr("disabled");
+                $("#js_s_input_Storage_Qty").removeAttr("disabled");
+                $("#js_s_input_ProductLineRework").removeAttr("disabled");
+                $("#js_s_input_NGParts_Qty").removeAttr("disabled");
+                $("#js_s_input_Rework").removeAttr("disabled");
+                $("#js_s_input_Qty").removeAttr("disabled");
+                $("#js_s_input_goodQty").removeAttr("disabled");
+                $("#js_s_input_ReworkQtyFromAssemble").removeAttr("disabled");
+                $("#js_s_input_ReworkQtyFromOQC").removeAttr("disabled");
+                var uiNGDetailsBtn = document.getElementById("js_btn_add_role_function");
+                uiNGDetailsBtn.disabled = false;
+                //设置明细表 可编辑
+                var reworkDetailDatatable = reworkDetail.GetreworkDetailDatatable();
+                var NGDetailDatatable = NGDetail.GetNGDetailDatatable();
+                reworkDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var row = $('#js_reworkDetail_datatable>tbody>tr').eq(rowIdx);
+                    row.find('input[name=Qty]').removeAttr("disabled");
+                });
+                NGDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var row = $('#js_NGDetail_datatable>tbody>tr').eq(rowIdx);
+                    row.find('input[name=Qty]').removeAttr("disabled");
+                });
+            }
+            //#endregion
+            //保存资料按钮
+            $('#btn-submit-inner').click('click', function () {
+                var OQCData = {};
+                var MasterData = {};
+                var DetailsData = [];
+                var OQCMasterUID = $('#js_s_input_OQCMasterUID').val();
+                if (OQCMasterUID == null || OQCMasterUID=="")
+                {
+                    OQCMasterUID = 0;
+                }
+                var flag = true;
+                // 首先检查用户输入的数字是否为 自然数
+                function checkRate(input) {
+                    if (!flag)
+                    { return; }
+                    var re = /^(-|\+)?\d+$/;
+                    if (!re.test(input)) {
+                        PDMS.Utility.MessageBox.error("@ViewBag.Naturalnumber");
+                        flag = false;
+                    }
+                }
+                //#region 主表数据
+                var sub = {};
+                if ($.trim($('#js_s_input_goodQty').val()) == "") {
+                    var goodQty = 0;
+                }
+                else {
+                    var goodQty = $.trim($('#js_s_input_goodQty').val());
+                    checkRate(goodQty);
+                }
+                if ($.trim($('#js_s_input_NGParts_Qty').val()) == "") {
+                    var NgPartsQty = 0;
+                }
+                else {
+                    var NgPartsQty = $.trim($('#js_s_input_NGParts_Qty').val());
+                    checkRate(NgPartsQty);
+                }
+                if ($.trim($('#js_s_input_ReworkQtyFromAssemble').val()) == "") {
+                    var ReworkQtyFromAssemble = 0;
+                }
+                else {
+                    var ReworkQtyFromAssemble = $.trim($('#js_s_input_ReworkQtyFromAssemble').val());
+                    checkRate(ReworkQtyFromAssemble);
+                }
+                if ($.trim($('#js_s_input_Rework').val()) == "") {
+                    var Rework = 0;
+                }
+                else {
+                    var Rework = $.trim($('#js_s_input_Rework').val());
+                    checkRate(Rework);
+                }
+                if ($.trim($('#js_s_input_ProductLineRework').val()) == "") {
+                    var ProductLineRework = 0;
+                }
+                else {
+                    var ProductLineRework = $.trim($('#js_s_input_ProductLineRework').val());
+                    checkRate(ProductLineRework);
+                }
+                if ($.trim($('#js_s_input_Storage_Qty').val()) == "") {
+                    var Storage_Qty = 0;
+                }
+                else {
+                    var Storage_Qty = $.trim($('#js_s_input_Storage_Qty').val());
+                    checkRate(Storage_Qty);
+                }
+                if ($.trim($('#js_s_input_WaitStorage_Qty').val()) == "") {
+                    var WaitStorage_Qty = 0;
+                }
+                else {
+                    var WaitStorage_Qty = $.trim($('#js_s_input_WaitStorage_Qty').val());
+                    checkRate(WaitStorage_Qty);
+                }
+                if ($.trim($('#js_s_input_Qty').val()) == "") {
+                    var Input = 0;
+                }
+                else {
+                    var Input = $.trim($('#js_s_input_Qty').val());
+                    checkRate(Input);
+                }
+                if ($.trim($('#js_s_input_NG_Qty').val()) == "") {
+                    var NG_Qty = 0;
+                }
+                else {
+                    var NG_Qty = $.trim($('#js_s_input_NG_Qty').val());
+                    checkRate(NG_Qty);
+                }
+                if ($.trim($('#js_s_input_ReworkQtyFromOQC').val()) == "") {
+                    var ReworkQtyFromOQC = 0;
+                }
+                else {
+                    var ReworkQtyFromOQC = $.trim($('#js_s_input_ReworkQtyFromOQC').val());
+                    checkRate(ReworkQtyFromOQC);
+                }
+                if ($.trim($('#js_s_WIP').val()) == "") {
+                    var WIP = 0;
+                }
+                else {
+                    var WIP = $.trim($('#js_s_WIP').val());
+                    checkRate(WIP);
+                }
+                sub["ReworkQtyFromOQC"] = ReworkQtyFromOQC;
+                sub["GoodParts_Qty"] = goodQty;
+                sub["NGParts_Qty"] = NgPartsQty;
+                sub["ReworkQtyFromAssemble"] = ReworkQtyFromAssemble;
+                sub["Rework"] = Rework;
+                sub["ProductLineRework"] = ProductLineRework;
+                sub["Storage_Qty"] = Storage_Qty;
+                sub["WaitStorage_Qty"] = WaitStorage_Qty;
+                sub["Input"] = Input;
+                sub["OQCMater_UID"] = OQCMasterUID;
+                sub["Project_UID"] = $('#js_s_input_Project_UID').val();
+                sub["NG_Qty"] = NG_Qty;
+                sub["FlowChart_Detail_UID"] = $('#js_search_FlowChart_Detail_UID').val();
+                sub["Color"] = $('#js_s_input_plant_Color').val();
+                sub["MaterialType"] = $('#js_s_input_plant_MaterialType').val();
+                sub["ProductDate"] = $('#js_s_input_date').val();
+                sub["Time_interval"] = $('#js_s_input_interval_time').val();
+                sub["WIP"] = WIP;
+                MasterData = sub;
+                //#endregion
+                //#region 明细表录入
+                var reworkDetailDatatable = reworkDetail.GetreworkDetailDatatable();
+                var NGDetailDatatable = NGDetail.GetNGDetailDatatable();
+                reworkDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                   var details = {};
+                    var row = $('#js_reworkDetail_datatable>tbody>tr').eq(rowIdx);
+                    if ($.trim(row.find('input[name=Qty]').val()) == "") {
+                        var Qty = 0;
+                    }
+                    else {
+                        var Qty = $.trim(row.find('input[name=Qty]').val());
+                        checkRate(Qty);
+                    }
+                    var ExceptionType_UID = $.trim(row.find('input[name=ExceptionType_UID]').val());
+                    var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                    var TypeClassify = $.trim(row.find('input[name=TypeClassify]').val());
+                    var OQCDetail_UID = $.trim(row.find('input[name=OQCDetail_UID]').val());
+                    if (Qty != 0 || OQCDetail_UID != 0) {
+                        details["OQCMater_UID"] = OQCMasterUID;
+                        details["TypeClassify"] = TypeClassify;
+                        details["FunPlant"] = FunPlant;
+                        details["ExceptionType_UID"] = ExceptionType_UID;
+                        details["Qty"] = Qty;
+                        details["OQCDetail_UID"] = OQCDetail_UID;
+                        DetailsData.push(details);
+                    }
+                });
+                NGDetailDatatable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var details = {};
+                    var row = $('#js_NGDetail_datatable>tbody>tr').eq(rowIdx);
+                    if ($.trim(row.find('input[name=Qty]').val()) == "") {
+                        var Qty = 0;
+                    }
+                    else {
+                        var Qty = $.trim(row.find('input[name=Qty]').val());
+                        checkRate(Qty);
+                    }
+                    var ExceptionType_UID = $.trim(row.find('input[name=ExceptionType_UID]').val());
+                    var FunPlant = $.trim(row.find('input[name=FunPlant]').val());
+                    var TypeClassify = $.trim(row.find('input[name=TypeClassify]').val());
+                    var OQCDetail_UID = $.trim(row.find('input[name=OQCDetail_UID]').val());
+                    if (Qty != 0 || OQCDetail_UID != 0) {
+                        details["OQCMater_UID"] = OQCMasterUID;
+                        details["TypeClassify"] = TypeClassify;
+                        details["FunPlant"] = FunPlant;
+                        details["ExceptionType_UID"] = ExceptionType_UID;
+                        details["Qty"] = Qty;
+                        details["OQCDetail_UID"] = OQCDetail_UID;
+                        DetailsData.push(details);
+                    }
+                });
+                //#endregion
+                OQCData["MasterData"] = MasterData;
+                OQCData.DetailsData = DetailsData;
+                if (OQCData == null) {
+                    flag = false;
+                    PDMS.Utility.MessageBox.error("@ViewBag.Pleaseproduction");
+                }
+                if (flag) {
+                    $.post(QAMasterUrls.SaveOQCData, { jsonWithProduct: JSON.stringify(OQCData) }, function (data) {
+                        if (data=='Success') {
+                            PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                            $('#ModifyFlag').val(false);
+                            Initial(); //提交成功后，重新刷新页面。
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+            //#region  table 隐藏
+            function HiddenTableIntial() {
+                var uiNGDetailsBtn = document.getElementById("btn-RadioNGDetail");
+                uiNGDetailsBtn.disabled = true;
+                var uiReworkBtn = document.getElementById("btn-RadioReworkDetail");
+                uiReworkBtn.disabled = false;
+                var Reworkwidth = $("#js_reworkDetail_datatable").attr("style");
+                var NGwidth = $("#js_NGDetail_datatable").attr("style");
+                if (Reworkwidth.length > NGwidth.length) {
+                    $(".table-striped").attr("style", Reworkwidth);
+                }
+                else
+                {
+                    $(".table-striped").attr("style", NGwidth);
+                }
+                $("#js_reworkDetail").hide();
+                $("#js_NGDetail").show();
+            }
+            $('#btn-RadioNGDetail').click(function () {
+                HiddenTableIntial();
+            });
+            $('#btn-RadioReworkDetail').click(function () {
+                var uiReworkBtn = document.getElementById("btn-RadioReworkDetail");
+                uiReworkBtn.disabled = true;
+                var uiNGDetailsBtn = document.getElementById("btn-RadioNGDetail");
+                uiNGDetailsBtn.disabled = false;
+                var Reworkwidth = $("#js_reworkDetail_datatable").attr("style");
+                var NGwidth = $("#js_NGDetail_datatable").attr("style");
+                if (Reworkwidth.length > NGwidth.length) {
+                    $(".table-striped").attr("style", Reworkwidth);
+                }
+                else {
+                    $(".table-striped").attr("style", NGwidth);
+                }
+                $("#js_reworkDetail").show();
+                $("#js_NGDetail").hide();
+            });
+            //#endregion
+            //#region  添加明细
+            $('#js_search_add_modal').on('hide.bs.modal', function (event) {
+                $("#js_s_add_type_name").val("");
+                $("#js_s_add_function_id").val("");
+                $("#js_s_add_function_name").val("");
+                $("#js_s_add_first_type").empty();
+                $("#js_s_add_second_type").empty();
+                $("#js_s_add_three_type").empty();
+            });
+            //查询
+            $('#js_btn_add_query').click(function () {
+                if ($('#js_form_add_query').valid()) {
+                    //获取专案
+                    var project = $("#js_s_input_plant_Project").val();
+                    $("#js_s_add_project_name").val(project);
+                    //判断是否包含子类
+                    var BadType = $('#js_form_add_query').serializeObject()
+                    $.post(QAMasterUrls.getAddSearchType, { JsonBadType: JSON.stringify(BadType) }, function (data) {
+                        if (data != "") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item.ExceptionType_UID)
+                                    .text(item.TypeName)
+                                    .appendTo($("#sourceSelect"));
+                            });
+                        }
+                    });
+                    $('#js_search_add_modal').modal('hide');
+                    $('#js_edit_add_modal').modal('show');
+                }
+            });
+            //查询页面出现时候绑定值
+            $('#js_search_add_modal').on('show.bs.modal', function (event) {
+                $("#js_s_add_first_type").empty();
+                $('#sourceSelect').empty();
+                $('#targetSelect').empty();
+                var Flowchart_Master_UID = $("#js_search_FlowchartMaster_UID").val();
+                $("<option></option>").val("").text("").appendTo($("#js_s_add_first_type"));
+                $.post(QAMasterUrls.getAddType, { typeLevel: 1, parentCode: "", Flowchart_Master_UID: Flowchart_Master_UID }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Org_TypeCode)
+                                .text(item.TypeName)
+                                .appendTo($("#js_s_add_first_type"));
+                        });
+                        GetSecondTypeAdd();
+                    }
+                });
+            });
+            //获取第二级不良类型
+            function GetSecondTypeAdd() {
+                var temp = $("#js_s_add_first_type").val();
+                if (temp == "") return;
+                $("#js_s_add_second_type").empty();
+                $("<option></option>").val("").text("").appendTo($("#js_s_add_second_type"));
+                var Flowchart_Master_UID = $("#js_search_FlowchartMaster_UID").val();
+                $.post(QAMasterUrls.getAddType, { typeLevel: 2, parentCode: temp, Flowchart_Master_UID: Flowchart_Master_UID }, function (data) {
+                    $("#js_s_add_three_type").empty();
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Org_TypeCode)
+                                .text(item.TypeName)
+                                .appendTo($("#js_s_add_second_type"));
+                        });
+                        GetThirdTypeAdd();
+                    }
+                });
+            }
+            //获取第三阶不良
+            function GetThirdTypeAdd() {
+                var temp = $("#js_s_add_second_type").val();
+                if (temp == "") return;
+                $("#js_s_add_three_type").empty();
+                var Flowchart_Master_UID = $("#js_search_FlowchartMaster_UID").val();
+                $("<option></option>").val("").text("").appendTo($("#js_s_add_three_type"));
+                $.post(QAMasterUrls.getAddType, { typeLevel: 3, parentCode: temp, Flowchart_Master_UID: Flowchart_Master_UID }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item.Org_TypeCode)
+                                .text(item.TypeName)
+                                .appendTo($("#js_s_add_three_type"));
+                        });
+                    }
+                });
+            }
+            //第一级不良类型改变事件
+            $("#js_s_add_first_type").click(function ff() {
+                GetSecondTypeAdd();
+                if ($("#js_s_add_second_type").find("option:selected").text() == '') {
+                    SetTypeName();
+                }
+            });
+            //第二级不良类型改变事件
+            $("#js_s_add_second_type").click(function ff() {
+                GetThirdTypeAdd();
+                if ($("#js_s_add_three_type").find("option:selected").text() == '') {
+                    SetTypeName();
+                }
+            });
+            $("#js_s_add_three_type").click(function ff() {
+                if ($("#js_s_add_three_type").find("option:selected").text() != '') {
+                    SetTypeName();
+                }
+            });
+            function SetTypeName() {
+                var result = $("#js_s_add_three_type").find("option:selected").text();
+                if (result == '') {
+                    result = $("#js_s_add_second_type").find("option:selected").text();
+                    if (result == '') {
+                        result = $("#js_s_add_first_type").find("option:selected").text();
+                    }
+                }
+                $("#js_s_add_type_name").empty();
+                $("#js_s_add_type_name").val(result);
+            }
+            $("#js_s_add_typeClassify").click(function ff() {
+                var typeClassify = $("#js_s_add_typeClassify").val();
+                if(typeClassify=="不良明细")
+                {
+                    $("#FunPlant_div").show();
+                }
+                else
+                {
+                    $("#FunPlant_div").hide();
+                }
+            });
+            //新增不良类型保存按钮点击
+            $("#js_btn_add_save").click(function () {
+                //先获取选择的不良类型
+                var selectType = $("#targetSelect").val();
+                if (selectType == null) {
+                    PDMS.Utility.MessageBox.info("@ViewBag.Selectnewtype");
+                    return;
+                }
+                var funPlantValue = {};
+                var funPlantInfo = [];
+
+                if ($.trim($('#js_s_add_typeClassify').val()) == "") {
+                   var typeClassify = "不良明细";
+                }
+                else
+                {
+                    var typeClassify = $("#js_s_add_typeClassify").val();
+                }
+
+                if ($.trim($('#js_s_add_funPlant').val()) == "") {
+                    var funplant = "";
+                }
+                else {
+                    var funplant = $("#js_s_add_funPlant").val();
+                }
+                $.each(selectType, function (i, val) {
+                    var sub = {};
+                    sub["ExceptionType_UID"] = val;
+                    sub["FlowChart_Detail_UID"] = $('#js_search_FlowChart_Detail_UID').val();
+                    sub["FunPlant"] = funplant;
+                    sub["TypeClassify"] = typeClassify;
+                    sub["Creator_UID"] = 90014;
+                    sub["CreateDate"] = new Date();
+                    sub["FlowChart_Master_UID"] = $('#js_search_FlowchartMaster_UID').val();
+                    sub["Process_Seq"] = $('#js_search_Process_seq').val();
+                    funPlantInfo.push(sub);
+                });
+                funPlantValue.ExcetionTypes = funPlantInfo;
+                $.post(QAMasterUrls.AddTExceptionTypesoFlowChart, { jsonBadType: JSON.stringify(funPlantValue) }, function (data) {
+                    $("#js_edit_add_modal").modal('hide');
+                    if (data != "Success")
+                        PDMS.Utility.MessageBox.error(data);
+                    else {
+                        PDMS.Utility.MessageBox.info("@ViewBag.Savesuccessfully");
+                    }
+                    Initial();
+                });
+            });
+            //新增页面去除上次选择的
+            $('#js_edit_add_modal').on('show.bs.modal', function (event) {
+                $("#targetSelect option").remove();
+            });
+            //#endregion
+        });
+        function moveRight() {
+            var sourceSelect = document.getElementById("sourceSelect");
+            var targetSelect = document.getElementById("targetSelect");
+            while (sourceSelect.options.selectedIndex != -1) {
+                targetSelect.options.add(sourceSelect.options.item(sourceSelect.selectedIndex));
+            }
+        }
+        function moveLeft() {
+            var sourceSelect = document.getElementById("targetSelect");
+            var targetSelect = document.getElementById("sourceSelect");
+            while (sourceSelect.options.selectedIndex != -1) {
+                targetSelect.options.add(sourceSelect.options.item(sourceSelect.selectedIndex));
+            }
+        }
+    </script>
+}

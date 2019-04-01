@@ -1,0 +1,23 @@
+﻿@model LanguageVM
+@{
+    int i = 1;
+
+}
+@if (Model.Languages != null)
+{
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" id="ddlLanguageSelect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@Model.CurrentLanguage.Name <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            @foreach (var lang in Model.Languages)
+            {
+                <li><a href="@WebHelper.ModifyQueryString(Url.Action("SetLanguage", "Common", new { langid = lang.System_Language_UID }), "returnurl=" + HttpUtility.UrlEncode(HttpContext.Current.Request.RawUrl), null)">@lang.Name</a></li>
+
+                if (i < Model.Languages.Count)
+                {
+                    <li role="separator" class="divider"></li>
+                    i++;
+                }
+            }
+        </ul>
+    </li>
+}

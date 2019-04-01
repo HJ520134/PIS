@@ -1,0 +1,1805 @@
+﻿@model PDMS.Model.ViewModels.Material_Maintenance_RecordVM
+<section class="content-header portal-content-header">
+    <h1>设备备品委外维修</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">新增</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="bt_search"> 查询</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export"> 导出</button>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>状态</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>料号</th>
+                        <th>设备备品序号</th>                       
+                        <th>是否为保固期</th>
+                        <th>送修日期</th>
+                        <th>预计完成日期</th>
+                        <th>维修厂商</th>
+                        <th>维修项目</th>
+                        <th>维修费用</th>
+                        <th>维修天数</th>
+                        <th>提交人员</th>
+                        <th>判定人员</th>
+                        <th>回厂日期</th>
+                        <th>回厂日期填写人员</th>
+                        <th>验收人员</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>状态</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>料号</th>
+                        <th>设备备品序号</th>
+                        <th>是否为保固期</th>
+                        <th>送修日期</th>
+                        <th>预计完成日期</th>
+                        <th>维修厂商</th>
+                        <th>维修项目</th>
+                        <th>维修费用</th>
+                        <th>维修天数</th>
+                        <th>提交人员</th>
+                        <th>判定人员</th>
+                        <th>回厂日期</th>
+                        <th>回厂日期填写人员</th>
+                        <th>验收人员</th>
+                        <th>备注</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+<div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新增</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditMaterial_Maintenance_Record", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_optype_add">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_optype_add">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_add" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+                                                    
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_material_uid">料号</label>
+                                <div class="col-sm-7">                                
+                                    <select class="selectpicker form-control input-sm" id="js_select_material" name="Material_Uid" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.materialinfo)
+                                        {
+                                            <option value="@item.Material_Uid">@item.Assembly_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Material_Seq">设备备品序号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Material_Seq" name="Material_Seq" data-rule-maxlength="30">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Warranty">是否为保固期</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm"  id="js_select_Is_Warranty" name="Is_Warranty">                                      
+                                            <option value=true selected>是</option>
+                                            <option value=false>否</option>
+                                    </select>
+                                </div>
+                            </div>  
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Abnormal">异常判定</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Abnormal" name="Abnormal" data-rule-maxlength="100">
+                                </div>
+                            </div>
+                                                      
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date">送修日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date" name="Delivery_Date" placeholder="Delivery_Date">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Expected_Return_Date">預計完成日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date required" id="s_input_Expected_Return_Date" name="Expected_Return_Date" placeholder="Expected_Return_Date">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Vendor">维修厂商</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Vendor" name="Vendor" data-rule-maxlength="100">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Maintenance_Items">维修项目</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Maintenance_Items" name="Maintenance_Items" data-rule-maxlength="100" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees">维修费用</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm required needtwo" id="s_input_Maintenance_Fees" name="Maintenance_Fees" placeholder="Maintenance_Fees" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Notes">备注</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Notes" name="Notes" data-rule-maxlength="100">
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Material_Maintenance_Record_UID" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="js_approve1_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">审核</h4>
+            </div>
+            @using (Html.BeginForm("AddOrEditMaterial_Maintenance_Record", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit1" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_factory_approve1">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_factory_approve1" name="Plant_Organization_Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_optype_approve1">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_optype_approve1" name="BG_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_funplant_approve1">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve1" name="FunPlant_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_material_uid_approve1">料号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve1" name="Material_ID" readonly>                               
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Material_Seq_approve1">设备备品序号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve1" name="Material_Seq" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Warranty_approve1">是否为保固期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve1" name="Warranty" data-rule-maxlength="30" readonly>                                                          
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Abnormal_approve1">异常判定</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Abnormal_approve1" name="Abnormal" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_approve1">送修日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date_approve1" name="Delivery_Date" placeholder="Delivery_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Expected_Return_Date_approve1">預計完成日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm date required" id="s_input_Expected_Return_Date_approve1" name="Expected_Return_Date" placeholder="Expected_Return_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Vendor_approve1">维修厂商</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Vendor_approve1" name="Vendor" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Items_approve1">维修项目</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Maintenance_Items_approve1" name="Maintenance_Items" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees_approve1">维修费用</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm required needtwo" id="s_input_Maintenance_Fees_approve1" name="Maintenance_Fees" placeholder="Maintenance_Fees" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Notes_approve1">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Notes_approve1" name="Notes" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="Material_Maintenance_Record_UID" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_approve1"><i class="fa fa-save"></i>保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_approve2_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">审核</h4>
+            </div>
+            @using (Html.BeginForm("Approve2Material_Maintenance_Record", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit2" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_factory_approve2">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_factory_approve2" name="Plant_Organization_Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_optype_approve2">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_optype_approve2" name="BG_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_funplant_approve2">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve2" name="FunPlant_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_material_uid_approve2">料号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve2" name="Material_ID" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Material_Seq_approve2">设备备品序号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve2" name="Material_Seq" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Warranty_approve2">是否为保固期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve2" name="Warranty" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Abnormal_approve2">异常判定</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Abnormal_approve2" name="Abnormal" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_approve2">送修日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date_approve2" name="Delivery_Date" placeholder="Delivery_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Expected_Return_Date_approve2">預計完成日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm date required" id="s_input_Expected_Return_Date_approve2" name="Expected_Return_Date" placeholder="Expected_Return_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Vendor_approve2">维修厂商</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Vendor_approve2" name="Vendor" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Items_approve2">维修项目</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Maintenance_Items_approve2" name="Maintenance_Items" data-rule-maxlength="100">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees_approve2">维修费用</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm required needtwo" id="s_input_Maintenance_Fees_approve2" name="Maintenance_Fees" placeholder="Maintenance_Fees" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Notes_approve2">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Notes_approve2" name="Notes" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_approve2">回厂日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date_approve2" name="Return_Date" placeholder="Return_Date">
+                            </div>
+                        </div>
+                        <input type="hidden" name="Material_Maintenance_Record_UID" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_approve2"><i class="fa fa-save"></i>保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_approve3_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">审核</h4>
+            </div>
+            @using (Html.BeginForm("AddOrEditMaterial_Maintenance_Record", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit3" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_factory_approve3">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_factory_approve3" name="Plant_Organization_Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_optype_approve3">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_optype_approve3" name="BG_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_funplant_approve3">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve3" name="FunPlant_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_material_uid_approve3">料号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_approve3" name="Material_ID" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Material_Seq_approve3">设备备品序号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve3" name="Material_Seq" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Warranty_approve3">是否为保固期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Seq_approve3" name="Warranty" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Abnormal_approve3">异常判定</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Abnormal_approve3" name="Abnormal" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_approve3">送修日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date_approve3" name="Delivery_Date" placeholder="Delivery_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Expected_Return_Date_approve3">預計完成日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm date required" id="s_input_Expected_Return_Date_approve3" name="Expected_Return_Date" placeholder="Expected_Return_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Vendor_approve3">维修厂商</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Vendor_approve3" name="Vendor" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Items_approve3">维修项目</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Maintenance_Items_approve3" name="Maintenance_Items" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees_approve3">维修费用</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm required needtwo" id="s_input_Maintenance_Fees_approve3" name="Maintenance_Fees" placeholder="Maintenance_Fees" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Notes_approve3">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Notes_approve3" name="Notes" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_approve3">回厂日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm  date required" id="s_input_Delivery_Date_approve3" name="Return_Date" placeholder="Return_Date" readonly>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Material_Maintenance_Record_UID" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_approve3"><i class="fa fa-save"></i>保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_query">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optype_query">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplant_query">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>                                      
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_material_id_search">料号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_material_id_search" name="Material_ID">
+                                </div>
+                            </div>    
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Material_Seq">设备备品序号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Material_Seq" name="Material_Seq" data-rule-maxlength="30">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Abnormal">异常判定</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Abnormal" name="Abnormal" data-rule-maxlength="100">
+                                </div>
+                            </div>                 
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Vendor">维修厂商</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Vendor" name="Vendor" data-rule-maxlength="100">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Maintenance_Items">维修项目</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Maintenance_Items" name="Maintenance_Items" data-rule-maxlength="100">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees">维修费用</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm  needtwo" id="s_input_Maintenance_Fees" name="Maintenance_Fees" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Warranty">是否为保固期</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_Is_Warranty" name="Is_Warranty">
+                                        <option ></option>
+                                        <option value=true >是</option>
+                                        <option value=false>否</option>
+                                    </select>
+                                </div>
+                            </div>                  
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_status_search">状态</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_status_search" name="Status_UID">
+                                        <option></option>                                     
+                                        <option value=1>未判定</option>                                          
+                                        <option value=2>未填写回厂日期</option>   
+                                        <option value=3>未验收</option>
+                                        <option value=4>已验收</option>                                    
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Submiter_view">提交人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Submiter_view" name="Submiter"  />
+                                </div>
+                            </div>                    
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Judger_view">判定人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Judger_view" name="Judger"  />
+                                </div>
+                            </div>         
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Returner_view">回厂填写人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Returner_view" name="Returner"  />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Acceptancer_view">验收人员</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Acceptancer_view" name="Acceptancer"  />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Notes_view">备注</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_Notes_view" name="Notes" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group ">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="num-interval">维修天数</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                                            <span class="input-group-addon">From</span>
+                                            <input type="number" name="StartMaintenance_Days" class="form-control input-sm" id="js_s_input_Maintenance_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="number" name="EndMaintenance_Days" class="form-control input-sm" id="js_s_input_Maintenance_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="num-interval">預計维修天数</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                                            <span class="input-group-addon">From</span>
+                                            <input type="number" name="StartExpected_Return_Days" class="form-control input-sm" id="js_s_input_Return_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="number" name="EndExpected_Return_Days" class="form-control input-sm" id="js_s_input_Return_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">送修日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="StartDelivery_Date" class="form-control input-sm date" id="js_s_input_Delivery_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="EndDelivery_Date" class="form-control input-sm date" id="js_s_input_Delivery_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">回厂日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="StartReturn_Date" class="form-control input-sm date" id="js_s_input_Return_Date_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="EndReturn_Date" class="form-control input-sm date" id="js_s_input_Return_Date_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" data-type="date-interval">預計完成日期</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="StartExpected_Return_Date" class="form-control input-sm date" id="js_s_input_Expected_Return_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="EndExpected_Return_Date" class="form-control input-sm date" id="js_s_input_Expected_Return_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>              
+
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="modal fade" id="js_view_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查看</h4>
+            </div>
+            @using (Html.BeginForm("AddOrEditMaterial_Maintenance_Record", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit3" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_factory_view">厂区</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_factory_view" name="Plant_Organization_Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_optype_view">OP类型</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_optype_view" name="BG_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_funplant_view">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_view" name="FunPlant_Organization_Name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_material_uid_view">料号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_funplant_view" name="Material_ID" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Material_Seq_view">设备备品序号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Material_Seq_view" name="Material_Seq" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Warranty_view">是否为保固期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Material_Seq_view" name="Warranty" data-rule-maxlength="30" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Abnormal_view">异常判定</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Abnormal_view" name="Abnormal" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_view">送修日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Delivery_Date_view" name="Delivery_Date" placeholder="Delivery_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Expected_Return_Date_view">預計完成日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Expected_Return_Date_view" name="Expected_Return_Date" placeholder="Expected_Return_Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Vendor_view">维修厂商</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Vendor_view" name="Vendor" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Items_view">维修项目</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Maintenance_Items_view" name="Maintenance_Items" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Fees_view">维修费用</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm needtwo" id="s_input_Maintenance_Fees_view" name="Maintenance_Fees"  readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Maintenance_Days_view">维修天数</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control input-sm" id="s_input_Maintenance_Days_view" name="Maintenance_Days"  readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Submiter_view">提交人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Submiter_view" name="Submiter"  readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Submit_Date_view">提交时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Submit_Date_view" name="Submit_Date"  readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Judger_view">判定人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Judger_view" name="Judger"  readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Judge_Date_view">判定时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Judge_Date_view" name="Judge_Date"  readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Returner_view">回厂填写人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Returner_view" name="Returner"  readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Return_Time_view">回厂填写时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Return_Time_view" name="Return_Time"  readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Acceptancer_view">验收人员</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Acceptancer_view" name="Acceptancer"  readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Acceptance_Date_view">验收时间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Acceptance_Date_view" name="Acceptance_Date" readonly />
+                            </div>
+                        </div>                 
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_s_input_Delivery_Date_view">回厂日期</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Delivery_Date_view" name="Return_Date" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Notes_view">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_Notes_view" name="Notes" data-rule-maxlength="100" readonly>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Material_Maintenance_Record_UID" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                @*<button type="button" class="btn btn-primary btn-sm" id="js_btn_save_approve3"><i class="fa fa-save"></i>保存</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+    $('#js_btn_clear').click(function () {
+        PDMS.Utility.Criteria.Clear();
+    });
+
+    $(function () {
+        var CreateBoundSetting = (function () {
+            var urls = {
+
+                //根据厂区取得OP类型
+                getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                //根据OP类型取得功能厂
+                getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                //画面初始化加载
+                queryCreateBounds: '@Url.Action("QueryMaterial_Maintenance_Records", "Equipmentmaintenance")',
+                //根据ID获取开账信息
+                queryMaterial_Maintenance_RecordByUid: '@Url.Action("QueryMaterial_Maintenance_RecordByUid", "Equipmentmaintenance")',
+
+                approve1CreateboundByUid: '@Url.Action("Approve1Material_Maintenance_RecordByUid", "Equipmentmaintenance")',
+                approve3CreateboundByUid: '@Url.Action("Approve3Material_Maintenance_RecordByUid", "Equipmentmaintenance")',              
+                //删除信息
+                deleteCreateBound: '@Url.Action("DeleteMaterial_Maintenance_Record", "Equipmentmaintenance")',
+
+                approveCreateboundByUid: '@Url.Action("ApproveCreateboundByUid", "Equipmentmaintenance")',
+                //导出excel
+                doExportFunction: '@Url.Action("DoExportMaterial_Maintenance_Record", "Equipmentmaintenance")',
+
+                doAllExportFunction: '@Url.Action("DoAllExportMaterial_Maintenance_Record", "Equipmentmaintenance")',
+
+            };
+            //#region 定义字段列
+            var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Maintenance_Record_UID + '">')
+                                        .addClass('table-col-checkbox');
+
+                    },
+                    className: "text-center"
+                },{
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var buttonAppr = '<button type="button" class="btn btn-primary btn-xs js-grid-approve" data-id="' + rowData.Material_Maintenance_Record_UID + '">编辑</button>';
+                        var buttonAppr1 = '<button type="button" class="btn btn-primary btn-xs js-grid-approve1" data-id="' + rowData.Material_Maintenance_Record_UID + '">判定审核</button>';
+                        var buttonAppr2 = '<button type="button" class="btn btn-primary btn-xs js-grid-approve2" data-id="' + rowData.Material_Maintenance_Record_UID + '">返厂确认</button>';
+                        var buttonAppr3 = '<button type="button" class="btn btn-primary btn-xs js-grid-approve3" data-id="' + rowData.Material_Maintenance_Record_UID + '">验收审核</button>';
+                        var buttondelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Material_Maintenance_Record_UID + '">删除</button>';
+                              
+                        
+                        //var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                        //            '<i class="fa fa-reorder"></i>' +
+                        //            '</button>' +
+                        //            '<div class="hidden popover-content">' +
+                        //                '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Material_Maintenance_Record_UID + '">编辑</button>' +
+                        //                '{0}' +
+                        //                '{1}' +
+                        //                '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Material_Maintenance_Record_UID + '">删除</button>'+
+                        //                '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Material_Maintenance_Record_UID + '">查看</button>' +
+                        //            '</div>';
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                           '<i class="fa fa-reorder"></i>' +
+                           '</button>' +
+                           '<div class="hidden popover-content">' +
+                               '{0}' +
+                               '{1}' +
+                               '{2}' +
+                              '<button type="button" class="btn btn-primary btn-xs js-grid-view" data-id="' + rowData.Material_Maintenance_Record_UID + '">查看</button>' +
+                           '</div>';
+                        if (rowData.Status_UID == 1) {
+                            result = result.replace('{0}', buttonAppr);
+                            result = result.replace('{1}', buttonAppr1);
+                            result = result.replace('{2}', buttondelete); 
+
+                        } else if (rowData.Status_UID == 2){
+                            result = result.replace('{0}', '');
+                            result = result.replace('{1}', buttonAppr2);
+                            result = result.replace('{2}', ''); 
+                        }else if (rowData.Status_UID == 3)
+                        {
+                            result = result.replace('{0}', '');
+                            result = result.replace('{1}', buttonAppr3);
+                            result = result.replace('{2}', ''); 
+                        }
+                        else if (rowData.Status_UID == 4)
+                        {
+                            result = result.replace('{0}', '');
+                            result = result.replace('{1}', '');
+                            result = result.replace('{2}', ''); 
+                        }
+                        else
+                        {
+                            result = result.replace('{0}', '');
+                            result = result.replace('{1}', '');
+                            result = result.replace('{2}', ''); 
+                        }
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                }, {
+
+                    data: "Status_UID",
+                    render: function (data, type, full, meta) {
+                        if(data==1)
+                        {
+                            return  "未判定" ;
+                        }else if(data==2)
+                        {
+                            return  "未填写返厂日期" ;
+                        }else if(data==3)
+                        {
+                            return  "未验收" ;
+                        }else
+                        {
+                            return  "已结案" ;
+                        }
+
+                },
+            className: "min-col-xs"
+                }, {
+                    data: "Plant_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "BG_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant_Organization_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Material_Seq",
+                    className: "min-col-xs"
+                }, {
+                    data: "Is_Warranty",
+                    render: function (data, type, full, meta) {
+                        return data ? "是" : "否";
+                    },
+                    className: "min-col-xs"
+                }, {
+
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Delivery_Date).format("yyyy-MM-dd"));
+                    },
+                    className: "min-col-xs"
+                   
+                }, {
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Expected_Return_Date).format("yyyy-MM-dd"));
+                    },
+                    className: "min-col-xs"
+                
+                }, {
+                    data: "Vendor",
+                    className: "min-col-xs"
+                }, {
+                    data: "Maintenance_Items",
+                    className: "min-col-xs"
+                }, {
+                    data: "Maintenance_Fees",
+                    className: "min-col-xs"
+                }
+                , {
+                    data: "Maintenance_Days",
+                    className: "min-col-xs"
+                }
+                , {
+                    data: "Submiter",
+                    className: "min-col-xs"
+                },
+        
+               {
+                   data: "Judger",
+                         className: "min-col-xs"
+                     },         
+                {
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        if(rowData.Return_Date!=null)
+                        {
+                            $(td).html(new Date(rowData.Return_Date).format("yyyy-MM-dd"));
+                        }else
+                        {
+                            $(td).html("");
+                        }
+
+                    },
+                    className: "min-col-xs"
+                }
+                  , {
+                      data: "Returner",
+                      className: "min-col-xs"
+                  },
+                 {
+                        data: "Acceptancer",
+                        className: "min-col-xs"
+                    },
+                {
+                    data: "Notes",
+                    className: "min-col-xs"
+                }
+            ];
+
+            //#endregion 定义字段列
+            Date.prototype.format = function(format) {
+                var date = {
+                    "M+": this.getMonth() + 1,
+                    "d+": this.getDate(),
+                    "h+": this.getHours(),
+                    "m+": this.getMinutes(),
+                    "s+": this.getSeconds(),
+                    "q+": Math.floor((this.getMonth() + 3) / 3),
+                    "S+": this.getMilliseconds()
+                };
+                if (/(y+)/i.test(format)) {
+                    format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                }
+                for (var k in date) {
+                    if (new RegExp("(" + k + ")").test(format)) {
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                               ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                    }
+                }
+                return format;
+            }
+            var _getParams = function () {
+
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryCreateBounds = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryCreateBounds,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                    scrollX: true,
+                    scrollCollapse: false,
+                    autoWidth: true,
+                    columns: columns
+                   }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+                $('table thead tr').find('th').removeClass('text-center');
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryCreateBounds(true, false);
+                },
+                queryCreateBounds: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryCreateBounds(false, buildCriteria);
+                }
+            }
+        })();
+
+        CreateBoundSetting.Init();
+
+        $('.needint').keydown(function (event) {
+            var value = event.key;
+            if (value.length > 1)
+                return true;
+            if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                return false;
+        })
+
+
+        //新增
+        $('#btn_add').click(function () {
+            $('#js_edit_modal').find('h4').text('新增');
+            $('#js_edit_modal').modal('show', $(this));
+            $('#js_select_factory_add').trigger('change');
+        })
+        //添加界面厂区是OP类型变化
+        $('#js_select_factory_add').change(function () {
+            GetOPTypesadd();
+
+        })
+        function GetOPTypesadd() {
+            var oporgid = $('#js_select_factory_add option:selected').val();
+            url = CreateBoundSetting.urls.getCurrentOPType;
+            $('#js_select_optype_add').html('<option></option>');
+            $('#js_select_optype_add').selectpicker('refresh');
+            $('#js_select_funplant_add').html('<option></option>');
+            $('#js_select_funplant_add').selectpicker('refresh');
+            if (oporgid != 0) {
+                //设置OP
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_add').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            if(@Model.OptypeID!=0)
+                            {
+                                if(@Model.OptypeID==data[i].Organization_UID )
+                                {
+                                    $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                }
+                            }else
+                            {
+                                $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    }
+                    $('#js_select_optype_add').selectpicker('refresh');
+                });
+            }
+
+        }
+        //OP类型变更  start
+        $('#js_select_optype_add').change(function () {
+            var url = CreateBoundSetting.urls.getFunPlantByOPTypes;
+            var oporgid = $('#js_select_factory_add option:selected').val();
+            $('#js_select_funplant_add').html('<option></option>');
+            $('#js_select_funplant_add').selectpicker('refresh');
+            if ($('#js_select_optype_add option:selected').text() != "") {
+                //设置功能厂
+                $.post(url, { Optype: $('#js_select_optype_add option:selected').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if(@Model.FunPlantID!=0)
+                        {
+                            if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                            {
+                                $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }else
+                        {
+                            $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                        }
+                    }
+                    $('#js_select_funplant_add').selectpicker('refresh');
+                });
+
+
+            }
+        })
+
+        
+        ///查询相关---START
+        $('#bt_search').click(function () {
+            debugger;
+            $('#js_select_factory_query').trigger('change');
+        });
+        //查询按钮
+        $('#js_btn_query').click(function () {
+            if ($('#js_form_query').valid()) {
+                CreateBoundSetting.queryCreateBounds(true);
+                $('#js_search_modal').modal('hide');
+            }
+        });
+        //查询界面厂区是OP类型变化
+        $('#js_select_factory_query').change(function () {
+            GetOPTypes();
+           // Setsearchbtn();
+        })
+
+        function GetOPTypes() {
+            var oporgid = $('#js_select_factory_query option:selected').val();
+            url = CreateBoundSetting.urls.getCurrentOPType;
+            $('#js_select_optype_query').html('<option></option>');
+            $('#js_select_optype_query').selectpicker('refresh');
+            $('#js_select_funplant_query').html('<option></option>');
+            $('#js_select_funplant_query').selectpicker('refresh');
+            if (oporgid != 0) {
+                //设置OP
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            if(@Model.OptypeID!=0)
+                            {
+                                if(@Model.OptypeID==data[i].Organization_UID )
+                                {
+                                    $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                            }
+                        }
+                    }
+                    $('#js_select_optype_query').selectpicker('refresh');
+                });
+
+            }
+        }
+        //OP类型变更  start
+        $('#js_select_optype_query').change(function () {
+            var url = CreateBoundSetting.urls.getFunPlantByOPTypes;
+            $('#js_select_funplant_query').html('<option></option>');
+            $('#js_select_funplant_query').selectpicker('refresh');
+            if ($('#js_select_optype_query option:selected').text() != "") {
+                //设置功能厂
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if(@Model.FunPlantID!=0)
+                        {
+                            if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                            {
+                                $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }else
+                        {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                        }
+                    }
+                    $('#js_select_funplant_query').selectpicker('refresh');
+                });
+
+            }
+        });
+
+        //新增保存----start
+        $('#js_btn_save_new').click(function () {
+            $('#js_form_user_edit').ajaxSubmit({
+                beforeSubmit: function () {
+                    if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                        return false;
+
+                    if ($('#js_edit_modal').find('select[name=Plant_Organization_UID]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选厂区');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择OP类型');
+                        return false;
+                    }
+
+
+                    if ($('#js_edit_modal').find('select[name=Material_Uid]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选备品料号');
+                        return false;
+                    }
+
+                    if ($('#js_edit_modal').find('input[name=Material_Seq]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写设备备品序号');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('input[name=Abnormal]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写异常判定');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('input[name=Delivery_Date]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写送修日期');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('input[name=Expected_Return_Date]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写预计完成日期');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('input[name=Vendor]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写维修厂商');
+                        return false;
+                    }
+
+                },
+                success: function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_edit_modal').modal('hide');
+                        if (data == "0") {
+                            PDMS.Utility.MessageBox.info('更新成功');
+                        } else {
+                            PDMS.Utility.MessageBox.info('新增成功');
+                        }
+                        CreateBoundSetting.queryCreateBounds();
+                    }
+                }
+            });
+        })
+        //新增保存----END
+
+        //检测输入数据
+        $('#js_form_user_edit').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+
+        //第一步编辑---START
+        $('body').on('click', '.js-grid-approve', function () {
+            $('#js_edit_modal').find('h4').text('编辑');
+            $('#js_edit_modal').modal('show', $(this));
+
+            var Material_Maintenance_Record_UID = $(this).attr('data-id'),
+                url = CreateBoundSetting.urls.queryMaterial_Maintenance_RecordByUid;
+            $('#js_edit_modal').find('input[name=Material_Maintenance_Record_UID]').val(Material_Maintenance_Record_UID);
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                debugger;
+                $('#js_select_factory_add').selectpicker('val', data.Plant_Organization_UID);
+                $("#js_select_factory_add").trigger("liszt:updated");
+                if(data.Plant_Organization_UID!=0)
+                {
+                    $('#js_select_factory_add').trigger('change');
+                }
+                $('#js_select_optype_add').selectpicker('val', data.BG_Organization_UID);
+                $("#js_select_optype_add").trigger("liszt:updated");
+                if(data.BG_Organization_UID!=0)
+                {
+                    $('#js_select_optype_add').trigger('change');
+                }
+                $('#js_select_funplant_add').selectpicker('val', data.FunPlant_Organization_UID);
+                $("#js_select_funplant_add").trigger("liszt:updated");
+                //if(data.FunPlant_Organization_UID!=0)
+                //{
+                //    $('#js_select_funplant_add').trigger('change');
+                //}
+                $('#js_select_material').selectpicker('val', data.Material_UID);
+                $("#js_select_material").trigger("liszt:updated");
+
+                $('#js_edit_modal').find('input[name=Material_Seq]').val(data.Material_Seq);
+                debugger;
+                //$('#js_select_Is_Warranty').selectpicker('val', data.Is_Warranty);
+                //$("#js_select_Is_Warranty").trigger("liszt:updated");
+                if(data.Is_Warranty==false)
+                {
+                    $('#js_select_Is_Warranty').selectpicker('val', 'false');
+                }else
+                {
+                    $('#js_select_Is_Warranty').selectpicker('val', 'true');
+                }
+                $("#js_select_Is_Warranty").trigger("liszt:updated");
+
+                $('#js_edit_modal').find('input[name=Abnormal]').val(data.Abnormal);
+                //$('#js_edit_modal').find('input[name=Delivery_Date]').val(data.Delivery_Date);
+                //$('#js_edit_modal').find('input[name=Expected_Return_Date]').val(data.Expected_Return_Date);
+                if(data.Delivery_Date!=null)
+                $('#js_edit_modal').find('input[name=Delivery_Date]').val(new Date(data.Delivery_Date).format("yyyy-MM-dd"));
+                if(data.Expected_Return_Date!=null)
+                $('#js_edit_modal').find('input[name=Expected_Return_Date]').val(new Date(data.Expected_Return_Date).format("yyyy-MM-dd"));
+                $('#js_edit_modal').find('input[name=Vendor]').val(data.Vendor);
+                $('#js_edit_modal').find('input[name=Maintenance_Items]').val(data.Maintenance_Items);
+                $('#js_edit_modal').find('input[name=Maintenance_Fees]').val(data.Maintenance_Fees);
+                $('#js_edit_modal').find('input[name=Notes]').val(data.Notes);
+            });
+        });
+        //第一步编辑----END
+
+
+
+        //第二步审核--start
+
+        $('body').on('click', '.js-grid-approve1', function () {
+            $('#js_approve1_modal').find('h4').text('审核');
+            $('#js_approve1_modal').modal('show', $(this));
+
+            var Material_Maintenance_Record_UID = $(this).attr('data-id'),
+                url = CreateBoundSetting.urls.queryMaterial_Maintenance_RecordByUid;
+            $('#js_approve1_modal').find('input[name=Material_Maintenance_Record_UID]').val(Material_Maintenance_Record_UID);
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                debugger;
+                $('#js_approve1_modal').find('input[name=Plant_Organization_Name]').val(data.Plant_Organization_Name);
+                $('#js_approve1_modal').find('input[name=BG_Organization_Name]').val(data.BG_Organization_Name);
+                $('#js_approve1_modal').find('input[name=FunPlant_Organization_Name]').val(data.FunPlant_Organization_Name);
+                $('#js_approve1_modal').find('input[name=Material_ID]').val(data.Material_ID);
+                $('#js_approve1_modal').find('input[name=Material_Seq]').val(data.Material_Seq);
+                if(data.Is_Warranty==false)
+                {
+                    $('#js_approve1_modal').find('input[name=Warranty]').val('否');
+
+                }else
+                {
+                    $('#js_approve1_modal').find('input[name=Warranty]').val('是');
+
+                }
+                $('#js_approve1_modal').find('input[name=Abnormal]').val(data.Abnormal);
+                //$('#js_approve1_modal').find('input[name=Delivery_Date]').val(data.Delivery_Date);
+                //$('#js_approve1_modal').find('input[name=Expected_Return_Date]').val(data.Expected_Return_Date);
+                if(data.Delivery_Date!=null)
+                $('#js_approve1_modal').find('input[name=Delivery_Date]').val(new Date(data.Delivery_Date).format("yyyy-MM-dd"));
+                if(data.Expected_Return_Date!=null)
+                $('#js_approve1_modal').find('input[name=Expected_Return_Date]').val(new Date(data.Expected_Return_Date).format("yyyy-MM-dd"));
+                $('#js_approve1_modal').find('input[name=Vendor]').val(data.Vendor);
+                $('#js_approve1_modal').find('input[name=Maintenance_Items]').val(data.Maintenance_Items);
+                $('#js_approve1_modal').find('input[name=Maintenance_Fees]').val(data.Maintenance_Fees);
+                $('#js_approve1_modal').find('input[name=Notes]').val(data.Notes);
+            });
+        });
+
+        $('#js_btn_save_approve1').click(function () {
+            var Material_Maintenance_Record_UID = $('#js_approve1_modal').find('input[name=Material_Maintenance_Record_UID]').val();
+            url = CreateBoundSetting.urls.approve1CreateboundByUid;
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                $('#js_approve1_modal').modal('hide');
+                if (data.length > 2) {
+                    PDMS.Utility.MessageBox.error(data);
+                } else {
+                    PDMS.Utility.MessageBox.info('审核成功');
+                
+                }
+                CreateBoundSetting.queryCreateBounds();
+            })
+        })
+        //----END
+        //第三步审核--start
+        $('body').on('click', '.js-grid-approve2', function () {
+            $('#js_approve2_modal').find('h4').text('审核');
+            $('#js_approve2_modal').modal('show', $(this));
+
+            var Material_Maintenance_Record_UID = $(this).attr('data-id'),
+                url = CreateBoundSetting.urls.queryMaterial_Maintenance_RecordByUid;
+            $('#js_approve2_modal').find('input[name=Material_Maintenance_Record_UID]').val(Material_Maintenance_Record_UID);
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                debugger;
+                $('#js_approve2_modal').find('input[name=Plant_Organization_Name]').val(data.Plant_Organization_Name);
+                $('#js_approve2_modal').find('input[name=BG_Organization_Name]').val(data.BG_Organization_Name);
+                $('#js_approve2_modal').find('input[name=FunPlant_Organization_Name]').val(data.FunPlant_Organization_Name);
+                $('#js_approve2_modal').find('input[name=Material_ID]').val(data.Material_ID);
+                $('#js_approve2_modal').find('input[name=Material_Seq]').val(data.Material_Seq);
+                if(data.Is_Warranty==false)
+                {
+                    $('#js_approve2_modal').find('input[name=Warranty]').val('否');
+
+                }else
+                {
+                    $('#js_approve2_modal').find('input[name=Warranty]').val('是');
+
+                }
+                $('#js_approve2_modal').find('input[name=Abnormal]').val(data.Abnormal);
+                if(data.Delivery_Date!=null)
+                $('#js_approve2_modal').find('input[name=Delivery_Date]').val(new Date(data.Delivery_Date).format("yyyy-MM-dd"));
+                if(data.Expected_Return_Date!=null)
+                $('#js_approve2_modal').find('input[name=Expected_Return_Date]').val(new Date(data.Expected_Return_Date).format("yyyy-MM-dd"));
+                $('#js_approve2_modal').find('input[name=Vendor]').val(data.Vendor);
+                $('#js_approve2_modal').find('input[name=Maintenance_Items]').val(data.Maintenance_Items);
+                $('#js_approve2_modal').find('input[name=Maintenance_Fees]').val(data.Maintenance_Fees);
+                $('#js_approve2_modal').find('input[name=Notes]').val(data.Notes);
+
+            });
+        });
+
+
+        $('#js_btn_save_approve2').click(function () {
+            debugger;
+
+
+            $('#js_form_user_edit2').ajaxSubmit({
+                beforeSubmit: function () {
+   
+                    if ($('#js_approve2_modal').find('input[name=Maintenance_Items]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写维修项目');
+                        return false;
+                    }
+                    if ($('#js_approve2_modal').find('input[name=Return_Date]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写回厂日期');
+                        return false;
+                    }
+                                 
+
+                },
+                success: function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_approve2_modal').modal('hide');
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info('审核成功');
+                
+                        }
+                        CreateBoundSetting.queryCreateBounds();
+                    }
+                }
+            });
+        })
+
+
+        //----END
+        
+        //第四步审核--start
+
+        $('body').on('click', '.js-grid-approve3', function () {
+            $('#js_approve3_modal').find('h4').text('审核');
+            $('#js_approve3_modal').modal('show', $(this));
+
+            var Material_Maintenance_Record_UID = $(this).attr('data-id'),
+                url = CreateBoundSetting.urls.queryMaterial_Maintenance_RecordByUid;
+            $('#js_approve3_modal').find('input[name=Material_Maintenance_Record_UID]').val(Material_Maintenance_Record_UID);
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                debugger;
+                $('#js_approve3_modal').find('input[name=Plant_Organization_Name]').val(data.Plant_Organization_Name);
+                $('#js_approve3_modal').find('input[name=BG_Organization_Name]').val(data.BG_Organization_Name);
+                $('#js_approve3_modal').find('input[name=FunPlant_Organization_Name]').val(data.FunPlant_Organization_Name);
+                $('#js_approve3_modal').find('input[name=Material_ID]').val(data.Material_ID);
+                $('#js_approve3_modal').find('input[name=Material_Seq]').val(data.Material_Seq);
+                if(data.Is_Warranty==false)
+                {
+                    $('#js_approve3_modal').find('input[name=Warranty]').val('否');
+
+                }else
+                {
+                    $('#js_approve3_modal').find('input[name=Warranty]').val('是');
+
+                }
+                $('#js_approve3_modal').find('input[name=Abnormal]').val(data.Abnormal);
+                //$('#js_approve3_modal').find('input[name=Delivery_Date]').val(data.Delivery_Date);
+                //$('#js_approve3_modal').find('input[name=Expected_Return_Date]').val(data.Expected_Return_Date);
+                if(data.Delivery_Date!=null)
+                $('#js_approve3_modal').find('input[name=Delivery_Date]').val(new Date(data.Delivery_Date).format("yyyy-MM-dd"));
+                if(data.Expected_Return_Date!=null)
+                $('#js_approve3_modal').find('input[name=Expected_Return_Date]').val(new Date(data.Expected_Return_Date).format("yyyy-MM-dd"));
+                $('#js_approve3_modal').find('input[name=Vendor]').val(data.Vendor);
+                $('#js_approve3_modal').find('input[name=Maintenance_Items]').val(data.Maintenance_Items);
+                $('#js_approve3_modal').find('input[name=Maintenance_Fees]').val(data.Maintenance_Fees);
+                $('#js_approve3_modal').find('input[name=Notes]').val(data.Notes);
+                if(data.Return_Date!=null)
+                $('#js_approve3_modal').find('input[name=Return_Date]').val(new Date(data.Return_Date).format("yyyy-MM-dd"));
+            });
+        });
+
+        $('#js_btn_save_approve3').click(function () {
+            var Material_Maintenance_Record_UID = $('#js_approve3_modal').find('input[name=Material_Maintenance_Record_UID]').val();
+            url = CreateBoundSetting.urls.approve3CreateboundByUid;
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                $('#js_approve3_modal').modal('hide');
+                if (data.length > 2) {
+                    PDMS.Utility.MessageBox.error(data);
+                } else {
+                    PDMS.Utility.MessageBox.info('审核成功');            
+                }
+                CreateBoundSetting.queryCreateBounds();
+            })
+        })
+        //----END
+
+
+
+        //查看--start
+        $('body').on('click', '.js-grid-view', function () {
+            $('#js_view_modal').find('h4').text('查看');
+            $('#js_view_modal').modal('show', $(this));
+
+            var Material_Maintenance_Record_UID = $(this).attr('data-id'),
+                url = CreateBoundSetting.urls.queryMaterial_Maintenance_RecordByUid;
+            $('#js_view_modal').find('input[name=Material_Maintenance_Record_UID]').val(Material_Maintenance_Record_UID);
+            $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                debugger;
+                $('#js_view_modal').find('input[name=Plant_Organization_Name]').val(data.Plant_Organization_Name);
+                $('#js_view_modal').find('input[name=BG_Organization_Name]').val(data.BG_Organization_Name);
+                $('#js_view_modal').find('input[name=FunPlant_Organization_Name]').val(data.FunPlant_Organization_Name);
+                $('#js_view_modal').find('input[name=Material_ID]').val(data.Material_ID);
+                $('#js_view_modal').find('input[name=Material_Seq]').val(data.Material_Seq);
+                if(data.Is_Warranty==false)
+                {
+                    $('#js_view_modal').find('input[name=Warranty]').val('否');
+
+                }else
+                {
+                    $('#js_view_modal').find('input[name=Warranty]').val('是');
+
+                }
+                $('#js_view_modal').find('input[name=Abnormal]').val(data.Abnormal);
+                //$('#js_approve3_modal').find('input[name=Delivery_Date]').val(data.Delivery_Date);
+                //$('#js_approve3_modal').find('input[name=Expected_Return_Date]').val(data.Expected_Return_Date);
+                if(data.Delivery_Date!=null)
+                    $('#js_view_modal').find('input[name=Delivery_Date]').val(new Date(data.Delivery_Date).format("yyyy-MM-dd"));
+                if(data.Expected_Return_Date!=null)
+                $('#js_view_modal').find('input[name=Expected_Return_Date]').val(new Date(data.Expected_Return_Date).format("yyyy-MM-dd"));
+                $('#js_view_modal').find('input[name=Vendor]').val(data.Vendor);
+                $('#js_view_modal').find('input[name=Maintenance_Items]').val(data.Maintenance_Items);
+                $('#js_view_modal').find('input[name=Maintenance_Fees]').val(data.Maintenance_Fees);
+                $('#js_view_modal').find('input[name=Notes]').val(data.Notes);
+                $('#js_view_modal').find('input[name=Maintenance_Days]').val(data.Maintenance_Days);
+                $('#js_view_modal').find('input[name=Submiter]').val(data.Submiter);   
+                if(data.Submit_Date!=null)
+                $('#js_view_modal').find('input[name=Submit_Date]').val(new Date(data.Submit_Date).format("yyyy-MM-dd hh:mm:ss"));
+                $('#js_view_modal').find('input[name=Judger]').val(data.Judger);       
+                if(data.Judge_Date!=null)
+                $('#js_view_modal').find('input[name=Judge_Date]').val(new Date(data.Judge_Date).format("yyyy-MM-dd hh:mm:ss"));
+                $('#js_view_modal').find('input[name=Returner]').val(data.Returner);
+                if(data.Return_Time!=null)
+                $('#js_view_modal').find('input[name=Return_Time]').val(new Date(data.Return_Time).format("yyyy-MM-dd hh:mm:ss"));
+                $('#js_view_modal').find('input[name=Acceptancer]').val(data.Acceptancer);  
+                if(data.Acceptance_Date!=null)
+                    $('#js_view_modal').find('input[name=Acceptance_Date]').val(new Date(data.Acceptance_Date).format("yyyy-MM-dd hh:mm:ss"));
+                if(data.Return_Date!=null)
+                $('#js_view_modal').find('input[name=Return_Date]').val(new Date(data.Return_Date).format("yyyy-MM-dd"));
+              
+            });
+        });
+
+        //查看--end
+
+        //删除---START
+        $('body').on('click', '.js-grid-delete', function () {
+            var Material_Maintenance_Record_UID = $(this).attr('data-id');
+            PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                var url = CreateBoundSetting.urls.deleteCreateBound;
+                $.post(url, { Material_Maintenance_Record_UID: Material_Maintenance_Record_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info('删除成功！');
+                        CreateBoundSetting.queryCreateBounds();
+                    }
+                });
+            });
+        });
+        //删除----END
+        //导出按钮
+        $('#js_btn_export').click(function () {
+
+            var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+            var len = $selectList.length;
+            if (len == 0) {
+                //全部导出
+                var url = CreateBoundSetting.urls.doAllExportFunction;
+                //没有查询条件的情况，从查询页面获取
+                if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+                url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                window.location.href = url;
+
+                // PDMS.Utility.MessageBox.info('please select datas to export!');
+
+            } else {
+                var Material_Maintenance_Record_UIDs = $.map($selectList, function (row) {
+                    return row.value;
+                });
+                $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                var url = CreateBoundSetting.urls.doExportFunction;
+                url += "?Material_Maintenance_Record_UIDs=" + Material_Maintenance_Record_UIDs.toString();
+                window.location.href = url;
+            }
+        });
+
+    })
+    </script>
+}

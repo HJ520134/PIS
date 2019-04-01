@@ -1,0 +1,12 @@
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csprojResolveAssemblyReference.cache
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.ResolveComReference.cache
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.Form1.resources
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.Properties.Resources.resources
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.GenerateResource.Cache
+D:\Git\PISMVC\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.MES_PIS_DataSync.exe.config
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csprojResolveAssemblyReference.cache
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.MES_PIS_DataSync.exe.config
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.ResolveComReference.cache
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.Form1.resources
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.Properties.Resources.resources
+D:\Git\PIS\MES_PIS_DataSync\obj\Debug\MES_PIS_DataSync.csproj.GenerateResource.Cache

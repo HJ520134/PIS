@@ -1,0 +1,551 @@
+﻿@model PDMS.Model.ViewModels.MaterialNormalDemandVM
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-8">
+            </div>
+            <div class="col-md-12 search-field col-lg-4">
+                <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add"> 新增</button>
+                <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query"> 查询</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>状态</th>
+                        <th>计算日期</th>
+                        <th>需求日期</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>Business Group</th>
+                        <th>功能厂</th>
+                        <th>状态</th>
+                        <th>计算日期</th>
+                        <th>需求日期</th>
+                        <th>申请者</th>
+                        <th>申请时间</th>
+                        <th>审核者</th>
+                        <th>审核时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新增</h4>
+                </div>
+                @using (Html.BeginForm("AddMatNormalDemand", "StorageManage", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_BG_Organization_UID">Business Group</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_BG_Organization_UID" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_FunPlant_Organization_UID">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_FunPlant_Organization_UID" name="FunPlant_Organization_UID">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Demand_Date">需求日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Demand_Date" name="Demand_Date">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear_2"><i class="fa fa-eraser"></i>清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_BG_Organization_UID_search">Business Group</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-control input-sm" id="js_select_BG_Organization_UID_search" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div> 
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_FunPlant_Organization_UID_search">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_FunPlant_Organization_UID_search" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Calculation_Date_search">计算日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Calculation_Date_search" name="Calculation_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Demand_Date_search">需求日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm date" id="s_input_Demand_Date_search" name="Demand_Date">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ApplicantUser_search">申请者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ApplicantUser_search" name="ApplicantUser">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_ApproverUser_search">审核者</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ApproverUser_search" name="ApproverUser">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_status_search">状态</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_status_search" name="Status_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.enums)
+                                        {
+                                            if (@item.Enum_Name == "Status_Demand")
+                                            {
+                                                <option value=@item.Enum_UID>@item.Enum_Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_inner_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <script type="text/javascript">
+    $('#js_btn_clear').click(function () {
+        PDMS.Utility.Criteria.Clear();
+        $('#js_search_modal').find('select').val('');
+    });
+
+    $('#js_btn_clear_2').click(function () {
+        $('#js_edit_modal').find('input').val('');
+        $('#js_edit_modal').find('select').val('');
+    });
+
+    $('#js_search_modal').on('hidden.bs.modal', function (e) {
+        $('#js_search_modal').find('input').val('');
+        $('#js_search_modal').find('select').val('');
+    })
+    $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+        $('#js_edit_modal').find('input').val('');
+        $('#js_edit_modal').find('select').val('');
+    })
+
+    $(function () {
+        var MaterialNormalDemandListSetting = (function () {
+            var urls = {
+                //画面初始化加载
+                queryMaterialNormalDemands: '@Url.Action("QueryMaterialNormalDemands", "StorageManage")',
+                viewMatNormalDemandDetails: '@Url.Action("MaterialNormalDemandDetail", "StorageManage")',
+                deleteMatNormalDemandList: '@Url.Action("DeleteMatNormalDemandList", "StorageManage")',
+                queryFunplantByop: '@Url.Action("QueryFunplantByop", "StorageManage")',
+                approveMatND: '@Url.Action("ApproveMatND", "StorageManage")',
+                approveCancelMatND: '@Url.Action("DisapproveMatND", "StorageManage")',
+                submitMaterialNormalDemand: '@Url.Action("SubmitMatNormalDemand", "StorageManage")'
+            };
+            //#region 定义字段列
+            var columns = [{
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '{0}' +
+                                        '{1}' +
+                                        '{2}' +
+                                        '{3}' +
+                                        '{4}' +
+                                        '{5}' +
+                                    '</div>';
+
+                        var buttonView = '<button type="button" class="btn btn-primary btn-xs js-grid-view"  data-id="' + rowData.Material_Normal_Demand_UID + '" data-status="' + rowData.Status_UID + '">详情</button>';
+                        var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-id="' + rowData.Material_Normal_Demand_UID + '" data-status="' + rowData.Status_UID + '">编辑</button>';
+                        var buttonSubmit = '<button type="button" class="btn btn-primary btn-xs js-grid-submit"  data-id="' + rowData.Material_Normal_Demand_UID + '" data-demandDate="' + rowData.Demand_Date + '" data-status="' + rowData.Status_UID + '">提交</button>';
+                        var buttonAppr = '<button type="button" class="btn btn-primary btn-xs js-grid-approve"  data-id="' + rowData.Material_Normal_Demand_UID + '" data-demandDate="' + rowData.Demand_Date + '" data-status="' + rowData.Status_UID + '">审核</button>';
+                        var buttonApprCancel = '<button type="button" class="btn btn-primary btn-xs js-grid-approvecancel"  data-id="' + rowData.Material_Normal_Demand_UID + '" data-demandDate="' + rowData.Demand_Date + '" data-status="' + rowData.Status_UID + '">审核取消</button>';
+                        var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete"   data-id="' + rowData.Material_Normal_Demand_UID + '" data-demandDate="' + rowData.Demand_Date + '" data-status="' + rowData.Status_UID + '">删除</button>';
+
+                        debugger;
+                        //fky2017/11/13
+                        //if (rowData.Status_UID == 410 || rowData.Status_UID == 413) {
+                        //Enum_UID	Enum_Type	Enum_Name	Enum_Value
+                        //435	StorageManage	Status_Demand	未审核
+                        //436	StorageManage	Status_Demand	待审核
+                        //437	StorageManage	Status_Demand	已审核
+                        //438	StorageManage	Status_Demand	审核取消
+                        //439	StorageManage	Status_Demand	已删除
+                        //440	StorageManage	Status_Demand	已采购
+                        result = result.replace('{0}', buttonView);
+                        if (rowData.Status_UID == 435 || rowData.Status_UID == 438) {
+                            result = result.replace('{1}', buttonEdit);
+                            result = result.replace('{2}', '');
+                            result = result.replace('{3}', buttonSubmit);
+                            result = result.replace('{4}', buttonDelete);
+                            result = result.replace('{5}', '');
+                            //fky2017/11/13
+                            //} else if (rowData.Status_UID == 411) {
+                        } else if (rowData.Status_UID == 436) { //待审核
+                            result = result.replace('{1}', '');
+                            result = result.replace('{2}', buttonAppr);
+                            result = result.replace('{3}', buttonApprCancel);
+                            result = result.replace('{4}', '');
+                            result = result.replace('{5}', '');
+                            //fky2017/11/13
+                            //} else if (rowData.Status_UID == 412) {
+                        } else if (rowData.Status_UID == 437) { //已审核
+                            result = result.replace('{1}', buttonApprCancel);
+                            result = result.replace('{2}', '');
+                            result = result.replace('{3}', '');
+                            result = result.replace('{4}', '');
+                            result = result.replace('{5}', '');
+                                //fky2017/11/13
+                                //} else if (rowData.Status_UID == 414) {
+                        } else {
+                            result = result.replace('{1}', '');
+                            result = result.replace('{2}', '');
+                            result = result.replace('{3}', '');
+                            result = result.replace('{4}', '');
+                            result = result.replace('{5}', '');
+                        }
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                }, {
+                    data: "Plant",
+                    className: "min-col-xs"
+                }, {
+                    data: "BG",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                } , {
+                    data: "Status",
+                    className: "min-col-xs"
+                }, {
+                    data: "Calculation_Date",
+                    className: "min-col-xs"
+                }, {
+                    data: "Demand_Date",
+                    className: "min-col-xs"
+                }, {
+                    data: "ApplicantUser",
+                    className: "min-col-xs"
+                }, {
+                    data: "Applicant_Date",
+                    className: "min-col-xs"
+                }, {
+                    data: "ApproverUser",
+                    className: "min-col-xs"
+                }, {
+                    data: "Approver_Date",
+                    className: "min-col-xs"
+                }];
+
+            //#endregion 定义字段列
+
+            var _getParams = function () {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryMaterialNormalDemands = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryMaterialNormalDemands,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        columns: columns
+                    }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryMaterialNormalDemands(true, false);
+                },
+                queryMaterialNormalDemands: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryMaterialNormalDemands(false, buildCriteria);
+                }
+            }
+        })();
+
+        MaterialNormalDemandListSetting.Init();
+
+        //新增保存----start
+        $('#js_btn_save_new').click(function () {
+            $('#js_form_user_edit').ajaxSubmit({
+                beforeSubmit: function () {
+                    if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                        return false;
+                },
+                success: function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_edit_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('保存成功');
+                        MaterialNormalDemandListSetting.queryMaterialNormalDemands(true);
+                    }
+                }
+            });
+        })
+        //新增保存----END
+
+
+        //查询按钮
+        $('#js_btn_inner_query').click(function () {
+            if ($('#js_form_query').valid()) {
+                MaterialNormalDemandListSetting.queryMaterialNormalDemands(true);
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+
+        //检测输入数据
+        $('#js_form_user_edit').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+        //Grid中查看按钮---START
+        $('body').on('click', '.js-grid-view', function () {
+            var uid = $(this).data('id'),
+                            Status_UID = $(this).data('status'),
+                            url = MaterialNormalDemandListSetting.urls.viewMatNormalDemandDetails + '?Material_Normal_Demand_UID=' + uid +
+                            '&Status_UID=' + Status_UID +"&IsView=" + true;
+            window.location.href = url;
+        });
+        //Grid中查看按钮---END
+        //Grid中编辑按钮---START
+        $('body').on('click', '.js-grid-edit', function () {
+            var uid = $(this).data('id'),
+                            Status_UID = $(this).data('status'),
+                            url = MaterialNormalDemandListSetting.urls.viewMatNormalDemandDetails + '?Material_Normal_Demand_UID=' + uid+
+                            '&Status_UID=' + Status_UID + "&IsView=" + false;
+            window.location.href = url;
+        });
+        //Grid中编辑按钮-----END
+
+
+
+        //Grid中审核按钮---START
+        $('body').on('click', '.js-grid-approve', function () {
+            debugger;
+            var Material_Normal_Demand_UID = $(this).attr('data-id');
+            var demandDate = $(this).attr('data-demandDate');
+            demandDate = demandDate.substr(0, 10);
+            var url = MaterialNormalDemandListSetting.urls.approveMatND;
+            PDMS.Utility.MessageBox.confirm("确定要审核需求日期为[" + demandDate + "]的数据吗?", function () {
+                $.post(url,{Material_Normal_Demand_UID:Material_Normal_Demand_UID},function(data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("审核成功,状态更新为:已审核。", function () {
+                            window.location.reload();
+                        });
+                    }
+                })
+            });
+        });
+        //Grid中审核按钮-----END
+
+        //Grid中审核取消按钮---START
+        $('body').on('click', '.js-grid-approvecancel', function () {
+            debugger;
+            var Material_Normal_Demand_UID = $(this).attr('data-id');
+            var demandDate = $(this).attr('data-demandDate');
+            demandDate = demandDate.substr(0, 10);
+            var url = MaterialNormalDemandListSetting.urls.approveCancelMatND;
+            PDMS.Utility.MessageBox.confirm("确定要取消审核需求日期为[" + demandDate + "]的数据吗?", function () {
+                $.post(url, { Material_Normal_Demand_UID: Material_Normal_Demand_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("取消审核成功,状态更新为:审核取消。", function () {
+                            window.location.reload();
+                        });
+                    }
+                })
+            });
+        });
+        //Grid中审核取消按钮-----END
+
+        //Grid中提交按钮---START
+        $('body').on('click', '.js-grid-submit', function () {
+            debugger;
+            var Material_Normal_Demand_UID = $(this).attr('data-id');
+            var demandDate = $(this).attr('data-demandDate');
+            demandDate = demandDate.substr(0, 10);
+            var url = MaterialNormalDemandListSetting.urls.submitMaterialNormalDemand;
+            PDMS.Utility.MessageBox.confirm("确定要提交需求日期为[" + demandDate + "]的数据吗?", function () {
+                $.post(url, { Material_Normal_Demand_UID: Material_Normal_Demand_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("提交成功,状态更新为:待审核。", function () {
+                            window.location.reload();
+                        });
+                    }
+                })
+            });
+        });
+        //Grid中审核按钮-----END
+
+        //Grid中删除按钮---START
+        $('body').on('click', '.js-grid-delete', function () {
+            var Material_Normal_Demand_UID = $(this).attr('data-id');
+            var demandDate = $(this).attr('data-demandDate');
+            demandDate = demandDate.substr(0, 10);
+            var url = MaterialNormalDemandListSetting.urls.deleteMatNormalDemandList;
+            PDMS.Utility.MessageBox.confirm("确定要删除需求日期为[" + demandDate + "]的数据吗?", function () {
+                $.post(url, { Material_Normal_Demand_UID: Material_Normal_Demand_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("删除成功,状态更新为:已删除。")
+                        MaterialNormalDemandListSetting.queryMaterialNormalDemands();
+                    }
+                });
+            });
+        })
+        //Grid中删除按钮-----END
+
+        //BG变更---START
+        $('#js_select_BG_Organization_UID').change(function() {
+            $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+            var url = MaterialNormalDemandListSetting.urls.queryFunplantByop,
+                opuid = $(this).val();
+            $.post(url, { opuid: opuid }, function (data) {
+                $('#js_select_FunPlant_Organization_UID').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#js_select_FunPlant_Organization_UID').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                }
+            })
+        })
+        //BG变更-----END
+
+        //查询BG变更---START
+        $('#js_select_BG_Organization_UID_search').change(function () {
+            $('#js_select_FunPlant_Organization_UID_search').html('<option></option>');
+            var url = MaterialNormalDemandListSetting.urls.queryFunplantByop,
+                opuid = $(this).val();
+            $.post(url, { opuid: opuid }, function (data) {
+                $('#js_select_FunPlant_Organization_UID_search').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#js_select_FunPlant_Organization_UID_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                }
+            })
+        })
+        //查询BG变更-----END
+    })
+    </script>
+}

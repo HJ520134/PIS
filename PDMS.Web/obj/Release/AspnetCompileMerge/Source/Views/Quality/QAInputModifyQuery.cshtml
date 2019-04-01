@@ -1,0 +1,303 @@
+﻿
+@{
+
+    ViewBag.Modify = T("QA.Modify").Text; 
+    ViewBag.Delete = T("QA.Delete").Text;
+
+}
+<!-- Main content -->
+<section class="content portal-content">
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+        <!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> @T("QA.Search")</a>
+         
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+
+    </div><!--/次標題 與 搜尋-->
+
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt"> </div>
+  </div>
+        <!--內容 表格列-->
+        <div class="row">
+            <!--表格-->
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_user_plant_datatable">
+                    <thead>
+                        <tr>
+                            <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                            <th>@T("QA.Project")</th>
+                            <th>@T("QA.Badnames")</th>
+                            <th>@T("QA.Performoperation")</th>
+                            <th>@T("QA.Checkpoint")</th>
+                            <th>@T("QA.Colour")</th>
+                            <th>@T("QA.Materialtypes")</th>
+                            <th>@T("QA.Date")</th>
+                            <th>@T("QA.Period")</th>
+                            <th>@T("QA.Oldrework")</th>
+                            <th>@T("QA.Oldspecialmining")</th>
+                            <th>@T("QA.OldNG")</th>
+                            <th>@T("QA.OldspecialminingNG")</th>
+                            <th>@T("QA.Oldreplacement")</th>
+                            <th>@T("QA.Newrepair")</th>
+                            <th>@T("QA.Newspecialmining")</th>
+                            <th>@T("QA.NewNG")</th>
+                            <th>@T("QA.NewspecialminingNG")</th>
+                            <th>@T("QA.Newreplacement")</th>
+                            <th>@T("QA.Modifyreason")</th>
+                            <th>@T("QA.Editor")</th>
+                            <th>@T("QA.Changetime")</th>
+                        </tr>
+                    </thead>
+                </table>
+
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+        </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Search")</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-5 control-label"  for="js_s_select_project">@T("QA.Project")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="Project" class="form-control input-sm" id="js_s_select_project" placeholder="@T("QA.Project")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_select_checkPoint">@T("QA.Checkpoint")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="CheckPoint" class="form-control input-sm" id="js_s_select_checkPoint" placeholder="@T("QA.Checkpoint")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_MaterielType">@T("QA.Colour")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="MaterielType" class="form-control input-sm" id="js_s_input_MaterielType" placeholder="@T("QA.Colour")">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-5 control-label" for="js_s_input_function_name">@T("QA.Materialtypes")</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="TypeCode" class="form-control input-sm" id="js_s_input_function_name" placeholder="@T("QA.Materialtypes")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                            <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="Product_Date" class="form-control input-sm date" id="js_s_input_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6" id="day_time_select">
+                            <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                            <div class="col-sm-7">
+                                <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_Interval"></select>
+                            </div>
+                        </div>
+                      
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="js_btn_clear" type="button"><i class="fa fa-eraser"></i> @T("QA.Emptied")</button>
+                    <button class="btn btn-primary btn-sm" id="js_btn_query" type="button"><i class="fa fa-search"></i> @T("QA.Inquire")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<style>
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-sub-group {
+        display: inline-block;
+        width: 100px;
+        vertical-align: middle;
+    }
+</style>
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var QAInputModifyUrls = {
+                QueryQAInputModify: '@Url.Action("GetQAInputModify", "Quality")',
+                GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")'
+            };
+            //#region WarningListSetting
+            var QAInputModifySetting = (function () {
+
+                //#region columns
+                var columns = [{
+                    data: null,
+                    className: "table-col-seq min-col-xs"
+                }, {
+                    data: "Project",
+                    className: "min-col-xs"
+                }, {
+                    data: "TypeName",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    className: "min-col-xs",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IsDeleted) {
+                            $(td).html("@ViewBag.Delete");
+                        }
+                        else {
+                            $(td).html("@ViewBag.Modify");
+                        }
+                    }
+                }, {
+                    data: "CheckPoint",
+                    className: "min-col-xs"
+                }, {
+                    data: "Color",
+                    className: "min-col-xs"
+                }, {
+                    data: "MaterielType",
+                    className: "min-col-xs"
+                }, {
+                    data: "Product_Date",
+                    className: "min-col-xs"
+                }
+                , {
+                    data: "Time_Interval",
+                    className: "min-col-xs"
+                }, {
+                    data: "LastRepair_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "LastSepcialAccept_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "LastNG_Qty",
+                    className: "min-col-xs"
+                }
+                , {
+                    data: "LastRepairNG_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "LastDisplace_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NewRepair_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NewSepcialAccept_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NewNG_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NewRepairNG_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "NewDisplace_Qty",
+                    className: "min-col-xs"
+                }, {
+                    data: "ModifiedReason",
+                    className: "min-col-xs"
+                }, {
+                    data: "Modified_UserName",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }
+                ];
+                //#endregion
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var queryQAInputModifys = function () {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_plant_datatable",
+                        remoteUrl: QAInputModifyUrls.QueryQAInputModify,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    $('#page').page('destroy');
+                    //Criteria.Build放置到到这里，首次加载页面不处理Criteria
+                    PDMS.Utility.Criteria.Build();
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        queryQAInputModifys();
+                    },
+                    QueryQAInputModifys: function () {
+                        queryQAInputModifys(false);
+                    },
+                }
+            })();
+            //#endregion
+            QAInputModifySetting.Init();
+            // #region Page elements events
+            GetInterval();
+            function GetInterval() {
+                $("#js_s_input_interval_time").empty();
+                $.post(QAInputModifyUrls.GetIntervalTime, { "PageName": "ProductReport" }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            if (item["Enum_Value"] != "全天" && item["Enum_Value"]!="白班小计"&&item["Enum_Value"]!="夜班小计")
+                            {
+                                $('<option></option>').val(item["Enum_Value"]).text(item["Enum_Value"]).appendTo($("#js_s_input_interval_time"));
+                            }
+                        });
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            }
+            $('#js_btn_query').click(function () {
+                QAInputModifySetting.QueryQAInputModifys();
+                $('#js_search_modal').modal('hide');
+            });
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () { 
+                });
+            });
+            //#endregion
+        });
+    </script>
+}
+
+

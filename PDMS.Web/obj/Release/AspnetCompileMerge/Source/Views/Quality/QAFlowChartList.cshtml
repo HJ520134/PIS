@@ -1,0 +1,506 @@
+﻿@{
+    ViewBag.Notactive = T("QA.Notactive").Text;
+    ViewBag.Shutdown = T("QA.Shutdown").Text;
+    ViewBag.Processing = T("QA.Processing").Text;
+    ViewBag.Goodmaintenance = T("QA.Goodmaintenance").Text;
+    ViewBag.Productiondataentry = T("QA.Productiondataentry").Text;
+    ViewBag.Badtypeimport = T("QA.Badtypeimport").Text;
+    ViewBag.Productiondataexport = T("QA.Productiondataexport").Text;
+    ViewBag.OQCproductiondataderived = T("QA.OQCproductiondataderived").Text;
+}
+<!-- Main content -->
+<section class="content portal-content">
+
+
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <input type="hidden" id="js_User_Role" hidden="hidden" value=@ViewBag.Role />
+    <input type="hidden" id="js_Part_Types" hidden="hidden" />
+
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        @using (Html.BeginForm("DataTableExec", "FlowChart", FormMethod.Post, new { id = "js_form_datatable_exec" }))
+        {
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_user_datatable">
+                    <thead>
+                        <tr>
+                            @*<th class="table-col-checkbox nosort">
+                                    <input type="checkbox" class="js-checkbox-all" />
+                                </th>*@
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                            <th>@T("QA.Client")</th>
+                            <th>@T("QA.Project")</th>
+                            <th>@T("QA.Part")</th>
+                            <th>@T("QA.Productionstage")</th>
+                            <th>@T("QA.IEStatus")</th>
+                            <th>@T("QA.Version")</th>
+                            <th>@T("QA.ReleaseNotes")</th>
+                            <th>@T("QA.Creator")</th>
+                            <th>@T("QA.Createtime")</th>
+
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            @*<th class="table-col-checkbox nosort"></th>*@
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                            <th>@T("QA.Client")</th>
+                            <th>@T("QA.Project")</th>
+                            <th>@T("QA.Part")</th>
+                            <th>@T("QA.Productionstage")</th>
+                            <th>@T("QA.IEStatus")</th>
+                            <th>@T("QA.Version")</th>
+                            <th>@T("QA.ReleaseNotes")</th>
+                            <th>@T("QA.Creator")</th>
+                            <th>@T("QA.Createtime")</th>
+
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+        }
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_export_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Productiondataexport")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_export" data-need-validate="true">
+                            <input type="hidden" id="js_search_FlowChart_Master_UID" name="FlowChart_Master_UID" value="" />
+                            <input type="hidden" id="js_search_OPType" name="OPType" value="" />
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_search_ProjectName">@T("QA.Project")</label>
+                                <div class="col-sm-7 ">
+
+                                    <select class="form-control input-sm" id="js_search_ProjectName" readonly="readonly" name="ProjectName"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" id="day_Select">
+                                <label class="col-sm-5 control-label" for="js_s_input_date">@T("QA.Date")</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+
+                                        <input type="text" name="ProductDate" class="form-control input-sm date" id="js_s_input_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Checkpointname")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_process" name="Process_seq"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_MaterialType">@T("QA.Materialtype")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_MaterialType" name="MaterialType"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color" id="js_s_input_color_label">@T("QA.Colour")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_color" name="Color"></select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6"  style="display:none" id="js_s_input_FunPlant_div">
+                                <label class="col-sm-5 control-label" for="js_s_input_FunPlant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_FunPlant" name="FunPlant">
+                                        <option value="IPQC">IPQC</option>
+                                        <option value="OQC">OQC</option>
+                                        <option value="组装">Assembly</option>
+                                        <option value="Assembly1">Assembly1</option>
+                                        <option value="Assembly2">Assembly2</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_place">@T("QA.Factorybuilding")</label>
+                                <div class="col-sm-7 ">
+                                    <select class="form-control input-sm" id="js_s_input_place" name="Place"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6" id="day_time_select" hidden="hidden">
+                                <label class="col-sm-5 control-label" for="js_s_input_interval_time">@T("QA.Timeselection")</label>
+                                <div class="col-sm-7">
+                                    <select multiple="multiple" size="4" class="form-control input-sm" id="js_s_input_interval_time" name="Time_interval"></select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="Tab_Select_Text" id="js_tab_select_text" value="0" />
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-Export" type="button" class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i>
+                        @T("QA.Excelexport")
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="btn-cancel" type="button"><i class="fa fa-eraser"></i> @T("QA.Cancel")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="js_InputData_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("QA.Entryconditions")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <label class="hidden col-xs-12 col-md-6" id="js_s_input_Flowchart_Master_UID"></label>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_material_Name">@T("QA.Materialtype")</label>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-7">
+                                        <select id="js_s_input_material_Name" name="material_Name" class="form-control input-sm"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_color" id="js_s_color_label">@T("QA.Colour")</label>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-7">
+                                        <select id="js_s_color" name="color" class="form-control input-sm"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-cancel" id="js_btn_cancel">@T("QA.Cancel")</button>
+
+                    <button type="button" class="btn btn-primary btn-query" id="btn_comfirm">@T("QA.Determine")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var FLMaintenance = (function () {
+                var urls = {
+                    queryFLS: '@Url.Action("QueryFlowCharts", "FlowChart")',
+                    ExcelIPQCExport: '@Url.Action("ExportIPQCDailyInputDataExcel", "Quality")',
+                    GetIntervalTime: '@Url.Action("GetIntervalTime", "EventReportManager")',
+                    GetProcessSource: '@Url.Action("GetProcessSource", "Quality")',
+                    QueryColor: '@Url.Action("QueryRecordColor", "Quality")',
+                    QueryInputCondition: '@Url.Action("QueryConditions", "Quality")',
+                    InputData:'@Url.Action("CheckPointsList", "Quality")',
+                    ExportOQCDailyInputDataExcel: '@Url.Action("ExportOQCDailyInputDataExcel", "OQCQuality")'
+                };
+                var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var htmlImportUpdate = '<button type="button" class="btn btn-default btn-sm js-grid-inputData" data-id="' + rowData.FlowChart_Master_UID + '">@ViewBag.Productiondataentry</button></br>';
+
+                        var htmlImportExceptionType = '<a href="QAExcetionType?FlowChart_Master_UID=' + rowData.FlowChart_Master_UID + '&&Part_Types=' + rowData.Part_Types + '&&ProjectName=' + rowData.Project_Name + '"><button type="button" class="btn btn-default btn-sm js-grid-inputExceptionType" data-id="' + rowData.FlowChart_Master_UID + '"> @ViewBag.Badtypeimport </button></a></br>';
+
+                         var result = '<button type="button" class="btn btn-default btn-xs" rel="action-popover">' +
+                                     '<i class="fa fa-reorder text-info"></i>' +
+                                     '</button>' +
+                                     '<div class="hidden popover-content">';
+                         var targetRate = '<a href="TargetYield?Flowchart_Master_UID=' + rowData.FlowChart_Master_UID + '"><button type="button" class="btn btn-default btn-sm js-grid-TargetYield" data-id="' + rowData.FlowChart_Master_UID + '">@ViewBag.Goodmaintenance</button></a></br>';
+                        var exportExcelForIPQC = ' <button class="btn btn-default btn-sm js-grid-export" data-id="' + rowData.FlowChart_Master_UID + '" data-project="' + rowData.Project_Name + '" >@ViewBag.Productiondataexport</button>'
+                         var exportExcelForOQC = ' <button class="btn btn-default btn-sm js-grid-export-OQC" data-id="' + rowData.FlowChart_Master_UID + '" data-project="' + rowData.Project_Name + '"  data-optype="' + rowData.OP_type + '">@ViewBag.OQCproductiondataderived</button>'
+
+                        var role = $('#js_User_Role').val();
+                        if (role == "QA_OQC_Input")
+                        {
+                            result = result + htmlImportUpdate + exportExcelForOQC + '</div>';
+                        }
+                        else if (role == "QA_IPQC_Input") {
+                            result = result + targetRate + htmlImportUpdate + htmlImportExceptionType + exportExcelForIPQC + '</div>';
+                        }
+                        else {
+                            result = result + targetRate + htmlImportUpdate + exportExcelForIPQC + exportExcelForOQC + '</br>' + htmlImportExceptionType + '</div>';
+                        }
+
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "BU_D_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Project_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Part_Types",
+                    className: "min-col-xs"
+                }, {
+                    data: "Product_Phase",
+                    className: "min-col-xs"
+                }, {
+                    data: "Is_Closed",
+                    className: "min-col-xs",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.IsTemp) {
+                            $(td).html('@ViewBag.Notactive');
+                        }
+                        else {
+                            if (rowData.Is_Closed == 1) {
+                                $(td).html('@ViewBag.Shutdown');
+                            }
+                            else {
+                                $(td).html('@ViewBag.Processing');
+                            }
+                        }
+                    }
+                },{
+                    data: "FlowChart_Version",
+                    className: "min-col-xs"
+                },{
+                    data: "FlowChart_Version_Comment",
+                    className: "min-col-xs"
+                }, {
+                    data: "User_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-xs"
+                }
+                ];
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+                var _queryFLS = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_datatable",
+                        remoteUrl: urls.queryFLS,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryFLS(true);
+                    },
+                    QueryFLCharts: function () {
+                        _queryFLS(false);
+                    }
+                }
+            })();
+            FLMaintenance.Init();
+            $('body').on('click', '.js-grid-export', function () {
+                //$("#js_s_input_FunPlant_div").attr({ "hidden": "hidden" });
+                var FlowchartMaster_UID = $(this).attr('data-id');
+                $('#js_search_FlowChart_Master_UID').val(FlowchartMaster_UID);
+                var projectName = $(this).attr('data-project');
+                $("#js_search_ProjectName").empty();
+                $("<option></option>").val(projectName).text(projectName).appendTo($("#js_search_ProjectName"));
+                GetProcessBasicInfo();
+                $('#js_export_modal').modal('show');
+            });
+            $('body').on('click', '.js-grid-export-OQC', function () {
+                var opType = $(this).attr('data-optype');
+                var FlowchartMaster_UID = $(this).attr('data-id');
+                $('#js_search_OPType').val(opType);
+                $('#js_search_FlowChart_Master_UID').val(FlowchartMaster_UID);
+                var projectName = $(this).attr('data-project');
+                $("#js_search_ProjectName").empty();
+                $("<option></option>").val(projectName).text(projectName).appendTo($("#js_search_ProjectName"));
+                GetProcessBasicInfo();
+                $('#js_export_modal').modal('show');
+            });
+            $('body').on('click', '.js-grid-inputData', function () {
+                var Flowchart_Master_UID = $(this).attr('data-id');
+                $('#js_s_input_Flowchart_Master_UID').val(Flowchart_Master_UID);
+                $.get(FLMaintenance.urls.QueryInputCondition, { FlowChart_Master_UID: Flowchart_Master_UID }, function (data) {
+                    if (data != '') {
+                        var color = data.ColorList;
+                        var mtype = data.MaterialType;
+                        $("#js_Part_Types").val(data.Part_Types);
+                        if (mtype != "") {
+                            $("#js_s_input_material_Name").empty();
+                            $.each(mtype, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_material_Name"));
+                            });
+                        }
+                        if (color != "" && color.length != 0) {
+                            $("#js_s_color").empty();
+                            $.each(color, function (i, item) {
+                                $("<option></option>")
+                                    .val(item.Color)
+                                    .text(item.Color)
+                                    .appendTo($("#js_s_color"));
+                            });
+                        }
+                    }
+                });
+                $('#js_InputData_modal').modal('show');
+            });
+            $('#js_export_modal').on('show.bs.modal', function (event) {
+                QueryColor();
+            });
+            $('#btn_comfirm').click(function () {
+                var FlowChart_Master_UID = $("#js_s_input_Flowchart_Master_UID").val();
+                var Color = $("#js_s_color").val();
+                var mtype = $("#js_s_input_material_Name").val();
+                var url = FLMaintenance.urls.InputData + '?FlowChart_Master_UID=' + FlowChart_Master_UID + '&&Color=' + Color + '&&MaterialType=' + mtype + '&&Part_Types=' + $("#js_Part_Types").val();
+                    window.location.href = url;
+            });
+            $('#js_btn_cancel').click(function () {
+                $('#js_InputData_modal').modal('hide');
+            });
+            GetInterval();
+            $("#js_s_input_FunPlant").change(function ff() {
+                QueryColor();
+            });
+            $("#js_s_input_MaterialType").change(function ff() {
+                QueryColor();
+            });
+            $("#js_s_input_date").change(function ff() {
+                QueryColor();
+            });
+            //获取数据
+            function GetProcessBasicInfo() {
+                var Flowchart_Master_UID = $("#js_search_FlowChart_Master_UID").val();
+                $.post(FLMaintenance.urls.QueryInputCondition, { FlowChart_Master_UID: Flowchart_Master_UID }, function (data) {
+                    if (data != "") {
+                        var place = data.Place;
+                        var mtype = data.MaterialType;
+
+                        if (mtype != "") {
+                            $("#js_s_input_MaterialType").empty();
+                            $.each(mtype, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_MaterialType"));
+                            });
+                        }
+                        if (place != "") {
+                            $("#js_s_input_place").empty();
+                            $.each(place, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_place"));
+                            });
+                        }
+                    }
+                });
+            }
+            function GetInterval() {
+                $("#js_s_input_interval_time").empty();
+                $.post(FLMaintenance.urls.GetIntervalTime, { "PageName": "ProductReport" }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $('<option></option>').val(item["Enum_Value"]).text(item["Enum_Value"]).appendTo($("#js_s_input_interval_time"));
+                        });
+                    } else {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                });
+            }
+            function QueryColor() {
+                $("#js_s_input_color").empty();
+                var fun_plant = $('#js_s_input_FunPlant').val();
+
+                var Flowchart_Master_UID = $("#js_search_FlowChart_Master_UID").val();
+                var productDate = $("#js_s_input_date").val();
+                var MaterialType = $("#js_s_input_MaterialType").val();
+                if (productDate == null || productDate == "") {
+                    return;
+                }
+                var isIPQC = $('#js_s_input_FunPlant_div').is(":hidden");
+                if (isIPQC) {
+                    fun_plant = "IPQC";
+                }
+                else if (fun_plant == null || fun_plant == "") {
+                    return;
+                }
+                $.post(FLMaintenance.urls.QueryColor, { Flowchart_Master_UID: Flowchart_Master_UID, FunPlant: fun_plant, ProductDate: productDate, Process_Seq: 0, MaterialType: MaterialType }, function (data) {
+                    if (data != "") {
+                        $.each(data, function (i, item) {
+                            $("<option></option>")
+                                .val(item)
+                                .text(item)
+                                .appendTo($("#js_s_input_color"));
+                        });
+
+                    }
+                });
+            }
+            $('#btn-cancel').click(function () {
+                $('#js_export_modal').modal('hide');
+            })
+            //Excel导出，全天合计/夜班小计/白班小计
+            $('#btn-Export').click(function () {
+                var isIPQC = $('#js_s_input_FunPlant_div').is(":hidden");
+                //if (isIPQC)
+                //{
+                    var excelParam = $('#js_form_export').serializeObject();
+                    var url = FLMaintenance.urls.ExcelIPQCExport;
+                    url += "?query=" + JSON.stringify(excelParam);
+                    window.location.href = url;
+                //}
+                //else
+                //{
+                //    var excelParam = $('#js_form_export').serializeObject();
+                //    var url = FLMaintenance.urls.ExportOQCDailyInputDataExcel;
+                //    url += "?query=" + JSON.stringify(excelParam);
+                //    window.location.href = url;
+                //}
+
+                $('#js_export_modal').modal('hide');
+            });
+        });
+    </script>
+}

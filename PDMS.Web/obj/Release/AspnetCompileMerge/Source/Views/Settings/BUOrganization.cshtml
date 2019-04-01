@@ -1,0 +1,257 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> Search</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_bu">
+                <i class="fa fa-plus"></i> Add
+            </a>
+            <a id="js_btn_export" class="btn btn-primary btn-sm" role="button">
+                <i class="glyphicon glyphicon-save"></i> Export
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">Action</th>
+                        <th class="table-col-seq nosort">Seq</th>
+                        <th>BU_D_UID</th>
+                        <th>Organization_UID</th>
+                    
+                    </tr>
+                </thead>
+             
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+  
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Maintain BU Organation</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditBUOrganation", "Settings", FormMethod.Post, new { id = "js_form_BU_Org_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_uid">BU_D_UID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_bu_uid" name="BU_D_UID" placeholder="BU_D_UID">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Org_uid">Organization_UID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Org_uid" name="Organization_UID" placeholder="Organization_UID"
+                                           required data-msg-required="Please enter user name">
+                                </div>
+                            </div>
+                        
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="System_BU_D_Org_UID" name="System_BU_D_Org_UID" value="0"/>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_new_bu" ><i class="fa fa-save"></i> Save</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="js_btn_save_edit_bu"><i class="fa fa-save"></i> Edit Save</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var BUMaintenance = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryBUs: '@Url.Action("QueryBUD_Orgs", "Settings")',
+                    
+                    //根据主键获取单笔信息
+                    QueryBU: '@Url.Action("QueryBU_Org", "Settings")',
+                    //删除BUD信息
+                    DeleteBU: '@Url.Action("DeleteBU_Org", "Settings")',
+                  
+                };
+
+                //#region 定义字段列
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_BU_D_Org_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.System_BU_D_Org_UID + '">Edit</button>';
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '{0}' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.System_BU_D_Org_UID + '">Delete</button>' +
+                                    '</div>';
+
+                       
+                            result = result.replace('{0}', buttonEdit);
+                       
+
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                }, {
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "BU_D_UID",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Organization_UID",
+                    className: "min-col-xs"
+                }
+                ];
+                //#endregion 定义字段列
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryUsers = function (firstLoad,buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_datatable",
+                        remoteUrl: urls.queryBUs,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);                    
+                };
+
+                
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryUsers(true,false);
+                    },
+                    QueryBUs: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryUsers(false, buildCriteria);
+                    }
+                }
+            })();
+
+            BUMaintenance.Init();
+
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //#region 新增或修改Div事件
+
+          
+
+            //#region 点击GridView上的Edit按钮事件
+            $('body').on('click', '.js-grid-edit', function () {
+                var System_BU_D_Org_UID = $(this).attr('data-id'),
+                    url = BUMaintenance.urls.QueryBU;
+
+                $.post(url, { System_BU_D_Org_UID: System_BU_D_Org_UID }, function (data) {
+                    $('#System_BU_D_Org_UID').val(data.System_BU_D_Org_UID);
+                    $('#js_edit_modal').find('input[name=BU_D_UID]').val(data.BU_D_UID);
+                    $('#js_edit_modal').find('input[name=Organization_UID]').val(data.Organization_UID);
+                    
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+
+            });
+            
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+
+          
+
+            //删除事件
+            $('body').on('click', '.js-grid-delete', function () {
+                var System_BU_D_Org_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("Are you sure to delete this item?", function () {
+                    var url = BUMaintenance.urls.DeleteBU;
+                    $.post(url, { System_BU_D_Org_UID: System_BU_D_Org_UID }, function (data) {
+                        if (data != 'FAIL') {
+                            BUMaintenance.QueryBUs();
+                        } else {
+                            PDMS.Utility.MessageBox.error("BU Customer ID already role assigned!");
+                        }
+                    });
+                });
+            });
+            //#endregion
+
+       
+        });
+
+    </script>
+
+}

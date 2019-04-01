@@ -1,0 +1,739 @@
+﻿
+<section class="content-header portal-content-header">
+    <h1> 导入人员账号 </h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                        <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">模板下载</button>
+                        <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">上传</button>
+                        <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">新增</button>
+                        <a class="fa fa-search btn btn-primary" id="bt_search" data-toggle="modal" data-target="#js_search_modal"> 查询</a>
+                        <a class="fa fa-times btn btn-primary" href="../Equipmentmaintenance/BasicInfo">
+                            @*<i class="glyphicon glyphicon-backward"></i>*@
+                            返回
+                        </a>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>用户工号</th>
+                        <th>用户姓名</th>
+                        <th>联系电话</th>
+                        <th>联系邮箱</th>
+                        <th>是否启用</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>用户工号</th>
+                        <th>用户姓名</th>
+                        <th>联系电话</th>
+                        <th>联系邮箱</th>
+                        <th>是否启用</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">人员账号明细</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditEQPUser", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+
+                        <div class="row">
+
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_optype">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory" name="Plant_OrganizationUID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_optype">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_optype" name="Organization_UID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_OrganizationUID" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_id">用户工号</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required needint" id="s_input_user_id" name="User_Id" placeholder="User Id"
+                                           required data-msg-required="Please enter User Id" min="1" >
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_name">用户姓名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_project_name" name="User_Name" placeholder="User Name"
+                                           required data-msg-required="Please enter user name" data-rule-maxlength="20" 
+                                           data-msg-maxlength="Please enter no more than {0} characters in User Name.">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_d_id">联系电话</label>
+                                <div class="col-sm-7">
+                                    <input type="tel" class="form-control input-sm needint" id="s_input_bu_d_id" name="User_Call" placeholder="User Call"                                          
+                                           data-rule-maxlength="20" data-msg-maxlength="Please enter no more than {0} characters in User Call.">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_d_name">联系邮箱</label>
+                                <div class="col-sm-7">
+                                    <input type="email" class="form-control input-sm" id="s_input_bu_d_name" name="User_Email" placeholder="User Email"
+                                           data-rule-maxlength="20" data-msg-maxlength="Please enter no more than {0} characters in User Email.">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_Add_IsDisable">是否启用</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_Add_IsDisable" name="IsDisable" data-live-search="true">
+                                            <option value="1">启用</option>
+                                            <option value="0">禁用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>    
+
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="EQPUser_Uid" name="EQPUser_Uid" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">导入人员账号</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPUserExcel", "Equipmentmaintenance",  FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">选择计划Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-upload btn btn-primary" id="btn_clear_Update">取消</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="btn_excel_upload">提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查询</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="row">
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_factory2">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory2" name="Plant_OrganizationUID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_op_types">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_op_types" name="Organization_UID" data-live-search="true">                                     
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_select_funplant">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" data-live-search="true" id="js_select_funplant" name="FunPlant_OrganizationUID"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_user_id">用户工号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="User_Id" class="form-control input-sm needint" id="js_s_input_user_id" placeholder="User Id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_function_id">用户姓名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="User_Name" class="form-control input-sm" id="js_s_input_user_name" placeholder="User Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_function_name">联系电话</label>
+                                <div class="col-sm-8">
+                                    <input type="tel" name="User_Call" class="form-control needint input-sm" id="js_s_input_user_call placeholder="User Call">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_modified_by">联系邮箱</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="User_Email" class="form-control input-sm" id="js_s_input_eqp_id" placeholder="User Email">
+                                </div>
+                            </div>
+                        </div>    
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label no-padding-hr" for="js_IsDisable">是否启用</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker form-control input-sm" id="js_IsDisable" name="IsDisable" data-live-search="true">
+                                        <option value="2">ALL</option>
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>                                          
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+    $('#btn_import_fl').on('click', function () {
+        $('#js_importExcel_modal').modal('show');
+    });
+
+    $('#js_btn_clear').click(function () {
+        PDMS.Utility.Criteria.Clear();
+        $('#js_select_op_types').selectpicker('val', '');
+        $("#js_select_op_types").trigger("liszt:updated");
+
+        $('#js_select_funplant').selectpicker('val', '');
+        $("#js_select_funplant").trigger("liszt:updated");
+    });
+
+    $('#btn_clear_Update').on('click', function () {
+        $('#js_importExcel_modal').modal('hide');
+    });
+
+    //#region 下载Excel模板
+    $('#btn_download_fl').on('click', function () {
+        var url = '@Html.Raw(Url.Action("DownloadEQPUserExcel", "Equipmentmaintenance"))';
+        this.form.action = url;
+        $('#js_form_excel_download').submit();
+    });
+
+        $('.needint').keydown(function (event) {
+            var value = event.key;
+            if (value.length > 1)
+                return true;
+            if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                return false;
+        })
+        //$('#js_select_project,#js_select_project2,#js_select_optypes,#js_select_optypes2,#js_select_plant,#js_select_plant2').selectpicker({
+        //    'selectedText': 'cat'
+        //});
+    //#endregion
+    $(function () {
+        var EQPUserUrl = (function () {
+            var urls = {
+                //画面初始化加载
+                queryEQPUser: '@Url.Action("QueryEQPUser", "Equipmentmaintenance")',
+                queryEQPUserByuid: '@Url.Action("QueryEQPUserByUid", "Equipmentmaintenance")',
+                //删除EQPUser信息
+                deleteEQPUser: '@Url.Action("DeleteEQPUser", "Equipmentmaintenance")',
+                //getCurrentOPType: '@Url.Action("GetCurrentOPType", "Equipmentmaintenance")',
+
+                //根据厂区取得OP类型
+                getCurrentOPType: '@Url.Action("GetCurrentOPType", "Equipmentmaintenance")',
+                //根据OP类型取得功能厂
+                getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Equipmentmaintenance")',
+
+                queryFunPlantByOp: '@Url.Action("GetFunPlantByOPTypes", "Equipmentmaintenance")'
+                //根据OP类型取得功能厂
+                //getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Equipmentmaintenance")',
+
+                //根据op类型取得功能厂
+                //queryFunPlantByOp: '@Url.Action("QueryFunPlantByOp", "Equipmentmaintenance")'
+            };
+
+            //#region 定义字段列
+            var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.EQPUser_Uid + '">')
+                        .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                },{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.EQPUser_Uid + '">编辑</button>';
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '{0}' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.EQPUser_Uid + '">删除</button>' +
+                                    '</div>';
+                        result = result.replace('{0}', buttonEdit);
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                },
+                {
+                    data: null,
+                    className: "table-col-seq"
+                },
+                 {
+                     data: "BG_Organization",
+                       className: "min-col-xs"
+                 },
+                 {
+                     data: "FunPlant_Organization",
+                      className: "min-col-xs"
+                 },
+                {
+                    data: "User_Id",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "User_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "User_Call",
+                    className: "min-col-xs"
+                }, {
+                    data: "User_Email",
+                    className: "min-col-xs"
+                }, {
+                    data: "IsDisableName",
+                    className: "min-col-xs"
+                }];
+            //#endregion 定义字段列
+
+            var _getParams = function () {
+                
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+              
+            };
+
+            var _queryUsers = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryEQPUser,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        columns: columns
+                    }
+
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryUsers(true,false);
+                },
+                queryEQPUser: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryUsers(false, buildCriteria);
+                }
+            }
+        })();
+
+        EQPUserUrl.Init();
+
+        //隐藏编辑框时清空值
+        //$('#js_search_modal').on('hidden.bs.modal', function (e) {
+        //    $('#js_search_modal').find('input').val('');
+        //    $('.list-group.validate-error').empty();
+        //});
+
+        //隐藏编辑框时清空值
+        $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+            $('#js_edit_modal .list-group.validate-error').empty();
+        });
+
+        //新增界面显示
+        $('#js_edit_modal').on('show.bs.modal', function (event) {
+            if ($('#js_select_plant').find('option').length == 0) {
+                $('#js_select_factory').trigger('change');
+            }
+        });
+        $('#btn_add').click(function () {
+            if ($('#js_select_factory').find('option').length == 0) {
+                $('#js_select_factory').trigger('change');
+            }
+            $('#js_edit_modal').modal('show', $(this));
+            $('#isEdit').val(false);
+        }
+        );
+        //查询按钮
+        $('#js_btn_query').click(function () {
+
+            if ($('#js_form_query').valid()) {
+                EQPUserUrl.queryEQPUser();
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+        $('#js_select_op_types,#js_select_funplant,#js_select_factory2,#js_select_factory,#js_select_optype').selectpicker({ 'selectedText': 'cat' });
+
+        //主界面上的查询按钮
+        $('#bt_search').click(function () {
+            if ($('#js_select_funplant').find('option').length == 0) {
+                $('#js_select_factory2').trigger('change');
+            }
+        })
+                    //点击厂区是OP类型变化
+        $('#js_select_factory').change(function () {
+          
+                var oporgid = $('#js_select_factory option:selected').val();
+                url = EQPUserUrl.urls.getCurrentOPType;
+                $('#js_select_optype').html('<option></option>');
+                $('#js_select_optype').selectpicker('refresh');
+                $('#js_select_funplant_add').html('<option></option>');
+                $('#js_select_funplant_add').selectpicker('refresh');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                $('#js_select_optype').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+            })
+            //申请界面op类型变更  start
+            $('#js_select_optype').change(function () {               
+                $('#js_select_funplant_add').html('<option></option>');
+                $('#js_select_funplant_add').selectpicker('refresh');
+                //$('#js_select_funplant_add').html('');
+                if ($('#js_select_optype').val() != "") {
+                    var url = EQPUserUrl.urls.queryFunPlantByOp;                                       
+                    $.post(url, { Optype: $('#js_select_optype').val() }, function (data) {
+                   // $.post(url, { oporguid: $('#js_select_optype').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_funplant_add').find('option[value=' + data[i].FunPlant_OrganizationUID + ']').length == 0) {
+                                $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                                $('#js_select_funplant_add').selectpicker('refresh');
+                            }
+                        }
+                    })
+                }
+            })
+            //申请界面Op类型变更  end
+
+        //查询界面厂区是OP类型变化
+        $('#js_select_factory2').change(function () {
+            var oporgid = $('#js_select_factory2 option:selected').val();
+            url = EQPUserUrl.urls.getCurrentOPType;
+            $('#js_select_op_types').html('<option></option>');
+            $('#js_select_op_types').selectpicker('refresh');
+
+            $('#js_select_funplant').html('<option></option>');
+            $('#js_select_funplant').selectpicker('refresh');
+
+            
+            if (oporgid != 0) {
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_op_types').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_select_op_types').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            $('#js_select_op_types').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+        })
+        //查询界面OP类型变更  start
+        $('#js_select_op_types').change(function () {
+            $('#js_search_modal').find('input[name=Organization_UID]').val($(this).find('option:selected').data('oporguid'));
+            var url = EQPUserUrl.urls.getFunPlantByOPTypes;
+
+            $('#js_select_funplant').html('<option></option>');
+            $('#js_select_funplant').selectpicker('refresh');
+
+   
+            if ($('#js_select_op_types option:selected').text() != "") {
+                
+                $.post(url, { Optype: $('#js_select_op_types option:selected').val() }, function (data) {
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_funplant').find('option[value=' + data[i].FunPlant_OrganizationUID + ']').length == 0) {
+                            $('#js_select_funplant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                            $('#js_select_funplant').selectpicker('refresh');
+                        }
+                    }
+                })
+       
+            }
+        })
+        //查询界面OP类型变更  end
+
+        $('#js_btn_save_new').click(function () {
+            $('#js_form_user_edit').ajaxSubmit({
+                beforeSubmit: function () {
+                    if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                        return false;
+                    if ($('#js_edit_modal').find('input[name=User_Id]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请输入用户工号');
+                        return false;
+                    }
+                    if ($('#js_edit_modal').find('input[name=User_Name]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请输入用户姓名');
+                        return false;
+                    }
+                },
+                success: function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_edit_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('保存成功');
+                        EQPUserUrl.queryEQPUser();
+                    }
+                }
+            });
+        })
+
+        //检测输入数据
+        $('#js_form_user_edit').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+
+        //删除事件
+        $('body').on('click', '.js-grid-delete', function () {
+            var EQPUser_Uid = $(this).attr('data-id');
+            PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                var url = EQPUserUrl.urls.deleteEQPUser;
+                $.post(url, { EQPUser_Uid: EQPUser_Uid }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("删除成功！")
+                        EQPUserUrl.queryEQPUser();
+                    }
+                });
+            });
+        });
+        //#endregion
+        //为新增或修改Modal，注册事件
+        $('#js_edit_modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+        });
+        //#region 点击GridView上的Edit按钮事件
+        $('body').on('click', '.js-grid-edit', function () {
+            $('#js_edit_modal').modal('show', $(this));
+            $('#isEdit').val(true);
+            var EQPUser_Uid = $(this).attr('data-id'),
+                url = EQPUserUrl.urls.queryEQPUserByuid;
+            $.post(url, { EQPUser_Uid: EQPUser_Uid }, function (data) {
+
+                $('#EQPUser_Uid').val(data[0].EQPUser_Uid);
+
+
+                $("#js_select_factory").trigger("change");
+                debugger;
+                //加载op
+                $('#js_select_optype').selectpicker('refresh');
+                $('#js_select_optype').selectpicker('val', data[0].BG_Organization_UID);
+                if (data[0].BG_Organization_UID != 0) {
+                    $('#js_select_optype').trigger('change');
+                }
+
+
+                //加载功能厂
+                $('#js_select_funplant_add').selectpicker('refresh');
+                $('#js_select_funplant_add').selectpicker('val', data[0].FunPlant_Organization_UID);
+                if (data[0].FunPlant_Organization_UID != 0 && data[0].FunPlant_Organization_UID != null) {
+                    $('#js_select_funplant_add').trigger('change');
+                }
+
+                $('#js_Add_IsDisable').selectpicker('val', data[0].IsDisable);
+                $("#js_Add_IsDisable").trigger("liszt:updated");
+
+                //$('#js_Add_IsDisable').selectpicker('val', data[0].IsDisableName);
+                //$('#js_Add_IsDisable').selectpicker('val', data[0].IsDisableName);
+
+                //$('#js_select_op_types').selectpicker('val', data.Organization_UID);
+                //$("#js_select_op_types").trigger("liszt:updated");
+                //$("#js_select_op_types").trigger("change");
+
+                //$('#js_select_optype').append('<option value="' + data[0].Organization_UID + '">' + data[0].BG_Organization + '</option>');
+                //$('#js_select_optype').selectpicker('refresh')
+                //$('#js_select_optype').selectpicker('val', data[0].Organization_UID);
+                //$('#js_select_optype').trigger('change');
+
+                //$('#js_select_funplant_add').append('<option value="' + data[0].FunPlant_OrganizationUID + '">' + data[0].FunPlant_Organization + '</option>');
+                //$('#js_select_funplant_add').selectpicker('refresh')
+                //$('#js_select_funplant_add').selectpicker('val', data[0].FunPlant_OrganizationUID);
+                //$('#js_select_funplant_add').trigger('change');
+
+
+                $('#js_edit_modal').find('input[name=User_Id]').val(data[0].User_Id);
+                $('#js_edit_modal').find('input[name=User_Name]').val(data[0].User_Name);
+                $('#js_edit_modal').find('input[name=User_Call]').val(data[0].User_Call);
+                $('#js_edit_modal').find('input[name=User_Email]').val(data[0].User_Email);
+            });
+        });
+
+        //提交     stat
+        $('#btn_excel_upload').on('click', function () {
+            $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+            $('#js_form_excel_upload').ajaxSubmit({
+                beforeSubmit: function () {
+
+                    var fileName = $('#js_s_input_import').val();
+                    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                    if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                        PDMS.Utility.MessageBox.info('请选择Excel文件');
+                        $.unblockUI();
+                        return false;
+                    }
+                    if (!$('#js_form_excel_upload').valid()) {
+                        $.unblockUI();
+                        return false;
+                    }
+                },
+                success: function (data) {
+                    $.unblockUI();
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                    else {
+                        $('#js_importExcel_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('更新成功');
+                        EQPUserUrl.queryEQPUser();
+                    }
+                }
+            });
+        });
+        //提交   END
+
+     
+        //#endregion 点击Edit按钮事件
+    })
+    </script>
+}

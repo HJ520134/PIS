@@ -1,0 +1,82 @@
+﻿<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+            <!--col-右方搜尋與功能按鈕列-->
+            <div class="col-md-9">
+                <label class="control-label" id="lblTitle"></label>
+            </div>
+            <div class="col-md-3 search-field col-lg-3">
+                <button type="button" class="btn btn-default btn-sm" id="btn_back"><i class="fa fa-reply"></i> @T("Common.Back")</button>
+            </div><!-- /col-右方搜尋與功能按鈕列-->
+        </div><!--/次標題 與 搜尋-->
+        <hr class="hr-custom">
+
+    <!--內容 表格列-->
+    <div class="row">
+            <!--表格-->
+            <div class="col-md-12 table-container" id="js_saveall_datatables">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_FL_datatable">
+                    <thead>
+                        <tr>
+                            @*<th class="table-col-checkbox nosort">
+                                    <input type="checkbox" class="js-checkbox-all" />
+                                </th>*@
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th>@T("Production.Binding_Seq")</th>
+                            <th>@T("Production.Process_Seq")</th>
+                            <th>@T("Production.Process_Station")</th>
+                            <th>@T("QA.Functionfactory")</th>
+                            <th>@T("QA.Processname")</th>
+                            <th>@T("Production.Process_Desc")</th>
+                            <th>@T("Production.Processing_Equipment")</th>
+                            <th>@T("Production.Automation_Equipment")</th>
+                            <th>@T("Production.Processing_Fixtures")</th>
+                            <th>@T("Production.Auxiliary_Equipment")</th>
+                            <th>@T("Production.Equipment_CT")</th>
+                            <th>@T("Production.Setup_Time")</th>
+                            <th>Cycle Time</th>
+                            <th>@T("Production.Estimatedyield")</th>
+                            <th>@T("Production.Manpower_Ratio")</th>
+                            <th>@T("Production.Capacity_ByHour")</th>
+                            <th>@T("Production.Capacity_ByDay")</th>
+                            <th>@T("Production.Equip")</th>
+                            <th>@T("Production.Manpower_2Shift")</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            @*<th class="table-col-checkbox nosort"></th>*@
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th>@T("Production.Binding_Seq")</th>
+                            <th>@T("Production.Process_Seq")</th>
+                            <th>@T("Production.Process_Station")</th>
+                            <th>@T("QA.Functionfactory")</th>
+                            <th>@T("QA.Processname")</th>
+                            <th>@T("Production.Process_Desc")</th>
+                            <th>@T("Production.Processing_Equipment")</th>
+                            <th>@T("Production.Automation_Equipment")</th>
+                            <th>@T("Production.Processing_Fixtures")</th>
+                            <th>@T("Production.Auxiliary_Equipment")</th>
+                            <th>@T("Production.Equipment_CT")</th>
+                            <th>@T("Production.Setup_Time")</th>
+                            <th>Cycle Time</th>
+                            <th>@T("Production.Estimatedyield")</th>
+                            <th>@T("Production.Manpower_Ratio")</th>
+                            <th>@T("Production.Capacity_ByHour")</th>
+                            <th>@T("Production.Capacity_ByDay")</th>
+                            <th>@T("Production.Equip")</th>
+                            <th>@T("Production.Manpower_2Shift")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+        </div><!-- / 內容 表格列 -->
+</section>
+

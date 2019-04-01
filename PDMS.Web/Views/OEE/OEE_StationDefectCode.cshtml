@@ -1,0 +1,1000 @@
+﻿
+@model PDMS.Model.ViewModels.OEE_DownTimeCodeVM
+@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.View = T("Common.View").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Suredelete = T("QA.Suredelete").Text;
+    ViewBag.Successfullydeleted = T("QA.Successfullydeleted").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+    ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+    ViewBag.Savesuccessfully = T("QA.Savesuccessfully").Text;
+    ViewBag.PleaseSite = T("OEE.PleaseSite").Text;
+    ViewBag.PleaseOPType = T("OEE.PleaseOPType").Text;
+    ViewBag.PleaseProject = T("OEE.PleaseProject").Text;
+    ViewBag.PleaseLine = T("OEE.PleaseLine").Text;
+    ViewBag.PleaseStation = T("OEE.PleaseStation").Text;
+    ViewBag.PleaseMalfunction = T("OEE.PleaseMalfunction").Text;
+    ViewBag.PleaseError_Code = T("OEE.PleaseError_Code").Text;
+    ViewBag.PleaseLevel_Details = T("OEE.PleaseLevel_Details").Text;
+    ViewBag.PleaseUpload_Ways = T("OEE.PleaseUpload_Ways").Text;
+
+}
+@*<section class="content-header portal-content-header">
+    <h1>@T("OEE.StationDefectCode")</h1>
+  
+</section>*@
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-6">
+            </div>
+            <div class="col-md-12 search-field col-lg-6">
+                @using (Html.BeginForm("DownloadBomExcel", "OEE", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <a href="~/ExcelTemplate/OEE_StationDefectCode.xlsx" class="fa fa-download btn btn-primary" target="_blank"> @T("Common.TeampleDownload")</a>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">@T("Common.AddNew")</button>
+                    <button type="button" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal" id="js_btn_query">@T("Common.Search")</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">@T("Common.Export")</button>
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th> @T("QA.OPType")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("QA.Project")</th>
+                        <th>@T("OEE.Line")</th>
+                        <th>@T("Production.Process_Station")</th>
+                        <th>@T("Common.Seq")</th>
+                        <th>@T("OEE.DefectCode")</th>
+                        <th>@T("OEE.DefectEnglishName")</th>
+                        <th>@T("OEE.DefecChineseName")</th>
+                        <th>@T("Common.Published")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                </thead>
+
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div>
+    </div>
+
+</section>
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">@T("QA.Plantarea")</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">Business Group</label>
+                                    <div class="col-sm-8">
+                                        <select class=" form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">@T("QA.Functionfactory")</label>
+                                    <div class="col-sm-8">
+                                        <select class=" form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Project_UID_query">@T("QA.Project")</label>
+                                    <div class="col-sm-8">
+                                        <select class=" form-control input-sm" id="js_select_Project_UID_query" name="Project_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_LineID_query">@T("OEE.Line")</label>
+                                    <div class="col-sm-8">
+                                        <select class=" form-control input-sm" id="js_select_LineID_query" name="LineID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_stationID_query">@T("Production.Process_Station")</label>
+                                    <div class="col-sm-8">
+                                        <select class=" form-control input-sm" id="js_select_stationID_query" name="StationID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Defect_Code">@T("OEE.DefectCode")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Defect_Code" class="form-control input-sm" id="js_select_Defect_Code" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_DefectEnglishName">@T("OEE.Defect_En")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="DefectEnglishName" class="form-control input-sm" id="js_select_DefectEnglishName" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_MachineNo">@T("OEE.DefecChinesetName")</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="DefecChinesetName" class="form-control input-sm" id="js_select_DefecChinesetName">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_select_enable_flag">是否启用</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_select_enable_flag" name="IsEnabled">
+                                            <option value=""></option>
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query_inner"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   <div class="modal fade" id="js_edit_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("OEE.StationDefectCode")</h4>
+            </div>
+            @using (Html.BeginForm("AddOrEditOEE_StationDefectCode", "OEE", FormMethod.Post, new { id = "js_form_user_edit" }))
+            {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_factory_Add">@T("QA.Plantarea")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_factory_Add" name="Plant_Organization_UID" data-live-search="true">
+                                    <option></option>
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_optype_Add">@T("QA.OPType")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_optype_Add" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_funplant_Add">@T("QA.Functionfactory")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_funplant_Add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Project_Add">@T("QA.Project")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Project_Add" name="Project_UID" data-live-search="true"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Line_Add">@T("OEE.Line")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Line_Add" name="LineID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_Station_Add">@T("ME.Process_Station")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_select_Station_Add" name="StationID" data-live-search="true"></select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_sequence_Add">@T("Common.Seq")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_sequence_Add" name="Sequence">
+                            </div>
+                        </div>
+                   
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Error_Code_Add">@T("OEE.DefectCode")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_DefectCode_Add" name="Defect_Code">
+                            </div>
+                        </div>
+
+                      
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_DefectEnglishName_Add">@T("OEE.DefectEnglishName")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_DefectEnglishName_Add" name="DefectEnglishName">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_DefecChinesetName_Add">@T("OEE.DefecChineseName")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_DefecChinesetName_Add" name="DefecChinesetName">
+                            </div>
+                        </div>
+                      
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_input_Is_Enable_Add">@T("Common.Published")</label>
+                            <div class="col-sm-7">
+                                <select class="selectpicker form-control input-sm" id="js_input_Is_Enable_Add" name="Is_Enable" data-live-search="true">
+                                    <option value="true">启用</option>
+                                    <option value="false">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <input type="hidden" name="OEE_StationDefectCode_UID" />
+                        <input type="hidden" name="isEdit" id="isEdit" value=false />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> @T("Common.Save")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("OEE.Importstoptype")</h4>
+            </div>
+            @using (Html.BeginForm("ImportOEE_StationDefectCodeExcel", "OEE", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">@T("QA.SelecttheExcelfile")</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="@T("FlowChart.SelectDoc")"
+                                   required data-msg-required="@T("QA.PleaseselectExcelfile")" />
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>@T("Common.Cancel")</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>@T("QA.Submit")</button>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+}
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#check_pre').hide();
+            $('#check_next').hide();
+        })
+        $('#js_btn_clear').click(function () {
+            PDMS.Utility.Criteria.Clear();
+            $('#js_search_modal').find('select').val('');
+        });
+
+        $('#js_search_modal').on('hidden.bs.modal', function (e) {
+            $('#js_search_modal').find('input').val('');
+            $('#js_search_modal').find('select').val('');
+        })
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+
+        $(function () {
+            var StorageCheckSetting = (function () {
+                var urls = {
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //画面初始化加载
+                    queryStorageChecks: '@Url.Action("QueryOEE_StationDefectCode", "OEE")',
+                    //获取专案
+                    getProjectList:'@Url.Action("GetSystemProjectDTO", "OEE")',
+                    getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                    getLineDTOs: '@Url.Action("GetLineDTOs", "OEE")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getStationDTOs: '@Url.Action("GetStationDTOs", "OEE")',
+                    //根据UID获取盘点信息
+                    queryDownTimeCodeByUid: '@Url.Action("QueryOEE_StationDefectCodeByUid", "OEE")',
+
+                    //删除未审核盘点数据
+                    deleteDownTimeCode: '@Url.Action("DeleteOEE_StationDefectCode", "OEE")',
+
+                    //导出excel
+                    doExportDownTimeCodeReprot: '@Url.Action("DoExportDownTimeCodeReprot", "OEE")',
+                    doAllExportDownTimeCodeReprot: '@Url.Action("DoAllExportOEE_StationDefectCode", "OEE")',
+
+                };
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.OEE_StationDefectCode_UID + '">')
+                                   .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit"  data-id="' + rowData.OEE_StationDefectCode_UID + '">@ViewBag.Edit</button>';
+                            var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete"   data-id="' + rowData.OEE_StationDefectCode_UID + '">@ViewBag.Delete</button>';
+                            var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                        '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '{0}' +
+                                            '{1}' +
+                                        '</div>';
+
+                            result = result.replace('{0}', buttonEdit);
+                            result = result.replace('{1}', buttonDelete);
+                            $(td).html(result);
+                        },
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Plant_Organization_Name",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "BG_Organization_Name",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "FunPlant_Organization_Name",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Project_Name",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Line_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Station_Name",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Sequence",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Defect_Code",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "DefectEnglishName",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "DefecChinesetName",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Is_Enable",
+                        render: function (data, type, full, meta) {
+                            return data ? "Y" : "N";
+                        },
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: "Modifyer",
+                        className: " min-col-xs text-center"
+                    }, {
+                        data: null,
+                        createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Modify_Date).format("yyyy-MM-dd hh:mm:ss"));},
+                        className: "min-col-xs"
+                    }];
+
+                //#endregion 定义字段列
+                Date.prototype.format = function(format) {
+                    var date = {
+                        "M+": this.getMonth() + 1,
+                        "d+": this.getDate(),
+                        "h+": this.getHours(),
+                        "m+": this.getMinutes(),
+                        "s+": this.getSeconds(),
+                        "q+": Math.floor((this.getMonth() + 3) / 3),
+                        "S+": this.getMilliseconds()
+                    };
+                    if (/(y+)/i.test(format)) {
+                        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                    }
+                    for (var k in date) {
+                        if (new RegExp("(" + k + ")").test(format)) {
+                            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                                   ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                        }
+                    }
+                    return format;
+                }
+                var _getParams = function () {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryStorageChecks = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryStorageChecks,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryStorageChecks(true, false);
+                    },
+                    queryStorageChecks: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryStorageChecks(false, buildCriteria);
+                    }
+                }
+            })();
+
+            StorageCheckSetting.Init();
+
+            //查询按钮
+            $('#js_btn_query_inner').click(function () {
+                if ($('#js_form_query').valid()) {
+                    StorageCheckSetting.queryStorageChecks(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //添加按钮
+            $('#js_btn_query').click(function () {
+                GetOPTypes();
+            })
+
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            });
+         function GetOPTypes() {
+             var oporgid = $('#js_select_factory_query option:selected').val();
+                url = StorageCheckSetting.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_LineID_query').empty();
+                $('#js_select_LineID_query').html('<option></option>');
+                $('#js_select_stationID_query').empty();
+                $('#js_select_stationID_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+            //OP类型变更
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+            })
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = StorageCheckSetting.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+          
+                $('#js_select_Project_UID_query').empty();
+                $('#js_select_Project_UID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = StorageCheckSetting.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_UID_query').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+            }
+
+            $('#js_select_Project_UID_query').change(function () {
+                $('#js_select_LineID_query').html('<option></option>');
+
+                $('#js_select_stationID_query').html('<option></option>');
+     
+                var getProjectByOPTypeUrl = StorageCheckSetting.urls.getLineDTOs;
+                var customerId = $('#js_select_Project_UID_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { CustomerID: customerId}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_LineID_query').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                 
+                });
+
+            });
+
+            //根据线获取站点
+            $('#js_select_LineID_query').change(function () {
+                $('#js_select_stationID_query').empty();
+                $('#js_select_stationID_query').html('<option></option>');
+                var getProjectByOPTypeUrl = StorageCheckSetting.urls.getStationDTOs;
+                var LineId = $('#js_select_LineID_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_stationID_query').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                
+                });
+            })
+
+            //添加按钮
+            $('#js_btn_add').click(function () {
+                $('#js_select_factory_Add').trigger('change');
+                $('#js_edit_modal').find('input[name=isEdit]').val(false);
+            })
+            //添加储位移转时
+            $('#js_select_factory_Add').change(function () {
+                GetOPType();
+            });
+
+            function GetOPType() {
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                url = StorageCheckSetting.urls.getCurrentOPType;
+                $('#js_select_optype_Add').html('<option></option>');
+                $('#js_select_optype_Add').selectpicker('refresh');
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+                $('#js_select_Project_Add').html('<option></option>');
+                $('#js_select_Project_Add').selectpicker('refresh');
+                $('#js_select_Line_Add').html('<option></option>');
+                $('#js_select_Line_Add').selectpicker('refresh');
+                $('#js_select_Station_Add').html('<option></option>');
+                $('#js_select_Station_Add').selectpicker('refresh');
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_Add').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                if(@Model.OptypeID!=0)
+                                {
+                                    if(@Model.OptypeID==data[i].Organization_UID )
+                                    {
+                                        $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                    }
+                                }else
+                                {
+                                    $('#js_select_optype_Add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }
+                        }
+
+                        $('#js_select_optype_Add').selectpicker('refresh');
+                    });
+
+                }
+
+                //设专案加载
+                url=StorageCheckSetting.urls.getProjectList;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: 0}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Project_Add').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                    $('#js_select_Project_Add').selectpicker('refresh');
+                });
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_Add').change(function () {
+                var url = StorageCheckSetting.urls.getFunPlantByOPTypes;
+                var oporgid = $('#js_select_factory_Add option:selected').val();
+                $('#js_select_funplant_Add').html('<option></option>');
+                $('#js_select_funplant_Add').selectpicker('refresh');
+                $('#js_select_Project_Add').html('<option></option>');
+                $('#js_select_Project_Add').selectpicker('refresh');
+                $('#js_select_Line_Add').html('<option></option>');
+                $('#js_select_Line_Add').selectpicker('refresh');
+                $('#js_select_Station_Add').html('<option></option>');
+                $('#js_select_Station_Add').selectpicker('refresh');
+                if ($('#js_select_optype_Add option:selected').text() != "") {
+                    //设置功能厂
+                    $.post(url, { Optype: $('#js_select_optype_Add').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if(@Model.FunPlantID!=0)
+                            {
+                                if(@Model.FunPlantID==data[i].FunPlant_OrganizationUID )
+                                {
+                                    $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_funplant_Add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                            }
+                        }
+                        $('#js_select_funplant_Add').selectpicker('refresh');
+                    });
+
+                    //设专案加载
+                    url=StorageCheckSetting.urls.getProjectList;
+                    var oporgid = $('#js_select_optype_Add option:selected').val();
+                    $.post(url, { Plant_Organization_UID: oporgid ,BG_Organization_UID: $('#js_select_optype_Add option:selected').val()}, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Project_Add').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                        }
+                        $('#js_select_Project_Add').selectpicker('refresh');
+                    });
+
+                }
+            });
+
+            $('#js_select_Project_Add').change(function () {
+                $('#js_select_Line_Add').html('<option></option>');
+                $('#js_select_Line_Add').selectpicker('refresh');
+                $('#js_select_Station_Add').html('<option></option>');
+                $('#js_select_Station_Add').selectpicker('refresh');
+
+                var getProjectByOPTypeUrl = StorageCheckSetting.urls.getLineDTOs;
+                var customerId = $('#js_select_Project_Add option:selected').val();
+                $.get(getProjectByOPTypeUrl, { CustomerID: customerId}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Line_Add').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                    $('#js_select_Line_Add').selectpicker('refresh');
+                });
+
+            });
+            //根据线获取站点
+            $('#js_select_Line_Add').change(function () {
+                $('#js_select_Station_Add').empty();
+                $('#js_select_Station_Add').html('<option></option>');
+                var getProjectByOPTypeUrl = StorageCheckSetting.urls.getStationDTOs;
+                var LineId = $('#js_select_Line_Add option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_Station_Add').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                    $('#js_select_Station_Add').selectpicker('refresh');
+                });
+            })
+
+
+            $('#js_select_funplant_Add').change(function () {
+
+            });
+
+
+            //新增保存----start
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        //if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                        //    return false;
+                        if ($('#js_edit_modal').find('select[name=Plant_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseSite');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseOPType');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Project_UID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseProject');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('select[name=LineID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseLine');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=StationID]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseStation');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Sequence]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.Sequence');
+                            return false;
+                        }
+
+                        if ($('#js_edit_modal').find('input[name=Defect_Code]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseError_Code');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=DefectEnglishName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseLevel_Details');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=DefecChinesetName]').val() == "") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseUpload_Ways');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('select[name=Is_Enable]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择是否启用');
+                            return false;
+                        }
+
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            if (data == "0") {
+                                PDMS.Utility.MessageBox.info('@ViewBag.Savesuccessfully');
+                                StorageCheckSetting.queryStorageChecks();
+                            }
+                        }
+                    }
+                });
+            })
+            //新增保存----END
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //编辑---START
+            $('body').on('click', '.js-grid-edit', function () {
+                $('#js_edit_modal').modal('show', $(this));
+                //$('#js_edit_modal h4').text('异常代码编辑');
+
+                $('#js_edit_modal').find('input[name=isEdit]').val(true);
+
+                var OEE_StationDefectCode_UID = $(this).attr('data-id'),
+                    url = StorageCheckSetting.urls.queryDownTimeCodeByUid;
+                $('#js_edit_modal').find('input[name=OEE_StationDefectCode_UID]').val(OEE_StationDefectCode_UID);
+
+                $.post(url, { OEE_StationDefectCode_UID: OEE_StationDefectCode_UID }, function (data) {
+
+
+                    $('#js_select_factory_Add').selectpicker('val', data.Plant_Organization_UID);
+                    $("#js_select_factory_Add").trigger("liszt:updated");
+                    if(data.Plant_Organization_UID!=0)
+                    {
+                        $('#js_select_factory_Add').trigger('change');
+                    }
+                    $('#js_select_optype_Add').selectpicker('val', data.BG_Organization_UID);
+                    $("#js_select_optype_Add").trigger("liszt:updated");
+                    if(data.BG_Organization_UID!=0)
+                    {
+                        $('#js_select_optype_Add').trigger('change');
+                    }
+                    $('#js_select_funplant_Add').selectpicker('val', data.FunPlant_Organization_UID);
+                    $("#js_select_funplant_Add").trigger("liszt:updated");
+                    if(data.FunPlant_Organization!=null&&data.FunPlant_Organization_UID!=0)
+                    {
+                        //  $('#js_select_funplant_Add').trigger('change');
+                    }
+                    $('#js_select_Project_Add').selectpicker('val', data.Project_UID);
+                    $("#js_select_Project_Add").trigger("liszt:updated");
+                    if(data.Project_UID!=0)
+                    {
+                        $('#js_select_Project_Add').trigger('change');
+                    }
+
+                    $('#js_select_Line_Add').selectpicker('val', data.LineID);
+                    $("#js_select_Line_Add").trigger("liszt:updated");
+                    if(data.LineID!=0)
+                    {
+                        $('#js_select_Line_Add').trigger('change');
+                    }
+
+                    $('#js_select_Station_Add').selectpicker('val', data.StationID);
+                    $("#js_select_Station_Add").trigger("liszt:updated");
+
+
+                    $('#js_input_Is_Enable_Add').selectpicker('val', data.Is_Enable);
+                    $("#js_input_Is_Enable_Add").trigger("liszt:updated");
+
+                    $('#js_edit_modal').find('input[name=Defect_Code]').val(data.Defect_Code);
+                    $('#js_edit_modal').find('input[name=DefectEnglishName]').val(data.DefectEnglishName);
+                    $('#js_edit_modal').find('input[name=DefecChinesetName]').val(data.DefecChinesetName);
+                    $('#js_edit_modal').find('input[name=Sequence]').val(data.Sequence);
+
+                });
+            });
+            //编辑----END
+
+
+
+            //删除---START
+            $('body').on('click', '.js-grid-delete', function () {
+                var OEE_StationDefectCode_UID = $(this).attr('data-id');
+                PDMS.Utility.MessageBox.confirm("@ViewBag.Suredelete", function () {
+                    var url = StorageCheckSetting.urls.deleteDownTimeCode;
+                    $.post(url, { OEE_StationDefectCode_UID: OEE_StationDefectCode_UID}, function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.error(data);
+                        } else {
+                            PDMS.Utility.MessageBox.info("@ViewBag.Successfullydeleted")
+                            StorageCheckSetting.queryStorageChecks();
+                        }
+                    });
+                });
+            });
+            //删除----END
+
+
+
+
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                //$('#js_edit_modal h4').text('');
+
+                $('.list-group.validate-error').empty();
+            });
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+
+                var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //全部导出
+                    var url = StorageCheckSetting.urls.doAllExportDownTimeCodeReprot;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+
+                } else {
+                    var OEE_StationDefectCode_UIDs = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                    var url = StorageCheckSetting.urls.doExportDownTimeCodeReprot;
+                    url += "?uids=" + OEE_StationDefectCode_UIDs.toString();
+                    window.location.href = url;
+                }
+            });
+
+            $('#btn_excel_upload').on('click', function () {
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewai</h1>" });
+                $('#js_form_excel_upload').ajaxSubmit({
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseselectExcelfile');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@ViewBag.Importsuccessful');
+                            StorageCheckSetting.queryStorageChecks(true);
+                        }
+                    }
+                });
+            });
+
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+        })
+    </script>
+}

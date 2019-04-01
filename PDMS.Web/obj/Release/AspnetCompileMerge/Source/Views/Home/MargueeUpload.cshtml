@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MargeeUpload</title>
+</head>
+<body>
+    上傳公告信息(Marguee_cn.txt,Marguee_en.txt)
+    @using (Html.BeginForm("MargueeFileUpload", "HOME", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @*因為要多個上傳 所以要用到multiple屬性*@
+        <input type="file" name="files" multiple />
+        <input type="submit" value="上傳" />
+    }
+</body>
+</html>
+<script type="text/javascript" src="~/Scripts/js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript">
+    /*2018.11.14 Steven 以下都沒用到JQuery方法*/
+    @*$(function () {
+        $("#upload").click(function () {
+            var formData = new FormData($('#uploadForm')[0]);
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("HOME", "MargueeFileUpload")',
+                data: formData,
+                cache: false,
+                processData: false, // 告訴JQuery不要去處理發送的數據，不然會把data
+                //設置的物件轉換成查詢字符串以配合預設的application/x-www-form-urlencoded
+                //
+                contentType: false, // 告訴JQuery不要去設置Content-Type請求Header，
+                            //Header會自動適情況加上multipart/form-data
+            }).success(function (data) {
+                alert(data);
+            }).error(function () {
+                alert("上傳失敗");
+            });
+        });
+    });*@
+
+</script>

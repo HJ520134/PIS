@@ -1,0 +1,1050 @@
+﻿@model PDMS.Model.ViewModels.WorkStationVM
+<section class="content-header portal-content-header">
+    <h1>播放看板设置</h1>
+</section>
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-4">
+            <a id="bt_last" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_add_modal" id="js_btn_add_PlayBoardSetting"> @T("Common.AddNew")</a>
+            @*<a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>*@
+            @*<a id="js_btn_start" class="fa btn btn-primary" role="button" href="~/PlayBoard/index"> ► 播放预览</a>*@
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <p>提示:</p>
+        <ul>
+            <li>1.此画面用于对播放账号配置播放画面。</li>
+            <li>2.请在[Role Maintenance]画面预先设置播放角色：Role_ID 必须是"PlayBoardPlayUser", 角色名称不限。</li>
+            <li>3.拥有该角色的账号有且只有播放权限，无密码登录后，直接进入播放画面。</li>
+            <li>4.优先级：定时播放(播放序号<span style="background-color:yellow;">大</span>) > 定时播放(播放序号<span style="background-color:yellow;">小</span>) > 轮流播放
+            </li>
+            <li>5.列表中的数据排列顺序为定时播放靠前。</li>
+        </ul>
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_PlayBoardSetting_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>播放账号NTID</th>
+                        <th>播放画面</th>
+                        <th>Action名称</th>
+                        <th>画面标题</th>
+                        <th>播放序号</th>
+                        <th>播放方式</th>
+                        <th>定时播放时间</th>
+                        <th>是否启用</th>
+                        <th>Json参数</th>
+                        <th>备注</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>播放账号NTID</th>
+                        <th>播放画面</th>
+                        <th>Action名称</th>
+                        <th>画面标题</th>
+                        <th>播放序号</th>
+                        <th>播放方式</th>
+                        <th>定时播放时间</th>
+                        <th>是否启用</th>
+                        <th>Json参数</th>
+                        <th>备注</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal" style="min-height:200px;">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            <option value=0></option>
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_playuser_query">播放账号</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_playuser_query" name="Play_UID" required data-msg-required="播放账号不能为空" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--新增模态框-->
+    <div class="modal fade" id="js_add_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>新增播放设置</h4>
+                </div>
+
+                @using (Html.BeginForm("AddPlayBoardSetting", "PlayBoard", FormMethod.Post, new { id = "js_form_PlayBoardSetting_add" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="PlayBoardSetting_UID" id="js_hidden_PlayBoardSetting_uid" value="0" />
+                            <input type="hidden" name="Plant_Organization_UID" id="js_hidden_Plant_Organization_uid" value="0" />
+                            <input type="hidden" name="BG_Organization_UID" id="js_hidden_BG_Organization_uid" value="0" />
+                            <input type="hidden" name="FunPlant_Organization_UID" id="js_hidden_FunPlant_Organization_uid" value="0" />
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_add" data-live-search="true">
+                                            <option></option>
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_optype_add">OP类型</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_add" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_funplant_add">功能厂</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_playuser_add">播放账号</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_playuser_add" name="Play_UID" required data-msg-required="播放账号不能为空" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_playview_add">播放画面</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_playview_add" name="PlayBoard_View_ID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_play_seq_add">播放序号</label>
+                                    <div class="col-sm-7">
+                                        <input type="number" class="form-control input-sm required" id="js_play_seq_add" name="PlaySeq" placeholder="播放序号" min="1" step="1"
+                                               required data-msg-required="请输入[播放序号]." data-msg-maxlength="播放序号不能小于0." title="指定播放顺序">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_title_add">画面标题</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="Title" class="form-control input-sm" id="js_title_add" title="用于在播放过程中提示不同的播放画面">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_isTiming_add">播放方式</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_select_isTiming_add" name="IsTiming">
+                                            <option value="false">轮流播放</option>
+                                            <option value="true">定时播放</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_enable_add">是否启用</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_select_enable_add" name="IsEnabled">
+                                            <option value="true">启用</option>
+                                            <option value="false">禁用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="js_playtime_add_div" class="col-md-12" style="display:none;">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="js_playtime_add">播放时间</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="PlayTime" class="form-control input-sm" id="js_playtime_add" placeholder="格式:08:30~08:50;14:00~23:30">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="js_remark_add">备注</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="Remark" class="form-control input-sm" id="js_remark_add">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_PlayBoardSetting"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!--编辑模态框-->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>编辑播放设置</h4>
+                </div>
+                @using (Html.BeginForm("EditPlayBoardSetting", "PlayBoard", FormMethod.Post, new { id = "js_form_PlayBoardSetting_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="PlayBoard_Setting_ID" id="js_hidden_PlayBoardSetting_edit_uid" value="0" />
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_factory_edit">厂区</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="Plant_Organization_UID" class="form-control input-sm" id="js_select_factory_edit" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_optype_edit">OP类型</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="BG_Organization_UID" class="form-control input-sm" id="js_select_optype_edit" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_funplant_edit">功能厂</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="FunPlant_Organization_UID" class="form-control input-sm" id="js_select_funplant_edit" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_playuser_edit">播放账号</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="Play_UID" class="form-control input-sm" id="js_select_playuser_edit" title="NTID 用户名" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_playview_edit">播放画面</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_playview_edit" name="PlayBoard_View_ID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_play_seq_edit">播放序号</label>
+                                    <div class="col-sm-7">
+                                        <input type="number" class="form-control input-sm required" id="js_play_seq_edit" name="PlaySeq" placeholder="播放序号" min="1" step="1"
+                                               required data-msg-required="请输入[播放序号]." data-msg-maxlength="播放序号不能小于0." title="指定播放顺序">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_title_edit">画面标题</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="Title" class="form-control input-sm" id="js_title_edit" title="用于在播放过程中提示不同的播放画面">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_enable_edit">是否启用</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_select_enable_edit" name="IsEnabled">
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_isTiming_edit">播放方式</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_select_isTiming_edit" name="IsTiming">
+                                            <option value="false">轮流播放</option>
+                                            <option value="true">定时播放</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="js_playtime_edit_div" class="col-md-12" style="display:none;">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="js_playtime_edit">播放时间</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="PlayTime" class="form-control input-sm" id="js_playtime_edit" placeholder="格式:08:30~08:50;14:00~23:30" title="为空表示全天播放">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="js_remark_edit">备注</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="Remark" class="form-control input-sm" id="js_remark_edit">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_PlayBoardSetting"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var PlayBoardSettingMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        EditPlayBoardSetting: '@Url.Action("EditPlayBoardSetting", "PlayBoard")',
+                        AddPlayBoardSetting: '@Url.Action("SaveAddPlayBoardSetting", "PlayBoard")',
+                        EditPlayBoardSetting: '@Url.Action("SaveEditPlayBoardSetting", "PlayBoard")',
+                        queryPlayBoardSettings: '@Url.Action("QueryPlayBoardSettings", "PlayBoard")',
+                        queryPlayBoardSetting: '@Url.Action("QueryPlayBoardSetting", "PlayBoard")',
+                        deletePlayBoardSetting: '@Url.Action("DeletePlayBoardSetting", "PlayBoard")',
+                        GetMaxEnddate4PlayBoardSetting: '@Url.Action("GetMaxEnddate4PlayBoardSetting", "PlayBoard")',
+                        exportPlayBoardSettings: '@Url.Action("DoExportPlayBoardSetting", "PlayBoard")',
+                        exportPlayBoardSettingsByQuery: '@Url.Action("DoExportPlayBoardSettingByQuery", "PlayBoard")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        getProjectByOPType: '@Url.Action("QueryProjects", "Equipmentmaintenance")',
+                        getProcess_InfoList: '@Url.Action("GetProcess_InfoList", "PlayBoard")',
+                        downloadExcel: '@Url.Action("PlayBoardSetting", "PlayBoard")',
+                        getPlayUsersByOPType: '@Url.Action("GetPlayUsersByOPType", "PlayBoard")',
+                        getPlayBoardViewList: '@Url.Action("GetPlayBoardViewList", "PlayBoard")',
+                    };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.PlayBoard_Setting_ID + '">')
+                                 .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    },
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">';
+
+                            var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                            '<i class="fa fa-reorder"></i>' +
+                                        '</button>' +
+                                        '<div class="hidden popover-content">' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.PlayBoard_Setting_ID + '">编辑</button>' +
+                                            '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.PlayBoard_Setting_ID + '" data-viewName = "' + rowData.ViewName + '">删除</button>';
+                            if (rowData.SettingActionName != undefined && rowData.SettingActionName != '') {
+                                buttonHtml += '<button type="button" class="btn btn-primary btn-xs js-grid-setting" data-settingview="' + rowData.SettingActionName + '" data-settingid="' + rowData.PlayBoard_Setting_ID + '">更多设置</button>';
+                            }
+                            buttonHtml += '<a id="js_btn_start" class="btn btn-primary btn-xs" role="button" target="_blank" href="/PIS_M/PlayBoard/index?playUserUID=' + rowData.Play_UID + '">播放预览</a>';
+                            buttonHtml += '</div>';
+                            var resultHtml = hiddenHtml + buttonHtml;
+                            $(td).html(resultHtml);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq text-center"
+                    }, {
+                        data: "PlantName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "BGName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "FunPlantName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Play_UserNTID",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "ViewName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "ActionName",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Title",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "PlaySeq",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "IsTiming",
+                        render: function (data, type, full, meta) {
+                            return data == true ? "定时" : "轮流";
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "PlayTime",
+                        className: "min-col-xs"
+                    }, {
+                        data: "IsEnabled",
+                        render: function (data, type, full, meta) {
+                            return data == true ? "启用" : "禁用";
+                        },
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "JsonParameter",
+                        className: "min-col-xs",
+                        width: 300
+                    }, {
+                        data: "Remark",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_UserName",
+                        className: "min-col-lg text-center"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-lg text-center"
+                    }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _queryPlayBoardSettings = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_PlayBoardSetting_datatable",
+                        remoteUrl: urls.queryPlayBoardSettings,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryPlayBoardSettings(true);
+                    },
+                    queryPlayBoardSettings: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryPlayBoardSettings(false);
+                    }
+                }
+
+            })();
+            PlayBoardSettingMaintenance.Init();
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    PlayBoardSettingMaintenance.queryPlayBoardSettings(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //暂时不支持导出
+            //$('#js_btn_export').click(function () {
+            //    var $selectList = $('#js_PlayBoardSetting_datatable').find('.js-checkbox-item:checked');
+            //    var len = $selectList.length;
+            //    if (len == 0) {
+            //        //全部导出
+            //        var url = PlayBoardSettingMaintenance.urls.exportPlayBoardSettingsByQuery;
+            //        //没有查询条件的情况，从查询页面获取
+            //        if (PDMS.Utility.Settings.Pages.remote.params == null) {
+            //            PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+            //        }
+            //        url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+            //        window.location.href = url;
+            //    } else {
+            //        var uids = $.map($selectList, function (row) {
+            //            return row.value;
+            //        });
+            //        var url = PlayBoardSettingMaintenance.urls.exportPlayBoardSettings;
+            //        url += "?uids=" + uids.toString();
+            //        window.location.href = url;
+            //    }
+            //});
+
+            //新增是否定时播放
+            $('#js_select_isTiming_add').change(function () {
+                if (this.value == 'true') {
+                    $("#js_playtime_add_div").show();
+                } else {
+                    $("#js_playtime_add_div").hide();
+                }
+            });
+
+            //编辑是否定时播放
+            $('#js_select_isTiming_edit').change(function () {
+                if (this.value == 'true') {
+                    $("#js_playtime_edit_div").show();
+                } else {
+                    $("#js_playtime_edit_div").hide();
+                }
+            });
+
+            //extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_PlayBoardSetting_add').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_add_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format('YYYY-MM-DD'));
+                });
+            });
+
+            //打开新增对话框
+            $('#js_add_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                $('#js_select_factory_add').trigger('change');
+                $('#js_select_optype_add').trigger('change');
+
+                $('#js_select_workStationId_add').val('');
+                $('#js_input_PlayBoardSetting_Name_add').val('');
+                $('#js_input_PlayBoardSetting_Desc_add').val('');
+                $('#js_select_enable_add').val('true');
+                //$('#js_select_project_add').val('');
+
+                //$('#js_input_PlayBoardSetting').data('original', '');
+                //$('#js_input_end_date').attr("disabled", false);
+                $('#js_btn_save_new_PlayBoardSetting').show();
+                //$('#js_btn_save_edit_PlayBoardSetting').hide();
+
+                //播放画面下拉框
+                refreshPlayBoardViewSelect();
+            })
+
+            //打开编辑对话框
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+
+            })
+
+            ////关闭新增对话框
+            $('#js_add_modal').on('hidden.bs.modal', function (e) {
+                $('#js_add_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //编辑
+            $('body').on('click', '.js-grid-edit', function () {
+                var $sender = $(this);
+                if ($sender.hasClass('disabled')) {
+                    PDMS.Utility.MessageBox.error("PlayBoardSetting already expired, can't edit!");
+                    return;
+                }
+
+                $("#js_hidden_edit_id").val(1);
+                var uid = $(this).attr('data-id');
+                var url = PlayBoardSettingMaintenance.urls.queryPlayBoardSetting;
+                debugger;
+                $.post(url, { id: uid }, function (data) {
+                    if (data.isSuccess) {
+                        //隐藏字段
+                        $('#js_hidden_PlayBoardSetting_edit_uid').val(data.data.PlayBoard_Setting_ID);
+
+                        //显示字段
+                        $('#js_select_factory_edit').val(data.data.PlantName);
+                        $('#js_select_optype_edit').val(data.data.BGName);
+                        $('#js_select_funplant_edit').val(data.data.FunPlantName);
+                        $('#js_select_playuser_edit').val(data.data.Play_UserName);
+
+                        $('#js_play_seq_edit').val(data.data.PlaySeq);
+                        $('#js_title_edit').val(data.data.Title);
+                        $('#js_select_isTiming_edit').val(data.data.IsTiming.toString());
+                        $('#js_select_isTiming_edit').trigger('change');
+                        $('#js_select_enable_edit').val(data.data.IsEnabled.toString());
+                        $('#js_playtime_edit').val(data.data.PlayTime);
+                        $('#js_remark_edit').val(data.data.Remark);
+
+                        refreshPlayBoardViewSelectEdit();
+                        $('#js_select_playview_edit').selectpicker('val', data.data.PlayBoard_View_ID);
+                    }
+                    else {
+                        PDMS.Utility.MessageBox.error(data.message);
+                    }
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+            });
+
+            //删除
+            $('body').on('click', '.js-grid-delete', function () {
+                var settingID = $(this).attr('data-id');
+                var viewName = $(this).attr('data-viewName');
+                PDMS.Utility.MessageBox.confirm(
+                    "你确定要删除播放设置:[" + viewName + "]?"
+                    , function () {
+                        var url = PlayBoardSettingMaintenance.urls.deletePlayBoardSetting;
+
+                        $.post(url, { settingID: settingID }, function (data) {
+                            debugger;
+                            if (data.isSuccess) {
+                                PDMS.Utility.MessageBox.info("删除播放设置成功", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error("删除失败:" + data.message);
+                            }
+                        });
+                    });
+            });
+
+            //跳转到配置画面
+            $('body').on('click', '.js-grid-setting', function () {
+                var settingView = $(this).attr('data-settingview');
+                var playuid = $(this).attr('data-settingid');
+                var url = settingView + '?settingID=' + playuid;
+                window.location.href = url;
+            });
+
+            firstSearch = true;
+            $('#bt_search').click(function () {
+                if (firstSearch) {
+                    $('#js_select_factory_query').trigger('change');
+                    firstSearch = false;
+                }
+            })
+
+            //厂区change
+            $('#js_select_factory_add').change(function () {
+                refreshOPTypesAdd();
+                refreshFuncPlantSelectAdd();
+                refreshPlayUserSelectAdd();
+            })
+
+            //编辑时optype 改变时间
+            $('#js_select_optype_add').change(function () {
+                refreshFuncPlantSelectAdd();
+                refreshPlayUserSelectAdd();
+            });
+
+            //功能厂
+            $('#js_select_funplant_add').change(function () {
+                refreshPlayUserSelectAdd();
+            });
+
+            //刷新OP类型(查询)
+            function refreshOPTypesAdd() {
+                $('#js_select_optype_add').empty();
+                $('#js_select_optype_add').html('<option></option>');
+                var url = PlayBoardSettingMaintenance.urls.getCurrentOPType;
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_optype_add').selectpicker('refresh');
+            }
+
+            //新建时功能厂列表刷新
+            function refreshFuncPlantSelectAdd() {
+                $('#js_select_funplant_add').empty();
+                $('#js_select_funplant_add').html('<option></option>');
+                var getFuncPlantUrl = PlayBoardSettingMaintenance.urls.getFunPlantByOPTypes;
+                $.post(getFuncPlantUrl, { Optype: $('#js_select_optype_add').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                $('#js_select_funplant_add').selectpicker('refresh');
+            }
+
+            //刷新播放账号下拉框
+            function refreshPlayUserSelectAdd() {
+                $('#js_select_playuser_add').empty();
+                $('#js_select_playuser_add').html('<option>NTID 账号名称</option>');
+                var getPlayUsersByOPTypeUrl = PlayBoardSettingMaintenance.urls.getPlayUsersByOPType;
+                var oporgid = $('#js_select_optype_add').val();
+                var funorgid = $('#js_select_funplant_add').val();
+
+                if (oporgid != "") {
+                    if (funorgid == "") {
+                        funorgid = null;
+                    }
+                    $.get(getPlayUsersByOPTypeUrl, { opTypeUID: oporgid, funcOrgID: funorgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_playuser_add').append('<option value="' + data[i].Account_UID + '">' + data[i].User_NTID + ' ' + data[i].User_Name + '</option>');
+                        }
+                    })
+                }
+                $('#js_select_playuser_add').selectpicker('refresh');
+            }
+
+
+            //--------------------查询相关函数--------------------
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                refreshSearchOPTypeSelect();
+                refreshSearchFuncPlantSelect();
+                refreshPlayUserSelectQuery();
+            })
+
+            //查询时OP 类型change 事件
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshPlayUserSelectQuery();
+            })
+
+            //功能厂change
+            $('#js_select_funplant_query').change(function () {
+                refreshPlayUserSelectQuery();
+            });
+
+
+            //刷新OP 类型
+            function refreshSearchOPTypeSelect() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = PlayBoardSettingMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+                $('#js_select_optype_query').selectpicker('refresh');
+            }
+
+            //刷新功能厂下拉框
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = PlayBoardSettingMaintenance.urls.getFunPlantByOPTypes;
+                var optypeUID = $('#js_select_optype_query option:selected').val();
+                if (optypeUID > 0) {
+                    $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    });
+                }
+                $('#js_select_funplant_query').selectpicker('refresh');
+            }
+
+            //刷新播放账号下拉框
+            function refreshPlayUserSelectQuery() {
+                $('#js_select_playuser_query').empty();
+                $('#js_select_playuser_query').html('<option>NTID 账号名称</option>');
+                var getPlayUsersByOPTypeUrl = PlayBoardSettingMaintenance.urls.getPlayUsersByOPType;
+                var oporgid = $('#js_select_optype_query').val();
+                var funorgid = $('#js_select_funplant_query').val();
+
+                if (oporgid != "") {
+                    if (funorgid == "") {
+                        funorgid = null;
+                    }
+                    $.get(getPlayUsersByOPTypeUrl, { opTypeUID: oporgid, funcOrgID: funorgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_playuser_query').append('<option value="' + data[i].Account_UID + '">' + data[i].User_NTID + ' ' + data[i].User_Name + '</option>');
+                        }
+                    })
+                }
+                $('#js_select_playuser_query').selectpicker('refresh');
+            }
+
+            //刷新新增播放画面下拉框
+            function refreshPlayBoardViewSelect() {
+                $('#js_select_playview_add').empty();
+                $('#js_select_playview_add').html('<option></option>');
+                var getProjectByOPTypeUrl = PlayBoardSettingMaintenance.urls.getPlayBoardViewList;
+                $.get(getProjectByOPTypeUrl, {}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_playview_add').append('<option value="' + data[i].PlayBoard_View_ID + '">' + data[i].Name + '</option>');
+                    }
+                });
+                $('#js_select_playview_add').selectpicker('refresh');
+            }
+
+            //----------------------编辑相关函数----------------------
+            //刷新编辑播放画面下拉框
+            function refreshPlayBoardViewSelectEdit() {
+                $('#js_select_playview_edit').empty();
+                $('#js_select_playview_edit').html('<option></option>');
+                var getProjectByOPTypeUrl = PlayBoardSettingMaintenance.urls.getPlayBoardViewList;
+                $.get(getProjectByOPTypeUrl, {}, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_playview_edit').append('<option value="' + data[i].PlayBoard_View_ID + '">' + data[i].Desc + '</option>');
+                    }
+                });
+                $('#js_select_playview_edit').selectpicker('refresh');
+            }
+
+            //新增保存
+            $("#js_btn_save_new_PlayBoardSetting").click('click', function () {
+                $('#js_hidden_Plant_Organization_uid').val($('#js_select_factory_add option:selected').val());
+                $('#js_hidden_BG_Organization_uid').val($('#js_select_optype_add option:selected').val());
+                $('#js_hidden_FunPlant_Organization_uid').val($('#js_select_funplant_add option:selected').val());
+
+                //验证是否选中了播放账号
+                var playuserSelectIndex = $("#js_select_playuser_add").get(0).selectedIndex;
+                if (playuserSelectIndex == 0) {
+                    PDMS.Utility.MessageBox.info("请选择播放账号!");
+                    return false;
+                }
+
+                //验证是否选择了播放画面
+                var isTiming = $('#js_select_playview_add').get(0).selectedIndex;
+                if (isTiming == 0) {
+                    PDMS.Utility.MessageBox.info("请选择播放画面!");
+                    return false;
+                }
+
+                debugger;
+                //editform.validate({ rules: {}, messages: {} });
+                var playtime_reg = /^([0-9]{2}:[0-9]{2}~[0-9]{2}:[0-9]{2})?(;[0-9]{2}:[0-9]{2}~[0-9]{2}:[0-9]{2})*;?$/;
+                var playtime = $("#js_playtime_add").val();
+                if (!playtime_reg.test(playtime)) {
+                    PDMS.Utility.MessageBox.info("请输入正确的播放时间!");
+                    return false;
+                }
+                var editform = $('#js_form_PlayBoardSetting_add');
+                debugger;
+                if (editform.valid()) {
+                    var options = {
+                        url: PlayBoardSettingMaintenance.urls.AddPlayBoardSetting,
+                        type: 'post',
+                        success: function (data) {
+                            var result = $.parseJSON(data);
+                            if (result.isSuccess) {
+                                PDMS.Utility.MessageBox.info("新增成功!", function myfunction() {
+                                    $('#js_add_modal').modal('hide');
+                                    window.location.reload();
+                                });
+                            }
+                            else {
+                                PDMS.Utility.MessageBox.error(result.message);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+
+
+
+            //编辑保存播放设置
+            $("#js_btn_save_edit_PlayBoardSetting").click('click', function () {
+                //验证是否选中了播放账号
+                var playuserSelectIndex = $("#js_select_playuser_edit").get(0).selectedIndex;
+                if (playuserSelectIndex == 0) {
+                    PDMS.Utility.MessageBox.info("请选择播放账号!");
+                    return false;
+                }
+
+                //验证是否选择了播放画面
+                var isTiming = $('#js_select_playview_edit').get(0).selectedIndex;
+                if (isTiming == 0) {
+                    PDMS.Utility.MessageBox.info("请选择播放画面!");
+                    return false;
+                }
+
+                debugger;
+                //editform.validate({ rules: {}, messages: {} });
+                var playtime_reg = /^([0-9]{2}:[0-9]{2}~[0-9]{2}:[0-9]{2})?(;[0-9]{2}:[0-9]{2}~[0-9]{2}:[0-9]{2})*;?$/;///^(;*[0-9]{2}:[0-9]{2}~[0-9]{2}:[0-9]{2};*)*$/;
+                var playtime = $("#js_playtime_edit").val();
+                if (!playtime_reg.test(playtime)) {
+                    PDMS.Utility.MessageBox.info("请输入正确的播放时间!");
+                    return false;
+                }
+                var editform = $('#js_form_PlayBoardSetting_edit');
+                debugger;
+                if (editform.valid()) {
+                    var options = {
+                        url: PlayBoardSettingMaintenance.urls.EditPlayBoardSetting,
+                        type: 'post',
+                        success: function (data) {
+                            var result = $.parseJSON(data);
+                            if (result.isSuccess) {
+                                PDMS.Utility.MessageBox.info("编辑成功!", function myfunction() {
+                                    $('#js_add_modal').modal('hide');
+                                    window.location.reload();
+                                });
+                            }
+                            else {
+                                PDMS.Utility.MessageBox.error(result.message);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+
+            //Form Validate
+            $('#js_form_PlayBoardSetting_add').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_add_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+        });
+    </script>
+}

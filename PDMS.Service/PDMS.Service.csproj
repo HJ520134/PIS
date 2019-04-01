@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8241F397-D5A6-41DA-937D-CDEC0EFA6E85}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PDMS.Service</RootNamespace>
+    <AssemblyName>PDMS.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="JGP.Common.PasswordUtil">
+      <HintPath>..\packages\JGP.Common.PasswordUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="MoreLinq, Version=1.4.18916.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.1.4.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\PDMS.Web\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APPService.cs" />
+    <Compile Include="BadProjectTopTen\BadProjectTopTenServer.cs" />
+    <Compile Include="BadProjectTopTen\IBadProjectTopTenServer.cs" />
+    <Compile Include="BaseSevice.cs" />
+    <Compile Include="BatchMailService.cs" />
+    <Compile Include="CNCMachineService.cs" />
+    <Compile Include="ElectricalBoardService.cs" />
+    <Compile Include="EnumerationService.cs" />
+    <Compile Include="EquipmentmaintenanceService.cs" />
+    <Compile Include="ExceptionService.cs" />
+    <Compile Include="FixturePartDemandSummaryDService.cs" />
+    <Compile Include="FixturePartDemandSummaryMService.cs" />
+    <Compile Include="FixturePartService.cs" />
+    <Compile Include="FixturePartSettingMService.cs" />
+    <Compile Include="FixtureRepairDService.cs" />
+    <Compile Include="FixtureService.cs" />
+    <Compile Include="FixturePartDemandDService.cs" />
+    <Compile Include="FixturePartDemandMService.cs" />
+    <Compile Include="Fixture_Part_UseTimesService.cs" />
+    <Compile Include="FlowChart\FlowChartDetailService.cs" />
+    <Compile Include="FlowChart\FlowChartMasterService.cs" />
+    <Compile Include="FlowChart\FlowChartPCMHService.cs" />
+    <Compile Include="FlowChart\FlowChartPlanService.cs" />
+    <Compile Include="GL_BuildPlanService.cs" />
+    <Compile Include="GL_GoldenStationCTRecordService.cs" />
+    <Compile Include="GL_LineService.cs" />
+    <Compile Include="GL_LineShiftPerfService.cs" />
+    <Compile Include="GL_ShiftTimeService.cs" />
+    <Compile Include="GL_StationService.cs" />
+    <Compile Include="GL_WIPShiftBatchOutputService.cs" />
+    <Compile Include="GL_WIPShiftOutputService.cs" />
+    <Compile Include="GoldenLineService.cs" />
+    <Compile Include="GoldenLineUIService.cs" />
+    <Compile Include="GoldenLine\GL_WIPHourOutputService.cs" />
+    <Compile Include="IPQC\IPQCQualityService.cs" />
+    <Compile Include="Language\Localizer.cs" />
+    <Compile Include="LocalizedLanguageCommon.cs" />
+    <Compile Include="LogMessageRecordService.cs" />
+    <Compile Include="MachineYieldReportService.cs" />
+    <Compile Include="MaterialManageService.cs" />
+    <Compile Include="MESDataSync\MesDataSyncService.cs" />
+    <Compile Include="MESDataSync\MES_SNOriginalService.cs" />
+    <Compile Include="MES_PIS_SyncFailedRecordService.cs" />
+    <Compile Include="ModelLineHRService.cs" />
+    <Compile Include="NewMesDataSyncService.cs" />
+    <Compile Include="OEE\OEE_SyncService.cs" />
+    <Compile Include="OEE\OEE_Service.cs" />
+    <Compile Include="PlayBoard_SettingService.cs" />
+    <Compile Include="PlayBoard_ViewService.cs" />
+    <Compile Include="ProcessIDTRSConfigService.cs" />
+    <Compile Include="ProductionPlanningService.cs" />
+    <Compile Include="ProductionPlanning\CurrentStaffService.cs" />
+    <Compile Include="ProductionPlanning\FlowchartDetailMEEquipmentService.cs" />
+    <Compile Include="ProductionPlanning\FlowchartDetailMEService.cs" />
+    <Compile Include="ProductionPlanning\ProductionSchedulNPIService.cs" />
+    <Compile Include="ProductionPlanning\ProductionSchedulService.cs" />
+    <Compile Include="ProductionResourcePlanService\IProductionResourcePlanService.cs" />
+    <Compile Include="ProductionResourcePlanService\ProductionResourcePlanService.cs" />
+    <Compile Include="QualityService.cs" />
+    <Compile Include="ChartService.cs" />
+    <Compile Include="CommonService.cs" />
+    <Compile Include="FlowChartService.cs" />
+    <Compile Include="EventReportManagerService.cs" />
+    <Compile Include="ProductDateService.cs" />
+    <Compile Include="QualityTraceService.cs" />
+    <Compile Include="SettingsService.cs" />
+    <Compile Include="StorageManageService.cs" />
+    <Compile Include="SyncGoldenLineService.cs" />
+    <Compile Include="SystemService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System_ProjectService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDMS.Common\PDMS.Common.csproj">
+      <Project>{09b6a6ab-8dc7-4d94-8ee4-248360ac54b3}</Project>
+      <Name>PDMS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Data\PDMS.Data.csproj">
+      <Project>{d640cf57-9e8b-4ded-8e57-5333b14e05b6}</Project>
+      <Name>PDMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Model\PDMS.Model.csproj">
+      <Project>{1bee001d-ddeb-47fc-a64c-4d65d83f3774}</Project>
+      <Name>PDMS.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

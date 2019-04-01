@@ -1,0 +1,333 @@
+﻿<section class="content-header portal-content-header">
+    <h1>
+        维护故障种类
+    </h1>
+</section>
+
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-3">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add_fl">新增</button>
+                    <a class="fa fa-search btn btn-primary" id="bt_search" data-toggle="modal" data-target="#js_search_modal"> 查询</a>
+                    <a class="fa fa-times btn btn-primary"  href="../Equipmentmaintenance/BasicInfo">
+                        @*<i class="glyphicon glyphicon-backward"></i>*@
+                        返回
+                    </a>
+                }
+            </div>
+            <br />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>分类</th>
+                        <th>值</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>分类</th>
+                        <th>值</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">故障信息维护明细</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditErrorInfo", "Equipmentmaintenance" ,FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_id">分类</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_is_show" name="ErrorType">
+                                        <option value="故障种类维护">故障种类维护</option>
+                                        <option value="状况级别维护">状况级别维护</option>
+                                        <option value="处理结果维护">处理结果维护</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_bu_name">值</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_value" name="Value" placeholder="Value"
+                                           required data-msg-required="Please enter Value" data-rule-maxlength="500" 
+                                           data-msg-maxlength="Please enter no more than {0} characters in value.">
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="Enum_UID" name="Enum_UID" />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> 保存</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+<div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查询</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="js_select_is_show">分类</label>
+                            <div class="col-sm-7">
+                                <select class="form-control input-sm" id="js_select_is_show" name="ErrorType">
+                                    <option value=""></option>
+                                    <option value="故障种类维护">故障种类维护</option>
+                                    <option value="状况级别维护">状况级别维护</option>
+                                    <option value="处理结果维护">处理结果维护</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_value">值</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_value" name="Value" placeholder="Value">
+                            </div>
+                        </div>                   
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+@section ViewScripts{
+    <script type="text/javascript">
+
+        $('#btn_add_fl').click(function () {
+            $('#isEdit').val(false);
+            $('#js_edit_modal').modal('show', $(this));
+        })
+
+        $('#js_btn_clear').click(function () {
+            PDMS.Utility.Criteria.Clear();
+        });
+    $(function () {
+        var ErrorInfoUrl = (function () {
+            var urls = {
+                //画面初始化加载
+                queryErrorInfo: '@Url.Action("QueryErrorInfo", "Equipmentmaintenance")',
+                queryErrorByuid: '@Url.Action("QueryErrorInfoByUid", "Equipmentmaintenance")',
+                //删除EQPUser信息
+                deleteErrorInfo: '@Url.Action("DeleteErrorInfo", "Equipmentmaintenance")',
+            };
+
+            //#region 定义字段列
+            var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Enum_UID + '">')
+                        .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                },{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var buttonEdit = '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Enum_UID + '">编辑</button>';
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '{0}' +
+                                        '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Enum_UID + '">删除</button>' +
+                                    '</div>';
+                        result = result.replace('{0}', buttonEdit);
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                },
+                {
+                    data: null,
+                    className: "table-col-seq"
+                },
+                {
+                    data: "ErrorType",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Value",
+                    className: "min-col-xs"
+                }];
+            //#endregion 定义字段列
+
+            var _getParams = function () {
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryErrorInfo = function (firstLoad, buildCriteria) {
+
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryErrorInfo,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        columns: columns
+                    }
+
+                };
+                if (!firstLoad) {
+                    debugger;
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryErrorInfo(true, false);
+                },
+                queryErrorInfo: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryErrorInfo(false, buildCriteria);
+                }
+            }
+        })();
+
+        ErrorInfoUrl.Init();
+
+        $('#js_btn_save_new').click(function () {
+            $('#js_form_user_edit').ajaxSubmit({
+                beforeSubmit: function () {
+                    if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                        return false;
+                    if ($('#js_edit_modal').find('input[name=Value]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请输入值');
+                        return false;
+                    }
+                },
+                success: function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        $('#js_edit_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('更新成功');
+                        ErrorInfoUrl.queryErrorInfo();
+                    }
+                }
+            });
+        })
+
+        //隐藏编辑框时清空值
+        $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+            $('#js_edit_modal .list-group.validate-error').empty();
+        });
+        $('#js_form_user_edit').validate({
+            errorContainer: $('ul.validate-error'),
+            errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+            wrapper: 'li'
+        });
+
+        //删除事件
+        $('body').on('click', '.js-grid-delete', function () {
+            var Enum_UID = $(this).attr('data-id');
+            PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                var url = ErrorInfoUrl.urls.deleteErrorInfo;
+                $.post(url, { Enum_UID: Enum_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info("删除成功！")
+                        EQPUserUrl.queryEQPUser();
+                    }
+                });
+            });
+        });
+        //#endregion
+
+        //隐藏编辑框时清空值
+        $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+            $('#js_edit_modal').find('input').val('');
+        });
+
+        //为新增或修改Modal，注册事件
+        $('#js_edit_modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+        });
+        //#region 点击GridView上的Edit按钮事件
+        $('body').on('click', '.js-grid-edit', function () {
+            $('#isEdit').val(true);
+            $('#js_edit_modal').modal('show', $(this));
+
+            var Enum_UID = $(this).attr('data-id'),
+                url = ErrorInfoUrl.urls.queryErrorByuid;
+            $.post(url, { Enum_UID: Enum_UID }, function (data) {
+                $('#Enum_UID').val(data[0].Enum_UID);
+                $('#js_edit_modal').find('input[name=ErrorType]').val(data[0].ErrorType);
+                $('#js_edit_modal').find('input[name=Value]').val(data[0].Value);
+            });
+        });
+        //查询按钮
+        $('#js_btn_query').click(function () {
+
+            if ($('#js_form_query').valid()) {
+                ErrorInfoUrl.queryErrorInfo();
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+        //#endregion 点击Edit按钮事件
+    })
+    </script>
+}

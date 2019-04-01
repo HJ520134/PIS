@@ -1,0 +1,1161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D640CF57-9E8B-4DED-8E57-5333B14E05B6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PDMS.Data</RootNamespace>
+    <AssemblyName>PDMS.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actual_Production_Equipment_Qty.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Actual_Production_Manpower.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="APP_USER_FAVORITES_FUNCTION.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Batch_Log.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClampRate.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClampRateHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CNCMachine.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CNCMachineColumnTable.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\SystemBUDConfiguration.cs" />
+    <Compile Include="Configuration\SystemBUMConfiguration.cs" />
+    <Compile Include="Configuration\SystemFunctionConfiguration.cs" />
+    <Compile Include="Configuration\SystemFunctionSubConfiguration.cs" />
+    <Compile Include="Configuration\SystemOrganizationBOMConfiguration.cs" />
+    <Compile Include="Configuration\SystemOrganizationConfiguration.cs" />
+    <Compile Include="Configuration\SystemPlantConfiguration.cs" />
+    <Compile Include="Configuration\SystemRoleConfiguration.cs" />
+    <Compile Include="Configuration\SystemRoleFunctionConfiguration.cs" />
+    <Compile Include="Configuration\SystemRoleFunctionSubConfiguration.cs" />
+    <Compile Include="Configuration\SystemUserBusinessGroupConfiguration.cs" />
+    <Compile Include="Configuration\SystemUserOrgConfiguration.cs" />
+    <Compile Include="Configuration\SystemUserPlantConfiguration.cs" />
+    <Compile Include="Configuration\SystemUserRoleConfiguration.cs" />
+    <Compile Include="Configuration\SystemUsersConfiguration.cs" />
+    <Compile Include="Configuration\WarningListConfiguration.cs" />
+    <Compile Include="CostCtr_info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Current_Manpower.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CuttingFluid.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CuttingFluidHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DefectCode_Group.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DefectCode_RepairSolution.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DemissionRateAndWorkSchedule.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Electrical_Board_DT.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Enumeration.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQPRepair_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQP_Forecast_PowerOn.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQP_Material.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQP_PowerOn.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQP_Type.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EQP_UserTable.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Equipment_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExceptionTypeWithFlowchart.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Code.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Dept.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Email.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Project.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Record.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Reply.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Resume.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Shedule.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception_Time.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixtureDefectCode_Setting.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_DefectCode.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Machine.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Maintenance_Profile.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Maintenance_Record.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Maintenance_Record_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_M_UseScanHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_ClearHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Demand_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Demand_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Demand_Summary_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Demand_Summary_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Inventory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Order_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Order_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Order_Schedule.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Setting_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_Setting_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Part_UseTimes.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Return_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Return_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlowChart_Detail.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlowChart_IEData.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_ActionTasker.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_ActionTaskerD.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_AssemblyModel.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_AssemblyModelChange.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_BuildPlan.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_BuildPlanLineMapping.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_BuildPlanSource.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_CustomerShiftPerf.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_CustomerTarget.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_DataSource.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_Device.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_GoldenStationCTRecord.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_Line.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_LineGroup.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_LineHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_LineShiftPerf.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_LineShiftResposibleUser.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_MealTime.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_MeetingTypeInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_MESSource.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_MetricInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_QADetectionPoint.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_QATargetYield.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_Rest.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_ShiftTime.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_Station.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StationHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StationShiftPerf.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StdLineModel.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StdLineModelStation.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StdWIPRoute.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_StdWIPRouteSummary.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_WIPEvent.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_WIPHourOutput.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_WIPShiftBatchOutput.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GL_WIPShiftOutput.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IPQCQualityDetial.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IPQCQualityReport.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KnifeLifeTime.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KnifeLifeTime_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LoadSpeed.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LoadSpeedHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LogMessageRecord.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MachineCapacity.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MachineCapacityHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Machine_Customer.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Machine_Schedule_Config.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Machine_Station.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Machine_Yield.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Maintenance_Record.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mes_OutShipMent.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MES_PIS_SyncFailedRecord.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MES_SNOriginal.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mes_StationColor.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MES_StationDataRecord.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelLineHR.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_DefectCodeDailyNum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_DefectCodeDailySum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_DownTimeCode.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_DownTimeType.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_EveryDayDFcodeMissing.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_EveryDayMachine.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_EveryDayMachineDTCode.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_ImprovementPlan.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_ImprovementPlanD.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_MachineDailyDownRecord.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_MachineInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_MachineStatus.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_MeetingTypeInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_MetricInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_StationDailyDownSum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_StationDefectCode.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_StationImprovement_Plan.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OEE_UserStation.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OrigCoordMon.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OrigCoordMonHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlayBoard_PlayTime.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlayBoard_Setting.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlayBoard_View.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Predict_Production_Information.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProcessIDTransformConfig.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Input_Location_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QTrace_Sum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QTrace_TopTen_Sum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\APP\APP_USER_FAVORITES_FUNCTIONRepository.cs" />
+    <Compile Include="Repository\BadProjectTopTenRepository\BadProjectTopTenDataServer.cs" />
+    <Compile Include="Repository\BadProjectTopTenRepository\IBadProjectTopTenDataServer.cs" />
+    <Compile Include="Repository\CNCMachineColumnTableRepository.cs" />
+    <Compile Include="Repository\CNCMachineRepository.cs" />
+    <Compile Include="Repository\CostCtrInfoRepository.cs" />
+    <Compile Include="Repository\CurrentStaffRepository.cs" />
+    <Compile Include="Repository\DemissionRateAndWorkScheduleRepository.cs" />
+    <Compile Include="Repository\Exception_CodeRepository.cs" />
+    <Compile Include="Repository\Exception_DeptRepository.cs" />
+    <Compile Include="Repository\Exception_EmailRepository.cs" />
+    <Compile Include="Repository\Exception_RecordRepository.cs" />
+    <Compile Include="Repository\Exception_TimeRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Demand_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Demand_MRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Order_ScheduleRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Demand_Summary_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Demand_Summary_MRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_UseTimesRepository.cs" />
+    <Compile Include="Repository\Fixture_Return_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Return_MRepository.cs" />
+    <Compile Include="Repository\Fixture_Storage_CheckRepository.cs" />
+    <Compile Include="Repository\Fixture_Storage_TransferRepository.cs" />
+    <Compile Include="Repository\FlowChartIEMgDataRepository.cs" />
+    <Compile Include="Repository\GL_ActionTaskRepository.cs" />
+    <Compile Include="Repository\GL_BuildPlanRepository.cs" />
+    <Compile Include="Repository\GL_DownTimeRecordRepository.cs" />
+    <Compile Include="Repository\GL_GoldenStationCTRecordRepository.cs" />
+    <Compile Include="Repository\GL_LineGroupRepository.cs" />
+    <Compile Include="Repository\GL_MeetingTypeInfoRepository.cs" />
+    <Compile Include="Repository\GL_MetricInfoRepository.cs" />
+    <Compile Include="Repository\GL_RestRepository.cs" />
+    <Compile Include="Repository\GL_LineShiftResposibleUserRepository.cs" />
+    <Compile Include="Repository\GL_StationRepository.cs" />
+    <Compile Include="Repository\GL_WIPHourOutputRepository.cs" />
+    <Compile Include="Repository\GL_LineRepository.cs" />
+    <Compile Include="Repository\GL_LineShiftPerfRepository.cs" />
+    <Compile Include="Repository\GL_ShiftTimeRepository.cs" />
+    <Compile Include="Repository\GL_WIPShiftBatchOutputRepository.cs" />
+    <Compile Include="Repository\GL_WIPShiftOutputRepository.cs" />
+    <Compile Include="Repository\GoldenLineRepository.cs" />
+    <Compile Include="Repository\IPQC\GL_QADetectionPointRepository.cs" />
+    <Compile Include="Repository\IPQC\GL_QATargetYieldRepository.cs" />
+    <Compile Include="Repository\IPQC\IPQCQualityDetialRepository.cs" />
+    <Compile Include="Repository\IPQC\IPQCQUalityReportRepository.cs" />
+    <Compile Include="Repository\LogMessageRecodeRepository.cs" />
+    <Compile Include="Repository\Machine_CustomerRepository.cs" />
+    <Compile Include="Repository\Machine_Schedule_ConfigRepository.cs" />
+    <Compile Include="Repository\Machine_StationRepository.cs" />
+    <Compile Include="Repository\Machine_YieldRepository.cs" />
+    <Compile Include="Repository\Material_Maintenance_RecordRepository.cs" />
+    <Compile Include="Repository\MesDataSyncReposity\MesDataSyncReposity.cs" />
+    <Compile Include="Repository\MesDataSyncReposity\MES_SNOriginalRepository.cs" />
+    <Compile Include="Repository\MesDataSyncReposity\Mes_StationColorRepository.cs" />
+    <Compile Include="Repository\MesDataSyncReposity\ShipMentRepository.cs" />
+    <Compile Include="Repository\MES_PIS_SyncFailedRecordRepository.cs" />
+    <Compile Include="Repository\ModelLineHRRepository.cs" />
+    <Compile Include="Repository\NewMesDataSyncReposity.cs" />
+    <Compile Include="Repository\OEE\OEE_EveryDayMachineDTCodeRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_EveryDayDFcodeRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_EveryDayDFcodeMissingRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_DefectCodeDailyNumDTORepository.cs" />
+    <Compile Include="Repository\OEE\OEE_DefectCodeDailySumRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_DownTypeRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_DownTimeCodeRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_EveryDayMachineRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MachineDailyDownRecordRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MachineInfoRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MachineInformationRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MachineStatusRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_ImprovementPlanRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_ImprovementPlanDRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MetricInfoRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_MeetingTypeInfoRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_StationDefectCodeRepository.cs" />
+    <Compile Include="Repository\OEE\OEE_UserStationRepository.cs" />
+    <Compile Include="Repository\PlayBoard_PlayTimeRepository.cs" />
+    <Compile Include="Repository\PlayBoard_SettingRepository.cs" />
+    <Compile Include="Repository\PlayBoard_ViewRepository.cs" />
+    <Compile Include="Repository\ProcessIDTRSConfigRepository.cs" />
+    <Compile Include="Repository\ProductionResourcePlanRepository\IProductionResourcePlanRepository.cs" />
+    <Compile Include="Repository\ProductionResourcePlanRepository\ProductionResourcePlanRepository.cs" />
+    <Compile Include="Repository\QTrace_TopTen_SumRepository.cs" />
+    <Compile Include="Repository\QTrace_SumRepository.cs" />
+    <Compile Include="Repository\QEboadSumRepository.cs" />
+    <Compile Include="Repository\RP_Flowchart_Detail_MERepository.cs" />
+    <Compile Include="Repository\RP_Flowchart_Detail_ME_EquipmentRepository.cs" />
+    <Compile Include="Repository\RP_Flowchart_MasterRepository.cs" />
+    <Compile Include="Repository\SystemLocalizedPropertyRepository.cs" />
+    <Compile Include="Repository\TopTenQeboardRepository.cs" />
+    <Compile Include="Repository\FixturePartOrderDRepository.cs" />
+    <Compile Include="Repository\FixturePartOrderMRepository.cs" />
+    <Compile Include="QEboardSum.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\FixturePartWarehouseRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_InventoryRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Setting_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Part_Setting_MRepository.cs" />
+    <Compile Include="Fixture_RepairSolution.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Repair_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Repair_D_Defect.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Repair_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Resume.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Resume_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_Check.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_Inbound.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_InOut_Detail.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_Outbound_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_Outbound_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Storage_Transfer.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Totake_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Totake_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_User_Workshop.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Warehouse.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fixture_Warehouse_Storage.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlowChart_Master.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlowChart_MgData.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlowChart_PC_MH_Relationship.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\DatabaseFactory.cs" />
+    <Compile Include="Infrastructure\Disposable.cs" />
+    <Compile Include="Infrastructure\IDatabaseFactory.cs" />
+    <Compile Include="Infrastructure\IRepository.cs" />
+    <Compile Include="Infrastructure\IUnitOfWork.cs" />
+    <Compile Include="Infrastructure\RepositoryBase.cs" />
+    <Compile Include="Infrastructure\UnitOfWork.cs" />
+    <Compile Include="Labor_UsingInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Maintenance_Plan.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Demand_Summary.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Inventory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Normal_Demand.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Reason.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Repair_Demand.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Material_Spareparts_Demand.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Meterial_UpdateInfo.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Notice.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OQC_InputDetail.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OQC_InputDetail_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OQC_InputMaster.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OQC_InputMaster_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PageUnauthorizedElementEntity.cs" />
+    <Compile Include="PPForQAInterface.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Process_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Production_Line.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Input.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Input_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Input_Location.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Rework_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product_Rework_Info_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Project_Users_Group.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_DataChangeLog.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_DistributeRate.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_ExceptionType.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_ExceptionType_Temp.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_InputDetail.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_InputDetail_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_InputMaster.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_InputMaster_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QualityAssurance_MgData.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Repair_Location.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\Fixture_Storage_InboundRepository.cs" />
+    <Compile Include="Repository\Fixture_Storage_InOut_DetailRepository.cs" />
+    <Compile Include="Repository\Fixture_Storage_Outbound_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Storage_Outbound_MRepository.cs" />
+    <Compile Include="Repository\SystemEmailMRepository.cs" />
+    <Compile Include="Repository\DefectCode_GroupRepository.cs" />
+    <Compile Include="Repository\FixtureDefectCode_SettingRepository.cs" />
+    <Compile Include="Repository\FixtureMaintenanceProfileRepository.cs" />
+    <Compile Include="Repository\FixtureRepairRepository.cs" />
+    <Compile Include="Repository\FixtureRepository.cs" />
+    <Compile Include="Repository\FixtureUserWorkshopRepository.cs" />
+    <Compile Include="Repository\Fixture_DefectCodeRepository.cs" />
+    <Compile Include="Repository\Fixture_MachineRepository.cs" />
+    <Compile Include="Repository\Fixture_PartRepository.cs" />
+    <Compile Include="Repository\Fixture_Repair_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Repair_D_DefectRepository.cs" />
+    <Compile Include="Repository\Fixture_ResumeRepository.cs" />
+    <Compile Include="Repository\Fixture_Totake_DRepository.cs" />
+    <Compile Include="Repository\Fixture_Totake_MRepository.cs" />
+    <Compile Include="Repository\Fixture_Warehouse_StorageRepository.cs" />
+    <Compile Include="Repository\MaintenancePlanRepository.cs" />
+    <Compile Include="Repository\Fixture_Maintenance_RecordRepository.cs" />
+    <Compile Include="Repository\Fixture_RepairSolutionRepository.cs" />
+    <Compile Include="Repository\Process_InfoRepository.cs" />
+    <Compile Include="Repository\ProductInputLocationRepository.cs" />
+    <Compile Include="Repository\Production_LineRepository.cs" />
+    <Compile Include="Repository\Product_Input_LocationRepository.cs" />
+    <Compile Include="Repository\ProductionResourcePlanRepository\CurrentStaffRepository.cs" />
+    <Compile Include="Repository\ProductionResourcePlanRepository\DemissionRateAndWorkScheduleRepository.cs" />
+    <Compile Include="Repository\ElectricalBoardDTRepository.cs" />
+    <Compile Include="Repository\EnumerationRepository.cs" />
+    <Compile Include="Repository\EQPForecastPowerOnRepository.cs" />
+    <Compile Include="Repository\EQPRepairInfoRepository.cs" />
+    <Compile Include="Repository\EQPUserTableRepository.cs" />
+    <Compile Include="Repository\EQP_MaterialRepository.cs" />
+    <Compile Include="Repository\EQP_PowerOnRepository.cs" />
+    <Compile Include="Repository\EQP_TypeRepository.cs" />
+    <Compile Include="Repository\EquipmentInfoRepository.cs" />
+    <Compile Include="Repository\FlowchartDetailMEEquipmentRepository.cs" />
+    <Compile Include="Repository\FlowchartDetailMERepository.cs" />
+    <Compile Include="Repository\FlowchartMappingRepository.cs" />
+    <Compile Include="Repository\Flowchart_Detail_IE_MonitorStaffRepository.cs" />
+    <Compile Include="Repository\IE_MonitorStaff_Mapping_Banding_Repository.cs" />
+    <Compile Include="Repository\FlowChartDetail_ME_Repository.cs" />
+    <Compile Include="Repository\FlowChartDetail_IE_Repository.cs" />
+    <Compile Include="Repository\FlowChartMasterRepository.cs" />
+    <Compile Include="Repository\FlowChartMgDataRepository.cs" />
+    <Compile Include="Repository\FlowChartPCMHRelationshipRepository.cs" />
+    <Compile Include="Repository\ProductEquipmentQTYRepository.cs" />
+    <Compile Include="Repository\LaborUsingInfoRepository.cs" />
+    <Compile Include="Repository\MaterialApplyRepository.cs" />
+    <Compile Include="Repository\MaterialDemandSummaryRepository.cs" />
+    <Compile Include="Repository\MaterialInfoRepository.cs" />
+    <Compile Include="Repository\MaterialInventoryRepository.cs" />
+    <Compile Include="Repository\MaterialNormalDemandRepository.cs" />
+    <Compile Include="Repository\MaterialReasonRepository.cs" />
+    <Compile Include="Repository\MaterialRepairDemandRepository.cs" />
+    <Compile Include="Repository\MaterialSparepartsDemandRepository.cs" />
+    <Compile Include="Repository\MeterialUpdateInfoRepository.cs" />
+    <Compile Include="Repository\OQCInputMasterHistoryRepository.cs" />
+    <Compile Include="Repository\PPFlowchartProcessMappingRepository.cs" />
+    <Compile Include="Repository\PPForQAInterfaceRepository.cs" />
+    <Compile Include="Repository\ProductInputHistoryRepository.cs" />
+    <Compile Include="Repository\ProductInputRepository.cs" />
+    <Compile Include="Repository\FlowChartDetailRepository.cs" />
+    <Compile Include="Repository\ProductionSchedulNPIRepository.cs" />
+    <Compile Include="Repository\ProductionSchedulRepository.cs" />
+    <Compile Include="Repository\ProductRequestStaffRepository.cs" />
+    <Compile Include="Repository\ProductReworkInfoRepository.cs" />
+    <Compile Include="Repository\ProjectUsersGroupRepository.cs" />
+    <Compile Include="Repository\QualityAssuranceInputDetailRepository .cs" />
+    <Compile Include="Repository\QualityAssuranceInputMasterHistoryRepository.cs" />
+    <Compile Include="Repository\QualityAssuranceMgDataRepository .cs" />
+    <Compile Include="Repository\QualityAssuranceInputMasterRepository.cs" />
+    <Compile Include="Repository\ExceptionTypeWithFlowchartRepository .cs" />
+    <Compile Include="Repository\QualityAssurance_OQC_InputDetailRepository.cs" />
+    <Compile Include="Repository\QualityAssurance_OQC_InputMasterRepository.cs" />
+    <Compile Include="Repository\QualityAssurance_ExceptionType_TempRepository .cs" />
+    <Compile Include="Repository\NoticeRepository.cs" />
+    <Compile Include="Repository\RepairLocationRepository.cs" />
+    <Compile Include="Repository\StorageCheckRepository.cs" />
+    <Compile Include="Repository\StorageInboundRepository.cs" />
+    <Compile Include="Repository\StorageInOutDetailRepository.cs" />
+    <Compile Include="Repository\StorageOutboundDRepository.cs" />
+    <Compile Include="Repository\StorageOutboundMRepository.cs" />
+    <Compile Include="Repository\StorageTransferRepository.cs" />
+    <Compile Include="Repository\SystemBUDOrgRepository.cs" />
+    <Compile Include="Repository\SystemBUDRepository.cs" />
+    <Compile Include="Repository\SystemBUMRepository.cs" />
+    <Compile Include="Repository\SystemFunctionPlantRepository.cs" />
+    <Compile Include="Repository\SystemFunctionRepository.cs" />
+    <Compile Include="Repository\SystemFunctionSubRepository.cs" />
+    <Compile Include="Repository\SystemLanguageRepository.cs" />
+    <Compile Include="Repository\SystemLocaleStringResourceRepository.cs" />
+    <Compile Include="Repository\SystemEmailDeliveryRepository.cs" />
+    <Compile Include="Repository\SystemScheduleRepository.cs" />
+    <Compile Include="Repository\SystemOrgBomRepository.cs" />
+    <Compile Include="Repository\SystemOrgRepository.cs" />
+    <Compile Include="Repository\SystemPlantRepository.cs" />
+    <Compile Include="Repository\SystemProjectRepository.cs" />
+    <Compile Include="Repository\SystemRoleFunctionRepository.cs" />
+    <Compile Include="Repository\SystemRoleFunctionSubRepository.cs" />
+    <Compile Include="Repository\SystemRoleRepository.cs" />
+    <Compile Include="Repository\SystemUserBusinessGroupRepository.cs" />
+    <Compile Include="Repository\SystemUserFunPlantRepository.cs" />
+    <Compile Include="Repository\SystemUserOrgRepository.cs" />
+    <Compile Include="Repository\SystemUserRoleRepository.cs" />
+    <Compile Include="Repository\SystemUserPlantRepository.cs" />
+    <Compile Include="Repository\SystemUserRepository.cs" />
+    <Compile Include="Repository\SystemUserViewRepository.cs" />
+    <Compile Include="Repository\SystemViewColumnRepository.cs" />
+    <Compile Include="Repository\QualityAssurance_ExceptionTypeRepository.cs" />
+    <Compile Include="Repository\VendorInfoRepository.cs" />
+    <Compile Include="Repository\WarehouseRepository.cs" />
+    <Compile Include="Repository\WarehouseStorageRepository.cs" />
+    <Compile Include="Repository\WarningListRepository.cs" />
+    <Compile Include="Repository\WIPAlterDetialModel.cs" />
+    <Compile Include="Repository\WIPChangeHistoryRepository.cs" />
+    <Compile Include="Repository\DefectRepairRepository.cs" />
+    <Compile Include="Repository\WorkshopRepository.cs" />
+    <Compile Include="Repository\WorkStationRepository.cs" />
+    <Compile Include="RP_Demand_Calculation_Record.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Equipment_Demand.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Flowchart_Detail_IE.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Flowchart_Detail_ME.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Flowchart_Detail_ME_Equipment.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Flowchart_Master.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RP_Manpower_Demand.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SPPEntities.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPPEntities.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SPPEntities.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SPPEntities.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPPEntities.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="SPPEntityConfiguration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SPPSystemBUM.cs" />
+    <Compile Include="SPPSystemUser.cs" />
+    <Compile Include="Storage_Check.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_Inbound.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_InOut_Detail.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_Outbound_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_Outbound_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_Transfer.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_BU_D.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_BU_D_Org.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_BU_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Email_Attachment.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Email_Delivery.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Email_M.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Function.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_FunctionSub.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Function_Plant.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Language.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_LocaleStringResource.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_LocalizedProperty.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Module.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Organization.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_OrganizationBOM.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Plant.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Project.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_Function.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_FunctionSub.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_FunctionSub_SystemAdmin.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_FunctionSub_Z.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_Function_SystemAdmin.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Role_Function_Z.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Schedule.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Seq.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_UserOrg.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_Users.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_User_Business_Group.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_User_FunPlant.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_User_Plant.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_User_Role.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_User_View.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_View_Column.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tmp_Fixture_Part.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TopTenQeboard.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TwoHoursCapacity.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TwoHoursCapacityHistory.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_get_mobilefunctions_by_useruid_Result.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vendor_Info.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Warehouse.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Warehouse_Storage.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Warning_List.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WIP_Change_History.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Workshop.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WorkStation.cs">
+      <DependentUpon>SPPEntities.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <EntityDeploy Include="SPPEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SPPEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="SPPEntities.edmx.diagram">
+      <DependentUpon>SPPEntities.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SPPEntities.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SPPEntities.edmx</DependentUpon>
+      <LastGenOutput>SPPEntities.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SPPEntities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SPPEntities.edmx</DependentUpon>
+      <LastGenOutput>SPPEntities.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDMS.Common\PDMS.Common.csproj">
+      <Project>{09b6a6ab-8dc7-4d94-8ee4-248360ac54b3}</Project>
+      <Name>PDMS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PDMS.Model\PDMS.Model.csproj">
+      <Project>{1bee001d-ddeb-47fc-a64c-4d65d83f3774}</Project>
+      <Name>PDMS.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

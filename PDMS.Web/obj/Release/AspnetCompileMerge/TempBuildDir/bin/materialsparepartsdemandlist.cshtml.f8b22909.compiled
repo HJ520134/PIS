@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/StorageManage/MaterialSparepartsDemandList.cshtml" hash="1626a5ce" filehash="2d6e1d2ac6c3" flags="110000" assembly="App_Web_acvbxhs1" type="ASP._Page_Views_StorageManage_MaterialSparepartsDemandList_cshtml">
+    <filedeps>
+        <filedep name="/Views/StorageManage/MaterialSparepartsDemandList.cshtml" />
+    </filedeps>
+</preserve>

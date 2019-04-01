@@ -1,0 +1,454 @@
+﻿
+<section class="content portal-content">
+    <hr class="hr-custom">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+            <div class="col-md-12 search-field col-lg-3">
+                @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_apply">
+                        <i class="fa fa-plus"></i> 入库操作
+                    </a>
+                    <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" id="btn_apply2">
+                        <i class="fa fa-times"></i> 审核
+                    </a>
+                }
+                <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>规格</th>
+                        <th>归类</th>
+                        <th>当前库存</th>
+                        <th>放置位置</th>
+                        <th>在外PO</th>
+                        <th>安全库存</th>
+                        <th>最大安全库存</th>
+                        <th>库存差</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>料号</th>
+                        <th>品名</th>
+                        <th>规格</th>
+                        <th>归类</th>
+                        <th>当前库存</th>
+                        <th>放置位置</th>
+                        <th>在外PO</th>
+                        <th>安全库存</th>
+                        <th>最大安全库存</th>
+                        <th>库存差</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+        </div><!--/表格-->
+    </div>
+</section>
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">入库界面</h4>
+                </div>
+                @using (Html.BeginForm("AddOrEditStore", "MaterialManage", FormMethod.Post, new { id = "js_form_user_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_storage_date">入库日期</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_storage_date" name="Storage_Date" placeholder="Storage Date" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_select_material_id">料号</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="s_select_material_id" name="Material_Id" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.locations)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_OP_Types">厂区</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_OP_Types" name="OP_Types"  readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_name">品名</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_material_name" name="Material_Name" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_material_types">规格</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_material_types" name="Material_Types" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_storage_num">入库数量</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm required needint" id="s_input_storage_num" name="Storage_Num" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_PO_Num">在外PO</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-sm required needint" id="s_input_PO_Num" name="PO_Num" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_edit_select_storage_location">存放位置</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_edit_select_storage_location" name="Storage_Location" data-live-search="true">
+                                        <option></option>
+                                        @foreach (var item in Model.locations)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_material_id">料号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Material_Id" class="form-control input-sm" id="js_s_input_material_id" placeholder="Material Id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_material_name">品名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Material_Name" class="form-control input-sm" id="js_s_input_material_name" placeholder="Material Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_material_types">规格</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Material_Types" class="form-control input-sm" id="js_s_input_material_types" placeholder="Material Types">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_classification">归类</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Classification" class="form-control input-sm" id="js_s_input_classification" placeholder="Classification">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-hr" for="js_s_input_classification">库存差</label>
+                                    <div class="col-sm-8">
+                                        <div class="col-md-6">
+                                            <label class="col-sm-1 control-label no-padding-hr">正</label>
+                                            <div class="col-md-6">
+                                                <input type="radio" name="Differente" class="search-radio-cnt" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="col-sm-1 control-label no-padding-hr">负</label>
+                                            <div class="col-md-6">
+                                                <input type="radio" name="Differente" class="search-radio-cnt" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_bt_export"><i class="fa fa-search"></i> 导出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts {
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var StorageManageUrl = (function () {
+                var urls = {
+                    //画面初始化加载
+                    queryStorageInfo: '@Url.Action("QueryMaterialApply", "MaterialManage")'
+                };
+                //#region 定义字段列
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Material_Apply_Uid + '">')
+                            .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    },{
+                        data: "Material_Id",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Material_Types",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Classification",
+                        className: "min-col-xs"
+                    } , {
+                        data: "Storage_Num",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Storage_Location",
+                        className: "min-col-xs"
+                    }, {
+                        data: "PO_Num",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Safe_Storage_Num",
+                        className: "min-col-lg"
+                    }, {
+                        data: "Max_Safe_Storage_Num",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Storage_Num_Diff",
+                        className: "min-col-xs"
+                    }];
+                //#endregion 定义字段列
+
+                //#endregion
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryStorageInfo = function (firstLoad, buildCriteria) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.queryStorageInfo,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    if (buildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryStorageInfo(true, false);
+                    },
+                    queryMaterialApply: function (buildCriteria) {
+                        if (!buildCriteria) {
+                            buildCriteria = false;
+                        }
+                        _queryStorageInfo(false, buildCriteria);
+                    }
+                }
+            })();
+
+            StorageManageUrl.Init();
+
+            $('.needint').keydown(function (event) {
+                var value = event.key;
+                if (value.length > 1)
+                    return true;
+                if (!((/^(\+|-)?\d+$/.test(value) && value >= 0)))
+                    return false;
+            })
+
+            $('#js_Bom_datatable').on('change', 'tbody', function () {
+                $('#js_Bom_datatable tbody ').addClass('text-center')
+            })
+
+
+            $('#s_input_storage_date').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii'
+            })
+
+            //清空按钮
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+                $('#js_search_modal').find('input').val('');
+            });
+
+            //查询按钮
+            $('#js_btn_query').click(function () {
+                if ($('#js_form_query').valid()) {
+                    StorageManageUrl.queryStorageInfo(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //导出按钮
+            //$('#js_bt_export').click(function () {
+            //    var materialid = $('#js_search_modal').find('input[name=Material_Id]').val();
+            //    var materialname = $('#js_search_modal').find('input[name=Material_Name]').val();
+            //    var materialtypes = $('#js_search_modal').find('input[name=Material_Types]').val();
+            //    var classification = $('#js_search_modal').find('input[name=Classification]').val();
+            //    var url = StorageManageUrl.urls.doExportFunction;
+            //    url += "?materialid=" + materialid + "&materialname=" + materialname + "&materialtypes=" + materialtypes;
+            //    url += "&classification=" + classification;
+            //    window.location.href = url;
+            //});
+
+
+
+            $('#s_input_material_id,#js_edit_select_storage_location').selectpicker({ 'selectedText': 'cat' });
+
+            //入库操作保存
+            $('#js_btn_save_new').click(function () {
+                $('#js_form_user_edit').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if ($('#js_form_user_edit ul.validate-error').find('li').text().length > 0)
+                            return false;
+                        if ($('#js_edit_modal').find('input[name=Storage_Num]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入入库数量');
+                            return false;
+                        }
+                        if ($('#js_edit_modal').find('input[name=PO_Num]').val() == "") {
+                            PDMS.Utility.MessageBox.info('请输入在外PO数');
+                            return false;
+                        }
+                        if ($('#js_edit_select_storage_location option:selected').text() == "") {
+                            PDMS.Utility.MessageBox.info('请选择存放位置');
+                            return false;
+                        }
+                        if ($('#s_select_material_id option:selected').text() == "") {
+                            PDMS.Utility.MessageBox.info('请选择料号');
+                            return false;
+                        }
+                        if ($('#s_input_storage_date').val() == "") {
+                            PDMS.Utility.MessageBox.info('请选择入库日期');
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            $('#js_edit_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('更新成功');
+                            StorageManageUrl.queryMaterialApply();
+                        }
+                    }
+                });
+            })
+
+
+            //隐藏编辑框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('#s_select_material_id').selectpicker('val', '');
+                $("#s_select_material_id").trigger("liszt:updated");
+
+                $('#js_edit_select_storage_location').selectpicker('val', '');
+                $("#js_edit_select_storage_location").trigger("liszt:updated");
+
+                $('.list-group.validate-error').empty();
+            });
+
+            //入库操作
+            $('#btn_apply').click(function () {
+                $('#js_edit_modal').modal('show', $(this));
+            })
+
+            //检测输入数据
+            $('#js_form_user_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+
+            //为新增或修改Modal，注册事件
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+            });
+        })
+    </script>
+}

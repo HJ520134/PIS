@@ -1,0 +1,992 @@
+﻿
+<style type="text/css">
+    #lineId, #datetimepicker {
+        width: 120px;
+    }
+
+    .textbox {
+        background-color: gold;
+        text-align: center;
+        margin: 2px;
+        border-radius: 5px;
+    }
+
+    .table.dataTable.table-condensed > thead > tr > th {
+        padding-left: 6px !important;
+    }
+
+
+    #UtilizationRate, #BalanceRate {
+        border: 40px solid green;
+        background-color: green;
+        font-size: 3.5em;
+    }
+
+    #tbl * {
+        text-align: center;
+    }
+
+    .row {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .btn {
+        font-size: 12px;
+    }
+
+    #tbl1 > tbody > tr > th, #tbl1 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #tbl2 > tbody > tr > th, #tbl2 > tbody > tr > td {
+        line-height: 1;
+    }
+
+
+
+    #maindv {
+        margin-top: 30px;
+    }
+
+    #mainTbl tr td:first-child {
+        font-weight: bolder;
+    }
+
+    thead tr td {
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    #theadtr td {
+        background-color: #4F5D6C;
+    }
+
+    .output {
+        font-weight: bold;
+    }
+
+    .titlewhite {
+        /*font-size: 12px;
+        background-color: #546a74;
+        border-color: #C6C6C6;
+        border-top-left-radius: 3px;
+        border: 1px ;
+        padding: 6px 12px;*/
+        font-size: 13px;
+        background-color: #3c8dbc;
+        border-top-left-radius: 3px;
+        border: 1px solid #546a74;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+    }
+
+    .function {
+        font-size: 12px;
+        background-color: #ffffff;
+        border-top: 1px solid #ffffff;
+        border-right: 0px solid #ff0000;
+        border-bottom: 0px solid #ffffff;
+        border-left: 0px solid #ffffff;
+        padding: 6px 12px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    /*.thclass {
+
+        font-size: 12px;
+        border: 1px solid #808080;
+        font-family: "Times New Roman", Times, serif;
+        text-align: center;
+        width:30px;
+    }*/
+
+    /*.thColumn {*/
+    /*width:30px;
+        font-size: 12px;*/
+
+    /*}*/
+</style>
+
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+        $(".navbar-static-top").hide();
+    }
+
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        $(".navbar-static-top").show();
+    }
+</script>
+<style media="screen">
+    /* 单元格样式 */
+    table.dataTable.cell-border tbody td {
+        border: 1px solid #808080;
+    }
+
+    table.dataTable.cell-border th {
+        border: 1px solid #808080;
+    }
+
+    #divLatestMESDate {
+        color: lawngreen;
+        text-align: right;
+    }
+</style>
+<section class="content portal-content">
+    <div>
+        <div class="row">
+            <div class="col-xs-12" id="js_criteria_alert_cnt">
+            </div>
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-md-12 search-field col-lg-12">
+                    <button id="view-fullscreen" class="titlewhite" onclick="fullSr()">@T("Common.FullScreen")</button>
+                    <button id="cancel-fullscreen" class="titlewhite" onclick="cancFullSr()">@T("Common.CancelFullScreen")</button>
+                    @*<a class="fa fa-search btn btn-primary" data-toggle="modal" id="bt_search" data-target="#js_search_modal"> 查询</a>
+                        <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" id="js_btn_Add"> 新增</a>*@
+                </div>
+            </div>
+        </div>
+        <hr class="hr-custom">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                <form id="js_form_query" class="form-inline">
+                    <div style="float:left">
+                        <div class='form-group'>
+                            <label class="titlewhite">@T("GL.Site")</label>
+                            <select class="function" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                @foreach (var item in Model.Plants)
+                                {
+                                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                }
+                            </select>
+                        </div>
+                        <div class='form-group'>
+                            <label class="titlewhite">@T("GL.BG")</label>
+                            <select class="function" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                        </div>
+                        <div class='form-group' style="display:none">
+                            <label class="titlewhite"><strong>@T("GL.FunctionPlant")</strong></label>
+                            <select class="function" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                        </div>
+                        <div class='form-group'>
+                            <label class="titlewhite">@T("GL.Project")</label>
+                            <select id="customerId" class="function" name="CustomerID" data-live-search="true"> </select>
+                        </div>
+                        <div class='form-group '>
+                            <label class="titlewhite">@T("GL.Line")</label>
+                            <select id="lineName" class="function" name="LineID" data-live-search="true"></select>
+                        </div>
+                        <input class="form-group" type="hidden" name="LineType" id="js_hidden_line_type" value="" />
+                        <div class='form-group' style="display:none">
+                            <label class="titlewhite"><strong>@T("GL.Station")</strong></label>
+                            <select id="stationName" class="function" name="StationID" data-live-search="true">  </select>
+                        </div>
+                        <div class='form-group '>
+                            <label class="titlewhite">@T("GL.Date")</label>
+                            <div class='input-group date' style="margin-left:-5px;margin-top:0px;margin-bottom:+1px" id='datetimepicker'>
+                                <input type='text' class="form-control input-sm" id="myRetriveDate" name="myRetriveDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class='form-group '>
+                            <label class="titlewhite">@T("GL.Shift")</label>
+                            <select id="myRetriveShift" class="function" name="ShiftTimeID" data-live-search="true">  </select>
+                        </div>
+                        <div class='form-group ' style="margin-left:30px">
+                            <input type="button" value="@T("Common.Search")" id="searchbtn" class="titlewhite" />
+                            <input type="button" value="@T("Common.Export")" id="js_btn_export" class="titlewhite" />
+                        </div>
+
+                        <div class='form-group ' style="margin-left:70px">
+                            <label>达成率：</label>
+                        </div>
+
+
+                        <div style="margin-left:10px;float:right">
+                            
+                        <div class='form-group ' style="margin-left:30px">
+                            <div style="width:40px;height:20px; background-color:red"></div><div style="float:left">&lt;85%</div>                       
+                        </div>
+                        <div class='form-group ' style="margin-left:30px">
+                            <div style="width:40px;height:20px; background-color:lightgreen"></div><div style="float:left">≥100%</div>
+                        </div>
+                        <div class='form-group ' style="margin-left:30px">
+                            <div style="width:40px;height:20px; background-color:yellow"></div><div style="float:left">≥85%&&lt;100%</div>
+                        </div>
+                           </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table cellspacing="0" cellpadding="0" class="table table-striped  table-hover table-condensed cell-border" id="js_WIPHourOutput_datatable">
+                <thead>
+                    <tr id="js_WIPHourOutput_tr">
+                        <th class="thclass nosort">@T("GL.Station")</th>
+                        <th class="thclass nosort">@T("GL.TotalOutput")</th>
+                        <th class="thclass nosort" id="TimeInterval1">08:00~09:00</th>
+                        <th class="thclass nosort" id="TimeInterval2">09:00~10:00</th>
+                        <th class="thclass nosort" id="TimeInterval3">10:00~11:00</th>
+                        <th class="thclass nosort" id="TimeInterval4">11:00~12:00</th>
+                        <th class="thclass nosort" id="TimeInterval5">12:00~13:00</th>
+                        <th class="thclass nosort" id="TimeInterval6">13:00~14:00</th>
+                        <th class="thclass nosort" id="TimeInterval7">14:00~15:00</th>
+                        <th class="thclass nosort" id="TimeInterval8">15:00~16:00</th>
+                        <th class="thclass nosort" id="TimeInterval9">16:00~17:00</th>
+                        <th class="thclass nosort" id="TimeInterval10">17:00~18:00</th>
+                        <th class="thclass nosort" id="TimeInterval11">18:00~19:00</th>
+                        <th class="thclass nosort" id="TimeInterval12">19:00~20:00</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" style="display:none" class="row"></div>
+        </div><!--/表格-->
+        <div class="col-xs-10 col-sm-10 col-md-10" style="text-align:center;margin:auto;margin-top:1%;margin-left:5%">
+            <input type="text" hidden="hidden" value="0" id="js_text_planoutput" class="titlewhite" />
+            <div><label id="Laber_Id"></label></div>
+        </div>
+    </div><!-- / 內容 表格列 -->
+    @*<div class="col-xs-3" style="color:darkgreen;">
+            Latest Refresh: <span id="js-LatestRefersh"></span>
+        </div>*@
+</section>
+
+@section ViewScripts{
+
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            intervalInt = 0;
+            var IsCurrentDay = false;
+
+
+            var WIPHourOutPut = (function () {
+                var urls = {
+                    queryHourOutPut: '@Url.Action("queryHourOutPut", "GoldenLine")',
+
+                    ExportHourOutPut: '@Url.Action("ExportHourOutPut", "GoldenLine")',
+                    //获取表头
+                    GetShiftTimeHead: '@Url.Action("GetShiftTimeHead", "GoldenLine")',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                    getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                    getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                    //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                    getLineDTOs: '@Url.Action("GetAllLineDTOs", "GoldenLine")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getStationDTOs: '@Url.Action("GetStationDTOs", "GoldenLine")',
+                    //根据专案ID获取群組线的信息GetGroupLineDTOs(int CustomerID)
+                    getGroupLineDTOs: '@Url.Action("GetGroupLineDTOs", "GoldenLine")',
+                };
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                var currentData = new Date().Format("yyyy-MM-dd");
+                var currentData1 = new Date().Format("hh");
+            
+                
+             
+                var columns = [
+                    {
+                        //data: "Station",
+                        //className: "text-center thColumn"
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $('#js_text_planoutput').val(rowData.HourStandardOutPut);
+                            $(td).html(rowData.Station);
+                        },
+                        className: "text-center thColumn"
+                    }, {
+                        //data: "TatalOutPut",
+                        //className: "text-center thColumn"
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.TatalOutPut);
+                            className: "text-center thColumn"
+                        },
+                        className: "text-center thColumn"
+                    },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                     
+                        if (shif == 1 &&  parseInt(currentData1) <= parseInt(8) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval1);
+                        } else {
+
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval1);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1 &&  parseInt(currentData1) <= parseInt(9) && rowData.HourStandardOutPut != 0) {
+
+                            $(td).html(rowData.TimeInterval2);
+                        } else {
+                           
+
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval2);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(10) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval3);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval3);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1 &&  parseInt(currentData1) <= parseInt(11) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval4);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval4);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(12) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval5);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval5);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(13) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval6);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval6);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(14) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval7);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval7);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(15) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval8);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval8);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(16) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval9);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval9);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1 && parseInt(currentData1) <= parseInt(17) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval10);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval10);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(18) && rowData.HourStandardOutPut != 0) {
+                            $(td).html(rowData.TimeInterval11);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval11);
+                        }
+                    },
+                    className: "text-center thColumn OutPutNum"
+                },
+                {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (shif == 1  && parseInt(currentData1) <= parseInt(19) && rowData.HourStandardOutPut!=0) {
+                            $(td).html(rowData.TimeInterval12);
+                        } else {
+                            GetTdColumValue(td, rowData.HourStandardOutPut, rowData.TimeInterval12);
+                        }
+                        
+                    },
+                    className: "text-center thColumn OutPutNum"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                //获取标准每小时对应的计划产出
+                function GetStandardPlan(standardPlan) {
+                    return standardPlan / 2;
+                }
+             
+             
+
+
+               
+                function GetTdColumValue(td, HourStandardOutPut, TimeInterval) {
+                   
+                    
+                    if ($("#myRetriveDate").val() >= currentData) {
+                        if (HourStandardOutPut == 0) {
+                            $(td).html('<label  style=" width:40px;background-color:lightgreen">' + TimeInterval + '</label>');
+                        } else
+                            if (HourStandardOutPut  <= TimeInterval) {
+                                $(td).html('<label  style=" width:40px;background-color:lightgreen">' + TimeInterval + '</label>');
+                            }
+                            else if (HourStandardOutPut >= TimeInterval && (HourStandardOutPut - TimeInterval) <= HourStandardOutPut * 0.15) {
+                            $(td).html('<label  style=" width:40px;background-color:yellow">' + TimeInterval + '</label>');
+                        }
+
+                             
+                            else if (HourStandardOutPut > TimeInterval && (HourStandardOutPut - TimeInterval) > HourStandardOutPut*0.15) {
+                                $(td).html('<label  style="width:40px; background-color:#f90404bd">' + TimeInterval + '</label>');
+                            }
+                            else {
+                                $(td).html(TimeInterval);
+                            }
+                    } else {
+                        if (HourStandardOutPut <= TimeInterval ) {
+                            $(td).html('<label  style=" width:40px;background-color:lightgreen">' + TimeInterval + '</label>');
+                        }
+                        else if (HourStandardOutPut >= TimeInterval && (HourStandardOutPut - TimeInterval) <= HourStandardOutPut * 0.15) {
+                            $(td).html('<label  style=" width:40px;background-color:yellow">' + TimeInterval + '</label>');
+                        }
+                        else if (HourStandardOutPut > TimeInterval && (HourStandardOutPut - TimeInterval) > HourStandardOutPut * 0.15) {
+                            $(td).html('<label  style="width:40px; background-color:#f90404bd">' + TimeInterval + '</label>');
+                        }
+                        else {
+                            $(td).html(TimeInterval);
+                        }
+                    }
+                }
+
+                var _queryDemissionRate = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_WIPHourOutput_datatable",
+                        remoteUrl: urls.queryHourOutPut,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: false,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    //$('#js_rpt_tr th').removeClass('text-right')
+                    //$('#js_rpt_tr_foot th').removeClass('text-right')
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        SetDeafult();
+                        _queryDemissionRate(true);
+                        $(".thclass").removeClass("sorting");
+                        $('.thclass').removeAttr('onclick');
+                        RemarkLaber();
+                    },
+                    QueryStuffs: function () {
+                        _queryDemissionRate(false);
+                        RemarkLaber();
+                    }
+                }
+
+            })();
+
+            function RemarkLaber() {
+                var textValue = "温馨提示 : 今日每时段的计划产能为 : " + $("#js_text_planoutput").val();
+                $("#Laber_Id").text(textValue);
+            }
+
+            function getLatestMesDate() {
+                var urlstr = WIPHourOutPut.urls.getShiftTimeDTOs;
+                $.ajax({
+                    url: urlstr,
+                    type: 'get',
+                    dataType: 'text',
+                    success: function (data) {
+                        $('#divLatestMESDate').text("Latest Update Time: " + data);
+                    }
+                });
+            }
+            //设置背景底色，每个工站产量最高的为绿色，最低为红色。
+            function setColor() {
+                var dataTable = $("#js_WIPHourOutput_datatable").DataTable();
+                var MaxValue;
+                var MinValue;
+                //定义数组用于存每行每个工站的各小时产出。
+                var myArray = new EveryRow();
+                dataTable
+                   .rows()
+                   .every(function (rowIdx, tableLoop, rowLoop) {
+                       //$('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).Column.each
+                       //{
+                       //    EveryRow.push($('#js_ppcheckdata_datatable>tbody>tr').eq(rowIdx).find('.OutPutNum').text());
+                       //}
+
+
+
+                   });
+
+
+                alert(Math.max.apply(Math, myArray))
+                alert(Math.min.apply(Math, myArray))
+            }
+
+            function SetDeafult() {
+                //获取厂区
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = WIPHourOutPut.urls.getCurrentOPType;
+                //获取厂区下面的OP
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_select_optype_query').append('<option  value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    }
+                });
+
+                //获取功能厂
+                var OPID = $('#js_select_optype_query option:selected').val()
+                var url = WIPHourOutPut.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: OPID }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+
+                //获取班别
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getShiftTimeDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+
+                //获取专案
+                var functionID = $('#js_select_funplant_query option:selected').val()
+                var optypeUid = $('#js_select_optype_query option:selected').val();
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getCustomerDTOs;
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+
+                //获取线
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+
+                //获取工站
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+                $('#datetimepicker').datetimepicker({
+                    defaultDate: new Date(),
+                    format: 'YYYY-MM-DD',
+                });
+                var date = new Date();
+                $('#myRetriveDate').val(new Date().Format("yyyy-MM-dd"))
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                //获取表头
+            }
+            WIPHourOutPut.Init();
+            getShiftHour($("#myRetriveShift").val())
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+            function GetOPTypes() {
+                debugger;
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = WIPHourOutPut.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+                //$('#js_select_optype_query').selectpicker('refresh');
+            }
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshShiftTimeSelect();
+            })
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = WIPHourOutPut.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                //$('#js_select_funplant_query').selectpicker('refresh');
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+                debugger;
+                $('#customerId').empty();
+                $('#customerId').html('<option></option>');
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+                //$('#js_select_project_query').selectpicker('refresh');
+            }
+            //加载班别
+            function refreshShiftTimeSelect() {
+                debugger;
+                $('#myRetriveShift').empty();
+                $('#myRetriveShift').html('<option></option>');
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getShiftTimeDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+                //$('#js_select_project_query').selectpicker('refresh');
+            }
+            //根据专案获取线别
+            $('#customerId').change(function () {
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getGroupLineByCustomerUrl = WIPHourOutPut.urls.getGroupLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getGroupLineByCustomerUrl, { customerId: customerId }, function (data) {
+                    if (data.length > 0) {
+                        $('#lineName').append('<option data-line="All" value="0">' + "All" + '</option>')
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].GroupLineName != null)
+                            if ($('#lineName').find('option[value=' + data[i].LineParent_ID + ']').length == 0) {
+                                $('#lineName').append('<option data-line="group_line" value="' + data[i].LineParent_ID + '">' + data[i].GroupLineName + '</option>');
+                                $('#lineName').append('<option data-line="sub_line" value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                            }
+                            else
+                                $('#lineName').append('<option data-line="sub_line" value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                        else
+                            $('#lineName').append('<option data-line="sub_line" value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+            })
+
+            //存放線別類別
+            $('#lineName').change(function () {
+                $('#js_hidden_line_type').val($('#lineName option:selected').attr('data-line'));
+            })
+
+            //根据线获取站点
+            $('#lineName').change(function () {
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = WIPHourOutPut.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+            })
+            var shif = 0;
+            $('#searchbtn').click(function () {
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                var currentData = new Date().Format("yyyy-MM-dd");
+                var shift1 = $("#myRetriveDate").val();
+               
+                if (shift1 == currentData) {
+                    shif = 1;
+                } else {
+                    shif = 2;
+                }
+               
+                //验证条件
+                var factoryVal = $("#js_select_factory_query").val();
+                var js_select_optype_queryVal = $("#js_select_optype_query").val();
+                var customerIdVal = $("#customerId").val();
+                var lineNameVal = $("#lineName").val();
+                var myRetriveShiftVal = $("#myRetriveShift").val();
+                var myRetriveDateVal = $("#myRetriveDate").val();
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择OP类型");
+                    return false;
+                }
+
+                if (customerIdVal == "" || customerIdVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择Customer");
+                    return false;
+                }
+
+                if (lineNameVal == "" || lineNameVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择线");
+                    return false;
+                }
+
+                if (myRetriveShiftVal == "" || myRetriveShiftVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择班次");
+                    return false;
+                }
+
+                if (myRetriveDateVal == "" || myRetriveDateVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择日期");
+                    return false;
+                }
+
+                getShiftHour($("#myRetriveShift").val())
+                //WIPHourOutPut.Init();
+                WIPHourOutPut.QueryStuffs();
+                //60秒刷新
+                if (intervalInt != 0) {
+                    clearInterval(intervalInt);
+                }
+                intervalInt = setInterval(function () {
+                    WIPHourOutPut.QueryStuffs();
+                }, 1000 * 60);
+            });
+            //获取表头
+            function getShiftHour(shiftIndex) {
+                if (shiftIndex == null || shiftIndex == "") {
+                    return false;
+                };
+                $.ajax({
+                    url: WIPHourOutPut.urls.GetShiftTimeHead,
+                    type: 'get',
+                    data: { 'ShiftTimeID': shiftIndex },
+                    success: function (result) {
+                        shiftHour = JSON.parse(result);
+                        $.each(shiftHour, function (key, value) {
+                            var index = key + 1;
+                            $("#TimeInterval" + index).text(value);
+                        });
+                    }
+                });
+            };
+
+            //导出按钮
+            $('#js_btn_export').click(function () {
+                //全部导出
+                var myRetriveDateVal = $("#myRetriveDate").val();
+                var url = WIPHourOutPut.urls.ExportHourOutPut;
+                //检查查询条件
+                var factoryVal = $("#js_select_factory_query").val();
+                var js_select_optype_queryVal = $("#js_select_optype_query").val();
+                var customerIdVal = $("#customerId").val();
+                var lineNameVal = $("#lineName").val();
+                var myRetriveShiftVal = $("#myRetriveShift").val();
+                var myRetriveDateVal = $("#myRetriveDate").val();
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择厂区");
+                    return false;
+                }
+
+                if (js_select_optype_queryVal == "" || js_select_optype_queryVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择OP类型");
+                    return false;
+                }
+
+                if (customerIdVal == "" || customerIdVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择Customer");
+                    return false;
+                }
+
+                if (lineNameVal == "" || lineNameVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择线");
+                    return false;
+                }
+
+                if (myRetriveShiftVal == "" || myRetriveShiftVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择班次");
+                    return false;
+                }
+
+                if (myRetriveDateVal == "" || myRetriveDateVal == null) {
+                    PDMS.Utility.MessageBox.error("请选择日期");
+                    return false;
+                }
+
+                //没有查询条件的情况，从查询页面获取
+                if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+
+
+                url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                window.location.href = url;
+            });
+        });
+    </script>
+}
+
+
+

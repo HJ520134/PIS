@@ -1,0 +1,562 @@
+﻿@{
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.PartXuanze = T("FlowChart.PartXuanze").Text;
+    ViewBag.AllProcess = T("FlowChart.AllProcess").Text;
+}
+<section class="content portal-content">
+
+    <input type="hidden" id="selectProjects" value="@ViewBag.selectProjects" />
+    <input type="hidden" id="opType" value="@ViewBag.opType" />
+    <input type="hidden" id="location" value="@ViewBag.location"  />
+    <input type="hidden" id="user_plant" value=@ViewBag.plant />
+    <div class="content-wrapper eboard-page" style="min-height: 617px;">
+        <div class="container-fluid">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="row">
+                    <div class="col-md-12 eboard-header-title">
+                        <strong class="eboard-header-title-line ">@T("FlowChart.Projectlist")</strong>
+                    </div>
+                </div>
+                <hr class="eboard-hr margin-t-10">
+            </section>
+
+            <!-- Main content -->
+
+            <section class="content padding-t-0">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <a href="#" class="eboard-hvr-outline-out">
+                            <div class="small-box bg-primary eboard-process-smallbox">
+                                <div class="inner eboard-smallbox-inner">
+                                    <h3 class="eboard-smallbox-h3">@T("Eboard.FirstTen")</h3>
+                                </div>
+                                <div class="icon eboard-smallbox-icon">
+                                    <i class="icon-report-icon"></i>
+                                </div>
+                                <div class="small-box-footer">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @*<div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-teal eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">CNC</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-purple eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">@T("QA.Surface")</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-orange eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">@T("QA.Anode")</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-green eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">@T("QA.Assembly")</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>*@
+
+                    @foreach (var item in ViewBag.funplants)
+                    {
+
+                        <div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-aqua eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">@item</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                    @*<div class="col-sm-6 col-md-4">
+                            <a href="#" class="eboard-hvr-outline-out">
+                                <div class="small-box bg-aqua eboard-process-smallbox">
+                                    <div class="inner eboard-smallbox-inner">
+                                        <h3 class="eboard-smallbox-h3">OQC</h3>
+                                    </div>
+                                    <div class="icon eboard-smallbox-icon">
+                                        <i class="icon-report-icon"></i>
+                                    </div>
+                                    <div class="small-box-footer">
+                                    </div>
+                                </div>
+                            </a>
+                        </div>*@
+
+
+                    @*<div class="col-sm-6 col-md-4">
+                                 <a href="#" class="eboard-hvr-outline-out">
+                                 <div class="small-box bg-gray eboard-process-smallbox">
+                                 <div class="inner eboard-smallbox-inner">
+                                  <h3 class="eboard-smallbox-h3">PVD</h3>
+                              </div>
+                                  <div class="icon eboard-smallbox-icon">
+                                  <i class="icon-report-icon"></i>
+                               </div>
+                               <div class="small-box-footer">
+                              </div>
+                          </div>
+                        </a>
+                        </div>
+
+                              <div class="col-sm-6 col-md-4">
+                                  <a href="#" class="eboard-hvr-outline-out">
+                                      <div class="small-box bg-teal eboard-process-smallbox">
+                                          <div class="inner eboard-smallbox-inner">
+                                              <h3 class="eboard-smallbox-h3">Band</h3>
+                                          </div>
+                                          <div class="icon eboard-smallbox-icon">
+                                              <i class="icon-report-icon"></i>
+                                          </div>
+                                          <div class="small-box-footer">
+                                          </div>
+                                      </div>
+                                  </a>
+                              </div>
+
+                              <div class="col-sm-6 col-md-4">
+                                  <a href="#" class="eboard-hvr-outline-out">
+                                      <div class="small-box bg-green eboard-process-smallbox">
+                                          <div class="inner eboard-smallbox-inner">
+                                              <h3 class="eboard-smallbox-h3">Assembly1</h3>
+                                          </div>
+                                          <div class="icon eboard-smallbox-icon">
+                                              <i class="icon-report-icon"></i>
+                                          </div>
+                                          <div class="small-box-footer">
+                                          </div>
+                                      </div>
+                                  </a>
+                              </div>
+
+                              <div class="col-sm-6 col-md-4">
+                                  <a href="#" class="eboard-hvr-outline-out">
+                                      <div class="small-box bg-blue eboard-process-smallbox">
+                                          <div class="inner eboard-smallbox-inner">
+                                              <h3 class="eboard-smallbox-h3">Assembly2</h3>
+                                          </div>
+                                          <div class="icon eboard-smallbox-icon">
+                                              <i class="icon-report-icon"></i>
+                                          </div>
+                                          <div class="small-box-footer">
+                                          </div>
+                                      </div>
+                                  </a>
+                              </div>*@
+
+                    <div class="col-sm-6 col-md-4">
+                        <a href="#" class="eboard-hvr-outline-out">
+                            <div class="small-box bg-aqua eboard-process-smallbox">
+                                <div class="inner eboard-smallbox-inner">
+                                    <h3 class="eboard-smallbox-h3">@T("Eboard.AllProcess")</h3>
+                                </div>
+                                <div class="icon eboard-smallbox-icon">
+                                    <i class="icon-report-icon"></i>
+                                </div>
+                                <div class="small-box-footer">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <div class="row" style="padding-bottom:50px;">
+        <div class="col-md-4"></div>
+        <div class="col-md-6">
+
+            <button type="button" onclick="javascript:history.back(-1);" class="btn btn-primary btn-lg margin-t-20 eboard-hvr-shutter-out-horizontal" id="js_btn_return_edit_ReportBom">@T("Common.Back")</button>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary btn-lg margin-t-20 eboard-hvr-shutter-out-horizontal" id="js_btn_save_edit_ReportBom"><i class="fa fa-save"></i>@T("Common.Sure")</button>
+
+        </div>
+    </div>
+    @*<div style="background-color: rgba(85, 148, 133, 0.08); font-size: x-large" id="main_content">
+            <table>
+                <tr>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button class="btn eboard-hvr-outline-out"   value="All" ><b> 前十低达成率</b> </button>
+                                </div>
+                            </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <button class="btn eboard-hvr-outline-out" value="表面" > <b>表面</b> </button>
+                                    </div>
+                                </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button class="btn eboard-hvr-outline-out" value="CNC"> <b>CNC</b> </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button class="btn eboard-hvr-outline-out" value="阳极"> <b>阳极</b> </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button class="btn eboard-hvr-outline-out" value="组装"> <b>组装</b> </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button class="btn eboard-hvr-outline-out" value="OQC"> <b>OQC</b> </button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="row" style="padding-bottom:50px;">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <button type="button" onclick="javascript:history.back(-1);" style="width: 100px; height: 100px; margin: 50px 50px 50px 100px;font-size: x-large" id="js_btn_return_edit_ReportBom">返回</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" style="width: 100px; height: 100px; margin: 50px 50px 50px 100px;font-size: x-large" id="js_btn_save_edit_ReportBom"><i class="fa fa-save"></i>确定</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>*@
+    @*<div class="bg-orange-active row" id="divMar_System_Announcement" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:2px;width:100%; z-index:-1">
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 bg-black-01 col-md-1 col-xs-2 text-center" style="padding-left:20px">
+                <i class="icon fa fa-warning"></i> <span class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block "><b>通知</b></span>
+            </div>
+            <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 col-md-11 col-xs-10" style="font-size: X-large;">
+                <marquee id="mar_System_Announcement" contenteditable="true" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();" behavior="scroll" direction="left"></marquee>
+            </div>
+        </div>*@
+</section><!-- /.content -->
+
+@section ViewModals{
+
+
+
+}
+
+@section ViewScripts{
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+
+            //var RoleMaintenance = null;
+            //$(document).ready(function () {
+
+            //    setInterval("startRequest1()", 10000);
+            //});
+
+            //function startRequest1() {
+            //    $.post(RoleMaintenance.urls.getNoticeContent, { "optype": $("#opType").val() }, function (data) {
+            //        if (data != "") {
+            //            var warningText = data;
+            //            $("#divMar_System_Announcement").show();
+            //            $("#mar_System_Announcement").html(warningText);
+
+            //            $('#mar_System_Announcement').marquee('pointer').mouseover(function () {
+            //                $(this).trigger('stop');
+            //            }).mouseout(function () {
+            //                $(this).trigger('start');
+            //            }).mousemove(function (event) {
+            //                if ($(this).data('drag') == true) {
+            //                    this.scrollLeft = $(this).data('scrollX') + ($(this).data('x') - event.clientX);
+            //                }
+            //            }).mousedown(function (event) {
+            //                $(this).data('drag', true).data('x', event.clientX).data('scrollX', this.scrollLeft);
+            //            }).mouseup(function () {
+            //                $(this).data('drag', false);
+            //            });
+            //        }
+            //    });
+            //}
+            var RoleMaintenance = (function () {
+                var urls = {
+                    EBoardShow: '@Url.Action("EBoardShow", "Board")',
+                    getNoticeContent: '@Url.Action("getNoticeContent", "Board")',
+                    DeleteNotice: '@Url.Action("DeleteNotice", "Board")',
+                    getPartTypes: '@Url.Action("getPartTypes", "Board")'
+                };
+                var columns = [
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    },
+                {
+                    data:null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.UID + '">@ViewBag.Delete</button>');
+                    },
+                    className: "text-center"
+                },
+               {
+                   data: "Notice_Content",
+                    className: "min-col-xs"
+               },
+                {
+                    data: "Period",
+                    className: "min-col-xs"
+                },
+                {
+                    data: "Scope",
+                    className: "min-col-xs"
+                }, {
+                    data: "State",
+                    className: "min-col-lg"
+                }, {
+                    data: "Creator_User",
+                    className: "min-col-lg"
+                }
+                , {
+                    data: "Creat_Time",
+                    className: "min-col-lg"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_role_datatable",
+                        remoteUrl: urls.queryRoles,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.Set(config);
+
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function () {
+                        _queryRoles(false);
+                    }
+                }
+
+            })();
+
+            RoleMaintenance.Init();
+
+            //$.post(RoleMaintenance.urls.getNoticeContent, { "optype": $("#opType").val() }, function (data) {
+            //    if (data !="") {
+            //        var warningText =data;
+            //            $("#divMar_System_Announcement").show();
+            //            $("#mar_System_Announcement").html(warningText);
+
+            //            $('#mar_System_Announcement').marquee('pointer').mouseover(function () {
+            //                $(this).trigger('stop');
+            //            }).mouseout(function () {
+            //                $(this).trigger('start');
+            //            }).mousemove(function (event) {
+            //                if ($(this).data('drag') == true) {
+            //                    this.scrollLeft = $(this).data('scrollX') + ($(this).data('x') - event.clientX);
+            //                }
+            //            }).mousedown(function (event) {
+            //                $(this).data('drag', true).data('x', event.clientX).data('scrollX', this.scrollLeft);
+            //            }).mouseup(function () {
+            //                $(this).data('drag', false);
+            //            });
+            //    }
+            //});
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    RoleMaintenance.QueryRoles();
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+
+            //$("#js_btn_save_edit_ReportBom").click(function () {
+            //    var selectParts = "";
+            //    var selectValue = "";
+            //    $.each($(".eboard-hvr-outline-out"), function (i, item) {
+            //        if ($(this).attr('style') == 'background-color:#9bf3f4') {
+            //            if (selectParts != "") {
+            //                selectParts = selectParts + "," + $(this).val();
+            //            }
+            //            else
+            //                selectParts += $(this).val();
+            //        }
+
+            //    });
+            //    if (selectParts == "") {
+            //        PDMS.Utility.MessageBox.error("请先选择部件类型");
+            //        return;
+            //    }
+            //    else {
+            //        url = RoleMaintenance.urls.redirectUrl + '?selectParts=' + selectParts;
+            //        window.location.href = url;
+            //    }
+
+            //})
+            //保存时运行
+
+
+            $("#js_btn_save_edit_ReportBom").click(function () {
+                var selectProjects = $("#selectProjects").val();
+                var selectParts = "";
+                var opType = $("#opType").val();
+                var location = $('#location').val();
+                var plant = $('#user_plant').val();
+                $.each($(".eboard-hvr-outline-out"), function (i, item) {
+                    if ($(this).attr('style') == 'background-color:#9bf3f4')
+                    {
+                        if (selectParts != "")
+                        {
+                            selectParts = selectParts + "," + $(this).find('h3').text();
+                        }
+                        else
+                            selectParts += $(this).find('h3').text();
+                    }
+
+                });
+                if (selectParts.indexOf("全部制程") != -1) {
+                    selectParts = "全部制程";
+                }
+                if (selectParts.indexOf("ALL Process") != -1) {
+                    selectParts = "ALL Process";
+                }
+                if (selectParts == "")
+                {
+                    PDMS.Utility.MessageBox.error("@ViewBag.PartXuanze");
+                    return;
+                }
+                else
+                {
+                    url = RoleMaintenance.urls.EBoardShow + '?opType=' + opType + '&selectProjects=' + selectProjects + '&selectFunplants=' + selectParts + '&location=' + location+'&plant='+plant;
+                    window.location.href = url;
+                }
+
+            })
+
+            //clear query conditions in search modal
+            $('.eboard-hvr-outline-out').click(function () {
+
+                if ($(this).attr('style') == 'background-color:#9bf3f4') {
+                    $(this).removeAttr('style');
+                    $($(this).find("div:first")).removeClass("eboard-selected");
+                } else {
+                    $(this).attr('style', 'background-color:#9bf3f4');
+                    $($(this).find("div:first")).addClass("eboard-selected");
+                }
+
+            });
+
+            killAside();
+            function killAside() {
+                $(".content-wrapper").css("cssText", "margin-left:0px !important");
+            }
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear();
+            });
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                $('#js_s_input_start').val = new Date();
+                $('#item_create_time').val = new Date();
+
+            })
+
+
+        });
+    </script>
+}
+
+<style>
+    .main-header {
+        display: none;
+    }
+
+    .main-footer {
+        display: none;
+    }
+
+    .main-sidebar {
+        display: none;
+    }
+
+    .content-wrapper {
+        margin-left: 0px !important;
+    }
+</style>
+
+
+
+

@@ -1,0 +1,750 @@
+﻿@{
+
+    ViewBag.Delete = T("Common.Delete").Text;
+    ViewBag.Edit = T("Common.Edit").Text;
+}
+<!-- Main content -->
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+
+        <div class="col-md-9">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>Build Plan<span id="js_input_date"></span></h4>
+            @using (Html.BeginForm("ImportExcel", "GoldenLine", FormMethod.Post, new { id = "js_form_excel_add" }))
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class=" pull-left">
+                            @*<button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_fl">Download Template(Next Week)</button>
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_currentWK">Download Template(This Week)</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_fl">Upload Plan(Next Week)</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_currentWK">Upload Plan(This Week)</button>*@
+
+
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_flall">@T("GL.DownloadTemplateNext")</button>
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_currentWKall">@T("GL.TemplateThisWeek")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_flall">@T("GL.NextUpload")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_currentWKall">@T("GL.ThisUpload")</button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class=" pull-right">
+                            <button type="button" class="fa fa-search btn btn-primary" id="js_btn_searchthisWorkPlan">@T("GL.ThisCheckPlan")</button>
+                            <button type="button" class="fa fa-search btn btn-primary" id="js_btn_searchNextWorkPlan">@T("GL.NextCheckPlan")</button>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            <br />
+        </div>
+    </div>
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+    
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_Plan_datatable">
+                    <thead>
+                        <tr>
+                            <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                            <th>@T("GL.Site")</th>
+                            <th>@T("GL.BG")</th>
+                            <th>@T("GL.Line")</th>
+                            <th>@T("GL.ShiftName")</th>                    
+                            <th>@T("QA.Mondays") <br />@T("GL.BuildPlan") </th>
+                            <th>@T("QA.Tuesdays") <br /> @T("GL.BuildPlan")  </th>
+                            <th>@T("QA.Wednesdays") <br /> @T("GL.BuildPlan")  </th>
+                            <th>@T("QA.Thursdays") <br />@T("GL.BuildPlan") </th>
+                            <th>@T("QA.Fridays") <br /> @T("GL.BuildPlan")  </th>
+                            <th>@T("QA.Saturdays") <br />@T("GL.BuildPlan")  </th>
+                            <th>@T("QA.Sundays") <br /> @T("GL.BuildPlan")  </th>                 
+                            @*<th>创建人</th>
+                            <th>创建时间</th>
+                            <th>修改人</th>
+                            <th>修改时间</th>*@
+                          
+                        </tr>
+                    </thead>
+
+                </table>
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+     
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+<!-- /.content -->
+
+@section ViewModals{
+
+
+}
+
+<!--更新Excel Start-->
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Plan</h4>
+            </div>
+            @using (Html.BeginForm("ImportPlanExcel", "GoldenLine", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_update" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">Select the file</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="Select the file"
+                                   required data-msg-required="请选择EXCEL文件上传!" />
+                        </div>
+                    </div>
+                    <input type="hidden" id="hid_key" name="LineID" value=@Model.LineID />
+                    <input type="hidden" id="hid_currentOrNextWeek" name="hid_currentOrNextWeek" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_Update">@T("Common.Cancel")</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update">@T("QA.Submit")</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--更新Excel End-->
+<!--更新ExcelAll Start-->
+<div class="modal fade" id="js_importExcel_modalAll" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Plan</h4>
+            </div>
+            @using (Html.BeginForm("ImportPlanExcelAll", "GoldenLine", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_updateall" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_importall">Select the file</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_importall" name="upload_excel" placeholder="Select the file"
+                                   required data-msg-required="请选择EXCEL文件上传!" />
+                        </div>
+                    </div>
+                    <input type="hidden" id="hid_keyAll" name="LineID" value=@Model.LineID />
+                    <input type="hidden" id="hid_currentOrNextWeekAll" name="hid_currentOrNextWeek" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_UpdateAll">@T("Common.Cancel")</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_updateAll">@T("QA.Submit")</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--更新ExcelAll End-->
+
+<div class="modal fade" id="js_add_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Actual HC</h4>
+            </div>
+            <div class="modal-body">
+                <form id="js_form_Warehouse_add" class="form-horizontal clearfix">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Plant_Organization">@T("GL.Site")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Plant_Organization" name="Plant_Organization" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_BG_Organization">@T("GL.BG")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_BG_Organization" name="BG_Organization" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_LineName">@T("GL.Line")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_LineName" name="LineName" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ShiftTime">@T("GL.ShiftName")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_ShiftTime" name="ShiftTime" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_MondayHCActua">@T("QA.Mondays")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_MondayHCActua" name="MondayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_TuesdayHCActua">@T("QA.Tuesdays")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_TuesdayHCActua" name="TuesdayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_WednesdayHCActua">@T("QA.Wednesdays") </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_WednesdayHCActua" name="WednesdayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_ThursdayHCActua">@T("QA.Thursdays") </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_ThursdayHCActua" name="ThursdayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FridayHCActua">@T("QA.Fridays")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_FridayHCActua" name="FridayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SaterdayHCActua">@T("QA.Saturdays")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_SaterdayHCActua" name="SaterdayHCActua">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_SundayHCActua">@T("QA.Sundays")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" id="s_input_SundayHCActua" name="SundayHCActua">
+                            </div>
+                        </div>
+                        <input type="hidden" id="LineID" name="LineID" />
+                        <input type="hidden" id="ShiftTimeID" name="ShiftTimeID" />
+                        <input type="hidden" id="IsThisWork" name="IsThisWork" value="false" />
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>@T("Common.Cancel")</button>
+                <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i>@T("Common.Save")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ViewScripts{
+    <script type="text/javascript">
+      $(function () {
+          var _getDate=function(SearchThisWeek){
+              var url = FlowChartPlan.urls.GetDateTime;
+              $.post(url,{IsThisWork:SearchThisWeek}, function (data)
+              {
+                  document.getElementById('js_input_date').innerHTML=data;
+              });
+
+          }
+          var FlowChartPlan = (function () {
+              var urls = {
+                  SearchPlanData: '@Url.Action("QueryPlanData", "GoldenLine")',
+                  backFL: '@Url.Action("LineSetup", "GoldenLine")',
+                  GetDateTime:'@Url.Action("GetDateTime", "GoldenLine")',
+                  SearchPlanDataByLineID: '@Url.Action("SearchPlanDataByLineID", "GoldenLine")',
+                  EditBuildPlanInfo: '@Url.Action("EditBuildPlanInfo", "GoldenLine")',
+              };
+
+              var contentDatatable = null;
+              //region
+              var columns = [
+                {
+                    className: "table-col-seq",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                },{
+                    createdCell: function (td, cellData, rowData, row, col) {                       
+                        var buttonAddSub = '<button type="button" class="btn btn-primary btn-xs js-grid-addsub" data-id="' + rowData.LineID+'|' +rowData.ShiftTimeID+ '">@ViewBag.Edit</button>';                            
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                    '{0}' +                                 
+                                    '</div>';                       
+                        result = result.replace('{0}', buttonAddSub);                    
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                },
+                  {
+                      data: "Plant_Organization",
+                      className: "min-col-xs "
+                  }, {
+                      data: "BG_Organization",
+                      className: "min-col-xs "
+                  }, {
+                      data: "LineName",
+                      className: "min-col-xs "
+                  },{
+                      data: "ShiftTime",
+                      className: "min-col-xs "
+                  },{
+                      data: "MondayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "TuesdayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "WednesdayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "ThursdayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "FridayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "SaterdayPlan",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "SundayPlan",
+                      className: "min-col-xs ",
+                  }
+              ];
+
+              //endregion
+              var _getParams = function (SearchThisWeek) {
+                  return { LineID: @ViewBag.LineID, IsThisWork: SearchThisWeek };
+              };
+
+              var _queryFLS = function (SearchThisWeek) {
+
+                  var config1 = {
+                      pageId: "#page",
+                      tableId: "#js_Plan_datatable",
+                      remoteUrl: urls.SearchPlanData,
+                      searchParams: _getParams(SearchThisWeek),
+                      tableOptions: {
+                          scrollX: true,
+                          autoWidth: true,
+                          ordering: false,
+                          columns: columns
+                      }
+                  };
+
+                  var config2 = {
+                      pageId: "#page",
+                      tableId: "#js_Plan_datatable",
+                      remoteUrl: urls.SearchPlanData,
+                      searchParams: _getParams(SearchThisWeek),
+                      tableOptions: {
+                          scrollX: true,
+                          autoWidth: true,
+                          ordering: false,
+                          columns: columns
+                      }
+                  };
+
+                  if(SearchThisWeek)
+                  {
+                      PDMS.Utility.Pages.Set(config1);
+                  }
+                  else
+                  {
+                      PDMS.Utility.Pages.Set(config2);
+                  }
+              };
+
+
+
+              return {
+                  urls: urls,
+                  Init: function () {
+                      $('#page').page('destroy');
+
+                      _getDate(true);
+
+                      var uiNextBtn =document.getElementById("js_btn_searchNextWorkPlan");
+                      uiNextBtn.disabled=false;
+
+                      var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+                      uiThisBtn.disabled=true;
+
+                      _queryFLS(true);
+
+                  },
+                  QueryFlowChartNextPlan: function () {
+
+                      $('#page').page('destroy');
+
+                      _getDate(false);
+
+                      var uiNextBtn =document.getElementById("js_btn_searchNextWorkPlan");
+                      uiNextBtn.disabled=true;
+
+                      var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+                      uiThisBtn.disabled=false;
+
+                      _queryFLS(false);
+
+                  },
+                  GetDataTables: function () {
+                      if (contentDatatable == null) {
+                          contentDatatable = $('#js_Plan_datatable').DataTable({
+                              paging: false,
+                              searching: false,
+                              ordering: false,
+                              retrieve: true,
+                              columns: columns,
+                          });
+                      }
+                      return contentDatatable;
+                  }
+              }
+          })();
+
+          FlowChartPlan.Init();
+
+          $('#btn_back').on('click', function () {
+              var url = FlowChartPlan.urls.backFL;
+              window.location.href = url;
+          });
+
+          jQuery.validator.addMethod("percent", function (value, element) {
+              var reg = /^((\d+\.?\d*)|(\d*\.\d+))\%$/;
+              var result = reg.test(value);
+              return result;
+          }, "只能输入百分数！");
+
+
+          $('#js_btn_searchthisWorkPlan').on('click',function()
+          {
+              FlowChartPlan.Init();
+          });
+          $('#js_btn_searchNextWorkPlan').on('click',function()
+          {
+              FlowChartPlan.QueryFlowChartNextPlan();
+          });
+
+
+
+          //隐藏modal框时清空值
+          $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+              $('#js_edit_modal').find('input').val('');
+              $('.list-group.validate-error').empty();
+          });
+          //#endregion 隐藏modal框时清空值
+
+          //#endregion
+
+          $('#js_btn_download_fl').on('click', function () {
+
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcel", "GoldenLine", new { id = ViewBag.LineID, clintName = "js_btn_download_fl" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+
+
+          $('#js_btn_download_currentWK').on('click', function () {
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcel", "GoldenLine", new { id = ViewBag.LineID, clintName = "js_btn_download_currentWK" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+
+
+          //start   all download
+
+
+          $('#js_btn_download_flall').on('click', function () {
+
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcelAll", "GoldenLine", new { id = ViewBag.LineID, clintName = "js_btn_download_fl" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+          $('#js_btn_download_currentWKall').on('click', function () {
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcelAll", "GoldenLine", new { id = ViewBag.LineID, clintName = "js_btn_download_currentWK" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+
+          $('#js_btn_import_flall').on('click', function () {
+              $('#hid_currentOrNextWeekAll').val('nextWeek');
+              $('#js_importExcel_modalAll').modal('show');
+          });
+
+          $('#js_btn_import_currentWKall').on('click', function () {
+              $('#hid_currentOrNextWeekAll').val('currentWeek');
+              $('#js_importExcel_modalAll').modal('show');
+          });
+
+          $('#js_btn_excel_updateAll').on('click', function () {
+              debugger;
+              $('#js_importExcel_modalAll').modal('hide');
+              $.blockUI({ message: "<h1>请等待...</h1>" });
+              $('#js_form_excel_updateall').ajaxSubmit({
+                  beforeSubmit: function () {
+                      if (!$('#js_form_excel_updateall').valid()) {
+                          $.unblockUI();
+                          return false;
+                      }
+                  },
+                  success: function (data) {
+                      $.unblockUI();
+                      if (data != '') {
+                          PDMS.Utility.MessageBox.info(data);
+                      }
+                      else {
+                          PDMS.Utility.MessageBox.info('保存成功！');
+                          window.location.reload();
+                      }
+                  }
+              });
+          });
+
+          $('#js_btn_clear_Updateall').click(function () {
+              $('#js_s_input_importall').val('');
+          });
+          //end 
+
+
+
+
+          $('#js_btn_import_fl').on('click', function () {
+              $('#hid_currentOrNextWeek').val('nextWeek');
+              $('#js_importExcel_modal').modal('show');
+          });
+
+          $('#js_btn_import_currentWK').on('click', function () {
+              $('#hid_currentOrNextWeek').val('currentWeek');
+              $('#js_importExcel_modal').modal('show');
+          });
+
+          $('#js_btn_excel_update').on('click', function () {
+              debugger;
+              $('#js_importExcel_modal').modal('hide');
+              $.blockUI({ message: "<h1>请等待...</h1>" });
+              $('#js_form_excel_update').ajaxSubmit({
+                  beforeSubmit: function () {
+                      if (!$('#js_form_excel_update').valid()) {
+                          $.unblockUI();
+                          return false;
+                      }
+                  },
+                  success: function (data) {
+                      $.unblockUI();
+                      if (data != '') {
+                          PDMS.Utility.MessageBox.info(data);
+                      }
+                      else {
+                          PDMS.Utility.MessageBox.info('保存成功！');
+                          window.location.reload();
+                      }
+                  }
+              });
+          });
+
+          $('#js_btn_clear_Update').click(function () {
+              $('#js_s_input_import').val('');
+          });
+          function SetReadonly(WeekDay)
+          {
+              if (WeekDay=="Tuesday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+
+              }
+              else if(WeekDay=="Wednesday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').attr('readonly', 'readonly');
+
+              }
+              else if(WeekDay=="Thursday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=WednesdayHCActua]').attr('readonly', 'readonly');
+
+              }   else if(WeekDay=="Friday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=WednesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=ThursdayHCActua]').attr('readonly', 'readonly');
+
+              }   else if(WeekDay=="Saturday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=WednesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=ThursdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=FridayHCActua]').attr('readonly', 'readonly');
+
+              }   else if(WeekDay=="Sunday")
+              {
+                  $('#js_add_modal').find('input[name=MondayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=WednesdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=ThursdayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=FridayHCActua]').attr('readonly', 'readonly');
+                  $('#js_add_modal').find('input[name=SaterdayHCActua]').attr('readonly', 'readonly');
+
+              }
+
+
+          }
+
+          function SetNOTReadonly()
+          {
+              $('#js_add_modal').find('input[name=MondayHCActua]').removeAttr('readonly');
+              $('#js_add_modal').find('input[name=TuesdayHCActua]').removeAttr('readonly');
+              $('#js_add_modal').find('input[name=WednesdayHCActua]').removeAttr('readonly');
+              $('#js_add_modal').find('input[name=ThursdayHCActua]').removeAttr('readonly');
+              $('#js_add_modal').find('input[name=FridayHCActua]').removeAttr('readonly');
+              $('#js_add_modal').find('input[name=SaterdayHCActua]').removeAttr('readonly');
+          }
+
+          //初始化实际人力数据--start
+          $('body').on('click', '.js-grid-addsub', function () {
+           
+              $('#js_add_modal').modal('show', $(this));
+
+              url = FlowChartPlan.urls.SearchPlanDataByLineID;
+
+              var strDataTable = $(this).attr('data-id');         
+              var arr=strDataTable.split("|");
+              var lineID=arr[0];
+              var shiftTimeID=arr[1];
+              var isThisWork=true;
+              debugger;
+              var uiNextBtn =document.getElementById("js_btn_searchNextWorkPlan");
+              if( uiNextBtn.disabled==true)
+              {
+                  isThisWork=false;
+              }
+         
+              $('#js_add_modal').find('input[name=LineID]').val(lineID);
+              $('#js_add_modal').find('input[name=ShiftTimeID]').val(shiftTimeID);
+              $('#js_add_modal').find('input[name=IsThisWork]').val(isThisWork);
+              SetNOTReadonly();
+              $.post(url, { LineID:lineID,ShiftTimeID:shiftTimeID,IsThisWork:isThisWork }, function (data) {
+                  debugger;
+                  $('#js_add_modal').find('input[name=Plant_Organization]').val(data.Plant_Organization);
+                  $('#js_add_modal').find('input[name=BG_Organization]').val(data.BG_Organization);
+                  $('#js_add_modal').find('input[name=LineName]').val(data.LineName);
+                  $('#js_add_modal').find('input[name=ShiftTime]').val(data.ShiftTime);                       
+                  $('#js_add_modal').find('input[name=MondayHCActua]').val(data.MondayHCActua);
+                  $('#js_add_modal').find('input[name=TuesdayHCActua]').val(data.TuesdayHCActua);
+                  $('#js_add_modal').find('input[name=WednesdayHCActua]').val(data.WednesdayHCActua);
+                  $('#js_add_modal').find('input[name=ThursdayHCActua]').val(data.ThursdayHCActua);
+                  $('#js_add_modal').find('input[name=FridayHCActua]').val(data.FridayHCActua);
+                  $('#js_add_modal').find('input[name=SaterdayHCActua]').val(data.SaterdayHCActua);
+                  $('#js_add_modal').find('input[name=SundayHCActua]').val(data.SundayHCActua);    
+                  if(isThisWork)
+                  {
+                      SetReadonly(data.WeekDay);
+                  }
+              });
+          });
+          //初始化实际人力数据--end
+          //新增保存----start
+          $('#js_btn_save_new').click(function () {
+              var submitJson = $('#js_form_Warehouse_add').serializeObject();
+              if ($('#js_add_modal').find('input[name=MondayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周一生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=TuesdayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周二生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=WednesdayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周三生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=ThursdayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周四生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=FridayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周五生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=SaterdayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周六生产计划不能为空！');
+                  return false;
+              }
+              if ($('#js_add_modal').find('input[name=SundayHCActua]').val() == "") {
+                  PDMS.Utility.MessageBox.info('周日生产计划不能为空！');
+                  return false;
+              }
+              debugger;
+              var lineID = 0;
+              if ($('#js_add_modal').find('input[name=LineID]').val() != '')
+              {
+                  lineID = $('#js_add_modal').find('input[name=LineID]').val();
+              }              
+              submitJson.LineID =lineID ;
+
+              var shiftTimeID = 0;
+              if ($('#js_add_modal').find('input[name=ShiftTimeID]').val() != '')
+              {
+                  shiftTimeID = $('#js_add_modal').find('input[name=ShiftTimeID]').val();
+              }
+              
+              submitJson.ShiftTimeID =shiftTimeID ;         
+              submitJson.IsThisWork =$('#js_add_modal').find('input[name=IsThisWork]').val() ;
+
+              $.post(FlowChartPlan.urls.EditBuildPlanInfo, { jsonStorages: JSON.stringify(submitJson) }, function (data) {
+                  if (data == 'SUCCESS') {
+                      PDMS.Utility.MessageBox.info("保存成功!");
+                      WarehouseSetting.queryWarehouses(false);
+                      $('#js_add_modal').modal('hide');
+                  } else {
+                      PDMS.Utility.MessageBox.error(data);
+                  }
+              });
+          })
+          //新增保存----end
+
+
+
+      });
+    </script>
+}

@@ -1,0 +1,636 @@
+﻿@model PDMS.Model.ViewModels.Fixture_PartVM
+<section class="content-header portal-content-header">
+    <h1>PVD治具更换配件</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="modal-body form-horizontal" style="min-height:600px;">
+        <div class="row">
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_Fixture_SN">SN</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_Fixture_SN" placeholder="请在此扫码治具(回车确认)" title="扫码刷新治具及其配件信息(登录账号需设置厂区、OP类型)">
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_input_Fixture_Unique_ID">治具唯一编码</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_input_Fixture_Unique_ID" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_input_Fixture_Name">治具名称</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_input_Fixture_Name" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_Plant_Name">厂区</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_Plant_Name" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_OP_Name">OP类型</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_OP_Name" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_FunctionPlant_Name">功能厂</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_FunctionPlant_Name" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_input_Fixture_NO">治具图号</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_input_Fixture_NO" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_input_ShortCode">治具短码</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control input-sm" id="js_input_ShortCode" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-lg-4">
+                <label class="col-sm-5 control-label" for="js_input_IsMultipleClear" title="勾选后可批量更换配件">是否批量更换配件</label>
+                <div class="col-sm-7">
+                    <input type="checkbox" id="js_input_IsMultipleClear">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <fieldset id="js-multiple-fixturepart" hidden>
+                <legend title="扫码后可批量更换预选配件">预选更换配件</legend>
+                <div class="form-group col-md-12 col-lg-4">
+                    <label class="col-sm-5 control-label" for="js_select_factory">厂区</label>
+                    <div class="col-sm-7">
+                        <select class="selectpicker form-control input-sm" id="js_select_factory" data-live-search="true">
+                            @foreach (var item in Model.Plants)
+                            {
+                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-lg-4">
+                    <label class="col-sm-5 control-label" for="js_select_optype">OP类型</label>
+                    <div class="col-sm-7">
+                        <select class="selectpicker form-control input-sm" id="js_select_optype" data-live-search="true"></select>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-12 col-lg-4">
+                    <label class="col-sm-5 control-label" for="js_select_funplant">功能厂</label>
+                    <div class="col-sm-7">
+                        <select class="selectpicker form-control input-sm" id="js_select_funplant" data-live-search="true"></select>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-lg-4">
+                    <label class="col-sm-5 control-label" for="js_select_Fixture_Part" title='可多选'>配件</label>
+                    <div class="col-sm-7">
+                        <select class="selectpicker form-control input-sm" id="js_select_Fixture_Part" data-live-search="true" title="配件料号 品名" multiple>
+                            <option disabled></option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend title="受使用次数管控的治具配件">治具配件</legend>
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_FixturePart_datatable">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>操作</th>
+                            <th>料号</th>
+                            <th>品名</th>
+                            <th>型号</th>
+                            <th>治具配比数量</th>
+                            <th>治具配件使用寿命(次)</th>
+                            <th>已使用次数</th>
+                            <th>是否需要更换</th>
+                            <th>上次更换者</th>
+                            <th>上次更换时间</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </fieldset>
+        </div>
+    </div>
+</section>
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var FixturePartScanCodeClear = (function () {
+                buildCriteria = false;
+                FIXTUREMUID = 0;
+                subDatataleViewEdit = null;
+                var urls = {
+                    //获取扫码得到治具信息
+                    getFixturePartScanCodeDTO: '@Url.Action("GetFixturePartScanCodeDTO", "FixturePart")',
+                    getFixtureScanCodeDTOBySN: '@Url.Action("GetFixtureScanCodeDTOBySN", "FixturePart")',
+                    getFixturePartDTOByFixtureUID: '@Url.Action("GetFixturePartDTOByFixtureUID", "FixturePart")',
+                    clearFixturePartUseTimes: '@Url.Action("ClearFixturePartUseTimes", "FixturePart")',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //查询治具配件
+                    queryAllFixutreParts: '@Url.Action("QueryAllFixtureParts", "FixturePart")'
+                }
+
+                //#region 定义字段列
+                var columns = [
+                {
+                    data: null,
+                    className: "text-center",
+                    render: function (data, type, full, meta) {
+                        return ++meta.row;
+                    }
+                },
+                {
+                    data: "Fixture_Part_UseTimes_UID",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var html_btn_clear = '<button type="button" class="btn btn-primary btn-xs js-grid-clear" data-id="' + rowData.Fixture_Part_UseTimes_UID + '" data-life-usetimes="' + rowData.Fixture_Part_Life_UseTimes + '" data-usetimes-count="' + rowData.Fixture_Part_UseTimesCount + '" data-partid="' + rowData.Part_ID + '" data-partuid="' + rowData.Fixture_Part_UID + '">更换配件</button>';
+                        $(td).html(html_btn_clear);
+                    },
+                    className: "text-center"
+                },
+                {
+                    data: "Part_ID",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Part_Name",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Part_Spec",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Fixture_Part_Qty",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Fixture_Part_Life_UseTimes",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "Fixture_Part_UseTimesCount",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "IsNeedUpdate",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.Fixture_Part_UseTimesCount >= rowData.Fixture_Part_Life_UseTimes) {
+                            $(td).html("是");
+                            $(td).css("background", "#d9534f");
+                            $(td).css("color", "#ffffff");
+                        } else {
+                            $(td).html("否");
+                        }
+                    },
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "LastClear_UserName",
+                    className: "min-col-xs text-center"
+                }, {
+                    data: "LastClear_DateTime",
+                    className: "min-col-xs text-center"
+                }
+                ];
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        //_queryFixturePartM(true);
+                        //  GetOPTypes();
+                    },
+                    //GetSubDatatable: function () {
+                    //    if (subDatatable == null) {
+                    //        subDatatable = $('#js_sub_func_table').DataTable({
+                    //            paging: false,
+                    //            searching: false,
+                    //            ordering: false,
+                    //            retrieve: true,
+                    //            columns: subColumns,
+                    //        });
+                    //    }
+                    //    return subDatatable;
+                    //},
+
+                    Columns: columns
+                }
+
+            })();
+
+            // FixturePartScanCodeClear.Init();
+            //$('#js_FixturePart_ScanCode').change(function () {
+            //    var uniqueID = $(this).val();
+            //    if (uniqueID != '') {
+            //        GetFixtureByUniqueID(uniqueID);
+            //    }
+            //});
+
+            FixturePartScanCodeClear.Init();
+
+            //预选配件淡入淡出
+            $('#js_input_IsMultipleClear').change(function () {
+                var isMultipaleUpdate = $(this).is(':checked');
+                if (isMultipaleUpdate) {
+                    $('#js-multiple-fixturepart').fadeIn();
+                } else {
+                    $('#js-multiple-fixturepart').fadeOut();
+                }
+            });
+
+            //用户要求回车触发
+            $('#js_Fixture_SN').keypress(function () {
+                if (event.keyCode == 13) {
+                    var sn = $.trim($(this).val());
+                    //不为空字符串才扫码
+                    if (sn != "") {
+                        //由于扫码枪可能出现两次回车，扫码一次，清空一次
+                        $("#js_Fixture_SN").val("");
+
+                        $.get(FixturePartScanCodeClear.urls.getFixtureScanCodeDTOBySN, { SN: sn }, function (data) {
+                            //先刷新数据，否则后面的清零操作会取到原来的数据
+                            refreshFixturePart();
+
+                            if (data == "-1") {
+                                PDMS.Utility.MessageBox.infohtml("账号没有扫码权限，请设置厂区，BG!");
+                                //window.setTimeout(function () {
+                                //    PDMS.Utility.MessageBox.hideinfohtml();
+                                //    $("#js_Fixture_SN").focus();
+                                //}, 5000);
+                                //setTimeout(function () {
+                                //    $("#js_Fixture_SN").val("");
+                                //}, 1000);
+                                return false;
+                            }
+                            else if (data == null) {
+                                FIXTUREMUID = 0;
+                                refreshFixturePart();
+
+                                $("#js_Plant_Name").val('');
+                                $("#js_OP_Name").val('');
+                                $("#js_FunctionPlant_Name").val('');
+
+                                $("#js_input_Fixture_Name").val('');
+                                $("#js_input_Fixture_Unique_ID").val('');
+                                $("#js_input_Fixture_NO").val('');
+                                $("#js_input_ShortCode").val('');
+
+                                PDMS.Utility.MessageBox.infohtml("没有找到对应的治具!");
+                                //，取消5秒关闭
+                                //window.setTimeout(function () {
+                                //    PDMS.Utility.MessageBox.hideinfohtml();
+                                //    $("#js_Fixture_SN").focus();
+                                //}, 5000);
+                                //1秒后清空
+                                //setTimeout(function () {
+                                //    $("#js_Fixture_SN").val("");
+                                //}, 1000);
+                            }
+                            else if (data != null) {
+
+                                //更新全局变量FIXTUREMUID
+                                FIXTUREMUID = data.Fixture_M_UID;
+                                //先刷新数据，否则后面的清零操作会取到原来的数据
+                                refreshFixturePart();
+
+                                //填写治具信息
+                                $("#js_Plant_Name").val(data.PlantName);
+                                $("#js_OP_Name").val(data.OPName);
+                                $("#js_FunctionPlant_Name").val(data.FunPlantName);
+
+                                $("#js_input_Fixture_Name").val(data.Fixture_Name);
+                                $("#js_input_Fixture_Unique_ID").val(data.Fixture_Unique_ID);
+                                $("#js_input_Fixture_NO").val(data.Fixture_NO);
+                                $("#js_input_ShortCode").val(data.ShortCode);
+
+                                if (data.StatuName.indexOf("使用中") != -1) {
+
+                                    //1秒后清空
+                                    //setTimeout(function () {
+                                    //    $("#js_Fixture_SN").val("");
+                                    //}, 1000);
+                                    //批量清零配件使用次数
+                                    multileClearFixturePartUseTimes();
+                                }
+                                else {
+                                    //更换配件按钮被禁用掉
+                                    $(".js-grid-clear").attr("disabled",true);
+                                    PDMS.Utility.MessageBox.infohtml("当前治具状态:" + data.StatuName + '，非"使用中"的治具不能更换配件!');
+                                    //window.setTimeout(function () {
+                                    //    PDMS.Utility.MessageBox.hideinfohtml();
+                                    //    $("#js_Fixture_SN").focus();
+                                    //}, 5000);
+                                    ////1秒后清空
+                                    //setTimeout(function () {
+                                    //    $("#js_Fixture_SN").val("");
+                                    //}, 1000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            function multileClearFixturePartUseTimes() {
+                //批量更换配件
+                var isMultipaleUpdate = $('#js_input_IsMultipleClear').is(':checked');
+                if (isMultipaleUpdate) {
+                    debugger;
+                    //获取预选更换配件,达到使用上限的治具配件可批量更换
+                    var selectedParts = [];
+                    $("#js_select_Fixture_Part").each(function () {
+                        selectedParts.push($(this).val());
+                    });
+                    var selectedPartUIDArr = $(selectedParts[0])
+                    if (selectedPartUIDArr.length > 0) {
+                        //获取当前治具的配件
+                        var fixtureParts = $(".js-grid-clear");
+                        var uidList = [];
+                        var noupdate_uidList = [];
+                        var confirmMsg = "";
+                        var update_confirmMsg = "已更换达到使用次数的配件：<br/>";
+                        var noupdate_confirmMsg = "以下未达到使用次数的配件：<br/>";
+                        fixtureParts.each(function () {
+                            var fixturepart_UID = $(this).attr('data-partuid');
+                            var isContains = $.inArray(fixturepart_UID, selectedPartUIDArr);
+                            if (isContains != -1) {
+                                var Part_ID = $(this).attr('data-partid');
+                                var Fixture_Part_UseTimes_UID = $(this).attr('data-id');
+                                var Fixture_Part_Life_UseTimes = parseInt($(this).attr('data-life-usetimes'));
+                                var Fixture_Part_UseTimesCount = parseInt($(this).attr('data-usetimes-count'));
+                                //仅筛选达到使用次数的配件
+                                if (Fixture_Part_UseTimesCount >= Fixture_Part_Life_UseTimes) {
+                                    uidList.push(Fixture_Part_UseTimes_UID);
+                                    update_confirmMsg += "治具配件料号[" + Part_ID + "]使用寿命(次数)为" + Fixture_Part_Life_UseTimes + "次，已使用" + Fixture_Part_UseTimesCount + "次; <br/>";
+                                } else {
+                                    noupdate_uidList.push(Fixture_Part_UseTimes_UID);
+                                    noupdate_confirmMsg += "治具配件料号[" + Part_ID + "]使用寿命(次数)为" + Fixture_Part_Life_UseTimes + "次，已使用" + Fixture_Part_UseTimesCount + "次; <br/>";
+                                }
+                            }
+                        });
+                        var url = FixturePartScanCodeClear.urls.clearFixturePartUseTimes;
+
+                        //达到使用次数的和未达到使用次数的先后更换
+                        if (uidList.length > 0 && noupdate_uidList.length > 0) {
+                            //先更换已达到使用次数的配件
+                            $.post(url, { uidList: uidList }, function (data) {
+                                if (data == "") {
+                                    //PDMS.Utility.MessageBox.info("配件更换成功!", function () {
+                                    //    refreshFixturePart();
+                                    //});
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.error(data);
+                                }
+                            });
+
+                            //再确认是否更换未达到使用次数的配件
+                            noupdate_confirmMsg += "请确认是否更换未达到使用次数的配件?";
+                            confirmMsg = update_confirmMsg + '<br/>' + noupdate_confirmMsg;
+                            PDMS.Utility.MessageBox.confirmhtml(confirmMsg, function () {
+                                $.post(url, { uidList: noupdate_uidList }, function (data) {
+                                    if (data == "") {
+                                        //PDMS.Utility.MessageBox.infohtml("配件批量更换成功!", function () {
+
+                                        //});
+                                        refreshFixturePart();
+                                        window.setTimeout(function () {
+                                            $("#js_Fixture_SN").focus();
+                                        }, 1000);
+                                    }
+                                    else {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    }
+                                });
+                            }, function () {
+                                // 刷新配件数据
+                                refreshFixturePart();
+                            });
+                        }
+                        else if (uidList.length > 0) {
+                            //仅更换了达到使用次数的配件
+                            $.post(url, { uidList: uidList }, function (data) {
+                                if (data == "") {
+                                    confirmMsg += update_confirmMsg + "配件批量更换成功!<br/>5秒后关闭此对话框。";
+                                    PDMS.Utility.MessageBox.infohtml(confirmMsg, function () {
+                                        refreshFixturePart();
+                                        //PDMS.Utility.MessageBox.hideinfohtml();
+                                        //window.clearTimeout(t1);//去掉定时器
+                                    });
+                                    window.setTimeout(function () {
+                                        PDMS.Utility.MessageBox.hideinfohtml();
+                                        //刷新配件数据
+                                        refreshFixturePart();
+                                        $("#js_Fixture_SN").focus();
+                                    }, 5000);
+                                }
+                                else {
+                                    PDMS.Utility.MessageBox.error(data);
+                                }
+                            });
+                        }
+                        else if (noupdate_uidList.length > 0) {
+                            debugger;
+                            //仅更换未达到使用次数的配件
+                            confirmMsg = noupdate_confirmMsg + "请确认是否更换未达到使用次数的配件?";
+                            PDMS.Utility.MessageBox.confirmhtml(confirmMsg, function () {
+                                $.post(url, { uidList: noupdate_uidList }, function (data) {
+                                    if (data == "") {
+                                        //PDMS.Utility.MessageBox.infohtml("配件批量更换成功!", function () {
+                                        //    refreshFixturePart();
+                                        //    $("#js_Fixture_SN").focus();
+                                        //});
+                                        refreshFixturePart();
+                                        window.setTimeout(function () {
+                                            $("#js_Fixture_SN").focus();
+                                        }, 1000);
+                                    }
+                                    else {
+                                        PDMS.Utility.MessageBox.error(data);
+                                    }
+                                });
+                            }, function() {
+                                //刷新配件数据
+                                refreshFixturePart();
+                            });
+                        }
+                    }
+                }
+            }
+
+            //扫码，光标离开扫码框时触发
+            //$("#js_Fixture_SN").blur(function () {
+
+            //});
+
+            function refreshFixturePart() {
+                if (FIXTUREMUID != 0) {
+                    $.get(FixturePartScanCodeClear.urls.getFixturePartDTOByFixtureUID, { fixtureUID: FIXTUREMUID }, function (data) {
+                        //治具配件列表
+                        //先清空
+                        //$('#js_FixturePart_datatable').DataTable().clear().draw();
+
+                        //填充数据
+                        if (data.length > 0) {
+                            var subTable = $('#js_FixturePart_datatable').DataTable({
+                                columns: FixturePartScanCodeClear.Columns,
+                                ordering: false,
+                                data: data,
+                                destroy: true
+                            });
+                        }
+                    });
+                }
+                else {
+                    $('#js_FixturePart_datatable').DataTable().clear().draw();
+                }
+            }
+
+            //治具配件使用次数清零
+            $('body').on('click', '.js-grid-clear', function () {
+                var Fixture_Part_UseTimes_UID = $(this).attr('data-id');
+                var Fixture_Part_Life_UseTimes = $(this).attr('data-life-usetimes');
+                var Fixture_Part_UseTimesCount = $(this).attr('data-usetimes-count');
+                var Part_ID = $(this).attr('data-partid');
+                var confirmMsg = "治具配件料号[" + Part_ID + "]使用寿命(次数)为" + Fixture_Part_Life_UseTimes + "次，已使用" + Fixture_Part_UseTimesCount + "次";
+                if (Fixture_Part_UseTimesCount >= Fixture_Part_Life_UseTimes) {
+                    confirmMsg += "达到使用上限，建议更换。";
+                }
+                else {
+                    confirmMsg += "未到使用上限，不建议更换。";
+                }
+                confirmMsg += "<br/>更换配件后，[使用次数]将清零，是否确认更换?";
+                var uidList = new Array(Fixture_Part_UseTimes_UID);
+                debugger;
+                PDMS.Utility.MessageBox.confirmhtml(confirmMsg, function () {
+                    var url = FixturePartScanCodeClear.urls.clearFixturePartUseTimes;
+                    $.post(url, { uidList: uidList }, function (data) {
+                        if (data == "") {
+                            PDMS.Utility.MessageBox.info("配件更换成功!", function () {
+                                refreshFixturePart();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                });
+
+            });
+
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory').change(function () {
+                refreshOPTypeSelect();
+                refreshFunctionPlantSelect();
+                refreshFixturePartSelect();
+            });
+            $('#js_select_factory').trigger('change');
+
+            $('#js_select_optype').change(function () {
+                refreshFunctionPlantSelect();
+                refreshFixturePartSelect();
+            });
+
+            $('#js_select_funplant').change(function () {
+                refreshFixturePartSelect();
+            });
+
+            //刷新OP类型列表
+            function refreshOPTypeSelect() {
+                var oporgid = $('#js_select_factory option:selected').val();
+                url = FixturePartScanCodeClear.urls.getCurrentOPType;
+                $('#js_select_optype').html('<option></option>');
+                //$('#js_select_funplant').html('<option></option>');
+                //$('#js_select_funplant').selectpicker('refresh');
+                //$('#js_select_Fixture_Part').html('<option></option>');
+                //$('#js_select_Fixture_Part').selectpicker('refresh');
+                //$('#js_select_Group').html('<option></option>');
+                //$('#js_select_Group').selectpicker('refresh');
+                if (oporgid != 0) {
+                    //设置OP
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+
+                        $('#js_select_optype').selectpicker('refresh');
+                    });
+                }
+            }
+
+            //刷新功能厂列表
+            function refreshFunctionPlantSelect() {
+                //清空
+                $('#js_select_funplant').html('<option></option>');
+
+                var url = FixturePartScanCodeClear.urls.getFunPlantByOPTypes;
+                var optypeUID = $('#js_select_optype option:selected').val();
+                if (optypeUID > 0) {
+                    //设置功能厂
+                    $.post(url, { Optype: optypeUID }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+
+                        }
+                    });
+                }
+                //刷新
+                $('#js_select_funplant').selectpicker('refresh');
+            }
+
+            //刷新治具配件列表
+            function refreshFixturePartSelect() {
+                //清空
+                $('#js_select_Fixture_Part').html('<option></option>');
+
+                var opTypeUid = $('#js_select_optype').val();
+                if (opTypeUid != "" && opTypeUid != undefined) {
+                    var funcPlantUid = $('#js_select_funplant').val();
+                    if (funcPlantUid == "" || funcPlantUid == undefined) {
+                        funcPlantUid = 0;
+                    }
+
+                    var url = FixturePartScanCodeClear.urls.queryAllFixutreParts;
+                    var plantUid = $('#js_select_factory option:selected').val();
+                    $.post(url, { Plant_Organization_UID: plantUid, BG_Organization_UID: opTypeUid, FunPlant_Organization_UID: funcPlantUid, Is_Enable: true }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Fixture_Part').append('<option value="' + data[i].Fixture_Part_UID + '" data_Fixture_Part_UID="' + data[i].Fixture_Part_UID + '" data_Part_ID="' + data[i].Part_ID + '" data_Part_Name="' + data[i].Part_Name + '" data_Part_Spec="' + data[i].Part_Spec + '">' + data[i].Part_ID + ' ' + data[i].Part_Name + '</option>');
+                        }
+                    });
+                }
+                //刷新
+                $('#js_select_Fixture_Part').selectpicker('refresh');
+            }
+
+            //光标定位到扫码栏位
+            $("#js_Fixture_SN").focus();
+
+            //按Esc 焦点定位到SN栏位
+            document.onkeydown=function(event){
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e && e.keyCode==27){ // 按 Esc 
+                    PDMS.Utility.MessageBox.hideinfohtml();
+                    PDMS.Utility.MessageBox.hideinfo();
+                    PDMS.Utility.MessageBox.hideerror();
+                    $("#js_Fixture_SN").focus();
+                }
+            }; 
+        })
+    </script>
+}

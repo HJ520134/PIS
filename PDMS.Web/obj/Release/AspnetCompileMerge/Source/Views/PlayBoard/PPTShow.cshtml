@@ -1,0 +1,132 @@
+﻿
+<div>
+    <div id="ppt-html" hidden>
+
+    </div>
+</div>
+
+<script>
+    //默认2秒
+    PPTSHOW_PLAYTIME = 2;
+    //播放间隔常量
+    PPTSHOW_PLAYINTERVAL = -1;
+    //播放的文件名
+    PPTSHOW_PLAYFILENAME = "";
+
+    //html编码解码函数
+    var HtmlUtil = {
+        /*1.用正则表达式实现html转码*/
+        htmlEncodeByRegExp: function (str) {
+            var s = "";
+            if (str.length == 0) return "";
+            s = str.replace(/&/g, "&amp;");
+            s = s.replace(/</g, "&lt;");
+            s = s.replace(/>/g, "&gt;");
+            s = s.replace(/ /g, "&nbsp;");
+            s = s.replace(/\'/g, "&#39;");
+            s = s.replace(/\"/g, "&quot;");
+            return s;
+        },
+        /*2.用正则表达式实现html解码*/
+        htmlDecodeByRegExp: function (str) {
+            var s = "";
+            if (str.length == 0) return "";
+            s = str.replace(/&amp;/g, "&");
+            s = s.replace(/&lt;/g, "<");
+            s = s.replace(/&gt;/g, ">");
+            s = s.replace(/&nbsp;/g, " ");
+            s = s.replace(/&#39;/g, "\'");
+            s = s.replace(/&quot;/g, "\"");
+            return s;
+        }
+    };
+
+    $(function () {
+        //加载html 文件
+        function loadHtmlFile(file) {
+            //拼接html 文件名
+            var fileName = file.substring(0, file.lastIndexOf('.pptx'));
+            fileName += '.html';
+            var src = '\\PIS_M\\Upload\\PlayBoard\\PPT\\' + '@ViewBag.Play_UID' + '\\' + fileName + '?time=' + new Date().getTime();    //加time 是为了不取到缓存数据
+            //空格换成%20
+            var url = src.replace(' ','%20');
+            $("#ppt-html").load(url);
+
+            debugger;
+            //设置样式, svg 原本是 width="10in"
+            $(".slide svg").attr("width", "100%");
+        }
+
+        //----------------------初始化begin----------------------
+        var data = $.parseJSON(HtmlUtil.htmlDecodeByRegExp('@ViewBag.JsonParameter'));
+
+        PPTSHOW_PLAYTIME = parseInt(data.sheetPlayTime);
+        if (PPTSHOW_PLAYTIME <= 0) {
+            PPTSHOW_PLAYTIME = 2;
+        }
+
+        //加载html 文件
+        PPTSHOW_PLAYFILENAME = data.fileName;
+        loadHtmlFile(PPTSHOW_PLAYFILENAME);
+
+        //先显示第一个
+        var slideList = $(".slide");
+        slideShow = $(slideList[0]);
+        var slideSiblings = slideShow.siblings();
+        $(slideSiblings).hide();
+        $("#ppt-html").show();
+        //----------------------初始化end-----------------
+
+        //轮播
+        function setPlayInterval() {
+            if (PPTSHOW_PLAYINTERVAL == -1) {
+                PPTSHOW_PLAYINTERVAL = setInterval(function () {
+                    slideShow = slideShow.next();
+
+                    //最后一个播放完成，从第一个重新播放
+                    if (slideShow[0] == undefined) {
+                        loadHtmlFile(PPTSHOW_PLAYFILENAME);
+                        var slideList = $(".slide");
+                        slideShow = $(slideList[0]);
+                    }
+                    var slideSiblings = slideShow.siblings();
+                    slideSiblings.hide();
+                    slideShow.show();
+
+                    //更新PPTSHOW_PLAYTIME，当sheetPlayTime 有变化及时更新播放切换时间
+                    $.post("/PIS_M/PlayBoard/QueryPlayBoardSetting", { id: @ViewBag.SettingID }, function (data) {
+                        if (data.isSuccess) {
+                            var playInfo =$.parseJSON(HtmlUtil.htmlDecodeByRegExp(data.data.JsonParameter));
+                            var newsheetPlayTime = parseInt(playInfo.sheetPlayTime);
+                            //更新切换时间
+                            if (newsheetPlayTime != PPTSHOW_PLAYTIME) {
+                                PPTSHOW_PLAYTIME = newsheetPlayTime;
+                                if (PPTSHOW_PLAYTIME <= 0) {
+                                    PPTSHOW_PLAYTIME = 2;
+                                }
+
+                                //清空播放间隔后再次调用
+                                clearInterval(PPTSHOW_PLAYINTERVAL);
+                                PPTSHOW_PLAYINTERVAL = -1;
+                                setPlayInterval();
+                            }
+                            //更新播放的html 文件
+                            if (PPTSHOW_PLAYFILENAME != playInfo.fileName) {
+                                PPTSHOW_PLAYFILENAME = playInfo.fileName;
+                            }
+                        }
+                        else {
+                            //播放过程中不提示错误信息
+                            //PDMS.Utility.MessageBox.error(data.message);
+                        }
+                    });
+
+                }, PPTSHOW_PLAYTIME * 1000);
+
+            }
+        }
+
+        setPlayInterval();
+    });
+
+</script>

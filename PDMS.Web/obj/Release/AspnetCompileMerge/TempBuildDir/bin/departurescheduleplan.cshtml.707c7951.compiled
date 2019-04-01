@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/ProductionResourcePlan/DepartureSchedulePlan.cshtml" hash="1626a5ce" filehash="1f2f7dfa61df" flags="110000" assembly="App_Web_j2bdxmom" type="ASP._Page_Views_ProductionResourcePlan_DepartureSchedulePlan_cshtml">
+    <filedeps>
+        <filedep name="/Views/ProductionResourcePlan/DepartureSchedulePlan.cshtml" />
+    </filedeps>
+</preserve>

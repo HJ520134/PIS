@@ -1,0 +1,539 @@
+﻿@{ 
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.PleaseselectExcelfile = T("QA.PleaseselectExcelfile").Text;
+    ViewBag.Importsuccessful = T("QA.Importsuccessful").Text;
+
+}
+
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a href="~/ExcelTemplate/CurrentStuff.xlsx" class="fa fa-download btn btn-primary" target="_blank">@T("Common.TeampleDownload")</a>
+            <a class="fa fa-upload btn btn-primary" data-toggle="modal" data-target="#js_import_modal"> @T("Common.Import")</a>
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal"><i class="fa fa-search"></i> @T("Common.Search")</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_current_datatable">
+                <thead>
+                    <tr id="js_rpt_tr">
+                        <th class="table-col-action nosort">@T("Common.Edit")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.BusinessGroup")</th>
+                        <th>@T("Common.Date")</th>
+                        <th>@T("QA.Stage")</th>
+                        <th>@T("Production.OPManPower")</th>
+                        <th>@T("Production.Monitor")</th>
+                        <th>@T("Production.Technical")</th>
+                        <th>@T("Production.BindBom")</th>
+                        <th>@T("Production.ManPowOther")</th>
+                        <th>@T("Production.TotalPower")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr id="js_rpt_tr_foot">
+                        <th class="table-col-action nosort">@T("Common.Edit")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("QA.Plantarea")</th>
+                        <th>@T("QA.BusinessGroup")</th>
+                        <th>@T("Common.Date")</th>
+                        <th>@T("QA.Stage")</th>
+                        <th>@T("Production.OPManPower")</th>
+                        <th>@T("Production.Monitor")</th>
+                        <th>@T("Production.Technical")</th>
+                        <th>@T("Production.BindBom")</th>
+                        <th>@T("Production.ManPowOther")</th>
+                        <th>@T("Production.TotalPower")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_import_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Import")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        @using (Html.BeginForm("ImportStaffExcel", "PPFlowchart", FormMethod.Post, new { id = "js_form_excel_Staff" }))
+                        {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="control-label" for="js_s_input_upload">@T("QA.SelecttheExcelfile")</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="file" class="form-control" id="js_s_input_upload" name="uploadName" placeholder="@T("QA.PleaseselectEXCELfileupload")" />
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_plant">@T("QA.Functionfactory")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_plant" name="Plant_Organization_UID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> plantItem in ViewBag.Plant)
+                                        {
+                                            <option value=@plantItem.Key selected="selected">@plantItem.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_group">@T("QA.BusinessGroup")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_group" name="BG_Organization_UID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> opTypeItem in ViewBag.OPType)
+                                        {
+                                            <option value=@opTypeItem.Key selected="selected">@opTypeItem.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            @*<div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_project">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_plant" name="FunPlant_OrganizationUID" class="form-control input-sm">
+                                        @foreach (KeyValuePair<int, string> funplantItem in ViewBag.FunPlant)
+                                        {
+                                            <option value=@funplantItem.Key selected="selected">@funplantItem.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>*@
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_phase">@T("QA.Stage")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_phase" name="Product_Phase" class="form-control input-sm">
+                                        <option value='All' selected="selected">All</option>
+                                        <option value='NPI'>NPI</option>
+                                        <option value='MP' >MP</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-clear" id="js_btn_clear">@T("Common.Clear")</button>
+                    <button id="btn_search" type="button" class="btn btn-primary btn-query">@T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Edit")</h4>
+                </div>
+                @using (Html.BeginForm("EditFLDetailInfo", "ProductionPlanning", FormMethod.Post, new { id = "js_form_edit_fl" }))
+                {
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_plantname">@T("QA.Functionfactory")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" readonly id="s_input_plantname" name="PlantName" placeholder="@T("QA.Functionfactory")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_optype">@T("QA.BusinessGroup")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" readonly id="s_input_optype" name="BG_Organization_UID" placeholder="@T("QA.BusinessGroup")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Product_Phase">@T("QA.Stage")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_Product_Phase" name="Product_Phase" placeholder="@T("QA.Stage")">
+                            </div>
+                        </div>
+                        @*<div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_FuncPlant">功能厂</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm" readonly id="s_input_FuncPlant" name="FuncPlant" placeholder="功能厂">
+                            </div>
+                        </div>*@
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_OP_Qty">@T("Production.OPManPower")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_OP_Qty" name="OP_Qty" data-rule-number="true" data-msg-number="@T("Production.InputOPManPower")"  placeholder="@T("Production.OPManPower")"
+                                           required data-msg-required="@T("Production.InputOPManPower")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Monitor_Staff_Qty">@T("Production.Monitor")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Monitor_Staff_Qty" name="Monitor_Staff_Qty" data-rule-number="true" data-msg-number="@T("Production.InputMonitorNum")"  placeholder="@T("Production.Monitor")"
+                                           required data-msg-required="@T("Production.InputMonitorNum")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Technical_Staff_Qty">@T("Production.Technical")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Technical_Staff_Qty" name="Technical_Staff_Qty" data-rule-number="true" data-msg-number="@T("Production.InputTechnical")"  placeholder="@T("Production.Technical")"
+                                           required data-msg-required="@T("Production.InputTechnical")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Material_Keeper_Qty">@T("Production.BindBom")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Material_Keeper_Qty" name="Material_Keeper_Qty" data-rule-number="true" data-msg-number="@T("Production.InputBindBom")"  placeholder="@T("Production.BindBom")"
+                                           required data-msg-required="@T("Production.InputBindBom")">
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label class="col-sm-5 control-label" for="s_input_Others_Qty">@T("Production.ManPowOther")</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control input-sm required" id="s_input_Others_Qty" name="Others_Qty" data-rule-number="true" data-msg-number="@T("Production.InputManPowOther")"  placeholder="@T("Production.ManPowOther")"
+                                           required data-msg-required="@T("Production.InputManPowOther")">
+                            </div>
+                        </div>
+                        <input type="hidden" id="Current_Staff_UID" name="Current_Staff_UID"/>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn_save_edit"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <input type="hidden" id="NPIUID" name="Production_Schedul_NPI_UID" />
+                    <!--jquery validata error container-->
+                <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                }
+            </div>
+        </div>
+
+    </div>
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var CurrentStuff = (function () {
+                var urls = {
+                    querySTUFFS: '@Html.Raw(Url.Action("CurrentStaffInfo", "PPFlowchart"))',
+                    backFL: '@Url.Action("ProductionPlanningList", "PPFlowchart")',
+                    CheckDownloadNPIExcel: '@Html.Raw(Url.Action("CheckDownloadNPIExcel", "PPFlowchart",  new { id= ViewBag.ID, Version= ViewBag.Version}))',
+                    CheckUploadUrl: '@Html.Raw(Url.Action("CheckUploadNPI", "PPFlowchart",  new { id= ViewBag.ID, Version= ViewBag.Version }))',
+                    SaveStaffInfo: '@Html.Raw(Url.Action("SaveStaffInfo", "PPFlowchart"))'
+                };
+
+                var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+
+                        var hidPlantName = '<input type="hidden" id=hidPlantName value=' + rowData.PlantName + '>';
+                        var hidOptype = '<input type="hidden" id=hidOptype value=' + rowData.Optype + '>';
+                        var hidProduct_Phase = '<input type="hidden" id=hidProduct_Phase value=' + rowData.Product_Phase + '>';
+                        var hidFunPlant = '<input type="hidden" id=hidFunPlant value=' + rowData.FunPlant + '>';
+                        var hidOP_Qty = '<input type="hidden" id=hidOP_Qty value=' + rowData.OP_Qty + '>';
+                        var hidMonitor_Staff_Qty = '<input type="hidden" id=hidMonitor_Staff_Qty value=' + rowData.Monitor_Staff_Qty + '>';
+                        var hidTechnical_Staff_Qty = '<input type="hidden" id=hidTechnical_Staff_Qty value=' + rowData.Technical_Staff_Qty + '>';
+                        var hidMaterial_Keeper_Qty = '<input type="hidden" id=hidMaterial_Keeper_Qty value=' + rowData.Material_Keeper_Qty + '>';
+                        var hidOthers_Qty = '<input type="hidden" id=hidOthers_Qty value=' + rowData.Others_Qty + '>';
+                        var hidCurrent_Staff_UID = '<input type="hidden" id=hidCurrent_Staff_UID value=' + rowData.Current_Staff_UID + '>';
+
+
+                        var buttonEdit = '<button type="button" class="btn btn-default btn-sm" data-id="' + rowData.Production_Schedul_NPI_UID + '">@ViewBag.Edit</button>';
+                        var result = '<button type="button" class="btn btn-default" rel="action-popover">' +
+                            '<i class="fa fa-reorder"></i>' +
+                            '</button>' +
+                            '<div class="hidden popover-content">';
+                        result = hidPlantName + hidOptype + hidProduct_Phase + hidFunPlant +hidOP_Qty + hidMonitor_Staff_Qty + hidTechnical_Staff_Qty + hidMaterial_Keeper_Qty + hidOthers_Qty + hidCurrent_Staff_UID  + buttonEdit;
+                        $(td).html(result);
+
+                    },
+                    className: "text-center js-grid-edit"
+                },{
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    data: "PlantName",
+                    className: "min-col-xs"
+                }, {
+                    data: "Optype",
+                    className: "min-col-xs"
+                },{
+                    data: "ProductDate",
+                    className: "min-col-xs"
+                },{
+                    data: "Product_Phase",
+                    className: "min-col-xs"
+                }, {
+                    data: "OP_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Monitor_Staff_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Technical_Staff_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Material_Keeper_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Others_Qty",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = rowData.OP_Qty + rowData.Monitor_Staff_Qty + rowData.Technical_Staff_Qty + rowData.Others_Qty;
+                        $(td).html(result);
+
+                    },
+                    className: "min-col-xs text-right"
+                }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryStuff = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_current_datatable",
+                        remoteUrl: urls.querySTUFFS,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    //$('table thead tr').find('th').removeClass('text-right');
+                    $('#js_rpt_tr tr').removeClass('text-right');
+                    $('#js_rpt_tr_foot tr').removeClass('text-right');
+
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        _queryStuff(true);
+                    },
+                    QueryStuffs: function () {
+                        _queryStuff(false);
+                    }
+                }
+
+            })();
+
+            CurrentStuff.Init();
+
+            $('#js_form_edit_fl').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+
+            $('#js_btn_clear').click(function () {
+                //如果没有特殊项的Clear，直接调用Clear方法
+                //PDMS.Utility.Criteria.Clear();
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+
+            $('#btn_search').click(function () {
+                $('#js_search_modal').modal('hide');
+                CurrentStuff.QueryStuffs();
+            });
+
+            //#region Excel导入所有事件
+            $('#btn_import_fl').on('click', function () {
+                $('#js_import_modal').modal('hide');
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                $('#js_form_excel_Staff').ajaxSubmit({
+                        beforeSubmit: function () {
+                        var input1 = $('#js_s_input_upload').val();
+
+                        if (input1 == '') {
+                            PDMS.Utility.MessageBox.info('@ViewBag.PleaseselectExcelfile');
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data, function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info('@ViewBag.Importsuccessful', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+            //#endregion
+
+            $('body').on("click", ".js-grid-edit", function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr).data();
+                $('#js_edit_modal').modal('show');
+                
+                $('#s_input_plantname').val($(this).find("#hidPlantName").val());
+                $('#s_input_optype').val($(this).find("#hidOptype").val());
+                $('#s_input_Product_Phase').val($(this).find("#hidProduct_Phase").val());
+                $('#s_input_FuncPlant').val($(this).find("#hidFunPlant").val());
+                $('#s_input_OP_Qty').val($(this).find("#hidOP_Qty").val());
+                $('#s_input_Monitor_Staff_Qty').val($(this).find("#hidMonitor_Staff_Qty").val());
+                $('#s_input_Technical_Staff_Qty').val($(this).find("#hidTechnical_Staff_Qty").val());
+                $('#s_input_Material_Keeper_Qty').val($(this).find("#hidMaterial_Keeper_Qty").val());
+                $('#s_input_Others_Qty').val($(this).find("#hidOthers_Qty").val());
+
+                $('#Current_Staff_UID').val($(this).find("#hidCurrent_Staff_UID").val());
+
+            });
+
+
+            //#region 保存单笔修改的信息
+            $('#btn_save_edit').on('click', function () {
+                this.form.action = CurrentStuff.urls.SaveStaffInfo;
+                $('#js_form_edit_fl').submit();
+            });
+
+            //#endregion 保存单笔修改的信息
+
+            //厂区下拉框改变事件
+            $("#js_s_input_plant").change(function ff() {
+                ClearDropDownListValue('js_s_input_plant');
+                GetOpTypes();
+            });
+
+            //获取OpTypes
+            var GetOpTypes = function () {
+                var opTypeCount = 0;
+                $("#js_s_input_group").empty();
+                var temp = $("#js_s_input_plant").val();
+                var url = '../ProductionPlanningReport/GetOpTypesByPlantName';
+                $.ajax({
+                    url: url,
+                    async: false,
+                    data: { "PlantName": temp },
+                    success: function (data) {
+                        if (data != "") {
+                            opTypeCount = data.length;
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(i)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_group"));
+                            });
+                        }
+                    }
+                });
+                //如果Project列表不为0，则继续加载下级联动
+                if (opTypeCount > 0) {
+                    //GetProductPhase();
+                }
+            }
+
+            //清空联动下拉框的值
+            function ClearDropDownListValue(value) {
+                switch (value) {
+                    case 'js_s_input_plant':
+                        //清空OpType的值
+                        $("#js_s_input_group").empty();
+                        $("#js_s_input_group").val('');
+                        break;
+                }
+            }
+
+
+
+            //隐藏modal框时清空值
+            $('#js_import_modal').on('hidden.bs.modal', function (e) {
+                $('#js_import_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+        });
+
+
+
+    </script>
+
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/StorageManage/StorageReport.cshtml" hash="1626a5ce" filehash="ffffd04977eba8f1" flags="110000" assembly="App_Web_bjhcpu22" type="ASP._Page_Views_StorageManage_StorageReport_cshtml">
+    <filedeps>
+        <filedep name="/Views/StorageManage/StorageReport.cshtml" />
+    </filedeps>
+</preserve>

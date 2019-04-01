@@ -1,0 +1,326 @@
+﻿@model PDMS.Model.ViewModels.WorkStationVM
+<!-- Main content -->
+
+
+
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-4">
+            @*<button type="button" class="fa fa-upload btn btn-primary" id="excel_input_btn">@T("QA.Importtheupdate")</button>*@
+            <a href="~/ExcelTemplate/WorkStation.xlsx" class="fa fa-download btn btn-primary" target="_blank"> 模板下载</a>
+            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl"> 上传</button>
+            <a id="bt_search" class="fa fa-search btn btn-primary" role="button" data-toggle="modal" data-target="#js_search_modal"> @T("Common.Search")</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_WorkStation"> @T("Common.AddNew")</a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> @T("Common.Export")</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+ 
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_WorkStation_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>工站代码</th>
+                        <th>工站名称</th>
+                        <th>工站描述</th>
+                        <th>专案</th>
+                        <th>制程</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>工站代码</th>
+                        <th>工站名称</th>
+                        <th>工站描述</th>
+                        <th>专案</th>
+                        <th>制程</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+@section ViewModals{
+  <div class="container-fluid">
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <label class="titlewhite"><strong>Customer:</strong></label>
+            <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                @foreach (var item in Model.Plants)
+                {
+                    <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                }
+            </select>
+
+        </div>
+        <div class="form-group">
+            <label class="titlewhite"><strong>OP类型:</strong></label>
+            <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+        </div>
+        <div class="form-group">
+            <label class="titlewhite"><strong>Line:</strong></label>
+            <select id="lineName" class="btn btn-default"></select>
+        </div>
+        <div class='form-group'>
+            <label class="titlewhite"><strong>Date:</strong></label>
+            <div class='input-group date' id='datetimepicker'>
+                <input type='text' class="form-control" id="outputDate" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label class="titlewhite"><strong>Shift:</strong></label>
+            <select id="shiftIndex" class="btn btn-default">
+                <option value="0">DayShift</option>
+                <option value="1">NightShift</option>
+            </select>
+        </div>
+        <div class='form-group'>
+            <input type="button" value="Search" id="btnSearch" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div class="col-md-12 col-sm-12" id="maindv">
+        <div class="panel">
+            <div class="panel-body panelbg">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-bordered" id="mainTbl"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    }
+
+@section ViewScripts{
+<style type="text/css">
+    #maindv {
+        margin-top: 30px;
+    }
+
+    #mainTbl tr td:first-child {
+        font-weight: bolder;
+    }
+
+    thead tr td {
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    #theadtr td {
+        background-color: #4F5D6C;
+    }
+
+    .output {
+        font-weight: bold;
+    }
+</style>
+<script type="text/javascript">
+    var customerId;
+    var lineId;
+    var outputDate;
+    var shiftIndex;
+    var itvId;
+    var shiftHour;
+    var $nodateinfo = $('<table class="table table-bordered table-hover table-striped"><tr><td class="danger"><em>This Line is not producing or there is not model info of IEDB.</em></td></tr></table>');
+
+    //set date plug-in
+    $(function () {
+
+        var WorkStationMaintenance = (function () {
+            var needBuildCriteria = false;
+            var urls =
+                {
+                   
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                 
+                };});
+        //Initial Date
+        $('#datetimepicker').datetimepicker({
+            defaultDate: new Date(),
+            format: 'YYYY-MM-DD',
+        });
+        GetOPTypes();
+
+        function GetOPTypes() {
+            var oporgid = $('#js_select_factory_query option:selected').val();
+            url = WorkStationMaintenance.urls.getCurrentOPType;
+            $('#js_select_optype_query').empty();
+            $('#js_select_optype_query').html('<option></option>');
+
+            $('#js_select_funplant_query').empty();
+            $('#js_select_funplant_query').html('<option></option>');
+            if (oporgid != 0) {
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            $('#js_select_optype_query').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+        }
+        //load lineName
+        loadLineName();
+
+        //set lineName
+        $('#customerName').change(function () {
+            getShiftHour($('#shiftIndex').val());
+            loadLineName();
+        });
+
+        //load line name by customerinfo
+        function loadLineName() {
+            var cid = $('#customerName').val();
+            getShiftHour($('#shiftIndex').val());
+            $.ajax({
+                url: '@Url.Content("~/Report/GetLine")',
+                type: 'POST',
+                data: { 'customerId': cid },
+                dataType: 'json',
+                success: function (result) {
+                    $('#lineName').html('');
+                    var strLineName = '';
+                    $.each(result, function (key, value) {
+                        strLineName += '<option value="' + value.ID + '">' + value.LineName + '</option>';
+                    });
+                    $('#lineName').html(strLineName);
+                    //load station hour info
+                    showStationHour();
+                    itvId = setInterval(function () {
+                        showStationHour();
+                    }, 60000);
+                },
+                error: function () {
+                    $('#lineName').html('');
+                }
+            });
+        }
+
+        function getShiftHour(shiftIndex){
+            $.ajax({
+                url: '@Url.Content("~/Customer/GetShiftTime")',
+                type: 'get',
+                data: { 'shiftIndex': shiftIndex },
+                success: function (result) {
+                    shiftHour = JSON.parse(result);
+                }
+            });
+        };
+
+        //search station hour info
+        $('#btnSearch').click(function () {
+            clearInterval(itvId);
+            getShiftHour($('#shiftIndex').val());
+            showStationHour();
+            itvId = setInterval(function () {
+                getShiftHour($('#shiftIndex').val());
+                showStationHour();
+            }, 60000);
+        });
+
+        //show station hour info
+        function showStationHour() {
+            customerId = $('#customerName').val();
+            lineId = $('#lineName').val();
+            outputDate = $('#outputDate').val();
+            shiftIndex = $('#shiftIndex').val();
+            $.ajax({
+                url: '@Url.Content("~/Report/GetStationHourInfo")',
+                type: 'POST',
+                data: { 'customerId': customerId, 'lineId': lineId, 'outputDate': outputDate, 'shiftIndex': shiftIndex },
+                dataType: 'json',
+                success: function (result) {
+                    // clear mainTbl
+                    $('#mainTbl *').remove();
+                    $nodateinfo.remove();
+                    if (result.length == 0) {
+                        $nodateinfo.appendTo($('form'));
+                    }
+                    shiftIndex = $('#shiftIndex').val();
+                    $.each(result, function (key, value) {
+                        // set thead
+                        if ($('#mainTbl>thead').length <= 0) {
+                            var $theadShiftHour = $('<thead><tr id="theadtr"><td>#</td><td>Output</td></tr></thead>');
+                            $theadShiftHour.appendTo('#mainTbl');
+                            $.each(shiftHour, function (key, value) {
+                                $('<td>' + value + '</td>').appendTo('#theadtr');
+                            });
+                        }
+                        //set tbody
+                        if (($('#mainTbl td').text()).indexOf(value.Process) == -1) {
+                            $('<tr id="' + value.Process + '"><td>' + value.Process + '</td><td id="' + value.Process + '_output" class="output">0</td></tr>').appendTo('#mainTbl');
+                            for (var i = 1; i <= 12; i++) {
+                                $('<td id="tdHourOutput' + i + '"></td>').appendTo('#' + value.Process + '');
+                            }
+                        }
+                        //show station output
+                        var $stationoutput = $('#' + value.Process + ' #tdHourOutput' + (value.HourIndex <= 12 ? value.HourIndex : value.HourIndex - 12));
+                        if ($stationoutput.html()) {
+                            $stationoutput.html(($stationoutput.html() == '' ? $stationoutput.html() : $stationoutput.html() + '</br>') + '<strong><em>'
+                                + value.ActualOutput + '</em></strong><br><small>' + value.AssemblyNumber + '</small>').css('backgroundColor', '#3792d3');
+                        } else {
+                            $stationoutput.html('<strong><em>' + value.ActualOutput + '</em></strong><br><small>' + value.AssemblyNumber + '</small>');
+                        }
+                        // calculate output
+                        $('#' + value.Process + '_output').html(parseInt($('#' + value.Process + '_output').text()) + value.ActualOutput);
+                    });
+                },
+                error: function () {
+                    $('#mainTbl *').remove();
+                    $nodateinfo.appendTo($('form'));
+                }
+            });
+        }
+    });
+</script>
+
+}

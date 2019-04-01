@@ -1,0 +1,14 @@
+﻿
+<div style="text-align: center;">
+        <img id="js-picture-img" style="margin: 0 auto;max-width:100%; max-height:100%" alt="未设置播放图片" />
+</div>
+
+<script>
+    debugger;
+    $(function () {
+        var imgsrc = '@ViewBag.JsonParameter';
+        if (imgsrc != '') {
+            $("#js-picture-img").attr("src", "/PIS_M/Upload/PlayBoard/Picture/@ViewBag.Play_UID/@ViewBag.JsonParameter");
+        }
+    });
+</script>

@@ -1,0 +1,145 @@
+﻿<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_bu">
+                <i class="fa fa-plus"></i> @T("Common.AddNew")
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_language_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Common.Seq")</th>
+                        <th>@T("Common.Name")</th>
+                        <th>@T("System.Language.LanguageCulture")</th>
+                        <th>@T("Common.Published")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Common.Seq")</th>
+                        <th>@T("Common.Name")</th>
+                        <th>@T("System.Language.LanguageCulture")</th>
+                        <th>@T("Common.Published")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var LanguageMaintenance = (function () {
+                var urls = {
+                    LanguagesInfo: '@Url.Action("LanguagesInfo", "Settings")',
+                    QueryLanguage: '@Url.Action("QueryLanguage", "Settings")',
+                    AddLanguage: '@Url.Action("AddLanguageAPI", "Settings")',
+                };
+
+                var columns = [{
+                    data: null,
+                    createdCell: function (td, cellData, rowData, row, col) {
+
+                        var hidLanguage_UID = '<input type="hidden" id=hidLanguage_UID value=' + rowData.System_Language_UID + '>';
+                        var href = '<a href=LocaleStringResourceMaintenance?System_Language_UID=' + rowData.System_Language_UID + ' class="btn btn-default btn-sm">编辑</a>'
+                        var buttonEdit = '<button type="button" class="btn btn-default btn-sm" data-id="' + rowData.Production_Schedul_NPI_UID + '">编辑</button>';
+                        var result = '<button type="button" class="btn btn-default" rel="action-popover">' +
+                            '<i class="fa fa-reorder"></i>' +
+                            '</button>' +
+                            '<div class="hidden popover-content">';
+                        result = hidLanguage_UID + buttonEdit;
+                        $(td).html(href);
+
+                    },
+                    className: "js-grid-edit"
+                }, {
+                    data: "DisplayOrder",
+                    className: "min-col-xs"
+                }, {
+                    data: "Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "LanguageCulture",
+                    className: "min-col-xs"
+                }, {
+                    data: "Enable_Flag",
+                    render: function (data, type, row) {
+                        if (data) {
+                            return '启用';
+                        }
+                        else {
+                            return '禁用';
+                        }
+                    },
+                    className: "min-col-xs"
+                }];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryLanguages = function (firstLoad) {
+
+                    $.post(urls.LanguagesInfo, function (data) {
+                        var dt = $('#js_language_datatable').DataTable({
+                            "destroy": true,
+                            scrollX: true,
+                            data: data,
+                            "columns": columns,
+                            columnDefs: [{
+                                orderable: false,
+                                targets: [0],
+                            }]
+                        });
+                    });
+
+                    //var chk_value = [];
+                    //table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                }
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryLanguages(true);
+                    }
+
+                }
+            })();
+            LanguageMaintenance.Init();
+
+
+
+        });
+
+    </script>
+
+}

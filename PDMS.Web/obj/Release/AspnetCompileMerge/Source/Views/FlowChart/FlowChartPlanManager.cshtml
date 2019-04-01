@@ -1,0 +1,848 @@
+﻿@{
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.Successfullymodified = T("QA.Successfullymodified").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.Planmaintenance = T("QA.Planmaintenance").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+    ViewBag.JustInputPercent = T("Production.JustInputPercent").Text;
+}
+<!-- Main content -->
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+
+        <div class="col-md-9">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div> 
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>@T("QA.Planmaintenance") <span id="js_input_date"></span></h4>
+            @using (Html.BeginForm("ImportExcel", "FlowChart", FormMethod.Post, new { id = "js_form_excel_add" }))
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class=" pull-left">
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_fl">@T("Common.TeampleDownload")</button>
+                            <button type="button" class="fa fa-download btn btn-primary" id="js_btn_download_currentWK">@T("QA.Templatedownloadweek")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_fl">@T("QA.Uploadplan")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_import_currentWK">@T("QA.Uploadplanweek")</button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class=" pull-right">
+                            <button type="button" class="fa fa-search btn btn-primary" id="js_btn_searchthisWorkPlan">@T("QA.Viewthisweekplan")</button>
+                            <button type="button" class="fa fa-search btn btn-primary" id="js_btn_searchNextWorkPlan">@T("QA.Viewnextweekplan")</button>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            <br/>
+        </div>
+    </div>
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        @using (Html.BeginForm("DataTableExec", "FlowChart", FormMethod.Post, new { id = "js_form_datatable_exec" }))
+        {
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_Plan_datatable">
+                    <thead>
+                        <tr>
+                            <th class="table-col-action nosort">@T("Common.Action")</th>
+                        
+                            <th>@T("Production.Process_Seq")</th>
+                            <th>@T("QA.Process")</th>
+                            <th>@T("QA.Colour")</th>
+                            <th>场地</th>
+                            <th>@T("QA.Monday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Monday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Monday")<br />合理WIP</th>
+                            <th>@T("QA.Tuesday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Tuesday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Tuesday")<br />合理WIP</th>
+                            <th>@T("QA.Wednesday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Wednesday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Wednesday")<br />合理WIP</th>
+                            <th>@T("QA.Thursday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Thursday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Thursday")<br />合理WIP</th>
+                            <th>@T("QA.Friday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Friday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Friday")<br />合理WIP</th>
+                            <th>@T("QA.Saturday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Saturday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Saturday")<br />合理WIP</th>
+                            <th>@T("QA.Sunday")<br />@T("FlowChart.ProdPlan")</th>
+                            <th>@T("QA.Sunday")<br />@T("Production.TargetYield")</th>
+                            <th>@T("QA.Sunday")<br />合理WIP</th>
+                        </tr>
+                    </thead>
+                  
+                </table>
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+        }
+    </div><!-- / 內容 表格列 -->
+
+
+</section><!-- /.content -->
+<!-- /.content -->
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">生产计划数据编辑</h4>
+                </div>
+                @using (Html.BeginForm("EditFLDetailInfo", "FlowChart", FormMethod.Post, new { id = "js_form_edit_fl" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" id="Detail_UID" name="Detail_UID" />
+                            <input type="hidden" id="date" name="date"/>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Process">@T("QA.Process")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" class="form-control input-sm required" id="Process" name="Process">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Process_seq">@T("Production.Process_Seq")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" class="form-control input-sm required" id="Process_seq" name="Process_seq" placeholder="@T("Production.Process_Seq")"
+                                           required data-msg-required="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="color">@T("QA.Colour")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" class="form-control input-sm" id="color" name="Color" placeholder="@T("QA.Colour")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_place">场地</label>
+                                <div class="col-sm-7">
+                                    <input type="text" disabled="disabled" class="form-control input-sm" id="s_input_place" name="Place" placeholder="位置">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="MondayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Monday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="MondayProduct_Plan" name="MondayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="MondayTarget_Yield">@T("Production.TargetYield")@T("QA.Monday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="MondayTarget_Yield" name="MondayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                                <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_MondayTarget_WIP">合理WIP @T("QA.Monday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_MondayTarget_WIP" name="MondayProper_WIP"  >
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="TuesdayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Tuesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="TuesdayProduct_Plan" name="TuesdayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="TuesdayTarget_Yield">@T("Production.TargetYield")@T("QA.Tuesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="TuesdayTarget_Yield" name="TuesdayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Tuesday_WIP">合理WIP @T("QA.Tuesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Tuesday_WIP" name="TuesdayProper_WIP">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="WednesdayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Wednesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="WednesdayProduct_Plan" name="WednesdayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="WednesdayTarget_Yield">@T("Production.TargetYield")@T("QA.Wednesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="WednesdayTarget_Yield" name="WednesdayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Wednesday_WIP">合理WIP @T("QA.Wednesday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Wednesday_WIP" name="WednesdayProper_WIP">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="ThursdayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Thursday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="ThursdayProduct_Plan" name="ThursdayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="ThursdayTarget_Yield">@T("Production.TargetYield")@T("QA.Thursday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="ThursdayTarget_Yield" name="ThursdayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>   
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Thursday_WIP">合理WIP @T("QA.Thursday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Thursday_WIP" name="ThursdayProper_WIP">
+                                </div>
+                            </div>
+                                
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="FridayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Friday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="FridayProduct_Plan" name="FridayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="FridayTarget_Yield">@T("Production.TargetYield")@T("QA.Friday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="FridayTarget_Yield" name="FridayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Friday_WIP">合理WIP @T("QA.Friday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Friday_WIP" name="FridayProper_WIP">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="SaterdayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Saturday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="SaterdayProduct_Plan" name="SaterdayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="SaterdayTarget_Yield">@T("Production.TargetYield")@T("QA.Saturday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="SaterdayTarget_Yield" name="SaterdayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Saterday_WIP">合理WIP @T("QA.Saturday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Saterday_WIP" name="SaterdayProper_WIP">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="SundayProduct_Plan">@T("FlowChart.ProdPlan")@T("QA.Sunday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="SundayProduct_Plan" name="SundayProduct_Plan" placeholder="@T("FlowChart.ProdPlan")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Inputplan")"
+                                           data-rule-digits="true" data-msg-digits="">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="SundayTarget_Yield">@T("Production.TargetYield")@T("QA.Sunday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="SundayTarget_Yield" name="SundayTarget_Yield" placeholder="@T("Production.TargetYield")"
+                                           data-rule-required="true" data-msg-required="@T("FlowChart.Yield")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                                <label class="col-sm-7 control-label" for="s_input_Sunday_WIP">合理WIP @T("QA.Sunday")</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-sm" id="s_input_Sunday_WIP" name="SundayProper_WIP">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-sm-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-default btn-sm" data-dismiss="modal" id="btn_save_edit"><i class="fa fa-times"></i>@T("QA.Submit")</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!--jquery validata error container-->
+                        <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                }
+            </div>
+        </div>
+
+    </div>
+}
+
+<!--更新Excel Start-->
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@T("QA.Uploadplanandtargetyield")</h4>
+            </div>
+            @using (Html.BeginForm("ImportPlanExcel", "FlowChart", FormMethod.Post, new { enctype = "multipart/form-data", id ="js_form_excel_update"  }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">@T("FlowChart.SelectDoc")</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="@T("FlowChart.SelectDoc")"
+                                   required data-msg-required="@T("FlowChart.SelectExcel")!" />
+                        </div>
+                    </div>
+                    <input type="hidden" id="hid_key" name="FlowChart_Master_UID" value=@ViewBag.MasterUID />
+                    <input type="hidden" id="hid_currentOrNextWeek" name="hid_currentOrNextWeek"/>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-upload btn btn-primary" id="js_btn_clear_Update">@T("Common.Cancel")</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_excel_update">@T("QA.Submit")</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--更新Excel End-->
+
+@section ViewScripts{
+  <script type="text/javascript">
+      $(function () {
+          var _getDate=function(SearchThisWeek){
+              var url = FlowChartPlan.urls.GetDateTime;
+              $.post(url,{IsThisWork:SearchThisWeek}, function (data)
+              {
+                  document.getElementById('js_input_date').innerHTML=data;
+              });
+
+          }
+          var FlowChartPlan = (function () {
+              var urls = {
+                  SearchPlanData: '@Url.Action("QueryProcessMGData", "FlowChart")',
+                  QueryProcessMGDataSingle: '@Url.Action("QueryProcessMGDataSingle", "FlowChart")',
+                  ModifyProcessMGData:'@Url.Action("ModifyProcessMGData", "FlowChart")',
+                  backFL: '@Url.Action("FlowChartList", "FlowChart")',
+                  GetDateTime:'@Url.Action("GetDateTime", "FlowChart")',
+              };
+
+              var contentDatatable = null;
+              //region
+              var columns = [
+                  {
+                      data:null,
+                      createdCell: function (td, cellData, rowData, row, col) {
+                          var buttonEdit = '<button type="button" class="btn btn-default btn-sm js-grid-edit" data-id="' + rowData.Detail_UID + '">@ViewBag.Edit</button>';
+                          $(td).html(buttonEdit);
+                      },
+                      className: ""
+                  },
+               
+                  {
+                      data: "Process_seq",
+                      className: "min-col-xs "
+                  }, {
+                      data: "Process",
+                      className: "min-col-xs "
+                  }, {
+                      data: "Color",
+                      className: "min-col-xs "
+                  },{
+                      data: "Place",
+                      className: "min-col-xs "
+                  },{
+                      data: "MondayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "MondayTarget_Yield",
+                      className: "min-col-xs ",
+                  }, 
+                   {
+                       data: "MondayProper_WIP",
+                       className: "min-col-xs ",
+                   }, 
+                  {
+                      data: "TuesdayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "TuesdayTarget_Yield",
+                      className: "min-col-xs ",
+                  }, 
+                   {
+                       data: "TuesdayProper_WIP",
+                       className: "min-col-xs ",
+                   }, 
+                  
+                  {
+                      data: "WednesdayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, {
+                      data: "WednesdayTarget_Yield",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "WednesdayProper_WIP",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "ThursdayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, {
+                      data: "ThursdayTarget_Yield",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "ThursdayProper_WIP",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "FridayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, {
+                      data: "FridayTarget_Yield",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "FridayProper_WIP",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "SaterdayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, {
+                      data: "SaterdayTarget_Yield",
+                      className: "min-col-xs ",
+                  },
+                  {
+                      data: "SaterdayProper_WIP",
+                      className: "min-col-xs ",
+                  }, 
+                  {
+                      data: "SundayProduct_Plan",
+                      className: "min-col-xs ",
+                  }, {
+                      data: "SundayTarget_Yield",
+                      className: "min-col-xs ",
+                  },
+              {
+                  data: "SundayProper_WIP",
+                  className: "min-col-xs ",
+                  }
+              ];
+
+              //endregion
+              var _getParams = function (SearchThisWeek) {
+                  return { MasterUID: @ViewBag.MasterUId, IsThisWork: SearchThisWeek };
+              };
+
+              var _queryFLS = function (SearchThisWeek) {
+
+                  var config1 = {
+                      pageId: "#page",
+                      tableId: "#js_Plan_datatable",
+                      remoteUrl: urls.SearchPlanData,
+                      searchParams: _getParams(SearchThisWeek),
+                      tableOptions: {
+                          scrollX: true,
+                          autoWidth: true,
+                          ordering: false,
+                          columns: columns
+                      }
+                  };
+
+                  var config2 = {
+                      pageId: "#page",
+                      tableId: "#js_Plan_datatable",
+                      remoteUrl: urls.SearchPlanData,
+                      searchParams: _getParams(SearchThisWeek),
+                      tableOptions: {
+                          scrollX: true,
+                          autoWidth: true,
+                          ordering: false,
+                          columns: columns
+                      }
+                  };
+
+                  if(SearchThisWeek)
+                  {
+                      PDMS.Utility.Pages.Set(config1);
+                  }
+                  else
+                  {
+                      PDMS.Utility.Pages.Set(config2);
+                  }
+              };
+
+              var SetTitle=function()
+              {
+                  var title = '@ViewBag.CustomerName' + ' ' + '@ViewBag.ProjectName' + ' ' + '@ViewBag.PartTypes' + ' ' + '@ViewBag.ProductPhase' + '@ViewBag.Planmaintenance'
+                  $('#lblTitle').text(title);
+              };
+
+              return {
+                  urls: urls,
+                  Init: function () {
+                      $('#page').page('destroy');
+
+                      _getDate(true);
+
+                      var uiNextBtn =document.getElementById("js_btn_searchNextWorkPlan");
+                      uiNextBtn.disabled=false;
+
+                      var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+                      uiThisBtn.disabled=true;
+
+                      _queryFLS(true);
+                      SetTitle();
+                  },
+                  QueryFlowChartNextPlan: function () {
+
+                      $('#page').page('destroy');
+
+                      _getDate(false);
+
+                      var uiNextBtn =document.getElementById("js_btn_searchNextWorkPlan");
+                      uiNextBtn.disabled=true;
+
+                      var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+                      uiThisBtn.disabled=false;
+
+                      _queryFLS(false);
+                      SetTitle();
+                  },
+                  GetDataTables: function () {
+                      if (contentDatatable == null) {
+                          contentDatatable = $('#js_Plan_datatable').DataTable({
+                              paging: false,
+                              searching: false,
+                              ordering: false,
+                              retrieve: true,
+                              columns: columns,
+                          });
+                      }
+                      return contentDatatable;
+                  }
+              }
+          })();
+
+          FlowChartPlan.Init();
+
+          $('#btn_back').on('click', function () {
+              var url = FlowChartPlan.urls.backFL;
+              window.location.href = url;
+          });
+
+          jQuery.validator.addMethod("percent", function (value, element) {
+              var reg = /^((\d+\.?\d*)|(\d*\.\d+))\%$/;
+              var result = reg.test(value);
+              return result;
+          }, "@ViewBag.JustInputPercent");
+
+
+          $('#js_btn_searchthisWorkPlan').on('click',function()
+          {
+              FlowChartPlan.Init();
+          });
+          $('#js_btn_searchNextWorkPlan').on('click',function()
+          {
+              FlowChartPlan.QueryFlowChartNextPlan();
+          });
+
+
+          //#region  div弹出编辑画面
+
+          //#region 点击DataTable弹出div并加载信息
+          $('body').on('click', '.js-grid-edit', function () {
+
+              var Detail_UID = $(this).attr('data-id');
+              $('#Detail_UID').val(Detail_UID);
+
+              var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+
+              $.get(FlowChartPlan.urls.QueryProcessMGDataSingle, { detailUID: Detail_UID,IsThisWork:uiThisBtn.disabled }, function (data) {
+                  $('#Process').val(data.Process);
+                  $('#date').val(data.date);
+                  $('#Process_seq').val(data.Process_seq);
+                  $('#color').val(data.Color);
+                  $('#s_input_place').val(data.Place);
+
+                  $('#MondayProduct_Plan').val(data.MondayProduct_Plan==null?0:data.MondayProduct_Plan);
+                  $('#MondayTarget_Yield').val(data.MondayTarget_Yield==null?0:data.MondayTarget_Yield);
+                  $('#s_input_MondayTarget_WIP').val(data.MondayProper_WIP==null?0:data.MondayProper_WIP);
+
+                  $('#TuesdayProduct_Plan').val(data.TuesdayProduct_Plan==null?0:data.TuesdayProduct_Plan);
+                  $('#TuesdayTarget_Yield').val(data.TuesdayTarget_Yield==null?0:data.TuesdayTarget_Yield);
+                  $('#s_input_Tuesday_WIP').val(data.TuesdayProper_WIP==null?0:data.TuesdayProper_WIP);
+
+                  $('#WednesdayProduct_Plan').val(data.WednesdayProduct_Plan==null?0:data.WednesdayProduct_Plan);
+                  $('#WednesdayTarget_Yield').val(data.WednesdayTarget_Yield==null?0:data.WednesdayTarget_Yield);
+                  $('#s_input_Wednesday_WIP').val(data.WednesdayProper_WIP==null?0:data.WednesdayProper_WIP);
+
+                  $('#ThursdayProduct_Plan').val(data.ThursdayProduct_Plan==null?0:data.ThursdayProduct_Plan);
+                  $('#ThursdayTarget_Yield').val(data.ThursdayTarget_Yield==null?0:data.ThursdayTarget_Yield);
+                  $('#s_input_Thursday_WIP').val(data.ThursdayProper_WIP==null?0:data.ThursdayProper_WIP);
+
+                  $('#FridayProduct_Plan').val(data.FridayProduct_Plan==null?0:data.FridayProduct_Plan);
+                  $('#FridayTarget_Yield').val(data.FridayTarget_Yield==null?0:data.FridayTarget_Yield);
+                  $('#s_input_Friday_WIP').val(data.FridayProper_WIP==null?0:data.FridayProper_WIP);
+
+                  $('#SaterdayProduct_Plan').val(data.SaterdayProduct_Plan==null?0:data.SaterdayProduct_Plan);
+                  $('#SaterdayTarget_Yield').val(data.SaterdayTarget_Yield==null?0:data.SaterdayTarget_Yield);
+                  $('#s_input_Saterday_WIP').val(data.SaterdayProper_WIP==null?0:data.SaterdayProper_WIP);
+
+                  $('#SundayProduct_Plan').val(data.SundayProduct_Plan==null?0:data.SundayProduct_Plan);
+                  $('#SundayTarget_Yield').val(data.SundayTarget_Yield==null?0:data.SundayTarget_Yield);
+                  $('#s_input_Sunday_WIP').val(data.SundayProper_WIP==null?0:data.SundayProper_WIP);
+
+                  //#region 设置是否可以修改
+                  document.getElementById("MondayProduct_Plan").disabled=false;
+                  document.getElementById("MondayTarget_Yield").disabled=false;
+                  document.getElementById("TuesdayProduct_Plan").disabled=false;
+                  document.getElementById("TuesdayTarget_Yield").disabled=false;
+                  document.getElementById("WednesdayProduct_Plan").disabled=false;
+                  document.getElementById("WednesdayTarget_Yield").disabled=false;
+                  document.getElementById("ThursdayProduct_Plan").disabled=false;
+                  document.getElementById("ThursdayTarget_Yield").disabled=false;
+                  document.getElementById("FridayProduct_Plan").disabled=false;
+                  document.getElementById("FridayTarget_Yield").disabled=false;
+                  document.getElementById("SaterdayProduct_Plan").disabled=false;
+                  document.getElementById("SaterdayTarget_Yield").disabled=false;
+                  document.getElementById("SundayProduct_Plan").disabled=false;
+                  document.getElementById("SundayTarget_Yield").disabled=false;
+
+                  if(uiThisBtn.disabled)
+                  {
+                      //var dateNow=new Date();
+
+                      //if(dateNow.getDay()==6)
+                      //{
+                      //    document.getElementById("MondayProduct_Plan").disabled=true;
+                      //    document.getElementById("MondayTarget_Yield").disabled=true;
+                      //    document.getElementById("TuesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("TuesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("WednesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("WednesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("ThursdayProduct_Plan").disabled=true;
+                      //    document.getElementById("ThursdayTarget_Yield").disabled=true;
+                      //    document.getElementById("FridayProduct_Plan").disabled=true;
+                      //    document.getElementById("FridayTarget_Yield").disabled=true;
+                      //    document.getElementById("SaterdayProduct_Plan").disabled=false;
+                      //    document.getElementById("SaterdayTarget_Yield").disabled=false;
+                      //    document.getElementById("SundayProduct_Plan").disabled=false;
+                      //    document.getElementById("SundayTarget_Yield").disabled=false;
+                      //}
+                      //if(dateNow.getDay()==5)
+                      //{
+                      //    document.getElementById("MondayProduct_Plan").disabled=true;
+                      //    document.getElementById("MondayTarget_Yield").disabled=true;
+                      //    document.getElementById("TuesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("TuesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("WednesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("WednesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("ThursdayProduct_Plan").disabled=true;
+                      //    document.getElementById("ThursdayTarget_Yield").disabled=true;
+                      //    document.getElementById("FridayProduct_Plan").disabled=false;
+                      //    document.getElementById("FridayTarget_Yield").disabled=false;
+                      //    document.getElementById("SaterdayProduct_Plan").disabled=false;
+                      //    document.getElementById("SaterdayTarget_Yield").disabled=false;
+                      //    document.getElementById("SundayProduct_Plan").disabled=false;
+                      //    document.getElementById("SundayTarget_Yield").disabled=false;
+                      //}
+                      //if(dateNow.getDay()==4)
+                      //{
+                      //    document.getElementById("MondayProduct_Plan").disabled=true;
+                      //    document.getElementById("MondayTarget_Yield").disabled=true;
+                      //    document.getElementById("TuesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("TuesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("WednesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("WednesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("ThursdayProduct_Plan").disabled=false;
+                      //    document.getElementById("ThursdayTarget_Yield").disabled=false;
+                      //    document.getElementById("FridayProduct_Plan").disabled=false;
+                      //    document.getElementById("FridayTarget_Yield").disabled=false;
+                      //    document.getElementById("SaterdayProduct_Plan").disabled=false;
+                      //    document.getElementById("SaterdayTarget_Yield").disabled=false;
+                      //    document.getElementById("SundayProduct_Plan").disabled=false;
+                      //    document.getElementById("SundayTarget_Yield").disabled=false;
+                      //}
+                      //if(dateNow.getDay()==3)
+                      //{
+                      //    document.getElementById("MondayProduct_Plan").disabled=true;
+                      //    document.getElementById("MondayTarget_Yield").disabled=true;
+                      //    document.getElementById("TuesdayProduct_Plan").disabled=true;
+                      //    document.getElementById("TuesdayTarget_Yield").disabled=true;
+                      //    document.getElementById("WednesdayProduct_Plan").disabled=false;
+                      //    document.getElementById("WednesdayTarget_Yield").disabled=false;
+                      //    document.getElementById("ThursdayProduct_Plan").disabled=false;
+                      //    document.getElementById("ThursdayTarget_Yield").disabled=false;
+                      //    document.getElementById("FridayProduct_Plan").disabled=false;
+                      //    document.getElementById("FridayTarget_Yield").disabled=false;
+                      //    document.getElementById("SaterdayProduct_Plan").disabled=false;
+                      //    document.getElementById("SaterdayTarget_Yield").disabled=false;
+                      //    document.getElementById("SundayProduct_Plan").disabled=false;
+                      //    document.getElementById("SundayTarget_Yield").disabled=false;
+                      //}
+                      //if(dateNow.getDay()==2)
+                      //{
+                      //    document.getElementById("MondayProduct_Plan").disabled=true;
+                      //    document.getElementById("MondayTarget_Yield").disabled=true;
+                      //    document.getElementById("TuesdayProduct_Plan").disabled=false;
+                      //    document.getElementById("TuesdayTarget_Yield").disabled=false;
+                      //    document.getElementById("WednesdayProduct_Plan").disabled=false;
+                      //    document.getElementById("WednesdayTarget_Yield").disabled=false;
+                      //    document.getElementById("ThursdayProduct_Plan").disabled=false;
+                      //    document.getElementById("ThursdayTarget_Yield").disabled=false;
+                      //    document.getElementById("FridayProduct_Plan").disabled=false;
+                      //    document.getElementById("FridayTarget_Yield").disabled=false;
+                      //    document.getElementById("SaterdayProduct_Plan").disabled=false;
+                      //    document.getElementById("SaterdayTarget_Yield").disabled=false;
+                      //    document.getElementById("SundayProduct_Plan").disabled=false;
+                      //    document.getElementById("SundayTarget_Yield").disabled=false;
+                      //}
+                  }
+
+                  //#endregion
+              });
+              $('#js_edit_modal').modal('show');
+          });
+
+          //#endregion 点击DataTable弹出div并加载信息
+
+          //#region 保存单笔修改的信息
+          $('#btn_save_edit').on('click', function () {
+
+              var submitJson = $('#js_form_edit_fl').serializeObject();
+
+              $.post(FlowChartPlan.urls.ModifyProcessMGData, { jsonWithData: JSON.stringify(submitJson) }, function (data) {
+                  if (data == 'SUCCESS') {
+                      PDMS.Utility.MessageBox.info("@ViewBag.Successfullymodified");
+                      $('#js_form_edit_fl').modal('hide');
+
+                      var uiThisBtn =document.getElementById("js_btn_searchthisWorkPlan");
+                      if(uiThisBtn.disabled)
+                      {
+                          FlowChartPlan.Init();
+                      }
+                      else
+                      {
+                          FlowChartPlan.QueryFlowChartNextPlan();
+                      }
+
+                  } else {
+                      PDMS.Utility.MessageBox.error(data);
+                  }
+              });
+          });
+          //#endregion 保存单笔修改的信息
+
+          //隐藏modal框时清空值
+          $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+              $('#js_edit_modal').find('input').val('');
+              $('.list-group.validate-error').empty();
+          });
+          //#endregion 隐藏modal框时清空值
+
+          //#endregion
+
+          $('#js_btn_download_fl').on('click', function () {
+
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcel", "FlowChart", new { id = ViewBag.MasterUID , clintName = "js_btn_download_fl" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+
+
+          $('#js_btn_download_currentWK').on('click', function () {
+              var url = '@Html.Raw(Url.Action("DownloadPlanExcel", "FlowChart", new { id = ViewBag.MasterUID , clintName = "js_btn_download_currentWK" }))';
+              this.form.action = url;
+              $('#js_form_excel_add').submit();
+          });
+
+
+          $('#js_btn_import_fl').on('click', function () {
+              $('#hid_currentOrNextWeek').val('nextWeek');
+              $('#js_importExcel_modal').modal('show');
+          });
+
+          $('#js_btn_import_currentWK').on('click', function () {
+              $('#hid_currentOrNextWeek').val('currentWeek');
+              $('#js_importExcel_modal').modal('show');
+          });
+
+          $('#js_btn_excel_update').on('click', function () {
+              $('#js_importExcel_modal').modal('hide');
+              $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+              $('#js_form_excel_update').ajaxSubmit({
+                  beforeSubmit: function () {
+                      if (!$('#js_form_excel_update').valid()) {
+                          $.unblockUI();
+                          return false;
+                      }
+                  },
+                  success: function (data) {
+                      $.unblockUI();
+                      if (data != '') {
+                          PDMS.Utility.MessageBox.info(data);
+                      }
+                      else {
+                          PDMS.Utility.MessageBox.info("@ViewBag.Updatecompleted");
+                          window.location.reload();
+                      }
+                  }
+              });
+          });
+
+          $('#js_btn_clear_Update').click(function () {
+              $('#js_s_input_import').val('');
+          });
+
+      });
+    </script>
+}

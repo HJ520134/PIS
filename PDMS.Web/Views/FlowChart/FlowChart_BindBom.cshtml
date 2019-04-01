@@ -1,0 +1,460 @@
+﻿
+@{
+    ViewBag.Title = "FlowChart_BindBom";
+
+    ViewBag.Edit = T("Common.Edit").Text;
+    ViewBag.WuliaoyuanBind = T("FlowChart.WuliaoyuanBind").Text;
+    ViewBag.Updatecompleted = T("QA.Updatecompleted").Text;
+    ViewBag.ConfirmUnbind = T("FlowChart.ConfirmUnbind").Text;
+    ViewBag.xuanzhong = T("FlowChart.xuanzhong").Text;
+    ViewBag.Pleasewait = T("QA.Pleasewait").Text;
+}
+
+<!-- Main content -->
+<section class="content portal-content">
+    <label id="date"></label>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+
+        <div class="col-md-9">
+            <label class="control-label" id="lblTitle"></label>
+        </div>
+
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-default btn-sm" data-toggle="modal" id="btn_back"><i class="fa fa-reply"></i>@T("Common.Back")</a>
+        </div>
+    </div>
+    <hr class="hr-custom">
+
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+            @using (Html.BeginForm("DownloadBomExcel", "FlowChart", FormMethod.Post, new {id = "js_form_excel_download"}))
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class=" pull-left">
+                            <button type="button" class="fa fa-download btn btn-primary" id="btn_download_fl">@T("Common.TeampleDownload")</button>
+                            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl">@T("Common.UploadExcel")</button>
+                            <button type="button" class="fa fa-times btn btn-primary" id="btn_remove_bom">@T("FlowChart.Unbind")</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            <br/>
+        </div>
+    </div>
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        @using (Html.BeginForm("DataTableExec", "FlowChart", FormMethod.Post, new {id = "js_form_datatable"}))
+        {
+            <div class="col-md-12 table-container">
+                <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                    <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all"/>
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.Mk")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("QA.Process")</th>
+                        <th>@T("FlowChart.Place")</th>
+                        <th>@T("QA.Colour")</th>
+                        <th>@T("FlowChart.Mk")</th>
+                        <th>@T("QA.Editor")</th>
+                        <th>@T("QA.Changetime")</th>
+                    </tr>
+                    </tfoot>
+                </table>
+                <div id="page" class="row"></div>
+
+            </div><!--/表格-->
+        }
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- /.content -->
+
+
+@section ViewModals{
+    <!-- Modal -->
+    <div class="modal fade" id="js_edit_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Production.BindBom")</h4>
+                </div>
+                @using (Html.BeginForm("EditFLPCBomInfo", "FlowChart", FormMethod.Post, new { id = "js_form_edit_flPCBom" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_process_seq">@T("Production.Process_Seq")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Process_Seq" class="form-control input-sm" id="js_s_input_process_seq" placeholder="@T("Production.Process_Seq")" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_process">@T("QA.Process")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Process" class="form-control input-sm" id="js_s_input_process" placeholder="@T("QA.Process")" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_place">@T("QA.Plantarea")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="Place" class="form-control input-sm" id="js_s_input_place" placeholder="@T("QA.Plantarea")" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_color">@T("QA.Colour")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="color" class="form-control input-sm" id="js_s_input_color" placeholder="@T("QA.Colour")" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_user_ntid">@T("FlowChart.WuliaoyuanAccount")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" name="User_NTID" class="form-control input-sm required" id="js_s_input_user_ntid" placeholder="@T("FlowChart.WuliaoyuanAccount")"
+                                           required data-msg-required="@T("FlowChart.InputWuliaoyuanAccount")">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-query" id="btn_save">@T("Common.Save")</button>
+                            <button id="btn_clear" type="button" class="btn btn-primary btn-query">@T("Common.Cancel")</button>
+                        </div>
+                        <input type="hidden" id="hidPC_MH_UID" name="PC_MH_UID" />
+                        <input type="hidden" id="hidFlowChart_Detail_UID" name="FlowChart_Detail_UID" />
+                        <input type="hidden" id="hidOld_MH_Name" name="Old_MH_Name" />
+                    </div>
+
+            <!--jquery validata error container-->
+                    <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                }
+            </div>
+
+        </div>
+    </div>
+    <!--上传Excel Start-->
+    <div class="modal fade" id="js_importExcel_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("FlowChart.UpMaterial")</h4>
+                </div>
+                @using (Html.BeginForm("ImportBomExcel", "FlowChart", new { MasterUID = ViewBag.MasterUID, Version = ViewBag.Version }, FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_input_import">@T("QA.SelectscheduledExcelfile")</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_input_import" name="upload_excel" placeholder="@T("FlowChart.SelectDoc")"
+                                       required data-msg-required="@T("FlowChart.SelectExcel")!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="fa fa-upload btn btn-primary" id="btn_clear_Update">@T("Common.Cancel")</button>
+                        <button type="button" class="fa fa-download btn btn-primary" id="btn_excel_upload">@T("QA.Submit")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--上传Excel End-->
+
+}
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        //$(document).ready(function () {
+        //    setInterval("startRequest()", 100);
+        //});
+
+        function startRequest() {
+            $("#date").text((new Date()).toString());
+        }
+        $(function () {
+            setInterval("startRequest()", 100);
+            function startRequest() {
+                FlowChartBom.AjaxInit();
+                //$("#date").text((new Date()).toString());
+            }
+            var FlowChartBom = (function () {
+                var urls = {
+                    BackFL: '@Url.Action("FlowChartList", "FlowChart")',
+                    QueryBomByFlowChartUID: '@Html.Raw(Url.Action("QueryBomByFlowChartUID", "FlowChart",  new { MasterUID= ViewBag.MasterUID, Version= ViewBag.Version }))',
+                    QueryBomEditByFlowChartUID: '@Url.Action("QueryBomEditByFlowChartUID", "FlowChart")',
+                    DeleteBomInfoByUIDList: '@Url.Action("DeleteBomInfoByUIDList", "FlowChart")',
+                    CheckDownloadBomExcel: '@Html.Raw(Url.Action("CheckDownloadBomExcel", "FlowChart",  new { MasterUID= ViewBag.MasterUID, Version= ViewBag.Version }))'
+                };
+
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.PC_MH_UID + '">')
+                            .addClass('table-col-checkbox');
+                    },
+                    className: ""
+                },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var buttonEdit = '<button type="button" class="btn btn-default btn-sm js-grid-edit"  data-nid=' + rowData.PC_MH_UID + '>@ViewBag.Edit</button>';
+                            $(td).html(buttonEdit);
+                        },
+                        className: ""
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "Process_Seq",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Place",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Color",
+                        className: "min-col-xs "
+                    }, {
+                        data: "User_NTID",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Modified_Name",
+                        className: "min-col-xs "
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs "
+                    }
+                ];
+
+                var _queryFLS = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_Bom_datatable",
+                        remoteUrl: urls.QueryBomByFlowChartUID,
+                        //searchParams: _getParams(SearchThisWeek),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+                    PDMS.Utility.Criteria.Build();
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        PDMS.Utility.Criteria.Init();
+                        _queryFLS(true);
+
+                    },
+                    AjaxInit: function () {
+                        _queryFLS(false);
+                    }
+                }
+            })();
+
+            FlowChartBom.Init();
+
+
+            $('#js_form_edit_flPCBom').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            var setTitle = function () {
+                var title = '@ViewBag.CustomerName' + ' ' + '@ViewBag.ProjectName' + ' ' + '@ViewBag.PartTypes' + ' ' + '@ViewBag.ProductPhase' + '@ViewBag.WuliaoyuanBind'
+                $('#lblTitle').text(title);
+                $('#hidFlowchartUID').val(@ViewBag.MasterUID);
+            }();
+
+            $('#btn_back').on('click', function () {
+                var url = FlowChartBom.urls.BackFL;
+                window.location.href = url;
+            });
+
+            //#region 点击编辑按钮事件
+            $("body").on('click', '.js-grid-edit', function () {
+                //$('.js-grid-edit').on('click', function () {
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                var PC_MH_UID = $(this).attr('data-nid');
+                $('#js_edit_modal').modal('show');
+                var url = FlowChartBom.urls.QueryBomEditByFlowChartUID;
+
+                $.get(url, { PC_MH_UID}, function(data) {
+                    $.unblockUI();
+                    var Process_Seq = data.Process_Seq;
+                    var Process = data.Process;
+                    var Place = data.Place;
+                    var Color = data.Color;
+                    var UserID = data.User_NTID;
+                    $('#js_s_input_process_seq').val(Process_Seq);
+                    $('#js_s_input_process').val(Process);
+                    $('#js_s_input_place').val(Place);
+                    $('#js_s_input_color').val(Color);
+                    $('#js_s_input_user_ntid').val(UserID);
+                    $('#hidPC_MH_UID').val(data.PC_MH_UID);
+                    $('#hidFlowChart_Detail_UID').val(data.FlowChart_Detail_UID);
+                    $('#hidOld_MH_Name').val(data.User_NTID);
+                });
+            });
+
+            $('#btn_save').on('click', function () {
+                $('#js_form_edit_flPCBom').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_edit_flPCBom').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.length > 2) {
+                            PDMS.Utility.MessageBox.info(data);
+                        }
+                        else {
+                            PDMS.Utility.MessageBox.info("@ViewBag.Updatecompleted");
+                            $('#js_edit_modal').modal('hide');
+                            FlowChartBom.AjaxInit();
+                        }
+                    }
+                });
+            });
+            //#endregion
+
+
+            //#region 下载Excel模板
+            $('#btn_download_fl').on('click', function () {
+                var formHtml = this.form;
+                var CheckUrl = FlowChartBom.urls.CheckDownloadBomExcel;
+
+                $.post(CheckUrl, function (data) {
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.info(data);
+                    }
+                    else {
+                        var url = '@Html.Raw(Url.Action("DownloadBomExcel", "FlowChart", new { MasterUID = ViewBag.MasterUID, Version=ViewBag.Version }))';
+                        formHtml.action = url;
+                        $('#js_form_excel_download').submit();
+
+                    }
+                });
+            });
+
+            //#endregion
+
+            //#region 上传Excel模板
+            $('#btn_import_fl').on('click', function () {
+                $('#js_importExcel_modal').modal('show');
+            });
+
+            $('#btn_excel_upload').on('click', function () {
+                $.blockUI({ message: "<h1>@ViewBag.Pleasewait</h1>" });
+                $('#js_form_excel_upload').ajaxSubmit({
+                    beforeSubmit: function () {
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info("@ViewBag.Updatecompleted");
+                            FlowChartBom.AjaxInit();
+                        }
+                    }
+                });
+            });
+            //#endregion
+
+            //#region 解除物料员绑定
+            $('#btn_remove_bom').on('click', function () {
+                PDMS.Utility.MessageBox.confirm("@ViewBag.ConfirmUnbind", function () {
+                    var array = new Array();
+                    $(".js-checkbox-item").each(function () {
+                        if ($(this).is(':checked')) {
+                            var value = $(this).val();
+                            array.push(value);
+                        }
+                    });
+                    if (array.length == 0) {
+                        PDMS.Utility.MessageBox.info("@ViewBag.xuanzhong");
+                    }
+                    else {
+                        var json = JSON.stringify(array)
+                        $.post(FlowChartBom.urls.DeleteBomInfoByUIDList, { json}, function (data) {
+                            FlowChartBom.AjaxInit();
+                        });
+                    }
+                });
+
+            });
+            //#endregion
+
+            $('#btn_clear_Update').on('click', function () {
+                $('#js_importExcel_modal').modal('hide');
+            });
+
+            $('#btn_clear').on('click', function () {
+                $('#js_edit_modal').modal('hide');
+            });
+
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+        });
+
+
+    </script>
+}

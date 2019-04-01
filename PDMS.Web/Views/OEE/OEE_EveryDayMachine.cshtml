@@ -1,0 +1,1199 @@
+﻿@{
+}
+
+<style>
+    .DownTime {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: #2287b9;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .FirstYield {
+        width: 2% !important;
+        border: 1px solid #ffe96c;
+        background: gold;
+        font-size: larger;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    p {
+        /*background-color: blue;*/
+        /* Rotate p */ transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        /* Internet Explorer */ -moz-transform: rotate(90deg);
+        /* Firefox */ -webkit-transform: rotate(90deg);
+        /* Safari 和 Chrome */ -o-transform: rotate(90deg); /* Opera */
+    }
+</style>
+<style type="text/css">
+    #lineId, #datetimepicker {
+        width: 120px;
+    }
+
+    .textbox {
+        background-color: gold;
+        text-align: center;
+        margin: 2px;
+        border-radius: 5px;
+    }
+
+    .table.dataTable.table-condensed > thead > tr > th {
+        padding-left: 6px !important;
+    }
+
+    #UtilizationRate, #BalanceRate {
+        border: 40px solid green;
+        background-color: green;
+        font-size: 3.5em;
+    }
+
+    #tbl * {
+        text-align: center;
+    }
+
+    .row {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .btn {
+        font-size: 12px;
+    }
+
+    #tbl1 > tbody > tr > th, #tbl1 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #tbl2 > tbody > tr > th, #tbl2 > tbody > tr > td {
+        line-height: 1;
+    }
+
+    #maindv {
+        margin-top: 30px;
+    }
+
+    #mainTbl tr td:first-child {
+        font-weight: bolder;
+    }
+
+    thead tr td {
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    #theadtr td {
+        background-color: #4F5D6C;
+    }
+
+    .output {
+        font-weight: bold;
+    }
+
+    .titlewhite {
+        font-size: 13px;
+        background-color: #3c8dbc;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border: 1px #546a74;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #ffffff;
+        margin-bottom: 0px;
+    }
+
+    .titlewhite2 {
+        font-size: 13px;
+        background-color: #ffffff;
+        /*border-top-left-radius: 3px;*/
+        border: 1px solid #dddada;
+        padding: 5px 10px;
+        font-family: "Times New Roman", Times, serif;
+        color: #333;
+        margin: 0px -5px;
+    }
+
+    .dis {
+        /*display: flex;*/
+        /*margin-left: 1%;*/
+    }
+
+        .dis:hover {
+            font-family: monospace;
+        }
+
+    .function {
+        font-size: 12px;
+        background-color: #ffffff;
+        border-top: 1px solid #ffffff;
+        border-right: 0px solid #ff0000;
+        border-bottom: 0px solid #ffffff;
+        border-left: 0px solid #ffffff;
+        padding: 6px 12px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    .divShow {
+    }
+
+    .defaultDowntime {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .defaultFirstYield {
+        background-color: #c0b3b3;
+        opacity: 0.3;
+    }
+
+    .background {
+        /*background-color: #ecf0f5;*/
+        /*background-color: #ecf0f5;*/
+    }
+
+    .yangshi1 {
+        font-weight: bold;
+    }
+</style>
+<script type="text/javascript">
+    function fullSr() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.msRequestFullscreen) {
+            docElm = document.body; //overwrite the element (for IE)
+            docElm.msRequestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+        $(".navbar-static-top").hide();
+    }
+    function cancFullSr() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        $(".navbar-static-top").show();
+    }
+</script>
+<section class="content-header portal-content-header">
+    <h1 style="margin-right:3%;height:15px">
+        @*<span style="font-family: Times New Roman" , Times, serif;">@T("OEE.MetricsProduct")</span>*@
+        <input id="js_btn_IsShow" style="margin-left:1%" type="button" value="hide" class="col-lg-1  pull-right fa fa-download btn btn-primary titlewhite" />
+        <button id="view-fullscreen" style="margin-left:1%" class="titlewhite col-lg-1 pull-right" onclick="fullSr()">@T("Common.FullScreen")</button>
+        <button id="cancel-fullscreen" style="margin-left:1%" class="titlewhite col-lg-1.5  pull-right" onclick="cancFullSr()">@T("Common.CancelFullScreen")</button>
+    </h1>
+
+    <div class="row hidden">
+        <input type="hidden" id="id_Plant_UID" name="Plant_Organization_UID" value="@ViewBag.Plant_UID" />
+        <input type="hidden" id="id_BG_UID" name="BG_Organization_UID" value="@ViewBag.BG_UID" />
+        <input type="hidden" id="id_Project_UID" name="Project_UID" value="@ViewBag.customerId" />
+        <input type="hidden" id="id_LineID" name="LineID" value="@ViewBag.lineName" />
+        <input type="hidden" id="id_StationID" name="StationID" value="@ViewBag.stationName" />
+        <input type="hidden" id="id_OEE_MachineInfo_UID" name="OEE_MachineInfo_UID" value="@ViewBag.MachineName" />
+        <input type="hidden" id="id_currentShiftID" name="ShiftTimeID" value="@ViewBag.ShiftID" />
+        <input type="hidden" id="id_startTime" name="startTime" value="@ViewBag.startTime" />
+        <input type="hidden" id="id_endTime" name="endTime" value="@ViewBag.endTime" />
+        <input type="hidden" id="id_isFromPhotoReport" name="isFromPhotoReport" value="@ViewBag.isFromPhotoReport" />
+    </div>
+</section>
+
+<section class="content-header portal-content-header ">
+    <div id="js_search_Param" style="margin:2px -9.5% 2px 0px;width:100%;">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="width:95.5%; border-left:5px solid #3c8dbc;background-color:#ffffff;margin-left:1%;height:135px">
+                <form id="js_form_query" class="form-inline">
+                    <div style="margin-top:1.5%;">
+                        <input id="VersionNumber" name="VersionNumber" type="text" value="0" hidden="hidden" />
+                        <input id="Param_LineName" name="Param_LineName" type="text" value="0" hidden="hidden" />
+                        <input id="Param_StationName" name="Param_StationName" type="text" value="0" hidden="hidden" />
+                        <input id="OEE_DownTimeType_UID" name="OEE_DownTimeType_UID" type="text" value="0" hidden="hidden" />
+                        <div class="form-group col-md-12">
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.Changqu")</label>
+                                <select class="titlewhite2" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                    @foreach (var item in Model.Plants)
+                                    {
+                                        <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class='dis col-md-3'>
+                                <label class="titlewhite">@T("OEE.BG")</label>
+                                <select class="titlewhite2" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.PJ")</label>
+                                <select class="titlewhite2" id="customerId" name="CustomerID" data-live-search="true"> </select>
+                            </div>
+                            <div class='dis col-md-2'>
+                                <label class="titlewhite">@T("OEE.Line")</label>
+                                <select class="titlewhite2" id="lineName" name="LineID" data-live-search="true"></select>
+                            </div>
+                            <div class='dis col-md-3'>
+                                <button type="button" style="font-size:medium" id="searchbtn" class="fa fa-search btn btn-primary"> @T("Common.Search")</button>
+                                <button type="button" style="font-size:medium" id="btn_Exprot1" class="fa fa-download btn btn-primary" data-toggle="modal" data-target="#js_Export_modal">@T("Common.Export")</button>
+                                @*      <button type="button" style="font-size:medium" id="btn_Public_Exprot1" class="fa fa-download btn btn-primary" data-toggle="modal" data-target="#js_Export_modal">@T("Common.Export")</button>*@
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite"><strong>@T("OEE.Station")</strong></label>
+                                <select id="stationName" class="titlewhite2" name="StationID" data-live-search="true">  </select>
+                            </div>
+                            <div class='dis col-md-3' style="margin-top:1%">
+                                <label class="titlewhite"><strong>@T("OEE.Machine")</strong></label>
+                                <select id="MachineName" class="titlewhite2" name="EQP_Uid" data-live-search="true">  </select>
+                            </div>
+
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite">@T("OEE.Shift")</label>
+                                <select id="myRetriveShift" class="titlewhite2" name="ShiftTimeID" data-live-search="true"> </select>
+                            </div>
+
+                            <div class='dis col-md-2' style="margin-top:1%">
+                                <label class="titlewhite">@T("OEE.Date")</label>
+                                <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px;width: 120px" id='datetimepicker'>
+                                    <input type='text' class="form-control input-sm" id="startTime" name="startTime" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                @*<label style="" class="titlewhite2">-To-</label>*@
+                                <div class='titlewhite2 input-group date' style="display:none; border:0px;padding:0px 0px" id='datetimepicker'>
+                                    <input type='text' class="form-control input-sm" id="endTime" name="endTime" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="id_id_oee_return" class='dis col-md-1' style="margin-top:1%;">
+                                <button type="button" style="font-size:medium" id="id_oee_return" class="fa  ui-icon-arrow return-1-e btn btn-primary"> @T("QA.Return")</button>
+                            </div>
+                            <div class="form-group col-md-12">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content content-header portal-content-header" style="height:470px;margin-top:-1%">
+    <hr class="hr-custom">
+    <div>
+        <div style="width:35%;float:left;height:430px;margin-top:-5px">
+            <div class="row">
+                <div class="xftb col-md-12 table-container">
+                    <table class="table table-striped table-hover table-condensed nowrap" id="js_oee_everyDayMachine_table">
+                        <thead>
+                            <tr id="js_rpt_tr">
+                                <th class="divShow">@T("OEE.IndexName")</th>
+                                <th class="divShow">@T("OEE.Statistic")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="page" class="row"></div>
+                </div>
+            </div>
+        </div>
+        <div style="width:62%;float:left;height:430px;margin-left:1%">
+            <div class="row">
+                <div class="col-md-12 table-container">
+                    <table class="table table-striped table-hover table-condensed nowrap" style="table-layout:fixed;margin-top:0px !important;margin-bottom:0px !important" id="js_oee_downtimetype_table">
+                        <thead>
+                            <tr id="js_rpt_tr">
+                                <th class="divShow"></th>
+                                <th class="divShow">@T("OEE.IndexName")</th>
+                                <th class="divShow">@T("OEE.StatisticMinute")</th>
+                                <th class="divShow">@T("OEE.Proportion")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="page" class="row"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="col-lg-3" style="height:70px; margin-top:1%;float:right" title="数据更新时间">
+    <strong>@T("OEE.LastUpdateTime") : </strong>  <span id="id_LastUpdateTime">No</span>
+</div>
+<div id="id_div_CncResetTime" class="col-lg-3" style="height:70px; margin-top:1%;float:right;color:red; display:none" title="机台重置时间">
+    <strong>@T("OEE.ResetTime")  : </strong>  <span id="id_ResetTime">No</span>
+</div>
+@section ViewModals{
+    <div class="modal fade" id="js_Export_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div style="background-color:#3c8dbc" class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Export")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div style="margin-left:30%; margin-top:1%;display:flex">
+                                    <label class="titlewhite">开始日期</label>
+                                    <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                        <input type='text' class="form-control input-sm" id="id_export_startTime" name="startTime" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div style="margin-left: 10%;margin-top:1%;display:flex">
+                                    <label class="titlewhite">结束日期</label>
+                                    <div class='titlewhite2 input-group date' style="border:0px;padding:0px 0px" id='datetimepicker'>
+                                        <input type='text' class="form-control input-sm" id="id_export_endTime" name="endTime" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa fa-download btn btn-primary" id="btn_Exprot">@T("Common.Export")</button>
+                    @*<button type="button" class="fa fa-download btn btn-primary" id="btn_Public_Exprot">@T("Common.Export")</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_breckdowm_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div style="background-color:#3c8dbc" class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><span style="color:#000000" id="title_breckDown_detial">detials</span></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12 table-container">
+                            <table class="table table-striped table-hover table-condensed nowrap" id="js_oee_breckdownDetial_table">
+                                <thead>
+                                    <tr id="js_rpt_tr1">
+                                        <th class="">@T("OEE.Error_Code")</th>
+                                        <th class=""> @T("OEE.Level_Details")</th>
+                                        <th class="">@T("OEE.Statistic")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="page" class="row"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa  btn btn-primary" id="btn_Close">@T("Common.close")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript" src="~/Scripts/rowspam.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            intervalInt = 0;
+            var CkeckIsOK = true;
+            var EveryDayMachine = (function () {
+                var urls = {
+                    QueryOEE_EveryDayMachine: '@Html.Raw(Url.Action("QueryOEE_EveryDayMachine", "OEE"))',
+                    GetMachineBreakDown: '@Html.Raw(Url.Action("GetMachineBreakDown", "OEE"))',
+                    GetMachineIndexName: '@Html.Raw(Url.Action("GetMachineIndexName", "OEE"))',
+                    //根据厂区取得OP类型
+                    getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                    //根据OP类型取得功能厂
+                    getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                    //根据厂区OP获取专案(int Plant_Organization_UID, int BG_Organization_UID, int FunPlant_Organization_UID)
+                    getCustomerDTOs: '@Url.Action("GetCustomerDTOs", "GoldenLine")',
+                    //根据厂区 op类型 获取班别s(int Plant_Organization_UID, int BG_Organization_UID)
+                    getShiftTimeDTOs: '@Url.Action("GetShiftTimeDTOs", "GoldenLine")',
+                    //根据专案ID获取线的信息GetLineDTOs(int CustomerID)
+                    getLineDTOs: '@Url.Action("GetLineDTOs", "OEE")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getStationDTOs: '@Url.Action("GetStationDTOs", "OEE")',
+                    //根据线的ID获取站的信息 GetStationDTOs(int LineId)
+                    getMachineDTOs: '@Url.Action("GetAllByStationID", "OEE")',
+
+                    ///导出
+                    ExportOEEMetricsReport: '@Url.Action("ExportOEEMetricsReport", "OEE")',
+                    ExportPublicOEEMetricsReport: '@Url.Action("ExportPublicOEEMetricsReport", "OEE")',
+                    GetLastUpdateTime: '@Url.Action("GetLastUpdateTime", "OEE")',
+                    GetBreckDownDetial: '@Url.Action("GetBreckDownDetial", "OEE")',
+                    CheckExportDate: '@Url.Action("CheckExportDate", "OEE")',
+
+
+                    ///获取当前时间
+                    GetCurrentDateTime: '@Url.Action("GetCurrentDateTime", "OEE")',
+                };
+
+                Date.prototype.Format = function (fmt) { //author: meizz
+                    var o = {
+                        "M+": this.getMonth() + 1, //月份
+                        "d+": this.getDate(), //日
+                        "h+": this.getHours(), //小时
+                        "m+": this.getMinutes(), //分
+                        "s+": this.getSeconds(), //秒
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                        "S": this.getMilliseconds() //毫秒
+                    };
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)
+                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    return fmt;
+                }
+                $('#js_s_Date').val(new Date().Format('yyyy-MM-dd'))
+                $('#id_export_startTime').val(new Date().Format('yyyy-MM-dd'))
+                $('#id_export_endTime').val(new Date().Format('yyyy-MM-dd'))
+                var everyMachineColumns = [
+                {
+                    data: "IndexName",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.ResetTime != null && rowData.ResetTime != "") {
+                            $("#id_div_CncResetTime").css("display", "block");
+                            $("#id_ResetTime").text(rowData.ResetTime);
+                        } else {
+                            $("#id_div_CncResetTime").css("display", "none");
+                        }
+
+                        if (rowData.IndexName == "OEE% 整体设备效率") {
+                            $(td).html(rowData.IndexName).addClass("yangshi1");
+                        } else if (rowData.IndexName == "OEE% (w/o Microstop) 整体设备效率 （不包含微停）") {
+                            $(td).html(rowData.IndexName).addClass("yangshi1");
+                        } else if (rowData.IndexName == "PF% 性能开动") {
+                            $(td).html(rowData.IndexName).addClass("yangshi1");
+                        } else if (rowData.IndexName == "AV% 设备时间开动率") {
+                            $(td).html(rowData.IndexName).addClass("yangshi1");
+                        } {
+                            $(td).html(rowData.IndexName);
+                        }
+                    },
+                    className: "text-left"
+                }, {
+                    data: "IndexCount",
+                    className: "text-center"
+                },
+                ];
+
+                var downTimeColumns = [
+                {
+                    data: null,
+                    sWidth: "20px",
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.DownTimeType == "Downtime Breakdown") {
+                            var result = '<p style="margin-top:80%; text-align:center;vertical-align:middle">' + rowData.DownTimeType + '</p>';
+                            $(td).html(result).addClass("DownTime");
+                        } else if (rowData.DownTimeType == "Yield Breakdown") {
+                            var result = '<p style="margin-top:80%; text-align:center;vertical-align:middle">' + rowData.DownTimeType + '</p>';
+                            $(td).html(result).addClass("FirstYield");
+                        }
+                    },
+                    className: "text-center"
+                },
+              {
+                  data: "IndexName",
+                  createdCell: function (td, cellData, rowData, row, col) {
+                      if (rowData.IndexName == "No Downtime Breakdown") {
+                          $(td).html(rowData.IndexName).addClass("defaultDowntime");
+                      } else if (rowData.IndexName == "No Yield Breakdown") {
+                          $(td).html(rowData.IndexName).addClass("defaultFirstYield");
+                      } else {
+                          if (rowData.DownTimeType == "Downtime Breakdown") {
+                              var resultHtml = '<a id="bt_search1"  class="fa  js-grid-view" role="button" data-id="' + rowData.OEE_DownTimeType_UID + '" data-breckDownName="' + rowData.IndexName + '">' + rowData.IndexName + '</a>';
+                              var buttonview = '<button type="button" class="fa fa-search btn btn-primary js-grid-view" data-id="' + rowData.OEE_DownTimeType_UID + '">' + rowData.IndexName + '</button>';
+                              $(td).html(resultHtml);
+                          } else {
+                              $(td).html(rowData.IndexName);
+                          }
+                      }
+                  },
+                  className: "text-left"
+              }, {
+                  data: "IndexCount",
+                  createdCell: function (td, cellData, rowData, row, col) {
+                      if (rowData.IndexName == "No Downtime Breakdown") {
+                          $(td).html(rowData.IndexCount).addClass("defaultDowntime");
+                      } else if (rowData.IndexName == "No Yield Breakdown") {
+                          $(td).html(rowData.IndexCount).addClass("defaultFirstYield");
+                      } else {
+                          $(td).html(rowData.IndexCount);
+                      }
+                  },
+                  className: "text-center"
+              }, {
+                  data: "Percentage",
+                  createdCell: function (td, cellData, rowData, row, col) {
+                      if (rowData.IndexName == "No Downtime Breakdown") {
+                          $(td).html("").addClass("defaultDowntime");
+                      } else if (rowData.IndexName == "No Yield Breakdown") {
+                          $(td).html("").addClass("defaultFirstYield");
+                      } else {
+                          $(td).html((rowData.Percentage * 100).toFixed(2) + "%");
+                      }
+                  },
+                  className: "text-center"
+              }
+                ];
+
+                var BreakDowmDetialColumns = [
+                    {
+                        data: "Error_Code",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.Error_Code);
+                        },
+                        className: "text-left"
+                    }, {
+                        data: "Level_Details",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.Level_Details);
+                        },
+                        className: "text-center"
+                    }, {
+                        data: "DownTime",
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.DownTime);
+                            //var Minite = Math.floor(rowData.DownTime / 60);
+                            //var Second = rowData.DownTime % 60;
+                            //$(td).html(Minite + ' 分 ' + Second+' 秒');
+                        },
+                        className: "text-center"
+                    }
+                ];
+
+                var _getParams = function () {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryEveryDayMachine = function (firstLoad) {
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_oee_everyDayMachine_table",
+                        remoteUrl: urls.GetMachineIndexName,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            bAutoWidth: true,
+                            fixedColumns: true,
+                            fixedHeader: {
+                                header: true
+                            },
+                            scrollCollapse: true,
+                            scrollY: 400,
+                            columns: everyMachineColumns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                    //var chk_value = [];
+                    //table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                };
+
+                var _queryDownTimeType = function (firstLoad) {
+                    var configDownTimeType = {
+                        pageId: "#page",
+                        tableId: "#js_oee_downtimetype_table",
+                        remoteUrl: urls.GetMachineBreakDown,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            bAutoWidth: false,
+                            fixedColumns: false,
+                            fixedHeader: {
+                                header: true
+                            },
+                            scrollCollapse: true,
+                            scrollY: 400,
+                            columns: downTimeColumns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    $('#page').page('destroy');
+                    PDMS.Utility.Criteria.Build();
+                    PDMS.Utility.Pages.Set(configDownTimeType);
+                };
+
+                var _BreckDownDetialType = function (firstLoad) {
+                    var BreckDownDetial = {
+                        pageId: "#page",
+                        tableId: "#js_oee_breckdownDetial_table",
+                        remoteUrl: EveryDayMachine.urls.GetBreckDownDetial,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            columns: BreakDowmDetialColumns
+                        }
+                    };
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+                    }
+                    PDMS.Utility.Criteria.Build();
+                    PDMS.Utility.Pages.Set(BreckDownDetial);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        SetDeafult();
+                        if ($("#id_isFromPhotoReport").val() == "true") {
+                            SetContinueDefault()
+                        }
+                        PDMS.Utility.Criteria.Init();
+                        _queryEveryDayMachine(true);
+                        _queryDownTimeType(true);
+                        _BreckDownDetialType(true);
+                        GetUpdateTime();
+                        $(".divShow").removeClass("sorting");
+                        $(".divShow").removeAttr('onclick');
+                    },
+                    QueryDayMachine: function () {
+                        _queryEveryDayMachine(false);
+                        _queryDownTimeType(false);
+                        GetUpdateTime();
+                        $("#js_oee_downtimetype_table").rowspan(0); //第一列合并
+                        $("#js_oee_downtimetype_table").rowspan(0);//第二列合并
+                        $(".divShow").removeClass("sorting");
+                        $(".divShow").removeAttr('onclick');
+                    },
+
+                    BreckDownDetialType: function () {
+                        _BreckDownDetialType(false);
+                    }
+                }
+            })();
+            EveryDayMachine.Init();
+            $("#js_oee_downtimetype_table").rowspan(0); //第一列合并
+            $("#js_oee_downtimetype_table").rowspan(0);//第二列合并
+
+            //60秒刷新
+            if (intervalInt != 0) {
+                clearInterval(intervalInt);
+            }
+
+            intervalInt = setInterval(function () {
+                EveryDayMachine.QueryDayMachine();
+            }, 1000 * 60);
+
+            $('#js_btn_IsShow').click(function () {
+                if ($("#js_btn_IsShow").val() == "show") {
+                    $("#js_btn_IsShow").val("hide")
+                    $("#js_search_Param").show();
+                } else
+                    if ($("#js_btn_IsShow").val() == "hide") {
+                        $("#js_btn_IsShow").val("show")
+                        $("#js_search_Param").hide();
+                    }
+            })
+            //清空
+            $('#js_btn_clear').click(function () {
+                PDMS.Utility.Criteria.Clear(function () {
+                });
+            });
+
+            if ($("#id_isFromPhotoReport").val() == "true") {
+                $("#id_id_oee_return").show();
+            } else {
+                $("#id_id_oee_return").hide();
+            }
+
+            //查询
+            $('#searchbtn').click(function () {
+                CkeckIsOK = true;
+                $("#endTime").val($("#startTime").val());
+                checkSerchParam();
+                checkdateSerchParam();
+                if (CkeckIsOK) {
+                    EveryDayMachine.QueryDayMachine();
+                }
+            });
+
+            //展示DowmTime类型的明细
+            $('body').on('click', '.js-grid-view', function () {
+                var OEE_DownTimeType_UID = $(this).attr('data-id');
+                $("#title_breckDown_detial").text($(this).attr('data-breckDownName'));
+                $("#OEE_DownTimeType_UID").val(OEE_DownTimeType_UID);
+                EveryDayMachine.BreckDownDetialType();
+                $('#js_breckdowm_modal').modal('show', $(this));
+            });
+
+            //关闭展示DowmTime类型的明细画面
+            $('#btn_Close').click(function () {
+                $('#js_breckdowm_modal').modal('hide');
+            });
+
+            //检查查询条件是否填写完成
+            function checkSerchParam() {
+                if ($('#js_select_factory_query').val() == null || $('#js_select_factory_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询厂区！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#js_select_optype_query').val() == null || $('#js_select_optype_query').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询BG！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#customerId').val() == null || $('#customerId').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询专案！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#lineName').val() == null || $('#lineName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询线！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#stationName').val() == null || $('#stationName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询工站！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#MachineName').val() == null || $('#MachineName').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询机台！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+                if ($('#myRetriveShift').val() == null || $('#myRetriveShift').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询班次！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+            }
+
+            //检查查询条件是否填写完成
+            function checkdateSerchParam() {
+                if ($('#startTime').val() == null || $('#startTime').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询开始时间！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+
+                if ($('#endTime').val() == null || $('#endTime').val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择查询结束时间！");
+                    CkeckIsOK = false;
+                    return false;
+                }
+            }
+
+            function SetContinueDefault() {
+                $('#js_select_factory_query').val($("#id_Plant_UID").val());
+                $('#js_select_optype_query').val($("#id_BG_UID").val());
+                $('#customerId').val($("#id_Project_UID").val());
+                $('#lineName').val($("#id_LineID").val());
+                $('#stationName').val($("#id_StationID").val());
+                $('#MachineName').val($("#id_OEE_MachineInfo_UID").val());
+                $('#myRetriveShift').val($("#id_currentShiftID").val());
+                $('#startTime').val($("#id_startTime").val());
+                $('#endTime').val($("#id_endTime").val());
+            }
+
+
+            //设置初始默认值
+            function SetDeafult() {
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    $('#js_select_factory_query').val($("#id_Plant_UID").val());
+                    $("#startTime").val($("#id_startTime").val());
+                    $("#endTime").val($("#id_endTime").val());
+                } else {
+
+                    var currentDateUrl = EveryDayMachine.urls.GetCurrentDateTime;
+                    var currentDate = new Date().Format('yyyy-MM-dd');
+                    $.get(currentDateUrl, {}, function (data) {
+                        currentDate = data;
+                    });
+
+                    $("#startTime").val(currentDate);
+                    $("#endTime").val($("#startTime").val());
+                }
+
+                //1 获取厂区下面的OP
+                var oporgid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    oporgid = $("#id_Plant_UID").val();
+                } else {
+                    oporgid = $('#js_select_factory_query option:selected').val();
+                }
+                //var oporgid = $('#js_select_factory_query option:selected').val();
+                var OPTypeurl = EveryDayMachine.urls.getCurrentOPType;
+                $.post(OPTypeurl, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            $('#js_select_optype_query').append('<option  value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    }
+                });
+
+                //2 获取专案
+                var optypeUid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    optypeUid = $("#id_BG_UID").val();
+                } else {
+                    optypeUid = $('#js_select_optype_query option:selected').val();
+                }
+                //var optypeUid = $('#js_select_optype_query option:selected').val();
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getCustomerDTOs;
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+
+                //3 获取线
+                var customerId = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    customerId = $("#id_Project_UID").val();
+                } else {
+                    customerId = $('#customerId option:selected').val();
+                }
+                //var customerId = $('#customerId option:selected').val();
+                var getLineByOPTypeUrl = EveryDayMachine.urls.getLineDTOs;
+                $.get(getLineByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+
+                //4 获取工站
+                var LineId = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    LineId = $("#id_LineID").val();
+                } else {
+                    LineId = $('#lineName option:selected').val();
+                }
+                //var LineId = $('#lineName option:selected').val();
+                var getstationByOPTypeUrl = EveryDayMachine.urls.getStationDTOs;
+                $.get(getstationByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+
+                // 5 根据站点获取机台
+                var stationUID = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    stationUID = $("#id_StationID").val();
+                } else {
+                    stationUID = $('#stationName option:selected').val();
+                }
+                //var stationUID = $('#stationName option:selected').val();
+                var getMachineByOPTypeUrl = EveryDayMachine.urls.getMachineDTOs;
+                $.get(getMachineByOPTypeUrl, { stationUID: stationUID }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#MachineName').append('<option value="' + data[i].OEE_MachineInfo_UID + '">' + data[i].MachineNo + '</option>');
+                    }
+                });
+
+                //6 获取班别
+                var oporgid = 0;
+                var optypeUid = 0;
+                if ($("#id_isFromPhotoReport").val() == "true") {
+                    optypeUid = $('#id_BG_UID').val();
+                    oporgid = $('#id_Plant_UID').val();
+                } else {
+                    optypeUid = $('#js_select_optype_query').val();
+                    oporgid = $('#js_select_factory_query option:selected').val();
+                }
+                //var optypeUid = $('#js_select_optype_query').val();
+                //var oporgid = $('#js_select_factory_query option:selected').val();
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getShiftTimeDTOs;
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    $('#myRetriveShift').append('<option value="' + -1 + '">' + "全天" + '</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+
+                $('#datetimepicker').datetimepicker({
+                    defaultDate: new Date(),
+                    format: 'YYYY-MM-DD',
+                });
+            }
+            function GetUpdateTime() {
+                var UpdateTimeUrl = EveryDayMachine.urls.GetLastUpdateTime;
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                $.post(UpdateTimeUrl, { MachineInfo_UID: $('#MachineName').val(), Plant_UID: $('#js_select_factory_query').val(), BG_UID: $('#js_select_optype_query').val() }, function (data) {
+                    $("#id_LastUpdateTime").text(data);
+                });
+            }
+            //设置结束时间endTime
+            $('#startTime').change(function () {
+                $("#endTime").val($("#startTime").val());
+            })
+
+            $('#btn_Public_Exprot').click(function () {
+                var checkdateIsOK = true;
+                var LineName = $('#lineName option:selected').text();
+                $("#Param_LineName").val(LineName);
+                var stationName = $('#stationName option:selected').text();
+                $("#Param_StationName").val(stationName);
+                if ($("#id_export_endTime").val() == null || $("#id_export_endTime").val() == "") {
+
+                    PDMS.Utility.MessageBox.error("请选择结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+                if ($("#id_export_startTime").val() == null || $("#id_export_startTime").val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择开始日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                var CheckExportDateUrl = EveryDayMachine.urls.CheckExportDate;
+                $.get(CheckExportDateUrl, { EndTime: $("#id_export_endTime").val(), StartTime: $("#id_export_startTime").val() }, function (data) {
+                    if (!data) {
+                        PDMS.Utility.MessageBox.error("导出日期不能大于31天！");
+                        checkdateIsOK = false;
+                        return false;
+                    }
+                });
+
+                checkSerchParam();
+                $("#endTime").val($("#id_export_endTime").val());
+                $("#startTime").val($("#id_export_startTime").val());
+                $('#js_Export_modal').modal('hide');
+
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = EveryDayMachine.urls.ExportPublicOEEMetricsReport;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+
+            $('#btn_Exprot').click(function () {
+                var checkdateIsOK = true;
+                var LineName = $('#lineName option:selected').text();
+                $("#Param_LineName").val(LineName);
+                var stationName = $('#stationName option:selected').text();
+                $("#Param_StationName").val(stationName);
+                if ($("#id_export_endTime").val() == null || $("#id_export_endTime").val() == "") {
+
+                    PDMS.Utility.MessageBox.error("请选择结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+                if ($("#id_export_startTime").val() == null || $("#id_export_startTime").val() == "") {
+                    PDMS.Utility.MessageBox.error("请选择开始日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                if ($("#id_export_startTime").val() > $("#id_export_endTime").val()) {
+                    PDMS.Utility.MessageBox.error("开始日期不能大于结束日期！");
+                    checkdateIsOK = false;
+                    return fasle;
+                }
+
+                var CheckExportDateUrl = EveryDayMachine.urls.CheckExportDate;
+                $.get(CheckExportDateUrl, { EndTime: $("#id_export_endTime").val(), StartTime: $("#id_export_startTime").val() }, function (data) {
+                    if (!data) {
+                        PDMS.Utility.MessageBox.error("导出日期不能大于31天！");
+                        checkdateIsOK = false;
+                        return false;
+                    }
+                });
+
+                checkSerchParam();
+                $("#endTime").val($("#id_export_endTime").val());
+                $("#startTime").val($("#id_export_startTime").val());
+                $('#js_Export_modal').modal('hide');
+
+                //全部导出
+                if (checkdateIsOK) {
+                    var url = EveryDayMachine.urls.ExportOEEMetricsReport;
+                    //没有查询条件的情况，从查询页面获取
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                }
+            });
+
+            $("#id_oee_return").click(function () {
+                checkSerchParam();
+                checkdateSerchParam();
+                if (CkeckIsOK) {
+                    window.location.href = GetURL();
+                }
+            })
+
+            //$("js_oee_downtimetype_table tr:first td:eq(0)").width("5px");
+            //根据厂区获取OP
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+
+            //根据OP获取专案
+            $('#js_select_optype_query').change(function () {
+                refreshSearchFuncPlantSelect();
+                refreshSearchProjectSelect();
+                refreshShiftTimeSelect();
+            })
+            //根据专案获取线别
+            $('#customerId').change(function () {
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getLineDTOs;
+                var customerId = $('#customerId option:selected').val();
+                $.get(getProjectByOPTypeUrl, { customerId: customerId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#lineName').append('<option value="' + data[i].LineID + '">' + data[i].LineName + '</option>');
+                    }
+                });
+            })
+            //根据线获取站点
+            $('#lineName').change(function () {
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getStationDTOs;
+                var LineId = $('#lineName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { LineId: LineId }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#stationName').append('<option value="' + data[i].StationID + '">' + data[i].StationName + '</option>');
+                    }
+                });
+            })
+
+            //根据站点获取机台
+            $('#stationName').change(function () {
+                $('#MachineName').empty();
+                $('#MachineName').html('<option></option>');
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getMachineDTOs;
+                var stationUID = $('#stationName option:selected').val();
+                $.get(getProjectByOPTypeUrl, { stationUID: stationUID }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#MachineName').append('<option value="' + data[i].OEE_MachineInfo_UID + '">' + data[i].MachineNo + '</option>');
+                    }
+                });
+            })
+
+            //加载BG或OP
+            function GetOPTypes() {
+                debugger;
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = EveryDayMachine.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#lineName').empty();
+                $('#lineName').html('<option></option>');
+                $('#stationName').empty();
+                $('#stationName').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+            //加载功能厂
+            function refreshSearchFuncPlantSelect() {
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                var url = EveryDayMachine.urls.getFunPlantByOPTypes;
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+            }
+            //加载专案
+            function refreshSearchProjectSelect() {
+                debugger;
+                $('#customerId').empty();
+                $('#customerId').html('<option></option>');
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getCustomerDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+
+                $.get(getProjectByOPTypeUrl, { BG_Organization_UID: optypeUid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#customerId').append('<option value="' + data[i].Project_UID + '">' + data[i].Project_Name + '</option>');
+                    }
+                });
+            }
+            //加载班别
+            function refreshShiftTimeSelect() {
+                debugger;
+                $('#myRetriveShift').empty();
+                $('#myRetriveShift').html('<option></option>');
+                var getProjectByOPTypeUrl = EveryDayMachine.urls.getShiftTimeDTOs;
+                var optypeUid = $('#js_select_optype_query').val();
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                // Plant_Organization_UID, int BG_Organization_UID
+                $.get(getProjectByOPTypeUrl, { Plant_Organization_UID: oporgid, BG_Organization_UID: optypeUid }, function (data) {
+                    $('#myRetriveShift').append('<option value="' + -1 + '">' + "全天" + '</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#myRetriveShift').append('<option value="' + data[i].ShiftTimeID + '">' + data[i].Shift + '</option>');
+                    }
+                });
+                //$('#js_select_project_query').selectpicker('refresh');
+            }
+            function GetURL() {
+                var reportUrl = '@Html.Raw(Url.Action("oee_metricsphotoreport", "OEE"))'
+                //window.location.href = url;
+                var Plant_UID = $('#js_select_factory_query option:selected').val();
+                var BG_UID = $('#js_select_optype_query option:selected').val();
+                var customerId = $('#customerId option:selected').val();
+                var lineName = $('#lineName option:selected').val();
+                var stationName = $('#stationName option:selected').val();
+                var MachineName = $('#MachineName option:selected').val();
+                var ShiftID = $('#myRetriveShift option:selected').val();
+                var startTime = $('#startTime').val();
+                var endTime = $('#endTime').val();
+                reportUrl = reportUrl + "?Plant_UID=" + Plant_UID + "&&BG_UID=" + BG_UID + "&&customerId=" + customerId + "&&lineName=" + lineName + "&&stationName=" + stationName + "&&MachineName=" + MachineName + "&&ShiftID=" + ShiftID + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&isFromPhotoReport=" + "MetricsOEE";
+                return reportUrl;
+            }
+        });
+    </script>
+} 

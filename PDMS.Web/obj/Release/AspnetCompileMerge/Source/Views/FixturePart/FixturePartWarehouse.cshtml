@@ -1,0 +1,1012 @@
+﻿
+@model PDMS.Model.ViewModels.FixturePartWarehouseVM
+<section class="content-header portal-content-header">
+    <h1>库位管理</h1>
+</section>
+<section class="content portal-content">
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="col-md-12 search-field col-lg-12">
+                @using (Html.BeginForm("DownloadBomExcel", "Equipmentmaintenance", FormMethod.Post, new { id = "js_form_excel_download" }))
+                {
+                    <a href="~/ExcelTemplate/Fixture_Warehouse.xlsx" id="btn_import_download" class="fa fa-download btn btn-primary" target="_blank">仓库模板下载</a>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_wh">仓库上传</button>
+                    <a href="~/ExcelTemplate/Fixture_Storage.xlsx" id="btn_import_download1" class="fa fa-download btn btn-primary" target="_blank">储位模板下载</a>
+                    <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_sg">储位上传</button>
+                    <button type="button" id="bt_query" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal">查询</button>
+                    <button type="button" class="fa fa-plus btn btn-primary" id="btn_add">新增</button>
+                    <button type="button" class="fa fa-download btn btn-primary" id="js_btn_export">导出</button>           
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_Bom_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>仓库代码</th>                  
+                        <th>仓库名称</th>
+                        <th>说明</th>
+                        <th>是否启用</th>
+                        <th>创建人员</th>
+                        <th>创建日期</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th class="table-col-action nosort">操作</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>仓库代码</th>
+                        <th>仓库名称</th>
+                        <th>说明</th>
+                        <th>是否启用</th>
+                        <th>创建人员</th>
+                        <th>创建日期</th>
+                        <th>修改人员</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div>
+
+</section>
+
+@section ViewModals{
+    <div class="modal fade" id="js_add_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">仓库信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_Warehouse_add" class="form-horizontal clearfix">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optypes">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_optypes" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplan">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_funplan" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Warehouse_ID">仓库代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Warehouse_ID" name="Fixture_Warehouse_ID"
+                                           required data-msg-required="Please enter WarehouseID"
+                                           data-rule-maxlength="10" data-msg-maxlength="Please enter no more than {0} characters in WarehouseID.">
+                                </div>
+                            </div>
+                  
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_Warehouse_Name">仓库名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Warehouse_Name" name="Fixture_Warehouse_Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_storage_Remarks">仓库说明</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_storage_Remarks" name="Remarks">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Is_Enable">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm required" id="js_select_Is_Enable" name="Is_Enable">                                                                           
+                                            <option value="true">是</option>
+                                            <option value="false">否</option>
+                                    </select>
+                                </div>
+                            </div>                         
+                            <input type="hidden" id="isEdit" name="isEdit" value="false" />
+                            <input type="hidden" id="Warehouse_UID" name="Fixture_Warehouse_UID" value=0 />
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+                        </div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        储位信息
+                        <button class="fa btn btn-primary btn-primary" id="js_btn_add_sub_func">增加储位</button>
+                        <button class="fa btn btn-primary btn-primary" id="js_btn_del_sub_func">删除储位</button>
+                    </h4>
+                    <div class="row" id="div_sub_ware">
+                        <div class="col-xs-12">
+                            <table id="js_sub_func_table" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="table-col-seq">序号</th>
+                                        <th >料架号</th>
+                                        <th >储位号</th>
+                                        <th >说明</th>
+                                        <th >是否启用</th>
+                                        <th >创建者</th>
+                                        <th >创建时间</th>
+                                        <th >修改者</th>
+                                        <th >修改时间</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i>取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new"><i class="fa fa-save"></i>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">查询</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_query" class="form-horizontal" data-need-validate="true">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_factory_search">厂区</label>
+                                <div class="col-sm-7">
+                                    <select class="selectpicker form-control input-sm" id="js_select_factory_search" name="Plant_Organization_UID" data-live-search="true">
+                                        @foreach (var item in Model.Plants)
+                                        {
+                                            <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_optypes_search">OP类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_optypes_search" name="BG_Organization_UID">
+                                        <option></option>
+                                        @foreach (var item in Model.Orgs)
+                                        {
+                                            <option value=@item.Organization_UID>@item.Organization_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_funplan_search">功能厂</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_funplan_search" name="FunPlant_Organization_UID"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_warehouse_id_search">仓库代码</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_warehouse_id_search" name="Fixture_Warehouse_ID">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_name_zh_search">仓库名称</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_name_zh_search" name="Fixture_Warehouse_Name">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_select_Is_Enable_search">是否启用</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control input-sm" id="js_select_Is_Enable_search" name="Is_Enable">
+                                        <option ></option>
+                                        <option value="true">是</option>
+                                        <option value="false">否</option>
+                                    </select>
+                                </div>
+                            </div>   
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="js_importExcelwh_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">导入仓库</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPWareHouseExcel", "FixturePart", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excelWH_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_inputwh_import">选择Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_inputwh_import" name="upload_excel" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clearwh_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excelwh_upload"><i class="fa fa-save"></i>提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_importExcelsg_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">导入储位</h4>
+                </div>
+                @using (Html.BeginForm("ImportEQPStorageExcel", "FixturePart", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excelSG_upload" }))
+                {
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="js_s_inputsg_import">选择Excel档</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="js_s_inputsg_import" name="upload_excel" placeholder="选择文件"
+                                       required data-msg-required="请选择要上传的Excel档!" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_clearsg_Update"><i class="fa fa-times"></i>取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn_excelsg_upload"><i class="fa fa-save"></i>提交</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+
+@section ViewScripts{
+    <script type="text/javascript">
+
+        $('#js_btn_clear').click(function () {
+            $('#js_search_modal').find('select').val('');
+        PDMS.Utility.Criteria.Clear();
+    });
+
+    $(function () {
+        var WarehouseSetting = (function () {
+            var urls = {
+                //画面初始化加载
+                queryWarehouses: '@Url.Action("QueryWarehouseStorageInfo", "FixturePart")',
+                //获取功能厂
+                queryFunplantByop: '@Url.Action("QueryFunplantByop", "FixturePart")',
+                //根据厂区取得OP类型
+                getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                //根据UID获取仓库及其库位信息
+                queryWarehouseByuid: '@Url.Action("QueryWarehouseByuid", "FixturePart")',
+
+                //添加修改仓库和储位信息
+                addOrEditWarehouseInfo: '@Url.Action("AddOrEditWarehouseInfo", "FixturePart")',
+
+                //删除储位信息
+                deleteWarehouseStorage: '@Url.Action("DeleteWarehouseStorage", "FixturePart")',
+                //删除仓库信息
+                deleteWarehouse: '@Url.Action("DeleteWarehouse", "FixturePart")',
+            
+                //导出excel
+                doExportWarehouseReprot: '@Url.Action("DoExportWarehouseReprot", "FixturePart")',
+
+                doAllExportWarehouseReprot: '@Url.Action("DoAllExportWarehouseReprot", "FixturePart")',
+
+            };
+            var subDatatable = null;
+            //#region 定义字段列
+            var columns = [
+                {
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Fixture_Warehouse_UID + '">')
+                        .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                },{
+                    data: null,
+                    className: "table-col-seq"
+                }, {
+                    createdCell: function (td, cellData, rowData, row, col) {                       
+                        var buttonAddSub = '<button type="button" class="btn btn-primary btn-xs js-grid-addsub" data-id="' + rowData.Fixture_Warehouse_UID + '">编辑</button>';
+                        var buttonDelete = '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Fixture_Warehouse_UID + '">删除</button>'                       
+                        var result = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                    '<i class="fa fa-reorder"></i>' +
+                                    '</button>' +
+                                    '<div class="hidden popover-content">' +
+                                        '{0}' +
+                                        '{1}' +
+                                    '</div>';                       
+                            result = result.replace('{0}', buttonAddSub);
+                            result = result.replace('{1}', buttonDelete);                    
+                        $(td).html(result);
+                    },
+                    className: "text-center"
+                }
+                , {
+                    data: "Plant",
+                    className: "min-col-xs"
+                }, {
+                    data: "BG_Organization",
+                    className: "min-col-xs"
+                }, {
+                    data: "FunPlant_Organization",
+                    className: "min-col-xs"
+                }, {
+                    data: "Fixture_Warehouse_ID",
+                    className: "min-col-xs"
+                }, {
+                    data: "Fixture_Warehouse_Name",
+                    className: "min-col-xs"
+                }, {
+                    data: "Remarks",
+                    className: "min-col-xs"
+                }, {
+                    data: "Is_Enable",
+                    render: function (data, type, full, meta) {
+                        return data ? "是" : "否";
+                    },
+                    className: "min-col-xs"
+                }, {
+                    data: "Createder",
+                    className: "min-col-xs"
+                },    
+                {   
+                 data: null,
+                 createdCell: function (td, cellData, rowData, row, col) {
+                     $(td).html(new Date(rowData.Created_Date).format("yyyy-MM-dd hh:mm:ss"));
+                },
+                className: "min-col-xs"
+                }, {
+                    data: "Modifier",
+                    className: "min-col-xs"
+                }, {
+                    data: null,
+                    createdCell:
+                    function (td, cellData, rowData, row, col) {
+                        $(td).html(new Date(rowData.Modified_Date).format("yyyy-MM-dd hh:mm:ss"));
+                    },
+                    className: "min-col-xs"
+                }];
+
+            var subColumns = [{
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).html('<input type="checkbox" name="Fixture_Warehouse_Storage_UID" class="js-checkbox-item" value="' + rowData.Fixture_Warehouse_Storage_UID + '">')
+                         .addClass('table-col-checkbox');
+                },
+                className: "text-center",   
+                defaultContent: ' ',
+            }, {
+                className: "table-col-seq",
+                render: function (data, type, full, meta) {
+                    return ++meta.row;
+                }
+            }, {
+                data: "Rack_ID",
+                className: "min-col-lg",
+                render: function (data, type, full, meta) {
+                    return '<input type="text"  name="Rack_ID" class="form-control input-sm" style="width:80px"  value="' + data + '">';
+                }
+            }, {
+                data: "Storage_ID",
+                className: "min-col-lg",
+                render: function (data, type, full, meta) {
+                    return '<input type="text"  name="Storage_ID" class="form-control input-sm " style="width:80px"  value="' + data + '">';
+                }
+
+            }, {
+                data: "Remarks",
+                className: "min-col-lg",
+                render: function (data, type, full, meta) {
+                    return '<input type="text"  name="Remarks" class="form-control input-sm " style="width:80px"  value="' + data + '">';
+                }
+            }, {
+                data: "Is_Enable",
+                render: function (data, type, full, meta) {
+                    var html = '<select name="Is_Enable" class="form-control input-sm js-select-subfunc-isshow">' +
+                           '<option value="true"  ' + (data ? 'selected' : '') + '>是</option>' +
+                           '<option value="false" ' + (!data ? 'selected' : '') + '>否</option>' +
+                       '</select>' 
+                    return html;
+                    return html;
+                },
+                className: "min-col-lg"
+            }, {
+                data: "Createder",
+                className: "min-col-lg",
+                //render: function (data, type, full, meta) {
+                //    return '<input type="text"  name="Createder" class="form-control input-sm" style="width:80px" disabled value="' + data + '">';
+                //}
+            },  {
+                data: null,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).html(new Date(rowData.Created_Date).format("yyyy-MM-dd hh:mm:ss"));
+                },
+                className: "min-col-xs"
+            }, {
+                data: "Modifier",
+                className: "min-col-lg",
+                //render: function (data, type, full, meta) {
+                //    return '<input type="text"  name="Modifier" class="form-control input-sm" style="width:80px" disabled value="' + data + '">';
+                //}
+            }, {
+                data: null,
+                createdCell:
+                function (td, cellData, rowData, row, col) {
+                    $(td).html(new Date(rowData.Modified_Date).format("yyyy-MM-dd hh:mm:ss"));
+                },
+                className: "min-col-xs"
+            }
+            ];
+            //#endregion 定义字段列
+            Date.prototype.format = function(format) {
+                var date = {
+                    "M+": this.getMonth() + 1,
+                    "d+": this.getDate(),
+                    "h+": this.getHours(),
+                    "m+": this.getMinutes(),
+                    "s+": this.getSeconds(),
+                    "q+": Math.floor((this.getMonth() + 3) / 3),
+                    "S+": this.getMilliseconds()
+                };
+                if (/(y+)/i.test(format)) {
+                    format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+                }
+                for (var k in date) {
+                    if (new RegExp("(" + k + ")").test(format)) {
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                               ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                    }
+                }
+                return format;
+            }
+            var _getParams = function () {
+
+                PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                return $('#js_form_query').serialize().replace(/\+/g, " ");
+            };
+
+            var _queryWarehouses = function (firstLoad, buildCriteria) {
+                var config = {
+                    pageId: "#page",
+                    tableId: "#js_Bom_datatable",
+                    remoteUrl: urls.queryWarehouses,
+                    searchParams: _getParams(),
+                    tableOptions: {
+                        scrollX: true,
+                        autoWidth: true,
+                        fixedHeader: {
+                            header: true,
+                            footer: true
+                        },
+                        columns: columns
+                    }
+                };
+                if (!firstLoad) {
+                    $('#page').page('destroy');
+                }
+                if (buildCriteria) {
+                    PDMS.Utility.Criteria.Build();
+                }
+                PDMS.Utility.Pages.Set(config);
+            };
+            return {
+                urls: urls,
+                Init: function () {
+                    PDMS.Utility.Criteria.Init();
+                    _queryWarehouses(true, false);
+                },
+                queryWarehouses: function (buildCriteria) {
+                    if (!buildCriteria) {
+                        buildCriteria = false;
+                    }
+                    _queryWarehouses(false, buildCriteria);
+                },
+                GetSubDatatable: function () {
+
+                    if (subDatatable == null) {
+
+                        subDatatable = $('#js_sub_func_table').DataTable({
+                            paging: false,
+                            searching: false,
+                            ordering: false,
+                            retrieve: true,
+                            columns: subColumns,
+                        });
+                    }
+                    return subDatatable;
+                },
+                SetSubDatatable: function (datatable) {
+                    subDatatable = datatable;
+                },
+                DestroySubTable: function () {
+                    if (subDatatable != null) {
+                        subDatatable.destroy();
+                    }
+                },
+                SubColumns: subColumns
+            }
+        })();
+        debugger;
+        WarehouseSetting.Init();
+
+        $('#btn_import_wh').on('click', function () {
+            $('#js_importExcelwh_modal').modal('show');
+        });
+
+        $('#btn_clearwh_Update').on('click', function () {
+            $('#js_importExcelwh_modal').modal('hide');
+        });
+
+        //隐藏上传窗口时清空值-----------START
+        $('#js_importExcelwh_modal').on('hidden.bs.modal', function (e) {
+            $('#js_importExcelwh_modal').find('input').val('');
+        });
+
+        //提交     stat
+        $('#btn_excelwh_upload').on('click', function () {
+            $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+            $('#js_form_excelWH_upload').ajaxSubmit({
+                beforeSubmit: function () {
+
+                    var fileName = $('#js_s_inputwh_import').val();
+                    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                    if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                        PDMS.Utility.MessageBox.info('请选择Excel文件');
+                        $.unblockUI();
+                        return false;
+                    }
+                    if (!$('#js_form_excelWH_upload').valid()) {
+                        $.unblockUI();
+                        return false;
+                    }
+                },
+                success: function (data) {
+                    $.unblockUI();
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                    else {
+                        $('#js_importExcelwh_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('上传成功');
+                        WarehouseSetting.queryWarehouses();
+                    }
+                }
+            });
+        });
+        //提交   END
+
+
+        $('#btn_import_sg').on('click', function () {
+            $('#js_importExcelsg_modal').modal('show');
+        });
+
+        $('#btn_clearsg_Update').on('click', function () {
+            $('#js_importExcelsg_modal').modal('hide');
+        });
+
+        //隐藏上传窗口时清空值-----------START
+        $('#js_importExcelsg_modal').on('hidden.bs.modal', function (e) {
+            $('#js_importExcel_modal').find('input').val('');
+        });
+
+        //提交     stat
+        $('#btn_excelsg_upload').on('click', function () {
+            $.blockUI({ message: "<h1>导入中，请稍后...</h1>" });
+            $('#js_form_excelSG_upload').ajaxSubmit({
+                beforeSubmit: function () {
+
+                    var fileName = $('#js_s_inputsg_import').val();
+                    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                    if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                        PDMS.Utility.MessageBox.info('请选择Excel文件');
+                        $.unblockUI();
+                        return false;
+                    }
+                    if (!$('#js_form_excelSG_upload').valid()) {
+                        $.unblockUI();
+                        return false;
+                    }
+                },
+                success: function (data) {
+                    $.unblockUI();
+                    if (data != '') {
+                        PDMS.Utility.MessageBox.error(data);
+                    }
+                    else {
+                        $('#js_importExcelsg_modal').modal('hide');
+                        PDMS.Utility.MessageBox.info('上传成功');
+                        WarehouseSetting.queryWarehouses();
+                    }
+                }
+            });
+        });
+        //提交   END
+
+        //新增保存----start
+        $('#js_btn_save_new').click(function () {
+                    if ($('#js_form_Warehouse_add ul.validate-error').find('li').text().length > 0)
+                        return false;
+                    if ($('#js_add_modal').find('select[name=BG_Organization_UID]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请选择BG');
+                        return false;
+                    }
+                    //if ($('#js_add_modal').find('select[name=FunPlant_Organization_UID]').val() == "") {
+                    //    PDMS.Utility.MessageBox.info('请选择功能厂');
+                    //    return false;
+                    //}
+                    if ($('#js_add_modal').find('select[name=Fixture_Warehouse_ID]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写仓库代码');
+                        return false;
+                    }                
+                    if ($('#js_add_modal').find('input[name=Fixture_Warehouse_Name]').val() == "") {
+                        PDMS.Utility.MessageBox.info('请填写仓库名称');
+                        return false;
+                    }
+                        var dataTable = WarehouseSetting.GetSubDatatable();
+                        var submitJson = $('#js_form_Warehouse_add').serializeObject();
+                        var Warehouse_UID = 0;
+                        if ($('#js_add_modal').find('input[name=Fixture_Warehouse_UID]').val() != '')
+                            Warehouse_UID = $('#js_add_modal').find('input[name=Fixture_Warehouse_UID]').val();
+                        submitJson.Fixture_Warehouse_UID = Warehouse_UID;
+                        var Storages = [];
+                        dataTable .rows().every(function (rowIdx, tableLoop, rowLoop) {
+                            var sub = {};
+                            var row = $('#js_sub_func_table>tbody>tr').eq(rowIdx);
+                       
+                            var Fixture_Warehouse_Storage_UID= row.find('.js-checkbox-item').val();
+                            debugger;
+                            if(Fixture_Warehouse_Storage_UID=="undefined"||Fixture_Warehouse_Storage_UID==undefined||Fixture_Warehouse_Storage_UID=="")
+                            {
+                                Fixture_Warehouse_Storage_UID=0;
+                            }
+                            sub["Fixture_Warehouse_Storage_UID"] = Fixture_Warehouse_Storage_UID;
+
+                            var Rack_ID = $.trim(row.find('input[name=Rack_ID]').val());
+                            if (Rack_ID == "") {
+                                PDMS.Utility.MessageBox.info(" 第" + (rowIdx + 1)+"行,料架不能为空");
+                                return false;
+                            }
+                            if (Rack_ID.length > 20) {
+                                PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+" 行,料架号长度不能超过20");
+                                return false;
+                            }
+                            sub["Rack_ID"] = Rack_ID;
+
+                            var Storage_ID = $.trim(row.find('input[name=Storage_ID]').val());
+                            if (Storage_ID == "") {
+                                PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+"行,储位号不能为空");
+                                return false;
+                            }
+                            if (Storage_ID.length > 20) {
+                                PDMS.Utility.MessageBox.info("第" + (rowIdx + 1)+"行,储位号长度不能超过20");
+                                return false;
+                            }
+                            sub["Storage_ID"] = Storage_ID;
+
+                            var Remarks = $.trim(row.find('input[name=Remarks]').val());
+
+                            if (Remarks.length > 50) {
+                                PDMS.Utility.MessageBox.info("第" + (rowIdx + 1) + "行,说明长度不能超过50");
+                                return false;
+                            }
+                            sub["Remarks"] = Remarks;
+                            var Is_Enable = $.trim(row.find('select[name=Is_Enable]').val());
+                            sub["Is_Enable"] = Is_Enable;
+                            Storages.push(sub);
+                        });
+
+                        submitJson.Storages = Storages;
+
+                        $.post(WarehouseSetting.urls.addOrEditWarehouseInfo, { jsonStorages: JSON.stringify(submitJson) }, function (data) {
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("保存成功!");
+                                WarehouseSetting.queryWarehouses(false);
+                                $('#js_add_modal').modal('hide');
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        });
+        })
+        //新增保存----end
+
+        //增加储位按钮----START
+        $('#js_btn_add_sub_func').on('click', function () {
+            var dataTable = WarehouseSetting.GetSubDatatable();
+            var allowAdd = true;
+
+            dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                for (var i = 2; i < 4; i++) {
+                    if ($.trim($(dataTable.cell(rowIdx, i).node()).find('input').val()) === "") {
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                        allowAdd = false;
+                        return;
+                    }
+                }
+            });
+            if (allowAdd) {
+                var row = dataTable.row.add({
+                    "Warehouse_Storage_UID": 0,
+                    "Rack_ID": "",
+                    "Storage_ID": "",
+                    "Remarks": "",
+                    "Is_Enable": "",
+                    "Createder": "",
+                    "Created_Date": "",
+                    "Modifier": "",
+                    "Modified_Date": ""
+                }).draw();
+                $(row.node()).find('input').removeAttr("readonly");
+            }
+        });
+        //增加储位按钮----END
+
+        //删除储位按钮----START
+        $('#js_btn_del_sub_func').on('click', function () {
+            var dataTable = WarehouseSetting.GetSubDatatable();
+            var $checkedItems = $('#js_sub_func_table .js-checkbox-item:checked');
+            if ($checkedItems.length == 0) {
+                PDMS.Utility.MessageBox.info("Please select data to delete");
+                return;
+            } else {
+
+                $.map($checkedItems, function (checkbox) {
+                    var Warehouse_Storage_UID = $(checkbox).val();
+                    if (Warehouse_Storage_UID > 0) {
+
+                        $.get(WarehouseSetting.urls.deleteWarehouseStorage
+                            , { Warehouse_Storage_UID: Warehouse_Storage_UID } , function (data) {
+                                if (data != "SUCCESS") {
+                                    PDMS.Utility.MessageBox.error(data);
+                                } else {
+                                    dataTable.row($(checkbox).parents('tr')).remove().draw();
+                                }
+                            });
+
+                    } else {
+                        dataTable.row($(checkbox).parents('tr')).remove().draw();
+                    }
+
+                });
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                });
+            }
+        });
+        //删除储位按钮----END
+       
+        //查询按钮
+        $('#js_btn_query').click(function () {
+            if ($('#js_form_query').valid()) {
+                WarehouseSetting.queryWarehouses(true);
+                $('#js_search_modal').modal('hide');
+            }
+        });
+
+        function getFunplants(opuid,funplantuid) {
+            $('#js_select_funplan').html('<option></option>');
+            var url = WarehouseSetting.urls.queryFunplantByop;
+            $.post(url, { opuid: opuid }, function (data) {
+                $('#js_select_funplan').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#js_select_funplan').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                }
+                $('#js_select_funplan').val(funplantuid);
+            })
+        };
+
+        //新增界面BG变更---start
+        $('#js_select_factory_add').change(function () {
+            url = WarehouseSetting.urls.getCurrentOPType;
+            $('#js_select_optypes').html('<option></option>');
+          
+            var  oporgid=  $(this).val();
+            if (oporgid != 0) {
+                //设置OP
+                $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if ($('#js_select_optypes').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                            if(@Model.OptypeID!=0)
+                            {
+                                if(@Model.OptypeID==data[i].Organization_UID )
+                                {
+                                    $('#js_select_optypes').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                                }
+                            }else
+                            {
+                                $('#js_select_optypes').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+
+                            }
+                        }
+                    }
+           
+                });
+            }
+
+            getFunplants($(this).val());
+        })
+
+
+        $('#js_select_optypes').change(function () {
+            getFunplants($(this).val());
+        })
+        //新增界面BG变更---end
+
+        //查询界面BG变更---start
+        $('#js_select_optypes_search').change(function () {
+            var url = WarehouseSetting.urls.queryFunplantByop,
+                opuid = $(this).val();
+            $.post(url, { opuid: opuid }, function (data) {
+                $('#js_select_funplan_search').html('<option></option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#js_select_funplan_search').append('<option value="' + data[i].Organization_UID + '">' + data[i].Organization_Name + '</option>');
+                }
+            })
+        })
+        //查询界面BG变更---end
+        //删除仓库信息----START
+        $('body').on('click', '.js-grid-delete', function () {
+            var Warehouse_UID = $(this).attr('data-id');
+            PDMS.Utility.MessageBox.confirm("确定要删除?", function () {
+                var url = WarehouseSetting.urls.deleteWarehouse;
+                $.post(url, { Warehouse_UID: Warehouse_UID }, function (data) {
+                    if (data.length > 2) {
+                        PDMS.Utility.MessageBox.error(data);
+                    } else {
+                        PDMS.Utility.MessageBox.info('删除成功');
+                        WarehouseSetting.queryWarehouses();
+                    }
+                });
+            });
+        });
+        //删除仓库信息----END
+
+
+        //新增
+        $('#btn_add').click(function () {
+            $('#js_add_modal').find('input').val('');
+            $('#js_add_modal').modal('show', $(this));
+            var dataTable = WarehouseSetting.GetSubDatatable();
+            $('#js_select_factory_add').trigger('change');
+            dataTable.clear().draw();
+        })
+
+        //隐藏编辑框时清空值
+     
+        //隐藏新增框时清空值
+        $('#js_add_modal').on('hidden.bs.modal', function (e) {
+            $('#js_add_modal h4').show();
+            $('#div_sub_ware').show();
+            $('#js_add_modal').find('input').val('');
+            $('#js_add_modal').find('select').val('');
+            $('.list-group.validate-error').empty();
+        });
+
+        //储位管理--start
+        $('body').on('click', '.js-grid-addsub', function () {
+            debugger;
+            $('#isEdit').val(true);
+            $('#js_add_modal').modal('show', $(this));
+            var Warehouse_UID = $(this).attr('data-id'),
+                url = WarehouseSetting.urls.queryWarehouseByuid;
+            $('#js_add_modal').find('input[name=Fixture_Warehouse_UID]').val(Warehouse_UID);
+            $.post(url, { Warehouse_UID: Warehouse_UID }, function (data) {
+                debugger;
+                $('#js_add_modal').find('select[name=Plant_Organization_UID]').val(data.Plant_Organization_UID);
+                $('#js_add_modal').find('select[name=BG_Organization_UID]').val(data.BG_Organization_UID);
+                getFunplants(data.BG_Organization_UID, data.FunPlant_Organization_UID);
+
+                $('#js_add_modal').find('input[name=Fixture_Warehouse_ID]').val(data.Fixture_Warehouse_ID);
+                $('#js_add_modal').find('input[name=Fixture_Warehouse_Name]').val(data.Fixture_Warehouse_Name);
+                $('#js_add_modal').find('input[name=Remarks]').val(data.Remarks);                  
+                $("#js_select_Is_Enable").get(0).value = data.Is_Enable;
+                debugger;
+                var subTable = $('#js_sub_func_table').DataTable({
+                    columns: WarehouseSetting.SubColumns,
+                    ordering: false,
+                    data: data.Storages,
+                    destroy: true
+                });
+
+                WarehouseSetting.SetSubDatatable(subTable);
+            });
+        });
+        //储位管理--end
+
+        //导出按钮
+        $('#js_btn_export').click(function () {
+
+            var $selectList = $('#js_Bom_datatable').find('.js-checkbox-item:checked');
+            var len = $selectList.length;
+            if (len == 0) {
+                //全部导出
+                var url = WarehouseSetting.urls.doAllExportWarehouseReprot;
+                //没有查询条件的情况，从查询页面获取
+                if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                    PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                }
+                url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                window.location.href = url;
+
+            } else {
+                var uids = $.map($selectList, function (row) {
+                    return row.value;
+                });
+                $('table').find('.js-checkbox-all,.js-checkbox-item').prop('checked', false);
+                var url = WarehouseSetting.urls.doExportWarehouseReprot;
+                url += "?uids=" + uids.toString();
+                window.location.href = url;
+            }
+        });
+    })
+    </script>
+}

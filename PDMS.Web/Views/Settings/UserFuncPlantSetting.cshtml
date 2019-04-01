@@ -1,0 +1,603 @@
+﻿<section class="content portal-content">
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-9">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-3">
+            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#js_search_modal" id="js_btn_search"><i class="fa fa-search"></i> 查询</a>
+            <a class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add">
+                <i class="fa fa-plus"></i> 维护
+            </a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div class="col-xs-12" id="js_criteria_alert_cnt">
+        </div>
+    </div>
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_user_funcplant_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>用户(NTID)</th>
+                        <th>用户名称</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂名称</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-seq nosort">序号</th>
+                        <th>用户(NTID)</th>
+                        <th>用户名称</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂名称</th>
+                        <th>修改者</th>
+                        <th>修改时间</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" id="js_hidden_account_uid" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+@section ViewModals{
+    <!-- Search Modal -->
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_plant">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_input_plant" name="Plant"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_optype">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_input_optype" name="OPType">
+                                            <option>OP1</option>
+                                            <option selected="selected">OP2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_funcplant">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_input_funcplant" name="FuncPlant"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_user_ntid">用户(NTID)</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="User_NTID" class="form-control input-sm" id="js_s_input_user_ntid" placeholder="用户(NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_user_name">用户名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="User_Name" class="form-control input-sm" id="js_s_input_user_name" placeholder="用户名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_input_modified_by_ntid">修改者</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="Modified_By_NTID" class="form-control input-sm" id="js_s_input_modified_by_ntid" placeholder="修改者(NTID)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" data-type="date-interval">修改时间</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <span class="input-group-addon">From</span>
+                                            <input type="text" name="Modified_Date_From" class="form-control input-sm date" id="js_s_input_modified_from">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" name="Modified_Date_End" class="form-control input-sm date" id="js_s_input_modified_to">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> 清空</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">用户功能厂维护</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="js_form_maintain" class="form-horizontal clearfix">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_input_plant">厂区</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_input_plant" name="Plant"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="js_input_optype">OP类型</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm" id="js_input_optype" name="OPType">
+                                        <option>OP1</option>
+                                        <option selected="selected">OP2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="js_input_funcplant">功能厂</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control input-sm" id="js_input_funcplant" name="FuncPlant"></select>
+                                </div>
+                                <div class="col-sm-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <!--jquery validata error container-->
+                        <div class="col-xs-12 "><ul class="list-group validate-error"></ul></div>
+                    </form>
+                    <hr class="no-margin" />
+                    <h4>
+                        新增/删除用户
+                        <button class="btn btn-primary btn-sm" id="js_btn_add_funcplant">新增用户</button>
+                        <button class="btn btn-primary btn-sm" id="js_btn_del_funcplant">删除用户</button>
+                    </h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="js_funcplant_table" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="table-col-checkbox nosort">
+                                            <input type="checkbox" class="js-checkbox-all" />
+                                        </th>
+                                        <th class="table-col-seq nosort">Seq</th>
+                                        <th>用户NTID</th>
+                                        <th>用户名称</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_user_plant"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var UserFuncPlantSetting = (function () {
+                var subDatatable = null;
+                var needBuildCriteria = false;
+                var urls =
+                {
+                    EditUserFuncPlant: '@Url.Action("EditUserFuncPlant", "Settings")',
+                    QueryUserFuncPlants: '@Url.Action("QueryUserFuncPlants", "Settings")',
+                    queryUserFuncPlant: '@Url.Action("QueryFuncPlant", "Settings")',
+                    exportUserFuncPlants: '@Url.Action("DoExportFuncPlant", "Settings")',
+                    getPlant: '@Url.Action("getPlant", "Settings")',
+                    GetFuncPlant: '@Url.Action("GetFuncPlant", "Settings")',
+                    GetUserInfo: '@Url.Action("GetUserInfo", "Settings")',
+                    GetUserInfoByFuncPlant: '@Url.Action("GetUserInfoByFuncPlant", "Settings")'
+                };
+                var columns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.System_User_FunPlant_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                    }, {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "User_NTID",
+                        className: "min-col-xs"
+                    }, {
+                        data: "User_Name",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Plant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "OP_Types",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FuncPlant",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_UserName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Modified_Date",
+                        className: "min-col-xs"
+                    }
+                ];
+                var subColumns = [
+                    {
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Account_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: "text-center",
+                        defaultContent: ' ',
+                    }, {
+                        className: "table-col-seq",
+                        render: function (data, type, full, meta) {
+                            return ++meta.row;
+                        }
+                    }, {
+                        data: "User_NTID",
+                        className: "min-col-lg js-p-plant",
+                        render: function (data, type, rowData, meta) {
+                            var isEdit = false;
+                            var html = isEdit ? data :
+                                '<input type="text" name="User_NTID" class="form-control input-sm js-subtable-plant" value="' + data + '">';
+                            return html;
+                        }
+                    }, {
+                        data: "User_Name",
+                        className: "min-col-lg js-subtable-user_name"
+                    }
+                ];
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    } else {
+                        return null;
+                    }
+                };
+                var _queryPlants = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_user_funcplant_datatable",
+                        remoteUrl: urls.QueryUserFuncPlants,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryPlants(true);
+                    },
+                    queryPlants: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryPlants(false);
+                    },
+                    GetSubDatatable: function () {
+
+                        if (subDatatable == null) {
+
+                            subDatatable = $('#js_funcplant_table').DataTable({
+                                paging: false,
+                                searching: false,
+                                ordering: false,
+                                retrieve: true,
+                                columns: subColumns
+                            });
+
+                        }
+                        return subDatatable;
+                    },
+                    SetSubDatatable: function (datatable) {
+                        subDatatable = datatable;
+                    },
+                    DestroySubTable: function () {
+                        if (subDatatable != null) {
+                            subDatatable.destroy();
+                        }
+                    },
+                    SubColumns: subColumns
+                }
+
+            })();
+            UserFuncPlantSetting.Init();
+            //初始化数据
+            GetPlant();
+
+            //查询所有厂区
+            function GetPlant() {
+                $.post(UserFuncPlantSetting.urls.getPlant, function (data) {
+                 if (data != "") {
+                    $.each(data, function (i, item) {
+                        $("<option></option>")
+                            .val(item)
+                            .text(item)
+                            .appendTo($("#js_input_plant"));
+                        $("<option></option>")
+                            .val(item)
+                            .text(item)
+                            .appendTo($("#js_s_input_plant"));
+                    });
+                    GetFuncPlant("All");
+                }
+                });
+            };
+
+            function GetFuncPlant(Plant_Type) {
+                var temp = "";
+                var optype = "";
+                if (Plant_Type == "js_input_plant") {
+                    $("#js_input_funcplant").empty();
+                    temp = $("#js_input_plant").val();
+                    optype = $("#js_input_optype").val();
+                } else if (Plant_Type == "js_s_input_plant") {
+                    $("#js_s_input_funcplant").empty();
+                    temp = $("#js_s_input_plant").val();
+                    optype = $("#js_s_input_optype").val();
+                } else {
+                    $("#js_input_funcplant").empty();
+                    $("#js_s_input_funcplant").empty();
+                    temp = $("#js_input_plant").val();
+                    optype = $("#js_input_optype").val();
+                }
+                $.post(UserFuncPlantSetting.urls.GetFuncPlant, { "Plant": temp, "OP_Types": optype }, function (data) {
+                    if (data != "") {
+                        if (Plant_Type == "js_input_plant") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_input_funcplant"));
+                            });
+                            GetUserInfoByFuncPlant($("#js_input_funcplant").val());
+                        } else if (Plant_Type == "js_s_input_plant") {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_funcplant"));
+                            });
+                        } else {
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_input_funcplant"));
+                            });
+                            GetUserInfoByFuncPlant($("#js_input_funcplant").val());
+                            $.each(data, function (i, item) {
+                                $("<option></option>")
+                                    .val(item)
+                                    .text(item)
+                                    .appendTo($("#js_s_input_funcplant"));
+                            });
+                        } 
+                    }
+                });
+            };
+
+            function GetUserInfoByFuncPlant(FuncPlant) {
+                $.post(UserFuncPlantSetting.urls.GetUserInfoByFuncPlant, { "FuncPlant": FuncPlant }, function (data) {
+                    var subTable = $('#js_funcplant_table').DataTable({
+                        columns: UserFuncPlantSetting.SubColumns,
+                        ordering: false,
+                        data: data.UserPlantWithPlants,
+                        destroy: true
+                    });
+                    UserFuncPlantSetting.SetSubDatatable(subTable);
+                    $("#js_funcplant_table").find('.js-subtable-plant').attr("disabled", "disabled");
+                });
+            }
+
+            $("#js_input_plant").change(function ff() {
+                GetFuncPlant("js_input_plant");
+            });
+            $("#js_s_input_plant").change(function ff() {
+                GetFuncPlant("js_s_input_plant");
+            });
+            $("#js_input_optype").change(function ff() {
+                GetFuncPlant("js_input_plant");
+            });
+            $("#js_s_input_optype").change(function ff() {
+                GetFuncPlant("js_s_input_plant");
+            });
+
+            $("#js_input_funcplant").change(function ff(e) {
+                GetUserInfoByFuncPlant($("#js_input_funcplant").val());
+            });
+            //查询FunPlant
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    UserFuncPlantSetting.queryPlants(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+            //[新增User拥有的Plant]按钮
+            $('#js_btn_add_funcplant').on('click', function () {
+
+                var dataTable = UserFuncPlantSetting.GetSubDatatable();
+                var allowAdd = true;
+
+                dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                    var $row = $(dataTable.row(rowIdx).node());
+                    var $inputPlant = $row.find('.js-subtable-plant');
+
+                    if ($inputPlant.length > 0 && $.trim($inputPlant.val()) === "") {
+                        PDMS.Utility.MessageBox.info('Incomplete context at row #' + (rowIdx + 1) + ", Please fill complete before add new row.");
+                        allowAdd = false;
+                        return;
+                    }
+                });
+                if (allowAdd) {
+                    var row = dataTable.row.add({
+                        "Account_UID": 0,
+                        "User_NTID": "",
+                        "User_Name": ""
+                    }).draw();
+                    var $tr = $(row.node());
+                }
+            });
+            //Plant文本框失去焦点后根据内容自动填充Plant Info
+            $('#js_edit_modal').on('blur', '.js-subtable-plant', function (e) {
+                var $sender = $(this);
+                var currentInput = $.trim($sender.val());
+                $.get(UserFuncPlantSetting.urls.GetUserInfo, { "User_NTID": currentInput },
+                    function (data) {
+                        var $tr = $sender.closest('tr');
+                        var $tds = $tr.find("td");
+                        $tr.find('.js-subtable-user_name').text(data);
+                    });
+            });
+            //[删除User拥有的Plant]按钮
+            $('#js_btn_del_funcplant').on('click', function () {
+
+                var dataTable = UserFuncPlantSetting.GetSubDatatable();
+
+                var $checkedItems = $('#js_funcplant_table .js-checkbox-item:checked');
+
+                if ($checkedItems.length == 0) {
+
+                    PDMS.Utility.MessageBox.info("Please select data to delete");
+                    return;
+
+                } else {
+
+                    $.map($checkedItems, function (checkbox) {
+                        dataTable.row($(checkbox).parents('tr')).remove().draw();
+                    });
+
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        dataTable.cell(rowIdx, 1).data(rowIdx + 1).draw()
+                    });
+                }
+            });
+            //修改保存UserFuncPlant按钮
+            $('#js_btn_save_new_user_plant').click('click', function () {
+
+                var funcPlant = $.trim($('#js_input_funcplant').val());
+
+                var submitJson = { FuncPlant: funcPlant };
+
+                if (SaveCheck(submitJson)) {
+                    $.post(UserFuncPlantSetting.urls.EditUserFuncPlant, { jsonUserWithFuncPlant: JSON.stringify(submitJson) }, function (data) {
+                        if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("Save Success");
+                            UserPlantSetting.QueryUserFuncPlants();
+                            $('#js_edit_modal').modal('hide');
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    });
+                }
+            });
+
+            function SaveCheck(submitJson) {
+                var flag = true;
+                var userFuncPlants = [];
+                var dataTable = UserFuncPlantSetting.GetSubDatatable();
+
+                dataTable
+                    .rows()
+                    .every(function (rowIdx, tableLoop, rowLoop) {
+                        var userorg = {};
+                        var $row = $(dataTable.row(rowIdx).node());
+                        //Get UserNTID
+                        var $inputUser = $row.find('.js-subtable-plant');
+                        userorg["User_NTID"] = $inputUser.val();
+                        //push item into sub
+                        userFuncPlants.push(userorg);
+                    });
+
+                submitJson.UserPlantWithPlants = userFuncPlants;
+
+                return flag;
+            }
+
+            //输入NTID，显示用户名称
+            $("#js_input_user_ntid").bind('keydown', function (e) {
+                var key = e.which;
+                if (key == 13) {
+                    e.preventDefault();
+                    $("#js_input_user_ntid").focus();
+
+                    $.post(UserFuncPlantSetting.urls.GetUserInfo, { "User_NTID": $("#js_input_user_ntid").val() },
+                        function (data) {
+                            if (data != "") {
+                                $("#js_input_user_name").val(data);
+                            } else
+                                PDMS.Utility.MessageBox.info('输入的NTID不存在!');
+                        });
+                }
+            });
+        });
+    </script>
+
+}

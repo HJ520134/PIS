@@ -1,0 +1,19 @@
+2016-09-09 16:06:37.3673 | Error | System.InvalidOperationException: The cast to value type 'System.Int32' failed because the materialized value is null. Either the result type's generic parameter or the query must use a nullable type.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   ì¶ System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.FlowChartDetailRepository.QueryInputConditions(Int32 processSeq, Int32 flowchartMasterUid) ì¶ D:\Code\PDMS\PDMS.Data\Repository\FlowChartDetailRepository.cs: ÐÐ 590 System.InvalidOperationException: The cast to value type 'System.Int32' failed because the materialized value is null. Either the result type's generic parameter or the query must use a nullable type.
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)
+   ì¶ lambda_method(Closure , Shaper )
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)
+   ì¶ System.Data.Entity.Core.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()
+   ì¶ System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   ì¶ System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   ì¶ System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   ì¶ PDMS.Data.Repository.FlowChartDetailRepository.QueryInputConditions(Int32 processSeq, Int32 flowchartMasterUid) ì¶ D:\Code\PDMS\PDMS.Data\Repository\FlowChartDetailRepository.cs: ÐÐ 590 
+ QualityService.QueryInputConditions => FlowChartDetailRepository.QueryInputConditions => Logger.Error 
+

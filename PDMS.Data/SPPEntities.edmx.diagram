@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="73ca81bab53a486ea3d07b4b31f97bc3" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="SPPEntityModel.Enumeration" Width="1.5" PointX="6" PointY="150.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQP_Forecast_PowerOn" Width="1.5" PointX="7.5" PointY="165.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQP_PowerOn" Width="1.5" PointX="7.5" PointY="162.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQP_Type" PointX="5.625" PointY="145.375" Width="1.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.ExceptionTypeWithFlowchart" Width="1.5" PointX="16.5" PointY="168" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.FlowChart_Master" Width="1.5" PointX="11.25" PointY="167.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.FlowChart_MgData" Width="1.5" PointX="23.75" PointY="183.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.FlowChart_PC_MH_Relationship" Width="1.5" PointX="32.75" PointY="173.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Labor_UsingInfo" Width="1.5" PointX="5.25" PointY="188.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Spareparts_Demand" Width="4" PointX="19.25" PointY="160.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Notice" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OQC_InputDetail" Width="1.5" PointX="35" PointY="174.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OQC_InputDetail_History" Width="1.5" PointX="33" PointY="169.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OQC_InputMaster" Width="1.5" PointX="29.75" PointY="178.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OQC_InputMaster_History" Width="1.5" PointX="26.75" PointY="178.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.PPForQAInterface" Width="1.5" PointX="20.75" PointY="242.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Input_History" Width="1.5" PointX="24.5" PointY="173.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Rework_Info_History" Width="1.5" PointX="27.75" PointY="163.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Project_Users_Group" Width="1.5" PointX="6" PointY="172.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_DataChangeLog" Width="1.5" PointX="3" PointY="281" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_DistributeRate" Width="1.5" PointX="21.75" PointY="192" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_InputDetail" Width="1.5" PointX="33" PointY="189.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_InputDetail_History" Width="1.5" PointX="23" PointY="200" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_InputMaster" Width="1.5" PointX="30.75" PointY="164.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_InputMaster_History" Width="1.5" PointX="20.75" PointY="235.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_MgData" Width="1.5" PointX="27.75" PointY="168.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_Outbound_M" Width="1.5" PointX="8.25" PointY="179" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_BU_M" Width="1.5" PointX="3" PointY="206.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Function" Width="1.5" PointX="3" PointY="276.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Function_Plant" Width="1.5" PointX="5.25" PointY="215.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_FunctionSub" Width="1.5" PointX="5.25" PointY="222.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_OrganizationBOM" Width="1.5" PointX="5.25" PointY="168.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Plant" Width="1.5" PointX="3" PointY="286.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_Function" Width="1.5" PointX="5.25" PointY="232.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_FunctionSub" Width="1.5" PointX="7.5" PointY="197.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_User_Business_Group" Width="1.5" PointX="7.5" PointY="184.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_User_FunPlant" Width="1.5" PointX="7.5" PointY="190.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_User_Plant" Width="1.5" PointX="5.25" PointY="227.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_User_Role" Width="1.5" PointX="8.25" PointY="235.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_User_View" Width="1.5" PointX="5.25" PointY="191.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_UserOrg" Width="1.5" PointX="10.25" PointY="161.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_View_Column" Width="1.5" PointX="3" PointY="220.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Warehouse" Width="1.5" PointX="8.25" PointY="168.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Warehouse_Storage" Width="1.5" PointX="15.5" PointY="180.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Warning_List" Width="1.5" PointX="7.5" PointY="217.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.WIP_Change_History" Width="1.5" PointX="3" PointY="305.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_FORECAST_POWERON_REF_EQP_TYPE" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_POWE_REFERENCE_EQP_TYPE" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_EQP_TYPE" />
+        <AssociationConnector Association="SPPEntityModel.ExceptionTypeWithFlowchart_Constraint" />
+        <AssociationConnector Association="SPPEntityModel.FK_EXCEPTIO_REFERENCE_FLOWCHAR108" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_FLOWCHARt_Master" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_FLOWCHAR90" />
+        <AssociationConnector Association="SPPEntityModel.Product_input_History_FlowchartMasterUID_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_OQC_INPU98" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_OQC_INPU102" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_QUALITYAS_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_QUALITYA1" />
+        <AssociationConnector Association="SPPEntityModel.QualityAssurance_InputDetail_Constraint" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_QUALITYA" />
+        <AssociationConnector Association="SPPEntityModel.QualityAssurance_InputDetail_History_Constraint" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_B2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_FUNCTIONSUB_REF_SYSTEM_FUNCTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ROLE_FUNCTION_REF_SYSTEM_FUNCTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_FUNCTION_PLANT_REF_SYSTEM_PLANT" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_FUNPLANT_REF_SYSTEM_FUNCTION_PLANT" />
+        <AssociationConnector Association="SPPEntityModel.FK_WARNING__REFERENCE_SYSTEM_F2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WARNING__REFERENCE_SYSTEM_F3" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_R_REFERENCE_SYSTEM_F2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_PLANT_REF_SYSTEM_PLANT" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_R_REFERENCE_SYSTEM_R2" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_User_View_System_View_Column" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_STORAGE_REF_WAREHOUSE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Repair_Demand" Width="1.5" PointX="16.25" PointY="155" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_EQP_TYPE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Reason" Width="1.5" PointX="16.25" PointY="177.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Meterial_UpdateInfo" Width="1.5" PointX="26.5" PointY="159.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Demand_Summary" Width="1.5" PointX="19.25" PointY="154.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_ENUMERATION" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_BU_D" Width="1.5" PointX="5.25" PointY="183.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_BU_D_REF_SYSTEM_BU_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_BUSINESS_GROUP_REF_SYSTEM_BU_D" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_BU_D_Org" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Organization" Width="1.5" PointX="5.25" PointY="246.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_TYPE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_TYPE_REFERENCE_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FlowMasterOrgUID" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.Organization_FunPlant_Con" />
+        <AssociationConnector Association="SPPEntityModel.Organization_OPType_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ORGANIZATIONBOM_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ORGANIZATIONBOM_REF_SYSTEM_ORGANIZATIONUNIT_C" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USERORG_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.System_UserOrg_Organization_Department_Con" />
+        <AssociationConnector Association="SPPEntityModel.System_UserOrg_Organization_FunPlant_Con" />
+        <AssociationConnector Association="SPPEntityModel.System_UserOrg_Organization_OPType_Con" />
+        <AssociationConnector Association="SPPEntityModel.System_UserOrg_Organization_Plant_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_BU_D_Org_System_Organization" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Language" Width="1.5" PointX="0.75" PointY="227.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_LocaleStringResource" Width="1.5" PointX="5.25" PointY="227.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_LOCALESTRINGRESOURCE_REF_SYSTEM_LANGUAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Input_Location" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Inventory" Width="1.5" PointX="20" PointY="210.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Normal_Demand" Width="1.5" PointX="20" PointY="197.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_EQP_TYPE" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INVENTORY_REF_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_SYSTEM_ORGANIZATION_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_Check" Width="1.5" PointX="27" PointY="190.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_Inbound" Width="1.5" PointX="26" PointY="197" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_ENUMERATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_ENUMERATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_WAREHOUSE_STORAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_InOut_Detail" Width="1.5" PointX="20" PointY="203.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_Transfer" Width="1.5" PointX="29" PointY="196.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INOUT_DETAIL_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INOUT_DETAIL_REF_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_WAREHOUSE_STORAGE_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.Storage_Outbound_D" Width="1.5" PointX="25" PointY="169.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_D_REF_ENUMERATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_D_REF_STORAGE_OUTBOUND_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_D_REF_WAREHOUSE_STORAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Input" Width="1.5" PointX="13.5" PointY="189.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Rework_Info" Width="1.5" PointX="24.75" PointY="214.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.Product_input_FlowchartMasterUID_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCT__REFERENCE_PRODUCT_91" />
+        <EntityTypeShape EntityType="SPPEntityModel.DefectCode_Group" Width="1.5" PointX="5.625" PointY="206" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.DefectCode_RepairSolution" Width="1.5" PointX="10.875" PointY="201" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_DefectCode" Width="1.5" PointX="8.625" PointY="207.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Maintenance_Profile" Width="1.5" PointX="16.625" PointY="187" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Repair_D_Defect" Width="1.5" PointX="33.625" PointY="229" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_RepairSolution" Width="1.5" PointX="10.625" PointY="217" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Resume" Width="1.5" PointX="34.375" PointY="223.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Totake_D" Width="1.5" PointX="31.375" PointY="217.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_User_Workshop" Width="1.5" PointX="10.875" PointY="226" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.FixtureDefectCode_Setting" Width="1.5" PointX="12.875" PointY="217" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Process_Info" Width="1.5" PointX="11.625" PointY="210.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Production_Line" Width="1.5" PointX="24.875" PointY="206.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Repair_Location" Width="1.5" PointX="21.625" PointY="217" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Vendor_Info" Width="1.5" PointX="5.625" PointY="201.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Workshop" Width="1.5" PointX="8.625" PointY="201.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.WorkStation" Width="1.5" PointX="27.875" PointY="211.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_FIXTURE_DEFECTCODE" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_FIXTURE_DEFECTCODE" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_FIXTURE_REPAIRSOLUTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_DEFECTCODE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_DEFECTCODE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_DEFECTCODE_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_DEFECT_REF_FIXTURE_DEFECTCODE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_FIXTURE_DEFECTCODE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_DEFECT_REF_FIXTURE_REPAIRSOLUTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIRSOLUTION_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USER_WORKSHOP_REF_WORKSHOP" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESS_INFO_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESS_INFO_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESS_INFO_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_PROCESS_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_PROCESS_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_WORKSHOP" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_WORKSTATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_REPAIR_LOCATION_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_REPAIR_LOCATION_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_REPAIR_LOCATION_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_VENDOR_INFO_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_VENDOR_INFO_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSHOP_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSHOP_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSHOP_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Repair_D" Width="1.5" PointX="36.625" PointY="224" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_DEFECT_REF_FIXTURE_REPAIR_D" />
+        <EntityTypeShape EntityType="SPPEntityModel.Maintenance_Plan" Width="1.5" PointX="18.625" PointY="214.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_MAINTENANCE_PLAN" />
+        <AssociationConnector Association="SPPEntityModel.FK_MAINTENANCE_PLAN_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MAINTENANCE_PLAN_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MAINTENANCE_PLAN_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_ENUMERATION" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQP_Material" Width="1.5" PointX="24" PointY="193" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_MATE_REFERENCE_EQP_TYPE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Maintenance_Record" Width="1.5" PointX="36.625" PointY="217.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Repair_M" Width="1.5" PointX="27.875" PointY="204.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Totake_M" Width="1.5" PointX="16.625" PointY="202.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_REF_FIXTURE_MAINTENANCE_PROFILE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_FIXTURE_REPAIR_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_REPAIR_LOCATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_D_REF_FIXTURE_TOTAKE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Maintenance_Record_History" Width="1.5" PointX="39.625" PointY="215" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Resume_History" Width="1.5" PointX="39.625" PointY="221.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_HISTORY_REF_FIXTURE_MAINTENANCE_PROFILE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Inventory" Width="1.5" PointX="15.875" PointY="220.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_InOut_Detail" Width="1.5" PointX="27.875" PointY="218.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_Transfer" Width="1.5" PointX="29.875" PointY="191" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Warehouse_Storage" Width="1.5" PointX="26.875" PointY="223.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INOUT_DETAIL_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_TRANSFER_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_INVENTORY_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INOUT_DETAIL_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_TRANSFER_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_TRANSFER_REF_FIXTURE_WAREHOUSE_STORAGE_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Email_Attachment" Width="1.5" PointX="15.375" PointY="237.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Email_M" Width="1.5" PointX="13.125" PointY="236.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Module" Width="1.5" PointX="7.625" PointY="227.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_ATTACHMENT_REF_SYSTEM_EMAIL_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_MODULE_REF_SYSTEM_FUNCTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_MODULE_REF_SYSTEM_ORGANIZATION" />
+        <EntityTypeShape EntityType="SPPEntityModel.Batch_Log" Width="1.5" PointX="13.125" PointY="232.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Email_Delivery" Width="1.5" PointX="13.125" PointY="222.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_ORGANIZATION_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Warehouse" Width="1.5" PointX="7.625" PointY="222" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_FIXTURE_WAREHOUSE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_Inbound" Width="1.5" PointX="36.125" PointY="208.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_Outbound_D" Width="1.5" PointX="37.375" PointY="204.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_D_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.QEboardSum" Width="1.5" PointX="7.375" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.TopTenQeboard" Width="1.5" PointX="7.375" PointY="6.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Schedule" Width="1.5" PointX="10.875" PointY="230.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_Schedule_UID" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_SCHEDULE" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_M_REF_SYSTEM_SCHEDULE" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SCHEDULE_REF_SYSTEM_FUNCTION" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SCHEDULE_REF_SYSTEM_MODULE" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SCHEDULE_REF_SYSTEM_ORGANIZATION" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_Outbound_M" Width="1.5" PointX="33.125" PointY="208.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_FIXTURE_REPAIR_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_D_REF_FIXTURE_STORAGE_OUTBOUND_M" />
+        <EntityTypeShape EntityType="SPPEntityModel.QTrace_Sum" Width="1.5" PointX="3.375" PointY="9.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QTrace_TopTen_Sum" Width="1.5" PointX="9.375" PointY="8.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Demand_D" Width="1.5" PointX="23.875" PointY="219.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Demand_Summary_D" Width="1.5" PointX="34.125" PointY="218.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_LocalizedProperty" Width="1.5" PointX="5.25" PointY="238.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_LocalizedProperty_System_Language" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Demand_M" Width="1.5" PointX="16.25" PointY="196.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Demand_Summary_M" Width="1.5" PointX="30.875" PointY="206" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_D_REF_FIXTURE_PART_DEMAND_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_D_REF_FIXTURE_PART_DEMAND_SUMMARY_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Storage_Check" Width="1.5" PointX="30.125" PointY="212.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_ENUMERATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_FIXTURE_WAREHOUSE_STORAGE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Order_D" Width="1.5" PointX="29.875" PointY="232.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_D_REF_VENDOR_INFO" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQP_UserTable" Width="1.5" PointX="14.625" PointY="211.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_Labor_UsingInfo_EQP_UserTable" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INFO_REF_SYSTEM_FUNCTION_PLANT" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_EQP_USERTABLE" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Info" Width="1.5" PointX="35.75" PointY="188.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_MATE_REFERENCE_MATERIAL" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_MATERIAL_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INFO_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INFO_REF_WAREHOUSE_STORAGE" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INVENTORY_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REASON_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_METERIAL_REFERENCE_MATERIAL" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INOUT_DETAIL_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_D_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_MATERIAL_INFO" />
+        <EntityTypeShape EntityType="SPPEntityModel.Material_Maintenance_Record" Width="1.5" PointX="40" PointY="204.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_MATERIAL_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role" Width="1.5" PointX="5.25" PointY="242.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_ROLE_REF_SYSTEM_ROLE" />
+        <AssociationConnector Association="SPPEntityModel.System_Role_Function_Role_UID_Con" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Order_Schedule" Width="1.5" PointX="32.125" PointY="237.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_SCHEDULE_REF_FIXTURE_PART_ORDER_D" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Order_M" Width="1.5" PointX="22.625" PointY="205.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_FIXTURE_PART_ORDER_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_D_REF_FIXTURE_PART_ORDER_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_M_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Electrical_Board_DT" Width="1.5" PointX="13.5" PointY="168" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_Electrical_Board_DT_REF_FLOW_CHART_MASTER" />
+        <EntityTypeShape EntityType="SPPEntityModel.FlowChart_Detail" Width="1.5" PointX="15.5" PointY="224.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.ExceptionTypeWithFlowchart_FD_Con" />
+        <AssociationConnector Association="SPPEntityModel.ExceptionTypeWithFlowchart_FlowChart_Detail_UID_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_FLOWCHAR" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHART_DETAIL_REF_SYSTEM_FUNCTION_PLANT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_FLOWCHAR100" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_FLOWCHAR97" />
+        <AssociationConnector Association="SPPEntityModel.FK_PPFORQAI_REFERENCE_FLOWCHAR81" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCT__REFERENCE_FLOWCHAR92" />
+        <AssociationConnector Association="SPPEntityModel.FK_Product_Rework_Info_FlowChart_Detail" />
+        <AssociationConnector Association="SPPEntityModel.FK_Product_Rework_Info_History_FlowChart_Detail" />
+        <AssociationConnector Association="SPPEntityModel.FK_Product_Rework_Info_History_FlowChart_Detail1" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_FLOWCHARt_Detail" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_FLOWCHAR" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_FLOWCHAR89" />
+        <AssociationConnector Association="SPPEntityModel.Flowchart_Detail_FLowchartMAster_UID_Con" />
+        <AssociationConnector Association="SPPEntityModel.Flowchart_Mgdata_FLowchart_Detail_UID_Con" />
+        <AssociationConnector Association="SPPEntityModel.QualityAssurance_MgData_FD_Con" />
+        <EntityTypeShape EntityType="SPPEntityModel.Machine_Schedule_Config" Width="1.5" PointX="12" PointY="246.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Machine_Station" Width="1.5" PointX="9.75" PointY="242.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Machine_Yield" Width="1.5" PointX="12" PointY="242.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_MACHINE_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_MACHINE_1" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O3" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O4" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O5" />
+        <EntityTypeShape EntityType="SPPEntityModel.APP_USER_FAVORITES_FUNCTION" Width="1.5" PointX="8.25" PointY="250.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_APP_USER_FAVORITES_FUNCTION_System_Function" />
+        <EntityTypeShape EntityType="SPPEntityModel.LogMessageRecord" Width="1.5" PointX="3.375" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.ClampRate" Width="1.5" PointX="3.75" PointY="3.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.ClampRateHistory" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.CuttingFluid" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.CuttingFluidHistory" Width="1.5" PointX="11.75" PointY="8.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.KnifeLifeTime" Width="1.5" PointX="11.75" PointY="11.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.KnifeLifeTime_History" Width="1.5" PointX="5.75" PointY="12.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.LoadSpeed" Width="1.5" PointX="13.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.LoadSpeedHistory" Width="1.5" PointX="13.75" PointY="5.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.MachineCapacity" Width="1.5" PointX="13.75" PointY="10.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.MachineCapacityHistory" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OrigCoordMon" Width="1.5" PointX="7.75" PointY="14.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OrigCoordMonHistory" Width="1.5" PointX="13.75" PointY="14.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Seq" Width="1.5" PointX="5.625" PointY="274.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.TwoHoursCapacity" Width="1.5" PointX="15.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.TwoHoursCapacityHistory" Width="1.5" PointX="2.75" PointY="15.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_Function_SystemAdmin" Width="1.5" PointX="15.75" PointY="5.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_Function_Z" Width="1.5" PointX="15.75" PointY="8.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_FunctionSub_SystemAdmin" Width="1.5" PointX="15.75" PointY="11.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Role_FunctionSub_Z" Width="1.5" PointX="15.75" PointY="14.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Tmp_Fixture_Part" Width="1.5" PointX="9.75" PointY="16.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.MES_StationDataRecord" Width="1.5" PointX="17.75" PointY="228.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MES_STAT_REFERENCE_FLOWCHAR" />
+        <EntityTypeShape EntityType="SPPEntityModel.MES_PIS_SyncFailedRecord" Width="1.5" PointX="16.375" PointY="17.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.ModelLineHR" Width="1.5" PointX="18.375" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Machine_Customer" Width="1.5" PointX="7.5" PointY="242.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_MACHINE_" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O1" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_O2" />
+        <EntityTypeShape EntityType="SPPEntityModel.Mes_StationColor" Width="1.5" PointX="18.375" PointY="8.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.MES_SNOriginal" Width="1.5" PointX="18.375" PointY="4.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_ExceptionType" Width="1.5" PointX="21.5" PointY="222.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.QualityAssurance_ExceptionType_Temp" Width="1.5" PointX="22.5" PointY="211.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_EXCEPTIO_REFERENCE_QUALITYA94" />
+        <AssociationConnector Association="SPPEntityModel.QAExType_FlowchartMasterUID_Con" />
+        <AssociationConnector Association="SPPEntityModel.QAExType_TEMP_FlowchartMasterUID_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_QUALITYA96" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_QUALITYA103" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_QUALITYAS_QUALITYA" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_QUALITYA2" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_QUALITYA87" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_AssemblyModel" Width="1.5" PointX="31.75" PointY="246.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_AssemblyModelChange" Width="1.5" PointX="35" PointY="242.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_BuildPlanLineMapping" Width="1.5" PointX="32.75" PointY="242.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_BuildPlanSource" Width="1.5" PointX="44" PointY="234.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_CustomerShiftPerf" Width="1.5" PointX="25.75" PointY="254.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_CustomerTarget" Width="1.5" PointX="34.75" PointY="246.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_DataSource" Width="1.5" PointX="43.75" PointY="231.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_Device" Width="1.5" PointX="25.75" PointY="249.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_GoldenStationCTRecord" Width="1.5" PointX="54.25" PointY="244.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_LineHistory" Width="1.5" PointX="34.75" PointY="236.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_LineShiftPerf" Width="1.5" PointX="43" PointY="238.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_MealTime" Width="1.5" PointX="28.75" PointY="246.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_MESSource" Width="1.5" PointX="25.75" PointY="235.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StationShiftPerf" Width="1.5" PointX="43" PointY="253.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StdLineModel" Width="1.5" PointX="40" PointY="250.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StdLineModelStation" Width="1.5" PointX="40" PointY="254.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StdWIPRoute" Width="1.5" PointX="40" PointY="238.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StdWIPRouteSummary" Width="1.5" PointX="37" PointY="247" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_WIPEvent" Width="1.5" PointX="46" PointY="242.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_WIPHourOutput" Width="1.5" PointX="46" PointY="247.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_WIPShiftBatchOutput" Width="1.5" PointX="46" PointY="252.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_WIPShiftOutput" Width="1.5" PointX="43" PointY="246.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_BuildPlan" Width="1.5" PointX="40" PointY="244.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEMBLYMODELCHANGE_REFERENCE_GL_ASSEMBLYMODEL" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEMLYMODELCHANGE_REFERENCE_GL_ASSEMBLYMODEL_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILDPLAN_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINES_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATIONSHIFTPRE_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDLI_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDLINEMODELSTATION_REFERENCE_GL_ASSEMBLY" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDWI_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDWIPROUTE_REFERENCE_GL_ASSEMBLY" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPEV_REFERENCE_GL_ASSEMBLY" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPHO_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSH_REFERENCE_GL_ASSEM" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTBATCH_REFERENCE_GL_ASSEMBLY" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPEV_REFERENCE_GL_DATASOURCE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEH_REFERENCE_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEH_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEH_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Actual_Production_Equipment_Qty" Width="1.5" PointX="41.5" PointY="234.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Actual_Production_Manpower" Width="1.5" PointX="39.25" PointY="233.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Current_Manpower" Width="1.5" PointX="10.5" PointY="249.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.DemissionRateAndWorkSchedule" Width="1.5" PointX="13.5" PointY="249.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Predict_Production_Information" Width="1.5" PointX="30.25" PointY="253" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Demand_Calculation_Record" Width="1.5" PointX="28.75" PointY="241.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Equipment_Demand" Width="1.5" PointX="37" PointY="238.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Flowchart_Detail_ME" Width="1.5" PointX="28" PointY="250.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Flowchart_Detail_ME_Equipment" Width="1.5" PointX="39.25" PointY="227.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Flowchart_Master" Width="1.5" PointX="25.75" PointY="242.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Manpower_Demand" Width="1.5" PointX="37" PointY="232.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_ACTUAL_PRODUCTION_EQUIPMENT_QTY_REF_RP_FLOWCHART_DETAIL_ME_EQUIPMENT" />
+        <AssociationConnector Association="SPPEntityModel.FK_ACTUAL_PRODUCTION_MANPOWER_REF_RP_FLOWCHART_DETAIL_ME" />
+        <AssociationConnector Association="SPPEntityModel.FK_CURRENT_MANPOWER_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_CURRENT_MANPOWER_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEMISSIONRATEANDWORKSCHEDULE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEMISSIONRATEANDWORKSCHEDULE_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_PREDICT_PRODUCTION_INFORMATION_REF_RP_FLOWCHART_DETAIL_ME" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_DEMAND_CALCULATION_RECORD_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_DEMAND_CALCULATION_RECORD_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_EQUIPMENT_DEMAND_REF_RP_DEMAND_CALCULATION_RECORD" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_MANPOWER_DEMAND_REF_RP_DEMAND_CALCULATION_RECORD" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_EQUIPMENT_DEMAND_REF_RP_FLOWCHART_DETAIL_ME_EQUIPMENT" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_EQUIPMENT_REF_RP_FLOWCHART_DETAIL_ME" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_REF_RP_FLOWCHART_MASTER" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_MANPOWER_DEMAND_REF_RP_FLOWCHART_DETAIL_ME" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_MASTER_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_MASTER_REF_SYSTEM_ORGANIZATION_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.RP_Flowchart_Detail_IE" Width="1.5" PointX="42.25" PointY="225.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_IE_REF_RP_FLOWCHART_DETAIL_ME" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Project" Width="1.5" PointX="23.5" PointY="231.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHART_MASTER_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEMEBLY_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEMBLYMODELCHANGE_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILDPLANLINEMAPPING_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_CUSTOMERSHIFTPERF_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_CUSTOMERTARGET_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_DEVICE_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEHISTORY_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINESHIFTPERF_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEALTIME_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MESSOURCE_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATIONSHIFTPERF_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDWIPROUTE_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDWIPROUTESUMMERY_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPEVENT_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPHOUROUTPUT_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTtBATCHOUTPUT_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTOOUTPUT_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_P106" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_P107" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROJECT_USERS_GROUP_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_DEMAND_CALCULATION_RECORD_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_MASTER_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_P_REFERENCE_SYSTEM_B" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_PROJECT_REF_SYSTEM_BU_D" />
+        <AssociationConnector Association="SPPEntityModel.System_Project_Organization_Con" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILDPLAN_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_PROJECT" />
+        <EntityTypeShape EntityType="SPPEntityModel.ProcessIDTransformConfig" Width="1.5" PointX="17.75" PointY="240" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESSI_REFERENCE_FLOWCHAR" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_StationHistory" Width="1.5" PointX="37" PointY="253.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_GL_LINEHISTORY" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_Line" Width="1.5" PointX="32.75" PointY="252.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_StationDefectCode" Width="1.5" PointX="49.25" PointY="246.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_StationImprovement_Plan" Width="1.5" PointX="49.25" PointY="240.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_UserStation" Width="1.5" PointX="49.25" PointY="253.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_DEVIC_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILDPLAN_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINE_REFERENCE_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINE_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINE_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINE_REFERENCE_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINES_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATIONSHIFTPRE_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDLI_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDLINESMODELTATION_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPEV_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPHO_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSH_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTBATCH_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_GL_LINEDF" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_Code_1" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_Code_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_Code_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_PA" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Station_Keyin_1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Station_Keyin_2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Station_Keyin_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.PlayBoard_View" Width="1.5" PointX="5.25" PointY="283.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_M" Width="1.5" PointX="42.375" PointY="212.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part" Width="1.5" PointX="27.625" PointY="150.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Setting_D" Width="1.5" PointX="34.875" PointY="203.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_Setting_M" Width="1.5" PointX="14.5" PointY="244.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_ENUMERATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_PRODUCTION_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_PROJECT" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_VENDOR_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_HISTORY_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_RESUME_HISTORY_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_RESUME_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_D_REF_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_D_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_D_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_INVENTORY_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_D_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_REF_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_D_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INOUT_DETAIL_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_D_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_TRANSFER_REF_FIXTURE_PART" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_D_REF_FIXTURE_PART_SETTING_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_M_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_M_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_M_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Product_Input_Location_History" Width="1.5" PointX="18.375" PointY="11.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_M_UseScanHistory" Width="1.5" PointX="44.625" PointY="215.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_USESCANHISTORY_REFERENCE_FIXTURE_M" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_DefectCodeDailySum" Width="1.5" PointX="57.5" PointY="248.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_OEE_STATYU" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_SUM_1" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_SUM_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_SUM_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_UseTimes" Width="1.5" PointX="46.625" PointY="231.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PARTUSETIIMES_REFERENCE_FIXTURE_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USETIMES_REFERENCE_FIXTURE_SETTING_DETAIL" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_StationDailyDownSum" Width="1.5" PointX="56.5" PointY="256.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.OEE_StationDailyDownSum_1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_StationDailyDownSum_2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_StationDailyDownSum_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Part_ClearHistory" Width="1.5" PointX="51.875" PointY="239.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_CLEAR_REFERENCE_FIXTURE_USETIMES" />
+        <EntityTypeShape EntityType="SPPEntityModel.CNCMachine" Width="1.5" PointX="29.75" PointY="223.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_SYSTEM_O1" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_SYSTEM_O2" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_SYSTEM_P" />
+        <EntityTypeShape EntityType="SPPEntityModel.PlayBoard_PlayTime" Width="1.5" PointX="10.75" PointY="238.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_ShiftTime" Width="1.5" PointX="13.5" PointY="255.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_CUSTO_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_GOLDE_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINES_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEALT_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_SHIFT_REFERENCE_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_SHIFT_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_SHIFT_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATIONSHIFTPRE_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPHO_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTBATCH_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_GL_SHIFTC" />
+        <EntityTypeShape EntityType="SPPEntityModel.CNCMachineColumnTable" Width="1.5" PointX="5.375" PointY="19.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.PlayBoard_Setting" Width="1.5" PointX="7.5" PointY="254.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_PAYBORD_PLAYTIME_REFERENCE_PLAYBOARD_SETTING" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARD_SETTING_REFERENCE_PLAYBOARD_VIEW" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Equipment_Info" Width="1.5" PointX="16.5" PointY="249.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_EQUIPMEN" />
+        <AssociationConnector Association="SPPEntityModel.FK_Equipment_Info_REFERENCE_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_Equipment_Info_REFERENCE_SYSTEM_O1" />
+        <AssociationConnector Association="SPPEntityModel.FK_Equipment_Info_REFERENCE_SYSTEM_O2" />
+        <AssociationConnector Association="SPPEntityModel.FK_Equipment_Info_System_Function_Plant" />
+        <AssociationConnector Association="SPPEntityModel.FK_METERIAL_REFERENCE_EQUIPMEN" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_MachineInfo" Width="1.5" PointX="57.25" PointY="241.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_EQUIPMEN" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_OEE_MACH" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_SYSTEM_PB" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_Org_Organation1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_Org_Organation2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_Org_Organation3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Machine" Width="1.5" PointX="27.125" PointY="258.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_FIXTURE_MACHINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_PRODUCTION_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_SYSTEM_ORGANIZATION_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Mes_OutShipMent" Width="1.5" PointX="12.375" PointY="19.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_QADetectionPoint" Width="1.5" PointX="54.25" PointY="240.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_QATargetYield" Width="1.5" PointX="49.25" PointY="236.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.IPQCQualityDetial" Width="1.5" PointX="57.25" PointY="237" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.IPQCQualityReport" Width="1.5" PointX="59.25" PointY="254.125" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_IPQCQUAL_REFERENCE_GL_SHIFT_REPORT" />
+        <AssociationConnector Association="SPPEntityModel.FK_IPQCQUAL_REFERENCE_GL_SHIFTION" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_LineShiftResposibleUser" Width="1.5" PointX="49" PointY="230.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINESHIFTRESPONSIBLE_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINESHITRESPONSEBLE_REFERENCE_GL_SHIFT" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Return_M" Width="1.5" PointX="18.875" PointY="247.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE__FIXTURE_R_FIXTURE_" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_Organization001" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_Organization002" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_Organization003" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_DefectCodeDailyNum" Width="1.5" PointX="63.5" PointY="247.625" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_GL_SHIFTD" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_OEE_MACHC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_OEE_STAT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_DownTime_FuncPlant" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_Downtime_Plant" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_Daily_Defect_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_Rest" Width="1.5" PointX="21.75" PointY="249" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_REST_REFERENCE_GL_SHIFT" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_DownTimeCode" Width="1.5" PointX="52.25" PointY="249" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_SYSTEM_P" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_OEE_DOWN" />
+        <AssociationConnector Association="SPPEntityModel.OEE_DownTimeCode_1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_DownTimeCode_2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_DownTimeCode_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.Fixture_Return_D" Width="1.5" PointX="51.625" PointY="235.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_DownTimeType" Width="1.5" PointX="10.5" PointY="255.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_RETURN_D" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_to_D" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_OEE_DOWN" />
+        <AssociationConnector Association="SPPEntityModel.FK_Bg_REF_ORG" />
+        <AssociationConnector Association="SPPEntityModel.FK_FuncPlant_REF_Org" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_SYSTEM_O" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_EveryDayDFcodeMissing" Width="1.5" PointX="63.5" PointY="253.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFCODEMISSING_REF_ShiftTime" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFCODEMISSING_REF_BG" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFCODEMISSING_REF_FUNC" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFCODEMISSING_REF_MachineInfo" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFCODEMISSING_REF_ORG" />
+        <EntityTypeShape EntityType="SPPEntityModel.CostCtr_info" Width="1.5" PointX="7.5" PointY="263.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.EQPRepair_Info" Width="1.5" PointX="18.75" PointY="252.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_Station" Width="1.5" PointX="40" PointY="258.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_EveryDayMachineDTCode" Width="1.5" PointX="59.5" PointY="242.875" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_COSTCTR_Ref_SYSTEM_BG" />
+        <AssociationConnector Association="SPPEntityModel.FK_COSTCTR_Ref_SYSTEM_FuncPlan" />
+        <AssociationConnector Association="SPPEntityModel.FK_COSTCTR_Ref_SYSTEM_Org" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQPREPAI_Ref_COSTCTR_UID" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQPRepair_Info_Equipment_Info" />
+        <AssociationConnector Association="SPPEntityModel.FK_LABOR_US_REFERENCE_EQPREPAI" />
+        <AssociationConnector Association="SPPEntityModel.FK_METERIAL_REFERENCE_EQPREPAI" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_EQPREPAIR_INFO" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_DEVIC_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_GOLDE_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_QADET_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_QATAR_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_EVER_Ref_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATION_REFERENCE_SYSTEM_ORGANIZATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATION_REFERENCE_SYSTEM_ORGANIZATION_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATION_REFERENCE_SYSTEM_ORGANIZATION_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATIONSHIFTPRE_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDLINEMODELSTATION_REFERENCE_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPEV_REFERENCE_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPHO_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSH_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_WIPSHIFTBATCH_REFERENCE_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_IPQCQUAL_REFERENCE_GL_STATI_Report_REPORT" />
+        <AssociationConnector Association="SPPEntityModel.FK_IPQCQUAL_REFERENCE_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_GL_STATIRe" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_GL_STATIDE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_GL_Defect_STATIC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_GL_STATIER" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_GL_STATIQW" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_USER_REFERENCE_GL_STATIDF" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_EVER_Ref_OEE_MACH" />
+        <EntityTypeShape EntityType="SPPEntityModel.FlowChart_IEData" Width="1.5" PointX="18.125" PointY="235.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_MachineStatus" Width="1.5" PointX="2.75" PointY="20.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_IEData_REF_FLOWCHAR" />
+        <AssociationConnector Association="SPPEntityModel.FK_IEData_Ref_GL_SHIFT" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Code" Width="1.5" PointX="5.25" PointY="212" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Dept" Width="1.5" PointX="5.25" PointY="196.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Reply" Width="1.5" PointX="10.5" PointY="260.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Resume" Width="3" PointX="8.375" PointY="288.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Shedule" Width="1.5" PointX="20.375" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Time" Width="1.5" PointX="6.875" PointY="293.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.System_Users" Width="1.5" PointX="0.75" PointY="199.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_ACTUAL_PRODUCTION_EQUIPMENT_QTY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EXISTING_EQUIPMENT_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_ACTUAL_PRODUCTION_MANPOWER_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_CURRENT_STAFF_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_APP_USER_FAVORITES_FUNCTION_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_CNCMACHI_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_CURRENT_MANPOWER_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_CURRENT_MANPOWER_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_GROUP_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEFECTCODE_REPAIRSOLUTION_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEMISSIONRATEANDWORKSCHEDULE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_DEMISSIONRATEANDWORKSCHEDULE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_FORECAST_POWERON_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_MATERIAL_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_POWERON_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_TYPE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQP_USERTABLE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_EQPREPAI_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_Equipment_Info_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Code_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Code_System_Users1" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Dept_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Dept_System_Users1" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Reply_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Resume_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Time_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Time_System_Users1" />
+        <AssociationConnector Association="SPPEntityModel.FK_EXCEPTIO_REFERENCE_SYSTEM_U95" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_DEFECTCODE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_DEFECTCODE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MACHINE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_PROFILE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_REF_SYSTEM_USERS_4" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_HISTORY_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_HISTORY_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_MAINTENANCE_RECORD_HISTORY_REF_SYSTEM_USERS_4" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_CLEAR_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_DEMAND_SUMMARY_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_INVENTORY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_D_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_SCHEDULE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_ORDER_SCHEDULE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_D_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_SETTING_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USETIMES_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_DEFECT_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_D_DEFECT_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIR_M_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIRSOLUTION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_REPAIRSOLUTION_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_RESUME_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_RESUME_HISTORY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_Ref_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE__FIXTURE_R_SYSTEM_CreateU" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE__FIXTURE_R_SYSTEM_ModifyU" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_CHECK_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INBOUND_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_INOUT_DETAIL_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_OUTBOUND_M_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_PART_STORAGE_TRANSFER_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_STORAGE_TRANSFER_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_D_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_TOTAKE_M_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USER_WORKSHOP_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USER_WORKSHOP_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_USER_WORKSHOP_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTURE_WAREHOUSE_STORAGE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_FIXTUREDEFECTCODE_SETTING_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_SYSTEM_U56" />
+        <AssociationConnector Association="SPPEntityModel.FK_IEdata_Ref_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_SYSTEM_U57" />
+        <AssociationConnector Association="SPPEntityModel.FlowMasterCreatedUID" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_SYSTEM_U60" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_FLOWCHAR_REFERENCE_SYSTEM_U88" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEM_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ASSEMODELCHANGE_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_CUSTOMERTARGET_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_DEVIC_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINE_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEH_REFERENCE_SYSTEM_USER" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINESHIFTRESPONSIBLE_REFERENCE_SYSTEM_USER" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINESHIFTRESPONSIBLE_REFERENCE_SYSTEM_USER2" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEALT_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MESSO_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_QADET_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_QATAR_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_REST_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_SHIFT_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STATI_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_STDWI_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_U1" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHINE__REFERENCE_SYSTEM_U3" />
+        <AssociationConnector Association="SPPEntityModel.FK_MAINTENANCE_PLAN_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MAINTENANCE_PLAN_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_DEMAND_SUMMARY_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INFO_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_INVENTORY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_USERS_4" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_MAINTENANCE_RECORD_REF_SYSTEM_USERS_5" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_NORMAL_DEMAND_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REASON_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_REPAIR_DEMAND_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_MATERIAL_SPAREPARTS_DEMAND_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DEFE_REFERENCE_SYSTEM_UE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_SYSTEM_UB" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_DOWN_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_DFcodeMissing_REF_USER" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_EVER_Ref_SYSTEM_UID" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_OEE_MACHI_SYSTEM_UC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_UF" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_STAT_REFERENCE_SYSTEM_UD" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_USER_OEE_STATI_SYSTEM_U_Modify" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_USER_OEE_USERS_SYSTEM_KeyInNG" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_U99" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_U104" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_U105" />
+        <AssociationConnector Association="SPPEntityModel.FK_OQC_INPU_REFERENCE_SYSTEM_U101" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBORAD_PLAYTIME_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARDSETUP_REFERENCE_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARD_VIEW_REFERENCE_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PLAYBOARD_VIWE_REFERENCE_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_ACTUAL_PRODUCTION_INFORMATION_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PREDICT_PRODUCTION_INFORMATION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESS_INFO_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESS_INFO_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROCESSI_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCT__REFERENCE_SYSTEM_U61" />
+        <AssociationConnector Association="SPPEntityModel.Product_Input_History_Modified_UID" />
+        <AssociationConnector Association="SPPEntityModel.FK_Product_Rework_Info_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Product_Rework_Info_History_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_PRODUCTION_LINE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROJECT__REFERENCE_SYSTEM_U59" />
+        <AssociationConnector Association="SPPEntityModel.FK_PROJECT_USERS_GROUP_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_changeLog_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U_QATYpe" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U92" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U3" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U85" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U84" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U_masterCreateUID" />
+        <AssociationConnector Association="SPPEntityModel.FK_QUALITYA_REFERENCE_SYSTEM_U91" />
+        <AssociationConnector Association="SPPEntityModel.FK_REPAIR_LOCATION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_REPAIR_LOCATION_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_DEMAND_CALCULATION_RECORD_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_EQUIPMENT_DEMAND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_IE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_IE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_EQUIPMENT_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_DETAIL_ME_EQUIPMENT_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_MASTER_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_FLOWCHART_MASTER_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_RP_MANPOWER_DEMAND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_CHECK_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INBOUND_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_INOUT_DETAIL_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_OUTBOUND_M_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_STORAGE_TRANSFER_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_B_REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_BU_D_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_BU_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_ATTACHMENT_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_DELIVERY_REF_SYSTEM_USERS_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_EMAIL_M_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_FUNCTION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_F_REFERENCE_SYSTEM_U63" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_FUNCTIONSUB_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_LANGUAGE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.Language_UID_cons" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_LOCALESTRINGRESOURCE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_LocalizedProperty_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_MODULE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_MODULE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ORGANIZATION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_O_REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ORGANIZATIONBOM_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_PLANT_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_P_REFERENCE_SYSTEM_U58" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_R_REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ROLE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_R_REFERENCE_SYSTEM_U3" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ROLE_FUNCTION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_ROLE_FUNCTIONSUB_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SCHEDULE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SCHEDULE_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SEQ_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_SEQ_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_U3" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_BUSINESS_GROUP_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_BUSINESS_GROUP_REF_SYSTEM_USERS_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_U50" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_U4" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_PLANT_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_PLANT_REF_SYSTEM_USERS_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_U_REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USER_ROLE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_User_View_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_User_View_System_Users1" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USERORG_REF_SYSTEM_USERS_M" />
+        <AssociationConnector Association="SPPEntityModel.FK_SYSTEM_USERORG_REF_SYSTEM_USERS1" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_SYSTEM_U1" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_BUILD_REFERENCE_SYSTEM_U2" />
+        <AssociationConnector Association="SPPEntityModel.FK_System_View_Column_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_VENDOR_INFO_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_VENDOR_INFO_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_WAREHOUSE_STORAGE_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_WIP_CHAN_REFERENCE_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSHOP_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSHOP_REF_SYSTEM_USERS_2" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_USERS" />
+        <AssociationConnector Association="SPPEntityModel.FK_WORKSTATION_REF_SYSTEM_USERS_2" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_EveryDayMachine" Width="1.5" PointX="62.75" PointY="259.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_MachineDailyDownRecord" Width="1.5" PointX="59.75" PointY="260.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_EVER_REFERENCE_GL_SHIFTZA" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_GL_STATI" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_OEE_DOWN" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_EVER_REFERENCE_OEE_MACHA1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_EveryDayMachine_1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_EveryDayMachine_2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_EveryDayMachine_3" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MACH_REFERENCE_OEE_MACH" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_DailyDown_1" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_DailyDown_2" />
+        <AssociationConnector Association="SPPEntityModel.OEE_Machine_DailyDown_3" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_LineGroup" Width="1.5" PointX="35.25" PointY="261.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_LineGroup_Ref_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_LINEGROUP_Ref_SYSTEM_PRJ" />
+        <AssociationConnector Association="SPPEntityModel.FK_LineGroup_Ref_LineGroup_Parent" />
+        <AssociationConnector Association="SPPEntityModel.FK_LineGroup_Ref_SYSTEM_FuncPlant" />
+        <AssociationConnector Association="SPPEntityModel.FK_LineGroup_Ref_SYSTEM_Op" />
+        <AssociationConnector Association="SPPEntityModel.FK_LineGroup_Ref_SYSTEM_Org" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHSTATUS_REF_GL_SHIFT" />
+        <AssociationConnector Association="SPPEntityModel.FK_MACHSTATUS_REF_OEE_MACH" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Project" Width="1.5" PointX="25.75" PointY="231.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Project_System_Project" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Email" Width="1.5" PointX="3" PointY="225" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Email_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Email_System_Users1" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_ImprovementPlan" Width="1.5" PointX="62.5" PointY="237.625" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_MeetingTypeInfo" Width="1.5" PointX="21.5" PointY="253.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_MetricInfo" Width="1.5" PointX="20.5" PointY="230.375" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPR_REF_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPR_REF_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_CreateUser" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_Modifyuser" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_Ref_OEE_Machine" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_SYSTEM_FUNC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_SYSTEM_OP" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_SYSTEM_ORG" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPP_REF_SYSTEM_Prj" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_Meetingtype_Ref_OEE_IMPP" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MEETINGType_REF_ModifyUser" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MEETINGTYPE_REF_SYSTEMFUNC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MEETINGTYPE_REF_SYSTEMOP" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_MEETINGTYPE_REF_SYSTEMORG" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_METRIC_REF_ModifyUser" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_METRIC_REF_SYSTEMFUNC" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_METRIC_REF_SYSTEMOP" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_METRIC_REF_SYSTEMORFG" />
+        <EntityTypeShape EntityType="SPPEntityModel.Exception_Record" Width="1.5" PointX="45.25" PointY="224.75" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Record_Exception_Code" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Record_System_Project" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Record_System_Users" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Record_System_Users1" />
+        <AssociationConnector Association="SPPEntityModel.FK_Exception_Reply_Exception_Record" />
+        <EntityTypeShape EntityType="SPPEntityModel.OEE_ImprovementPlanD" Width="1.5" PointX="64.875" PointY="237.25" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPPD_REF_OEE_IMPR" />
+        <AssociationConnector Association="SPPEntityModel.FK_OEE_IMPPD_REF_OEE_METRIC" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_ActionTaskerD" Width="1.5" PointX="60.5" PointY="247.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_MeetingTypeInfo" Width="1.5" PointX="23.5" PointY="244.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_MetricInfo" Width="1.5" PointX="21.5" PointY="258.5" IsExpanded="false" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTIOND_Ref_GL_METRIC" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEETI_Ref_SYSTEM_Func" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEETI_Ref_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEETI_Ref_SYSTEM_OP" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_MEETI_REF_SYSTEM_U" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_METRI_Ref_SYSTEM_Func" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_METRI_Ref_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_METRI_Ref_SYSTEM_OP" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_METRI_Ref_SYSTEM_U" />
+        <EntityTypeShape EntityType="SPPEntityModel.GL_ActionTasker" Width="1.5" PointX="48.25" PointY="220.5" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTIO_REF_GL_STATION" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTIO_REFERENCE_GL_LINE" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_Ref_GL_Meetingtype" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_CreateU" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_Func" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_ModifyU" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_O" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_OP" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTION_REF_SYSTEM_Prj" />
+        <AssociationConnector Association="SPPEntityModel.FK_GL_ACTIOND_REF_GL_ACTION" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

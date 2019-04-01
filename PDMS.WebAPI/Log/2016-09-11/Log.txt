@@ -1,0 +1,9 @@
+2016-09-11 10:42:12.4581 | Error | System.InvalidOperationException: 可為 Null 的物件必須具有值。
+   於 System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   於 System.Nullable`1.get_Value()
+   於 PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: 行 129 System.InvalidOperationException: 可為 Null 的物件必須具有值。
+   於 System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   於 System.Nullable`1.get_Value()
+   於 PDMS.Data.Repository.QualityAssuranceInputMasterRepository.SaveQaMasterData(QAMasterVM data) 於 D:\Code\PDMS\PDMS.Data\Repository\QualityAssuranceInputMasterRepository.cs: 行 129 
+ QualityService.SaveQaMasterData => QualityAssuranceInputMasterRepository.SaveQaMasterData => Logger.Error 
+

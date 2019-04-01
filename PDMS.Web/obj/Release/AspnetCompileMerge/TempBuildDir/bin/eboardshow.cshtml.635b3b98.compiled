@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Board/EBoardShow.cshtml" hash="1626a5ce" filehash="27afe4162087" flags="110000" assembly="App_Web_0gqfgcce" type="ASP._Page_Views_Board_EBoardShow_cshtml">
+    <filedeps>
+        <filedep name="/Views/Board/EBoardShow.cshtml" />
+    </filedeps>
+</preserve>

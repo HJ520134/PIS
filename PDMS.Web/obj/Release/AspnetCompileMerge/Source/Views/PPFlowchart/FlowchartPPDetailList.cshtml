@@ -1,0 +1,497 @@
+﻿
+@using PDMS.Model.ViewModels;
+@{
+    ViewBag.Edit = T("Common.Edit").Text;
+
+
+    ViewBag.SetKeyProcess = T("Production.SetKeyProcess").Text;
+    ViewBag.SetProcess = T("Production.SetProcess").Text;
+    ViewBag.KeyProcessMaintenance = T("Production.KeyProcessMaintenance").Text;
+    ViewBag.JustInputPercent = T("Production.JustInputPercent").Text;
+    ViewBag.PPProcessDetailPage = T("Production.PPProcessDetailPage").Text;
+    ViewBag.PPProcess = T("Production.PPProcess").Text;
+
+ }
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+            <!--次標題與Search keyword-->
+            <div class="col-md-12 col-lg-9">
+                <h4 class="margin-td-5" id="js_search_keywords"></h4>
+            </div><!-- /col-次標題與Search keyword -->
+            <!--col-右方搜尋與功能按鈕列-->
+            <div class="col-md-9">
+                <label class="control-label" id="lblTitle"></label>
+            </div>
+            <div class="col-md-3 search-field col-lg-3">
+                <button type="button" class="btn btn-primary btn-sm" id="btn_back"><i class="fa fa-reply"></i> @T("Common.Back")</button>
+            </div><!-- /col-右方搜尋與功能按鈕列-->
+        </div><!--/次標題 與 搜尋-->
+        <hr class="hr-custom">
+
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container" id="js_saveall_datatables">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_FL_datatable">
+                <thead>
+                    <tr>
+                        @*<th class="table-col-checkbox nosort">
+                                <input type="checkbox" class="js-checkbox-all" />
+                            </th>*@
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Production.Binding_Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("Production.Process_Station")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("Production.PPProcess")</th>
+                        <th>@T("Production.AssociatedProcess")</th>
+                        <th>@T("Production.ReworkSet")</th>
+                        <th>@T("Production.CheckSet")</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th>@T("Production.Binding_Seq")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("Production.Process_Station")</th>
+                        <th>@T("QA.Functionfactory")</th>
+                        <th>@T("Production.Process_Seq")</th>
+                        <th>@T("Production.PPProcess")</th>
+                        <th>@T("Production.AssociatedProcess")</th>
+                        <th>@T("Production.ReworkSet")</th>
+                        <th>@T("Production.CheckSet")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</section>
+
+
+@section ViewModals{
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Production.PPProductionDetailPage")</h4>
+                </div>
+                @using (Html.BeginForm("SavePPFlowchart", "PPFlowchart", FormMethod.Post, new { id = "js_form_edit_fl" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-md-6">@T("QA.Processname")</label>
+                            </div>
+
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <label class="col-md-3">@T("Production.DefeatSiteSettings")</label>
+                            </div>
+
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_DRI">@T("Production.PPBattleSite")</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="chkPPProcess" name="chkPPProcess" value="1"/>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_DRI">@T("Production.PPBattleProcessName")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm" id="s_input_ProcessTitle" name="Process" required data-msg-required="@T("Production.InputPPBattleProcessName")" placeholder="@T("Production.PPBattleProcessName")" />
+                                </div>
+                            </div>
+
+                            
+
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_DRI">@T("FlowChart.ZhuGuan")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_DRI" name="DRI" placeholder="@T("FlowChart.ZhuGuan")" data-msg-required="@T("FlowChart.InputZhuGuan")">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Place">@T("FlowChart.Place")</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-sm required" id="s_input_Place" name="Place" placeholder="@T("FlowChart.Place")" data-msg-required="@T("FlowChart.InputPlace")">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="js_s_input_Rework_Flag">@T("Production.ReworkSiteSettings")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_Rework_Flag" name="Rework_Flag" class="form-control input-sm">
+                                        @foreach (var item in ViewBag.ReworkFlag)
+                                        {
+                                            <option value=@item>@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-sm-5 control-label" for="s_input_IsQAProcess">@T("FlowChart.Jiance")</label>
+                                <div class="col-sm-7">
+                                    <select id="js_s_input_IsQAProcess" name="IsQAProcess"  class="form-control input-sm">
+                                        @foreach (var item in ViewBag.IsQAProcess)
+                                        {
+                                            <option value=@item.Key>@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <label class="col-md-6">@T("Production.SelectOtherProcess")</label>
+                            </div>
+                                    <!--表格-->
+                            <div class="col-md-12 table-container" id="js_saveall_datatables">
+                                <table class="table table-striped table-hover table-condensed nowrap" id="js_ME_datatable">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-col-checkbox nosort">
+                                                <input type="checkbox" class="js-checkbox-all"/>
+                                            </th>
+                                            <th>@T("Production.Binding_Seq")</th>
+                                            <th>@T("Production.Process_Seq")</th>
+                                            <th>@T("Production.Process_Station")</th>
+                                            <th>@T("QA.Functionfactory")</th>
+                                            <th>@T("Production.JustProcess")</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="table-col-checkbox nosort"></th>
+                                            <th>@T("Production.Binding_Seq")</th>
+                                            <th>@T("Production.Process_Seq")</th>
+                                            <th>@T("Production.Process_Station")</th>
+                                            <th>@T("QA.Functionfactory")</th>
+                                            <th>@T("Production.JustProcess")</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div><!--/表格-->
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-sm-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> @T("Common.Cancel")</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="btn_save_edit"><i class="fa fa-save"></i> @T("Common.Save")</button>
+                                    <input type="hidden" id="DetailUID" name="Flowchart_Detail_ME_UID" />
+                                    <input type="hidden" id="hidJson" name="hidJson" />
+                                    <input type="hidden" id="MasterUID" name="FlowChart_Master_UID" value="@ViewBag.ID" />
+                                    <input type="hidden" id="Version" name="FlowChart_Version" value="@ViewBag.Version" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--jquery validata error container-->
+                    <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                }
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@section ViewScripts{
+    <script type="text/javascript">
+        $(function () {
+            var FLDetail = (function () {
+                var urls = {
+                    queryFLS: '@Html.Raw(Url.Action("QueryFlowchartPPDetails", "PPFlowchart", new { id=ViewBag.ID,Version=ViewBag.Version }))',
+                    backFL: '@Url.Action("FlowchartPPList", "PPFlowchart")',
+                    queryFLDetail: '@Url.Action("QueryFLDetailByID","PPFlowchart")',
+                    queryFLDetailAssociationByID: '@Url.Action("QueryFLDetailAssociationByID","PPFlowchart")',
+                    queryCheckedSelectByID:'@Url.Action("QueryFLProcessCheckedSelectByID","PPFlowchart")',
+                    checkProcess:'@Url.Action("CheckProcess", "PPFlowchart")',
+                    SaveProcess: '@Html.Raw(Url.Action("SavePPFlowchart", "PPFlowchart"))',
+                };
+
+                var contentDatatable = null;
+                var columns = [
+                {
+                     createdCell: function (td, cellData, rowData, row, col) {
+
+                        var buttonEdit = '<button type="button" class="btn btn-default btn-sm" data-id="' + rowData.Flowchart_Detail_ME_UID + '">@ViewBag.Edit</button>';
+
+                        var processSet = '<button type="button" class="btn btn-default btn-sm js-grid-process" data-id="' + rowData.FlowChart_Master_UID + '">@ViewBag.SetKeyProcess</button></br>';
+
+                        var result = '<button type="button" class="btn btn-default btn-xs" rel="action-popover">' +
+                                '<i class="fa fa-reorder text-info"></i>' +
+                                '</button>' +
+                                '<div class="hidden popover-content">' +
+                                '<button type="button" class="btn btn-default btn-sm js-grid-siteset" data-isTemp="' + rowData.IsTemp + '" data-id=' + rowData.FlowChart_Master_UID + ' data-version=' + rowData.FlowChart_Version +'>@ViewBag.SetProcess</button></br>';
+
+
+                        if (rowData.KeyProcessSub == null) {
+                            $(td).html(buttonEdit);
+                            //result = result + processSet;
+                        }
+                        else {
+                            $(td).html('');
+                        }
+                     },
+                    className:"text-center js-grid-edit"
+                }, {
+                    data: "Binding_Seq",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Process_Seq",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Process_Station",
+                    className: "min-col-xs Process_Station"
+                },{
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                },{
+                    data: "Process",
+                    className: "min-col-xs"
+                }, {
+                    data: "KeyProcess",
+                    className: "min-col-xs"
+                },{
+                    data: "KeyProcessSub",
+                    className: "min-col-xs"
+                }, {
+                    data: "Rework_Flag",
+                    className: "min-col-xs"
+                }, {
+                    data: "IsQAProcess",
+                    className: "min-col-xs"
+                }
+                ];
+
+                var subcolumns = [
+                    {
+                        data: null, //不绑定数据列，需要添加此行
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Flowchart_Detail_ME_UID + '">')
+                                .addClass('table-col-checkbox');
+                        },
+                        className: "text-center"
+                }, {
+                    data: "Binding_Seq",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Process_Seq",
+                    className: "min-col-xs text-right"
+                }, {
+                    data: "Process_Station",
+                    className: "min-col-xs Process_Station"
+                },{
+                    data: "FunPlant",
+                    className: "min-col-xs"
+                },{
+                    data: "Process",
+                    className: "min-col-xs"
+                }];
+
+
+                var _queryFLS = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_FL_datatable",
+                        remoteUrl: urls.queryFLS,
+
+                        tableOptions: {
+                            scrollX: true,
+                            autoWidth: true,
+                            //scrollCollapse: true,
+                            paging: false,
+                            //fixedColumns: true,
+                            scrollY: 500,
+
+                            //fixedHeader:true,
+                            //fixedHeader: {
+                            //    header: true,
+                            //    footer: true
+                            //},
+                                                //paging: false,
+                            columns: columns
+                        }
+
+                    };
+
+                    //$.blockUI({ message: "<h1>正在加载，请稍后...</h1>" });
+                    var chk_value = [];
+                    table = PDMS.Utility.ReturnDataTable.Set(config, chk_value);
+                    $('table thead tr').find('th').removeClass('text-right');
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //$.blockUI({ message: "<h1>读取中，请稍后...</h1>" });
+                        _queryFLS(true);
+                        var title = '@ViewBag.CustomerName' + ' ' + '@ViewBag.ProjectName' + ' ' + '@ViewBag.PartTypes' + ' ' + '@ViewBag.ProductPhase' + '@ViewBag.KeyProcessMaintenance'
+                        $('#lblTitle').text(title);
+                        //$.unblockUI();
+                    },
+                    QueryFLCharts: function () {
+                        _queryFLS(false);
+                    },
+                    SubColumns: subcolumns
+                }
+            })();
+
+            FLDetail.Init();
+
+            $('#js_form_edit_fl').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+
+            $('#btn_back').on('click', function () {
+                var url = FLDetail.urls.backFL;
+                window.location.href = url;
+            });
+
+            jQuery.validator.addMethod("percent", function (value, element) {
+                var reg = /^((\d+\.?\d*)|(\d*\.\d+))\%$/;
+                var result = reg.test(value);
+                return result;
+            }, "@ViewBag.JustInputPercent");
+
+            //#region  div弹出编辑画面
+            $('#js_FL_datatable tbody').on("click", ".js-grid-edit", function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr).data();
+
+                if (row.KeyProcessSub == null) {
+                    $('#js_edit_modal').modal('show');
+                }
+
+                //标题
+                $('#js_edit_modal').find('.modal-title').text(row.FunPlant + ' ' + row.Process + ' @ViewBag.PPProcessDetailPage');
+                $('#s_input_ProcessTitle').val(row.PP_Process);
+                $('#s_input_DRI').val(row.DRI);
+                $('#s_input_Place').val(row.Place);
+                $('#js_s_input_Rework_Flag').val(row.Rework_Flag);
+                if (row.IsQAProcess == 'IPQC全检') {
+                    $('#js_s_input_IsQAProcess').val('Inspect_IPQC');
+                }
+                else if (row.IsQAProcess == 'IPQC巡检') {
+                    $('#js_s_input_IsQAProcess').val('Polling_IPQC');
+                }
+                else if (row.IsQAProcess == 'OQC检测') {
+                    $('#js_s_input_IsQAProcess').val('Inspect_OQC');
+                }
+                else if (row.IsQAProcess == '组装检测') {
+                    $('#js_s_input_IsQAProcess').val('Inspect_Assemble');
+                }
+                else if(row.IsQAProcess == '组装&OQC检测'){
+                    $('#js_s_input_IsQAProcess').val('Inspect_Assemble,Inspect_OQC');
+                }
+                
+                $('#DetailUID').val(row.Flowchart_Detail_ME_UID);
+                //初始化checkbox
+                $('.js-checkbox-all').removeAttr('checked');
+
+                if (row.KeyProcess == '@ViewBag.PPProcess') {
+                    $('#chkPPProcess').prop('checked', true);
+                }
+
+                //绑定子Grid
+                var url = FLDetail.urls.queryFLDetailAssociationByID;
+                $.get(url, { id: row.Flowchart_Detail_ME_UID }, function (data) {
+                    var subTable = $('#js_ME_datatable').DataTable({
+                        columns: FLDetail.SubColumns,
+                        ordering: false,
+                        data: data.Items,
+                        destroy: true
+                    });
+
+                    //设置checkbox选中
+                    var selectUrl = FLDetail.urls.queryCheckedSelectByID;
+                    $.get(selectUrl, { id: row.Flowchart_Detail_ME_UID }, function (data) {
+                        if (data != '') {
+                            var obj = $.parseJSON(data);
+                            for (i = 0; i < obj.length; i++) {
+                                $('.js-checkbox-item').each(function (item, html) {
+                                    var uid = $(this).val();
+                                    if (obj[i] == uid) {
+                                        $(this).prop('checked', true);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    $('table thead tr').find('th').removeClass('text-right');
+                });
+            });
+
+            //隐藏modal框时清空值
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+                $('#s_input_ProcessTitle').val('');
+                $('#s_input_DRI').val('');
+                $('#s_input_Place').val('');
+                $('#js_s_input_Rework_Flag').val('');
+                $('#js_s_input_IsQAProcess').val('');
+                $('#chkPPProcess').prop('checked',false);
+                $('.list-group.validate-error').empty();
+            });
+            //#endregion 隐藏modal框时清空值
+
+            //#region 保存
+            $('#btn_save_edit').on('click', function () {
+                var uid = $('#DetailUID').val();
+                //判断PP战情站点是否选中
+                var chk = $('#chkPPProcess').is(':checked');
+
+
+                var array = new Array();
+                $('#js_ME_datatable tbody').find('.js-checkbox-item').each(function () {
+                    if ($(this).is(':checked')) { //判断checkbox是否选中
+                        var value = $(this).val();
+                        array.push(value);
+                    }
+
+                });
+                var json = JSON.stringify(array);
+                //if (json.replace('[]', '').length > 0) {
+                    //判断选择的checkbox是否已经被关联了
+                    var Rework_Flag = $('#js_s_input_Rework_Flag').val();
+                    var url = FLDetail.urls.checkProcess + "?Rework_Flag=" + Rework_Flag;
+                    $.post(url, {Flowchart_Detail_ME_UID : uid, json:json}, function (data) {
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            SaveProcess(json);
+                        }
+                    });
+                //}
+                //else {
+                //    SaveProcess(json);
+                //}
+            });
+            //#endregion
+
+            var SaveProcess = function (json) {
+                //var url = FLDetail.urls.SaveProcess + "?json=" + json;
+                var url = FLDetail.urls.SaveProcess;
+                $('#hidJson').val(json);
+                $('#js_form_edit_fl').attr("action", url);
+                $('#js_form_edit_fl').submit();
+            }
+        });
+    </script>
+}

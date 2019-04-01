@@ -1,0 +1,979 @@
+﻿@model PDMS.Model.ViewModels.DefectRepairSolutionVM
+<!-- Main content -->
+<section class="content portal-content">
+
+    <!--次標題 與 搜尋-->
+    <div class="row">
+        <!--次標題與Search keyword-->
+        <div class="col-md-12 col-lg-8">
+            <h4 class="margin-td-5" id="js_search_keywords"></h4>
+        </div><!-- /col-次標題與Search keyword -->
+        <!--col-右方搜尋與功能按鈕列-->
+        <div class="col-md-12 search-field col-lg-4">
+            @*<button type="button" class="fa fa-upload btn btn-primary" id="excel_input_btn">导入</button>*@
+            <a href="~/ExcelTemplate/DefectCode_RepairSolution.xlsx" class="fa fa-download btn btn-primary" target="_blank"> 模板下载</a>
+            <button type="button" class="fa fa-upload btn btn-primary" id="btn_import_fl"> 上传</button>
+            <a id="bt_search" class="fa fa-search btn btn-primary" data-toggle="modal" data-target="#js_search_modal"> 查询</a>
+            <a class="fa fa-plus btn btn-primary" role="button" data-toggle="modal" data-target="#js_edit_modal" id="js_btn_add_DefectRepair"> 新建</a>
+            <a id="js_btn_export" class="fa fa-download btn btn-primary" role="button"> 导出</a>
+        </div><!-- /col-右方搜尋與功能按鈕列-->
+    </div><!--/次標題 與 搜尋-->
+    <hr class="hr-custom">
+
+    <!--row Search Keyword collapse-->
+    <div class="row">
+        <div id="js_criteria_alert_cnt">
+        </div>
+    </div> <!--/row Search Keyword collapse-->
+    <!--內容 表格列-->
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_DefectRepair_datatable">
+                <thead>
+                    <tr>
+                        <th class="table-col-checkbox nosort">
+                            <input type="checkbox" class="js-checkbox-all" />
+                        </th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>异常原因</th>
+                        <th>维修策略</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="table-col-checkbox nosort"></th>
+                        <th class="table-col-action nosort">@T("Common.Action")</th>
+                        <th class="table-col-seq nosort">@T("Common.Seq")</th>
+                        <th>厂区</th>
+                        <th>OP类型</th>
+                        <th>功能厂</th>
+                        <th>异常原因</th>
+                        <th>维修策略</th>
+                        <th>是否启用</th>
+                        <th>修改人</th>
+                        <th>修改日期</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <input type="hidden" name="System_edit_id" id="js_hidden_edit_id" value="0" />
+            <div id="page" class="row"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+
+</section><!-- /.content -->
+<!-- 查询 -->
+@section ViewModals{
+    <div class="modal fade" id="js_search_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@T("Common.Search")</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="row">
+                        <form id="js_form_query" data-need-validate="true">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_factory_query">厂区</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_query" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_optype_query">OP类型</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_optype_query" name="BG_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_funplant_query">功能厂</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_query" name="FunPlant_Organization_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_defect_query">异常原因</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_defect_query" name="Fixtrue_Defect_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_select_Solution_query">维修策略</label>
+                                    <div class="col-sm-8">
+                                        <select class="selectpicker form-control input-sm" id="js_select_Solution_query" name="Repair_Solution_UID" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="js_s_select_enable_flag">是否启用</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control input-sm" id="js_s_select_enable_flag" name="Is_Enable">
+                                            <option selected="selected" value=""></option>
+                                            <option value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_clear"><i class="fa fa-eraser"></i> @T("Common.Clear")</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="js_btn_query"><i class="fa fa-search"></i> @T("Common.Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="js_edit_modal" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">异常及对应策略关系设定</h4>
+                </div>
+
+                @using (Html.BeginForm("AddOrEditDefectRepairSolution", "Settings", FormMethod.Post, new { id = "js_form_DefectRepair_edit" }))
+                {
+                    <div class="modal-body form-horizontal">
+                        <div class="row">
+                            <input type="hidden" name="Defect_RepairSolution_UID" id="js_hidden_DefectRepair_uid" value="0" />
+                            <input type="hidden" name="Plant_Organization_UID" id="js_hidden_Plant_Organization_uid" value="0" />
+                            <input type="hidden" name="BG_Organization_UID" id="js_hidden_BG_Organization_uid" value="0" />
+                            <input type="hidden" name="FunPlant_Organization_UID" id="js_hidden_FunPlant_Organization_uid" value="0" />
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_factory_add">厂区</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_factory_add" name="Plant_Organization_UID" data-live-search="true">
+                                            @foreach (var item in Model.Plants)
+                                            {
+                                                <option value=@item.Plant_OrganizationUID>@item.Plant</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_optype_add">OP类型</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_optype_add" name="BG_Organization_UID" required data-msg-required="请选择[OP类型]." data-live-search="true" ></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_funplant_add">功能厂</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm" id="js_select_funplant_add" name="FunPlant_Organization_UID" data-live-search="true" ></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_defect_add">异常原因</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_defect_add" name="Fixtrue_Defect_UID" required data-msg-required="请选择[异常原因]." data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_select_Solution_add">维修策略</label>
+                                    <div class="col-sm-7">
+                                        <select class="selectpicker form-control input-sm required" id="js_select_Solution_add" name="Repair_Solution_UID" required data-msg-required="请选择[维修策略]." data-live-search="true"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label" for="js_e_select_enable_flag">是否启用</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control input-sm" id="js_e_select_enable_flag" name="Is_Enable">
+                                            <option selected="selected" value="false">禁用</option>
+                                            <option value="true">启用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--jquery validata error container-->
+                            <div class="col-xs-12"><ul class="list-group validate-error"></ul></div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_edit_Defect_RepairSolution"><i class="fa fa-save"></i> 保存</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="js_btn_save_new_Defect_RepairSolution"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-primary btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+<div class="modal fade" id="js_importExcel_modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">治具异常及维修策略关系导入</h4>
+            </div>
+            @using (Html.BeginForm("ImportDefectRepairRealtion", "Fixture", FormMethod.Post, new { enctype = "multipart/form-data", id = "js_form_excel_upload" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="control-label" for="js_s_input_import">选择Excel档</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="js_s_input_import" name="uploadName" placeholder="选择文件"
+                                   required data-msg-required="请选择要上传的Excel档!" accept=".xls,.xlsx"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_clear_Update"><i class="fa fa-times"></i>取消</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn_excel_upload"><i class="fa fa-save"></i>提交</button>
+           </div>
+            }
+        </div>
+    </div>
+</div>
+}
+
+@section ViewScripts{
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+    <script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        $('#btn_import_fl').on('click', function () {
+            $('#js_importExcel_modal').modal('show');
+        });
+        $('#btn_clear_Update').on('click', function () {
+            $('#js_importExcel_modal').modal('hide');
+        });
+        $(function () {
+            var DefectRepairMaintenance = (function () {
+                var needBuildCriteria = false;
+                var urls =
+                    {
+                        EditDefectRepair: '@Url.Action("EditDefectRepair", "Fixture")',
+                        AddDefectRepair: '@Url.Action("AddDefectRepair", "Fixture")',
+                        queryDefectRepairs: '@Url.Action("QueryDefectRepairs", "Fixture")',
+                        queryDefectRepair: '@Url.Action("QueryDefectRepair", "Fixture")',
+                        deleteDefectRepair: '@Url.Action("DeleteDefectRepair", "Fixture")',
+                        exportDefectRepairs: '@Url.Action("DoExportDefectRepair", "Fixture")',
+                        exportDefectRepairsByQuery: '@Url.Action("DoExportDefectRepairByQuery", "Fixture")',
+                        //根据厂区取得OP类型
+                        getCurrentOPType: '@Url.Action("GetCurrentOPType", "Fixture")',
+                        //根据OP类型取得功能厂
+                        getFunPlantByOPTypes: '@Url.Action("GetFunPlantByOPTypes", "Fixture")',
+                        GetRepairSolutionList: '@Url.Action("GetRepairSoulutionList", "Fixture")',
+                        GetDefectListUrl: '@Url.Action("GetDefectList", "Fixture")',
+                        downloadExcel: '@Url.Action("FixtureDefect_RepairRelation", "Fixture")'
+                    };
+                var columns = [{
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html('<input type="checkbox" name="cktrans" class="js-checkbox-item" value="' + rowData.Defect_RepairSolution_UID + '">')
+                             .addClass('table-col-checkbox');
+                    },
+                    className: "text-center"
+                },
+                      {
+                          createdCell: function (td, cellData, rowData, row, col) {
+                              var hiddenHtml = '<input type="hidden" name="Plant_Organization_UID" value=' + rowData.Plant_Organization_UID + '>'
+                                  + '<input type="hidden" name="BG_Organization_UID" value="' + rowData.BG_Organization_UID + '">'
+                                  + '<input type="hidden" name="FunPlant_Organization_UID" value="' + rowData.FunPlant_Organization_UID + '">';
+
+                              var buttonHtml = '<button class="btn btn-primary btn-xs" rel="action-popover">' +
+                                              '<i class="fa fa-reorder"></i>' +
+                                          '</button>' +
+                                          '<div class="hidden popover-content">' +
+                                              '<button type="button" class="btn btn-primary btn-xs js-grid-edit" data-id="' + rowData.Defect_RepairSolution_UID + '">编辑</button>' +
+                                              '<button type="button" class="btn btn-primary btn-xs js-grid-delete" data-id="' + rowData.Defect_RepairSolution_UID + '" data-DefectName="' + rowData.Fixture_DefectName + '" data-RepairSolutionName="' + rowData.Repair_SoulutionName + '">删除</button>' +
+                                          '</div>';
+                              var resultHtml = hiddenHtml + buttonHtml;
+                              $(td).html(resultHtml);
+                          },
+                          className: "text-center"
+                      },
+                    {
+                        data: null,
+                        className: "table-col-seq"
+                    }, {
+                        data: "PlantName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "BGName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "FunPlantName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Fixture_DefectName",
+                        className: "min-col-xs"
+                    }, {
+                        data: "Repair_SoulutionName",
+                        className: "min-col-xs"
+                    },
+                   {
+                       data: "Is_Enable",
+                       render: function (data, type, full, meta) {
+                           return data ? "启用" : "禁用";
+                       },
+                       className: "min-col-xs"
+                   }
+                , {
+                    data: "ModifiedUser.User_Name",
+                    className: "min-col-lg"
+                }, {
+                    data: "Modified_Date",
+                    className: "min-col-lg"
+                }
+                ];
+
+                var _getParams = function () {
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                        return $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    else {
+                        return null;
+                    }
+                };
+
+                var _queryDefectRepairs = function (firstLoad) {
+
+                    var config = {
+                        pageId: "#page",
+                        tableId: "#js_DefectRepair_datatable",
+                        remoteUrl: urls.queryDefectRepairs,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            scrollX: true,
+                            scrollCollapse: false,
+                            autoWidth: true,
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                    }
+
+                    if (needBuildCriteria) {
+                        PDMS.Utility.Criteria.Build();
+                    }
+
+                    PDMS.Utility.Pages.Set(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function () {
+                        //页面初始化加载查询时，初始化Criteria
+                        PDMS.Utility.Criteria.Init();
+                        _queryDefectRepairs(true);
+                    },
+                    queryDefectRepairs: function (isSearchBtn) {
+                        needBuildCriteria = (isSearchBtn === true ? true : needBuildCriteria);
+                        _queryDefectRepairs(false);
+                    }
+                }
+
+            })();
+            DefectRepairMaintenance.Init();
+
+            $('#js_btn_query').click(function () {
+                if ($("#js_form_query").valid()) {
+                    DefectRepairMaintenance.queryDefectRepairs(true);
+                    $('#js_search_modal').modal('hide');
+                }
+            });
+
+            //#region 模板下载
+            $('#js_btn_download_fl').on('click', function () {
+                this.form.action = DefectRepairMaintenance.urls.downloadExcel;
+                $('#js_form_excel_add').submit();
+            });
+            //提交     stat
+            $('#btn_excel_upload').on('click', function () {
+                $('#js_form_excel_upload').ajaxSubmit({
+                    async: true,
+                    beforeSubmit: function () {
+
+                        var fileName = $('#js_s_input_import').val();
+                        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (fileExtension.toLowerCase() != "xlsx" && fileExtension.toLowerCase() != "xls") {
+                            PDMS.Utility.MessageBox.info('请选择Excel文件');
+                            $.unblockUI();
+                            return false;
+                        }
+                        if (!$('#js_form_excel_upload').valid()) {
+                            $.unblockUI();
+                            return false;
+                        }
+                        $.blockUI({ message: "<h1>@T("QA.Imported")</h1>" });
+                    },
+                    success: function (data) {
+                        $.unblockUI();
+                        if (data != '') {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                        else {
+                            $('#js_importExcel_modal').modal('hide');
+                            PDMS.Utility.MessageBox.info('@T("QA.Importsuccessful")', function () {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+            //提交   END
+            //隐藏上传窗口时清空值-----------START
+            $('#js_importExcel_modal').on('hidden.bs.modal', function (e) {
+                $('#js_importExcel_modal').find('input').val('');
+            });
+            //隐藏上传窗口时清空值-------------END
+
+            $('#js_btn_export').click(function () {
+                var $selectList = $('#js_DefectRepair_datatable').find('.js-checkbox-item:checked');
+                var len = $selectList.length;
+                if (len == 0) {
+                    //PDMS.Utility.MessageBox.info('请选择要导出的数据！');
+                    //全部导出
+                    var url = DefectRepairMaintenance.urls.exportDefectRepairsByQuery;
+                    //没有查询条件的情况，从查询页面获取
+                    if (PDMS.Utility.Settings.Pages.remote.params == null) {
+                        PDMS.Utility.Settings.Pages.remote.params = $('#js_form_query').serialize().replace(/\+/g, " ");
+                    }
+                    url += '?' + PDMS.Utility.Settings.Pages.remote.params;
+                    window.location.href = url;
+                } else {
+                    var uids = $.map($selectList, function (row) {
+                        return row.value;
+                    });
+                    var url = DefectRepairMaintenance.urls.exportDefectRepairs;
+                    url += "?uids=" + uids.toString();
+                    window.location.href = url;
+                }
+            });
+
+            //extra configuration of validate in add/edit model, others via data-attribute
+            $('#js_form_DefectRepair_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+
+            //clear query conditions in search modal
+            $('#js_btn_clear').click(function () {
+
+                PDMS.Utility.Criteria.Clear(function () {
+                    $('#js_s_radio_valid').prop('checked', true);
+                    $("#js_s_input_reference_date").val(moment().format('YYYY-MM-DD'));
+                });
+            });
+
+            //do clean up in edit modal show/hide
+            $('#js_edit_modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var modal = $(this)
+                var title = modal.find('.modal-title');
+
+                if (button.hasClass('js-grid-edit')) {
+                    //编辑
+                    title.text("编辑治具异常及维修策略关系信息");
+                    $('#js_btn_save_new_Defect_RepairSolution').hide();
+                    $('#js_btn_save_edit_Defect_RepairSolution').show();
+                    $('#js_input_begin_date').attr("disabled", true);
+                    $("#js_hidden_edit_id").val(0);
+
+                    var uid = button.attr("data-id");
+                    //调api 获取车间信息，填充到编辑画面
+                    $.get(DefectRepairMaintenance.urls.queryDefectRepair, { uid: uid }, function (data) {
+                        $('#js_select_factory_add').val(data.Plant_Organization_UID);
+                        $('#js_select_factory_add').trigger('change');
+
+                        $('#js_select_optype_add').selectpicker('val', data.BG_Organization_UID);
+                        $('#js_select_optype_add').trigger('change');
+
+                        
+                        $('#js_select_funplant_add').selectpicker('val', data.FunPlant_Organization_UID);
+                        if (data.FunPlant_Organization_UID != null) {
+                            $('#js_select_funplant_add').trigger('change');
+                        }
+
+                        $('#js_select_defect_add').selectpicker('val', data.Fixtrue_Defect_UID);
+                        $('#js_select_Solution_add').selectpicker('val', data.Repair_Solution_UID);
+
+                        $('#js_e_select_enable_flag').selectpicker('val',data.Is_Enable.toString());
+                    });
+
+
+                } else if (button.attr('id') == 'js_btn_add_DefectRepair') {
+                    //新增
+                    $("#js_select_factory_add").removeAttr("disabled");
+                    $("#js_select_optype_add").removeAttr("disabled");
+                    $("#js_select_funplant_add").removeAttr("disabled");
+
+                    title.text("新增治具异常及维修策略关系信息");
+                    $('#js_btn_save_new_Defect_RepairSolution').show();
+                    $('#js_btn_save_edit_Defect_RepairSolution').hide();
+
+                    $('#js_select_factory_add').trigger('change');
+                    $('#js_select_optype_add').trigger('change');
+
+                    $('#js_select_defect_add').val('');
+                    $('#js_select_Solution_add').val('');
+                    $('#js_e_select_enable_flag').val('false');
+
+                    //$('#js_input_DefectRepair').data('original', '');
+                    //$('#js_input_begin_date').attr("disabled", false);
+                    //$('#js_input_end_date').attr("disabled", false);
+                }
+            })
+            $('#js_edit_modal').on('hidden.bs.modal', function (e) {
+
+                $('#js_edit_modal').find('input').val('');
+                $('.list-group.validate-error').empty();
+            });
+
+            //edit button in grid
+            $('body').on('click', '.js-grid-edit', function () {
+                //debugger
+                //var $sender = $(this);
+                //if ($sender.hasClass('disabled')) {
+                //    PDMS.Utility.MessageBox.error("DefectRepair already expired, can't edit!");
+                //    return;
+                //}
+
+                $("#js_select_factory_add").attr('disabled', 'disabled');
+                $("#js_select_optype_add").attr('disabled', 'disabled');
+                $("#js_select_funplant_add").attr('disabled', 'disabled');
+
+
+                $("#js_hidden_edit_id").val(1);
+                var uid = $(this).attr('data-id'),
+                    url = DefectRepairMaintenance.urls.queryDefectRepair;
+                $.post(url, { uid: uid }, function (data) {
+                    //隐藏字段
+                    $('#js_hidden_DefectRepair_uid').val(uid);
+                    $('#js_hidden_Plant_Organization_uid').val(data.Plant_Organization_UID);
+                    $('#js_hidden_BG_Organization_uid').val(data.BG_Organization_UID);
+                    $('#js_hidden_FunPlant_Organization_uid').val(data.FunPlant_Organization_UID);
+                    //显示字段
+                    $('#js_select_defect_add').val(data.Fixtrue_Defect_UID);
+                    $('#js_select_Solution_add').val(data.Repair_Solution_UID);
+                    $('#js_e_select_enable_flag').val(data.Is_Enable ? "true" : "false");
+                });
+
+                $('#js_edit_modal').modal('show', $(this));
+
+            });
+
+            //delete button in grid
+            $('body').on('click', '.js-grid-delete', function () {
+                var uid = $(this).attr('data-id');
+                var DefectRepairName = $(this).attr('data-DefectName');
+                var RepairSolutionName = $(this).attr('data-RepairSolutionName');
+                PDMS.Utility.MessageBox.confirm(
+                    "你确定要删除异常原因:[" + DefectRepairName + "] 维修对策:[" + RepairSolutionName + "]?"
+                    , function () {
+                        var url = DefectRepairMaintenance.urls.deleteDefectRepair;
+                        $.post(url, { uid: uid }, function (data) {
+                            
+                            if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("删除成功.");
+                                window.location.reload();
+                            } else if (data == 'FAIL') {
+                                PDMS.Utility.MessageBox.error("已在使用，不可删除!");
+                            } else {
+                                PDMS.Utility.MessageBox.error("Error:" + data);
+                            }
+                        });
+                    });
+            });
+
+            $('#bt_search').click(function () {
+                $('#js_select_factory_query').trigger('change');
+            })
+            //查询界面厂区是OP类型变化
+            $('#js_select_factory_query').change(function () {
+                GetOPTypes();
+            })
+            function GetOPTypes() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                url = DefectRepairMaintenance.urls.getCurrentOPType;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                }
+
+                $('#js_select_optype_query').selectpicker("refresh");
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $('#js_select_funplant_query').selectpicker("refresh");
+            }
+
+            //OP类型变更  start
+            $('#js_select_optype_query').change(function () {
+                if ($('#js_select_optype_query option:selected').text() != "") {
+                    refreshFunPlantQuery();
+                    refreshDefectCodeQuery();
+                    refreshRepairSolutionQuery();
+                } else {
+                    $('#js_select_funplant_query').empty();
+                    $('#js_select_funplant_query').html('<option></option>');
+                    $('#js_select_funplant_query').selectpicker("refresh");
+
+                    $('#js_select_defect_query').empty();
+                    $('#js_select_defect_query').html('<option></option>');
+                    $('#js_select_defect_query').selectpicker("refresh");
+
+                    $('#js_select_Solution_query').empty();
+                    $('#js_select_Solution_query').html('<option></option>');
+                    $('#js_select_Solution_query').selectpicker("refresh");
+                }
+            });
+
+            $('#js_select_funplant_query').change(function () {
+                if ($('#js_select_funplant_query option:selected').text() != "") {
+                    refreshDefectCodeQuery();
+                    refreshRepairSolutionQuery();
+                } else {
+                    $('#js_select_defect_query').empty();
+                    $('#js_select_defect_query').html('<option></option>');
+                    $('#js_select_defect_query').selectpicker("refresh");
+
+                    $('#js_select_Solution_query').empty();
+                    $('#js_select_Solution_query').html('<option></option>');
+                    $('#js_select_Solution_query').selectpicker("refresh");
+                }
+            });
+
+            function refreshFunPlantQuery() {
+                var url = DefectRepairMaintenance.urls.getFunPlantByOPTypes;
+                $('#js_select_funplant_query').empty();
+                $('#js_select_funplant_query').html('<option></option>');
+                $.post(url, { Optype: $('#js_select_optype_query').val() }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#js_select_funplant_query').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                    }
+                });
+                $('#js_select_funplant_query').selectpicker("refresh");
+            }
+
+            //刷新异常原因列表（查询）
+            function refreshDefectCodeQuery() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                if (oporgid != 0) {
+                    var opid = $('#js_select_optype_query option:selected').val();
+                    var func = $('#js_select_funplant_query option:selected').val();
+                    if (func == "" || func == undefined) {
+                        func = 0;
+                    }
+                    var isEnable = true;
+                    var Search = { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func };
+                    url = DefectRepairMaintenance.urls.GetDefectListUrl;
+                    $('#js_select_defect_query').empty();
+                    $('#js_select_defect_query').html('<option></option>')
+                    $.get(url, { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func }, function (data) {
+                        
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_defect_query').append('<option value="' + data[i].Fixture_Defect_UID + '">' + data[i].DefectCode_ID + '_' + data[i].DefectCode_Name + '</option>');
+                        }
+                    });
+                    $('#js_select_defect_query').selectpicker("refresh");
+                }
+            }
+
+            //刷新维修对策列表（查询）
+            function refreshRepairSolutionQuery() {
+                var oporgid = $('#js_select_factory_query option:selected').val();
+                if (oporgid != 0) {
+                    var opid = $('#js_select_optype_query option:selected').val();
+                    var func = $('#js_select_funplant_query option:selected').val();
+                    if (func == "" || func == undefined) {
+                        func = 0;
+                    }
+                    var isEnable = true;
+                    var Search = { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func };
+                    url = DefectRepairMaintenance.urls.GetRepairSolutionList;
+                    $('#js_select_Solution_query').empty();
+                    $('#js_select_Solution_query').html('<option></option>');
+                    $.get(url, { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func }, function (data) {
+                        
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Solution_query').append('<option value="' + data[i].Fixture_RepairSolution_UID + '">' + data[i].RepairSolution_ID + '_' + data[i].RepairSolution_Name + '</option>');
+                        }
+                    });
+                    $('#js_select_Solution_query').selectpicker("refresh");
+                }
+            }
+
+            //功能厂change
+            $('#js_select_funplant_add').change(function () {
+                refreshDefectCodeAdd();
+                refreshRepairSolutionAdd();
+            });
+
+
+
+            $('#js_select_factory_add').change(function () {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                url = DefectRepairMaintenance.urls.getCurrentOPType;
+                if (oporgid != 0) {
+                    $('#js_select_optype_add').empty();
+                    $('#js_select_optype_add').html('<option></option>');
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_optype_add').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                        }
+                    });
+                    $('#js_select_optype_add').selectpicker('refresh');
+                }
+                GetDefectName();
+            })
+
+            //编辑时optype 改变时间
+            $('#js_select_optype_add').change(function () {
+                refreshFunplantAdd();
+                refreshDefectCodeAdd();
+                refreshRepairSolutionAdd();
+            });
+
+            //刷新功能厂列表（新增）
+            function refreshFunplantAdd() {
+                var url = DefectRepairMaintenance.urls.getFunPlantByOPTypes;
+                if ($('#js_select_optype_add option:selected').text() != "") {
+                    $('#js_select_funplant_add').empty();
+                    $('#js_select_funplant_add').html("<option></option>");
+                    $.post(url, { Optype: $('#js_select_optype_add').val() }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_funplant_add').append('<option value="' + data[i].FunPlant_OrganizationUID + '">' + data[i].FunPlant + '</option>');
+                        }
+                    })
+                    $('#js_select_funplant_add').selectpicker("refresh");
+                }
+            }
+
+            //刷新异常原因列表（新增）
+            function refreshDefectCodeAdd() {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                if (oporgid != 0) {
+                    var opid = $('#js_select_optype_add option:selected').val();
+                    var func = $('#js_select_funplant_add option:selected').val();
+                    if (func == "" || func == undefined) {
+                        func = 0;
+                    }
+                    var isEnable = true;
+                    var Search = { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func, Is_Enable: true };
+                    url = DefectRepairMaintenance.urls.GetDefectListUrl;
+                    $('#js_select_defect_add').empty();
+                    $('#js_select_defect_add').html('<option></option>');
+                    $.get(url, { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_defect_add').append('<option value="' + data[i].Fixture_Defect_UID + '">' + data[i].DefectCode_ID + '_' + data[i].DefectCode_Name + '</option>');
+                        }
+                    });
+                    $('#js_select_defect_add').selectpicker("refresh");
+                }
+            }
+
+            //刷新维修对策列表（新增）
+            function refreshRepairSolutionAdd() {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                if (oporgid != 0) {
+                    var opid = $('#js_select_optype_add option:selected').val();
+                    var func = $('#js_select_funplant_add option:selected').val();
+                    if (func == "" || func == undefined) {
+                        func = 0;
+                    }
+                    var isEnable = true;
+                    var Search = { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func, Is_Enable: true };
+                    url = DefectRepairMaintenance.urls.GetRepairSolutionList;
+                    $('#js_select_Solution_add').empty();
+                    $('#js_select_Solution_add').html('<option></option>');
+                    $.get(url, { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_Solution_add').append('<option value="' + data[i].Fixture_RepairSolution_UID + '">' + data[i].RepairSolution_ID + '_' + data[i].RepairSolution_Name + '</option>');
+                        }
+                    });
+                    $('#js_select_Solution_add').selectpicker("refresh");
+                }
+            }
+
+
+            //根据用户选择的厂区、op、功能厂获取异常原因
+            function GetDefectName() {
+                var oporgid = $('#js_select_factory_add option:selected').val();
+                var opid = $('#js_select_optype_add option:selected').val();
+                var func = $('#js_select_funplant_add option:selected').val();
+                var isEnable = true;
+                var Search = { Plant_Organization_UID: oporgid, BG_Organization_UID: opid, FunPlant_Organization_UID: func, Is_Enable: true };
+
+                url = DefectRepairMaintenance.urls.GetDefectListUrl;
+                if (oporgid != 0) {
+                    $('#js_select_defect_add').empty();
+                    $.get(url, { plantUID: oporgid, opUID: opid, funcPlant: func }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#js_select_defect_add').append('<option value="' + data[i].Fixture_Defect_UID + '">' + data[i].DefectCode_ID + '_' + data[i].DefectCode_Name + '</option>');
+                        }
+                    });
+                    $('#js_select_defect_add').selectpicker("refresh");
+                }
+            }
+
+
+
+            //根据用户选择的厂区、op、功能厂获取维修策略
+            function GetRepairSolution() {
+
+                url = DefectRepairMaintenance.urls.GetRepairSolutionList;
+                $('#js_select_optype_query').empty();
+                $('#js_select_optype_query').html('<option></option>');
+                var oporgid = $('#js_select_factory_add option:selected').val();
+
+
+
+                if (oporgid != 0) {
+                    $.post(url, { plant_OrganizationUID: oporgid }, function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if ($('#js_select_optype_query').find('option[value=' + data[i].Organization_UID + ']').length == 0) {
+                                $('#js_select_optype_query').append('<option value="' + data[i].Organization_UID + '">' + data[i].OP_TYPES + '</option>');
+                                //$('#js_select_optype_query').selectpicker('refresh');
+                            }
+                        }
+                    });
+                }
+                $('#js_select_optype_query').selectpicker("refresh");
+            }
+
+            //新增修改DefectRepair按钮
+            $("#js_btn_save_edit_Defect_RepairSolution").click('click', function () {
+
+
+
+                var editform = $('#js_form_DefectRepair_edit');
+                var options = {
+                    url: DefectRepairMaintenance.urls.EditDefectRepair,
+                    type: 'post',
+                    success: function (data) {
+                        if (data == 'EXIST') {
+                            PDMS.Utility.MessageBox.error("修改[厂区][OP类型][异常原因][维修对策]重复");
+                        }
+                        else if (data == 'SUCCESS') {
+                            PDMS.Utility.MessageBox.info("修改成功.");
+                            window.location.reload();
+                        } else {
+                            PDMS.Utility.MessageBox.error(data);
+                        }
+                    }
+                };
+                editform.ajaxSubmit(options);
+            });
+
+            //新增保存DefectRepair按钮
+            $("#js_btn_save_new_Defect_RepairSolution").click('click', function () {
+                var isValid = true;
+                var erroMsg = "";
+                if ($('#js_select_factory_add option:selected').text() == "") {
+                    erroMsg += '请选择[厂区];  ';
+                    isValid = false;
+                }
+                if ($('#js_select_optype_add option:selected').text() == "") {
+                    erroMsg += '请选择[OP类型];  ';
+                    isValid = false;
+                }
+
+                if ($('#js_select_defect_add option:selected').text() == "") {
+                    erroMsg += '请选[异常原因];  ';
+                    isValid = false;
+                }
+                if ($('#js_select_Solution_add option:selected').text() == "") {
+                    erroMsg += '请选择[维修策略];  ';
+                    isValid = false;
+                }
+                if (isValid == false) {
+                    if (erroMsg != "" && erroMsg != undefined) {
+                        PDMS.Utility.MessageBox.error(erroMsg);
+                    }
+                    return false;
+                }
+
+                $('#js_hidden_Plant_Organization_uid').val($('#js_select_factory_add option:selected').val());
+                $('#js_hidden_BG_Organization_uid').val($('#js_select_optype_add option:selected').val());
+                $('#js_hidden_FunPlant_Organization_uid').val($('#js_select_funplant_add option:selected').val());
+
+                var editform = $('#js_form_DefectRepair_edit');
+                if (editform.valid()) {
+                    var options = {
+                        url: DefectRepairMaintenance.urls.AddDefectRepair,
+                        type: 'post',
+                        success: function (data) {
+                            if (data == 'EXIST') {
+                                PDMS.Utility.MessageBox.error("新增[厂区][OP类型][异常原因][维修对策]重复");
+                            }
+                            else if (data == 'SUCCESS') {
+                                PDMS.Utility.MessageBox.info("新增成功.", function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                PDMS.Utility.MessageBox.error(data);
+                            }
+                        }
+                    };
+                    editform.ajaxSubmit(options);
+                }
+            });
+            //Form Validate
+            $('#js_form_DefectRepair_edit').validate({
+                errorContainer: $('ul.validate-error'),
+                errorLabelContainer: $('#js_edit_modal ul.validate-error'),
+                wrapper: 'li'
+            });
+            //$('#js_input_end_date').rules('add', {
+            //    StartDateGTEnd: "#js_input_begin_date",
+            //    messages: { StartDateGTEnd: PDMS.Utility.Settings.ValidateMessage.twoDateError }
+            //});
+
+        });
+    </script>
+}

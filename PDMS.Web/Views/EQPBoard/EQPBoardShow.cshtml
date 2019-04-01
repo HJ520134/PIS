@@ -1,0 +1,412 @@
+﻿
+<style type="text/css">
+    .FunPlantDisplay {
+        display: none;
+    }
+</style>
+<input type="hidden" id="MenuShowState" value="1" />
+<div id="head_text" style="border-color:darkgray;background-color: #ecf0f5;font-size: X-large">
+    <div class="row">
+        <div class="col-md-2" style="margin-top:15px;">
+            <div class="form-group">
+                <button class="btn  btn-lg" style="margin-left: 20px;" id="menu_btn"> <b>菜单</b> </button>
+                <input type="number" id="pageSize" value=12 style="display: none" />
+            </div>
+        </div>
+        <div class="col-md-6" style="margin-top:15px;">
+            <div class="form-group">
+                <label>放置位置:</label> <label id="TitleLocation">@ViewBag.location</label>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="js_form_query">
+    <input type="hidden" id="location" name="EQP_Location" value=@ViewBag.location />
+</form>
+<input type="hidden" id="CurrentPageNumber" value=0 />
+<input type="hidden" id="totalPageCount" value=0 />
+
+
+
+<div id="main_content" style="font-size: large;">
+    <div class="row">
+        <!--表格-->
+        <div class="col-md-12 table-container">
+            <table class="table table-striped table-hover table-condensed nowrap" id="js_role_datatable">
+                <thead>
+                    <tr>
+                        <th>申请单ID</th>
+                        <th>功能厂</th>
+                        <th>专案</th>
+                        <th>机台类型</th>
+                        <th>制程</th>
+                        <th>机台号</th>
+                        <th>故障描述</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th>维修状态</th>
+                        <th>处理结果</th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="page" class="row" style="display: none"></div>
+
+        </div><!--/表格-->
+    </div><!-- / 內容 表格列 -->
+</div>
+<div class="row" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:3px;width:100%; z-index: 1;background-color: #EBEBEB" id="control_menu" >
+    <div class="col-lg-2"></div>
+    <div class="col-lg-1">
+        <button type="button" onclick="javascript:history.back(-1);" id="Back_Index">
+            <img src="~/Content/img/Eboard/btn-back.png" />
+        </button>
+    </div>
+    <div class="col-lg-1">
+        <button type="button" id="Previous_Page">
+            <img src="~/Content/img/Eboard/btn-pre.png" />
+        </button>
+    </div>
+    <div class="col-lg-1" id="divSuspend">
+        <button type="button" id="Suspend">
+            <img src="~/Content/img/Eboard/btn-pause.png" />
+        </button>
+    </div>
+    <div class="col-lg-1" id="divPlay" style="display:none">
+        <button type="button" id="Play">
+            <img src="~/Content/img/Eboard/btn-play.png" />
+        </button>
+    </div>
+    <div class="col-lg-1">
+        <button type="button" id="Next_Page">
+            <img src="~/Content/img/Eboard/btn-next.png" />
+        </button>
+    </div>
+    <div class="col-lg-2"></div>
+
+    <div class="col-lg-4" style="font-size: large; margin-top: 17px;">
+        滚动时间：<input type="number" id="interval" value="15" style="width: 60px;" /> 秒 &nbsp&nbsp&nbsp&nbsp
+        <button id="increase" style="width: 80px; height: 50px;">增加</button>   &nbsp&nbsp&nbsp&nbsp    <button id="reduce" style="width: 80px; height: 50px;">减少</button>
+    </div>
+</div>
+<div class="bg-orange-active row" id="divMar_System_Announcement" style="display: none; margin:0;padding:0;clear:both;position:absolute;bottom:3px;width:100%; z-index:-1">
+    <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 bg-black-01 col-md-1 col-xs-2 text-center" style="padding-left: 20px;font-size: X-large;">
+        <i class="icon fa fa-warning"></i> <span class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block "><b>通知</b></span>
+    </div>
+    <div class="visible-xs-inline-block visible-lg-inline-block visible-md-inline-block visible-sm-inline-block padding-all-5 col-md-11 col-xs-10" style="font-size: X-large;">
+        <marquee id="mar_System_Announcement" contenteditable="true" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();" behavior="scroll" direction="left"></marquee>
+    </div>
+</div>
+
+@section ViewScripts{
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-select.css" />
+<script type="text/javascript" src="~/Scripts/EQP/bootstrap-select.js"></script>
+    <script type="text/javascript">
+        var RoleMaintenance = null;
+        var freshMain;
+
+        var CurrentPageNumber = $("#CurrentPageNumber").val();
+        $(document)
+            .ready(function ss() {
+
+                freshMain = setInterval("startRequest()", 15000);
+                var freshNotice = setInterval("startRequest1()", 300000);
+                setInterval("refresh()", 3600000);
+            });
+
+        function startRequest() {
+            RoleMaintenance.QueryRoles();
+            var totalPageCount = parseInt($("#totalPageCount").val());
+            var current = parseInt($("#CurrentPageNumber").val()) + 1;
+            if (totalPageCount <= current)
+                current = 0;
+            $("#page").page('remote', current);
+            $("#CurrentPageNumber").val(current);
+            $("#main_content").css("font-size", "20px");
+            $('#js_role_datatable tr').css("height", 45);
+        }
+
+        function startRequest1() {
+            $.post(RoleMaintenance.urls.getNoticeContent,
+                { "optype": $("#opType").val() },
+                function(data) {
+                    if (data != "") {
+                        var warningText = data;
+                        $("#divMar_System_Announcement").show();
+                        $("#mar_System_Announcement").html(warningText);
+                    }
+                });
+        }
+        function refresh() {
+            window.location.reload();
+        }
+
+        $(function() {
+            RoleMaintenance = (function() {
+                var urls = {
+                    getEQPBoard: '@Url.Action("GetEQPBoard", "EQPBoard")',
+                    getNoticeContent: '@Url.Action("getNoticeContent", "Board")',
+                    getPartTypes: '@Url.Action("getPartTypes", "Board")',
+                    ToIndex: '@Url.Action("Index", "Board")',
+                    GetFinnalYield: '@Url.Action("GetFinnalYield", "Board")',
+                    GetPageSize: '@Url.Action("GetPageSize", "Board")'
+                };
+                var columns = [
+                    {
+                        data: "Repair_id",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "FunPlant",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Project_Name",
+                        className: "min-col-xs text-center"
+                    },
+                    {
+                        data: "Class_Desc",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Process",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Mfg_Serial_Num",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Repair_Reason",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Contact",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Contact_tel",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Status",
+                        className: "min-col-xs text-center"
+                    }, {
+                        data: "Repair_Result",
+                        className: "min-col-xs text-center"
+                    }
+                ];
+
+                var _getParams = function() {
+                    return $('#js_form_query').serialize().replace(/\+/g, " ");
+                };
+
+                var _queryRoles = function(firstLoad) {
+
+                    var config = {
+                        pageSize: parseInt($("#pageSize").val()),
+                        pageId: "#page",
+                        tableId: "#js_role_datatable",
+                        remoteUrl: urls.getEQPBoard,
+                        searchParams: _getParams(),
+                        tableOptions: {
+                            columns: columns
+                        }
+                    };
+
+                    if (!firstLoad) {
+                        $('#page').page('destroy');
+                        PDMS.Utility.Criteria.Build();
+
+                    }
+                    PDMS.Utility.Pages.CustomSet(config);
+                };
+
+                return {
+                    urls: urls,
+                    Init: function() {
+                        PDMS.Utility.Criteria.Init();
+                        _queryRoles(true);
+                    },
+                    QueryRoles: function() {
+                        _queryRoles(false);
+                    }
+                }
+
+            })();
+
+            RoleMaintenance.Init();
+            $("#main_content").css("font-size", "20px");
+            $('#js_role_datatable tr').css("height", 45);
+
+            // 设置刷新频率
+            $('#interval')
+                .blur(function() {
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff == NaN) {
+                        $("#interval").val(15);
+                        ff = 15;
+                    }
+
+                    freshMain = setInterval("startRequest()", 1000 * ff);
+                });
+
+
+            $("#increase").click(function() {
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff != NaN) {
+                        ff += 5;
+                    }
+                    if (ff == NaN) {
+                        $("#interval").val(15);
+                        ff = 15;
+                    }
+                    $("#interval").val(ff);
+                    freshMain = setInterval("startRequest()", 1000 * ff);
+
+                });
+
+            $("#reduce").click(function () {
+                      clearInterval(freshMain);
+                      var ff = parseInt($("#interval").val());
+                      if (ff != NaN&&ff>5) {
+                          ff -= 5;
+                      }
+                      if (ff == NaN) {
+                          $("#interval").val(15);
+                          ff = 15;
+                      }
+                      $("#interval").val(ff);
+                      freshMain = setInterval("startRequest()", 1000 * ff);
+
+                  });
+
+            //初始化当前页的专案 功能厂信息
+            function getTitle() {
+                var project = $($(".odd").children(":first").text().split('_')[1]);
+            }
+
+            killAside();
+
+            function killAside() {
+                $(".content-wrapper").css("cssText", "margin-left:0px !important");
+            }
+            getFinnalYield();
+            NoticeFuc();
+
+            function NoticeFuc() {
+                $.post(RoleMaintenance.urls.getNoticeContent,
+                    { "optype": $("#opType").val() },
+                    function(data) {
+                        if (data != "") {
+                            var warningText = data;
+                            $("#divMar_System_Announcement").show();
+                            $("#mar_System_Announcement").html(warningText);
+
+                        }
+                    });
+            }
+            function getFinnalYield() {
+                var total = parseInt($(".m-pagination-info").text().split('共')[1]);
+                var totalPageCount = 0;
+                var pageSize = parseInt($("#pageSize").val());
+                if (pageSize == NaN) pageSize = 15;
+                if (total > 0) {
+                    totalPageCount = Math.ceil(total / pageSize);
+                }
+                $("#totalPageCount").val(totalPageCount);
+            }
+
+
+            $("#Play").click(function() {
+                    clearInterval(freshMain);
+                    var ff = parseInt($("#interval").val());
+                    if (ff == NaN) {
+                        ff = 15;
+                        $("#interval").val(15);
+                    }
+
+                    freshMain = setInterval("startRequest()", ff * 1000);
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+
+                });
+            $("#Suspend").click(function() {
+                    $("#divPlay").show();
+                    $("#divSuspend").hide();
+                    clearInterval(freshMain);
+                    freshMain = setInterval("startRequest()", 10000000);
+
+            });
+
+            $('#js_select_eqp_location').change(function () {
+                $('#location').val($(this).val());
+                RoleMaintenance.getEQPBoard(true);
+            })
+
+            $("#menu_btn").click(function() {
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+                    //$("#interval").val(30);
+                    if ($("#menu_btn").attr('style') == 'margin-left: 30px;background-color:#5CACEE') {
+                        $("#menu_btn").removeAttr('style');
+                        $("#menu_btn").attr('style', 'margin-left: 30px');
+                    } else {
+                        $("#menu_btn").attr('style', 'margin-left: 30px;background-color:#5CACEE');
+                    }
+                    $("#control_menu").toggle(1000);
+                });
+            $('#main_content').click(function() {
+                    $("#divPlay").hide();
+                    $("#divSuspend").show();
+                    if ($("#menu_btn").attr('style') == 'margin-left: 30px;background-color:#5CACEE') {
+                        $("#menu_btn").removeAttr('style');
+                        $("#menu_btn").attr('style', 'margin-left: 30px');
+                    } else {
+                        $("#menu_btn").attr('style', 'margin-left: 30px;background-color:#5CACEE');
+
+                    }
+
+                    $("#control_menu").toggle(1000);
+                });
+
+            $("#Previous_Page").click(function() {
+                    var current = parseInt($("#CurrentPageNumber").val()) - 1;
+                    var totalPageCount = parseInt($("#totalPageCount").val());
+
+                    if (current < 0)
+                        current = totalPageCount - 1;
+                    $("#page").page('remote', current);
+                    $("#CurrentPageNumber").val(current);
+                    $(".content-wrapper").css("cssText", "margin-left:0px !important");
+                });
+
+
+            $("#Next_Page").click(function() {
+                    var current = parseInt($("#CurrentPageNumber").val()) + 1;
+                    var totalPageCount = parseInt($("#totalPageCount").val());
+
+                    if (totalPageCount <= current)
+                        current = 0;
+                    $("#page").page('remote', current);
+                    $("#CurrentPageNumber").val(current);
+                });
+
+        });
+    </script>
+
+}
+
+<style>
+    .main-header {
+        display: none;
+    }
+
+    .main-footer {
+        display: none;
+    }
+
+    .main-sidebar {
+        display: none;
+    }
+
+    .content-wrapper {
+        margin-left: 0px !important;
+    }
+</style>
+
+
